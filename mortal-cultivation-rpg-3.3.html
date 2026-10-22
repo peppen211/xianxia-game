@@ -105,6 +105,9 @@ body.started #battle .battle-scene{height:110px;margin:0 0 12px;border:1px solid
 .bottom-nav button{min-height:48px;padding:5px 2px;border-color:transparent;background:transparent;font-size:11px}
 .bottom-nav .tab.active{border-color:#bda56877;background:#1c293b;color:#f0d7a0;box-shadow:inset 0 0 12px #c9a35b0d}
 .quick-status{order:5;flex:0 0 auto;padding:7px 10px 8px;margin:4px 0 0;border:1px solid #34465d;border-radius:11px;background:linear-gradient(135deg,#101b2b,#0a111d);box-shadow:0 4px 12px #0002;font-family:inherit}
+/* 3.3 status strip: pin it directly above the five-tab dock on small screens. */
+body.started .quick-status{position:fixed;z-index:49;left:50%;right:auto;bottom:calc(var(--safe-bottom) + 72px);transform:translateX(-50%);width:calc(100% - 24px);max-width:736px;margin:0;box-shadow:0 4px 18px #0008}
+body.started .page{padding-bottom:150px}
 .quick-status-top,.quick-status-values{display:flex;align-items:center;justify-content:space-between;gap:7px;min-width:0}
 .quick-status-top{font-size:10px;color:var(--gold);line-height:1.4;margin-bottom:5px}
 .quick-status-top span:last-child{color:var(--muted)}
