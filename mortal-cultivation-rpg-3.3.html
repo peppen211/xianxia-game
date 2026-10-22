@@ -175,7 +175,7 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
     $("realmTop").textContent=realm();
     $("quickRealm").textContent=realm();
     $("quickState").textContent=state.cultivating?"吐納運轉中":(state.created?"靜候機緣":"尚未踏入仙途");
-    $("quickXp").textContent=Math.floor(state.xp);
+    $("quickXp").textContent=Math.floor(state.xp)+" / "+requiredXp();
     $("quickStones").textContent=state.stones;
     $("quickHp").textContent=state.hp+"/"+state.maxHp;
     $("quickFill").style.width=Math.min(100,state.xp/requiredXp()*100)+"%";
