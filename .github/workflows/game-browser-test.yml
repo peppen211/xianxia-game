@@ -1,0 +1,65 @@
+name: Game Browser Test
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/game-browser-test.yml'
+jobs:
+  browser-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install playwright
+          npx playwright install --with-deps chromium
+      - name: Run mobile flow and capture evidence
+        run: |
+          mkdir -p evidence
+          cat > test.cjs <<'EOF'
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({headless:true});
+            const context = await browser.newContext({
+              viewport:{width:390,height:844}, deviceScaleFactor:1,
+              isMobile:true, hasTouch:true, recordVideo:{dir:'evidence',size:{width:390,height:844}}
+            });
+            const page = await context.newPage();
+            const errors=[];
+            page.on('pageerror', e => errors.push(e.message));
+            await page.goto('https://peppen211.github.io/xianxia-game/v7.2.html',{waitUntil:'networkidle',timeout:60000});
+            await page.screenshot({path:'evidence/01-setup.png',fullPage:true});
+            const reserveCard=page.locator('#reserveGrid .card').first();
+            await reserveCard.tap();
+            await page.waitForTimeout(400);
+            await page.screenshot({path:'evidence/02-card-deployed.png',fullPage:true});
+            const deployed=await page.locator('#activeGrid .card').count();
+            await page.locator('#stickyStart').tap();
+            await page.waitForTimeout(300);
+            const underfill=await page.locator('#underfillConfirm').evaluate(el=>el.classList.contains('show')).catch(()=>false);
+            if(underfill) await page.locator('#underfillContinue').tap();
+            await page.waitForTimeout(3500);
+            await page.screenshot({path:'evidence/03-battle.png',fullPage:true});
+            await page.waitForFunction(()=>document.querySelector('#result')?.classList.contains('show'),{timeout:50000});
+            await page.screenshot({path:'evidence/04-result.png',fullPage:true});
+            await page.locator('#result button').first().tap().catch(()=>{});
+            await page.waitForTimeout(500);
+            await page.screenshot({path:'evidence/05-after-result.png',fullPage:true});
+            await context.close();
+            await browser.close();
+            require('fs').writeFileSync('evidence/test-report.json',JSON.stringify({url:'https://peppen211.github.io/xianxia-game/v7.2.html',deployedActiveCards:deployed,underfillConfirmShown:underfill,pageErrors:errors,flow:'setup -> deploy card -> battle -> result',status:errors.length?'CHECK_ERRORS':'COMPLETED'},null,2));
+            if(errors.length) process.exit(1);
+          })().catch(e=>{console.error(e);process.exit(1)});
+          EOF
+          node test.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: game-browser-test-evidence
+          path: evidence/
+          retention-days: 14
