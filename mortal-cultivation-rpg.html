@@ -325,7 +325,46 @@ button:active,.btn:active{background:#455c49}
 .progress,.progress-bar,.bar-fill{accent-color:#9fb49a}
 a{color:#d9c58f}
 @media(max-width:390px){.realm-header{padding:17px 13px;min-height:116px}.realm-heading h1{font-size:21px}.realm-badge{min-width:82px;padding:9px}.realm-badge strong{font-size:14px}}
-\n</style></head><body>
+\n
+/* Cohesive Qingyu Xianjing visual pass */
+:root{color-scheme:light;--gold:#a88b50;--jade:#6e9271;--bg:#f4f2e8;--panel:#edf0e5;--muted:#71806e}
+html,body{background:#f4f2e8!important;color:#344b38!important;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif}
+body{background:linear-gradient(180deg,#e7ecdf 0%,#f5f2e8 44%,#eeeee2 100%)!important;padding:calc(env(safe-area-inset-top) + 10px) 13px calc(env(safe-area-inset-bottom) + 10px)}
+header,.panel,.page .panel{background:#f8f7ef!important;color:#344b38!important;border:1px solid #d3dccb!important;border-radius:15px!important;box-shadow:0 3px 12px #52664a10!important}
+header{border-color:#c8d5c1!important}
+h1,h2,.detail strong,.stats strong{color:#385640!important}
+.eyebrow{color:#8b784a!important;letter-spacing:1px}
+.muted,small,label{color:#74816f!important}
+.realm{background:#e3eadc!important;border:1px solid #c4d2bc!important;color:#4e6c50!important}
+button,.btn,.tab{background:#e7ecdf!important;border:1px solid #cad6c3!important;color:#466348!important;border-radius:11px!important;font-size:14px!important}
+button.primary,body:not(.started) #start{background:#668b69!important;color:#fffdf3!important;border:1px solid #668b69!important;text-shadow:none!important;animation:none!important;box-shadow:0 3px 8px #49694b22!important}
+.tab.active{background:#d7e4d2!important;color:#34563c!important;border-color:#8ca989!important}
+.stats .panel{background:#edf1e7!important}
+.detail{border-bottom:1px solid #dce2d5!important;color:#536b53}
+.bar{background:#dce3d6!important}
+.fill{background:linear-gradient(90deg,#7ba47a,#b8a16b)!important}
+.log{background:#edf0e6!important;color:#536b53!important;border:1px solid #d9e0d1}
+input,select{background:#faf9f2!important;color:#344b38!important;border-color:#d3dccb!important}
+footer{color:#899382!important}
+body:not(.started){justify-content:center!important;gap:0!important;background:linear-gradient(180deg,#e2e9dc,#f5f2e8 75%)!important}
+body:not(.started) header{display:none!important}
+body:not(.started) #heroPanel{background:transparent!important;border:0!important;box-shadow:none!important;padding:28px 18px!important;text-align:center}
+body:not(.started) #heroPanel .eyebrow{color:#7d8f75!important;letter-spacing:2px}
+body:not(.started) #heroPanel h2{color:#344f39!important;font-size:30px;letter-spacing:2px}
+body:not(.started) #heroPanel p{color:#6f7e6a!important}
+body:not(.started) #start{min-width:180px;padding:15px 24px!important;letter-spacing:1px!important}
+body.started header{background:#e5ebde!important}
+body.started .page{scrollbar-color:#c7d4bf transparent}
+.realm-header{background:#e5ebde!important}
+.realm-landscape{opacity:.12!important}
+.realm-badge{background:#e0e9d8!important;border:1px solid #c4d2bc!important;color:#496b4d!important;box-shadow:none!important}
+.realm-badge-label{color:#7a896f!important}
+.realm-badge strong{color:#3c5d41!important}
+.realm-seal{background:#f5f4e9!important;color:#547755!important;border-color:#c2d0b9!important}
+.avatar{box-shadow:none!important}
+@media(max-width:390px){body{padding-left:10px;padding-right:10px}.tabs button{padding:10px 1px;font-size:12px!important}}
+
+</style></head><body>
 <header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
 <section class="stats"><div class="panel"><small>修為</small><strong id="xp">0</strong></div><div class="panel"><small>下品靈石</small><strong id="stones">0</strong></div><div class="panel"><small>氣血</small><strong id="hp">100/100</strong></div></section>
