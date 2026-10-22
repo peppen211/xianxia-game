@@ -501,6 +501,40 @@ body.started .page button{min-height:42px!important}
 body.started footer{display:none!important}
 body:not(.started){background-color:#080c15!important;background-image:linear-gradient(180deg,rgba(6,10,18,.18),rgba(6,10,18,.64)),radial-gradient(ellipse at 50% 18%,#354b68,#080c15 75%)!important;background-size:cover!important;background-position:center!important}
 @media(max-width:390px){body.started .realm-badge{max-width:88px!important}body.started .realm-heading h1{font-size:18px!important}body.started .page .panel{padding:13px!important}}
+
+/* COLOR BUG FIX: force one coherent dark xianxia palette across every in-game component */
+:root{color-scheme:dark!important;--gold:#d8bd7c!important;--jade:#9fb8d0!important;--bg:#080c15!important;--panel:#111a29!important;--muted:#b8c4d5!important}
+html,body{background-color:#080c15!important;color:#e9edf4!important}
+body.started,body.started *{scrollbar-color:#39485c #080c15}
+body.started{background:#080c15!important;background-image:radial-gradient(ellipse at 50% 0%,rgba(80,111,151,.2),transparent 45%),linear-gradient(180deg,#0c1422,#080c15 76%)!important;color:#e9edf4!important}
+body.started .realm-header,body.started header.realm-header,body.started .realm-location,body.started .realm-badge{background-color:#101a2a!important;color:#e9edf4!important}
+body.started .realm-header{background-image:linear-gradient(145deg,#172438,#0a111d)!important;border:1px solid #7c6945!important;box-shadow:0 6px 18px #0006!important}
+body.started .realm-heading .eyebrow,body.started .realm-badge-label{color:#c9b17b!important}
+body.started .realm-heading h1,body.started #pageHeading{color:#f0dfb9!important}
+body.started .realm-heading .muted,body.started .realm-location .muted{color:#b8c4d5!important}
+body.started .realm-badge strong,body.started .realm-seal{color:#e5c985!important}
+body.started .panel,body.started .page .panel,body.started #heroPanel,body.started .stats>div{background:#111a29!important;background-image:linear-gradient(150deg,#172337,#0b111d)!important;border:1px solid #625338!important;color:#e9edf4!important;box-shadow:0 8px 22px #0005!important}
+body.started .page h2,body.started .panel h2{color:#e8d3a1!important}
+body.started .page p,body.started .page .muted,body.started .page small,body.started .page label,body.started .page span{color:#c1ccda!important}
+body.started .page .detail{background:transparent!important;border-bottom:1px solid #38465a!important;color:#c1ccda!important}
+body.started .page .detail span{color:#c1ccda!important}
+body.started .page .detail strong,body.started .page strong{color:#e5c985!important}
+body.started .page .log{background:#080d16!important;border:1px solid #35445a!important;color:#d3deeb!important}
+body.started button,body.started .page button,body.started nav.bottom-nav button{background:linear-gradient(145deg,#1a283b,#0d1624)!important;border:1px solid #46556b!important;color:#dce5ef!important;box-shadow:none!important;text-shadow:none!important}
+body.started button.primary,body.started .page button.primary{background:linear-gradient(135deg,#e2c98f,#b99a5e)!important;border:1px solid #f0dba7!important;color:#111722!important}
+body.started nav.bottom-nav{background:#070b13!important;border-top:1px solid #77613b!important}
+body.started nav.bottom-nav .tab.active{background:#272316!important;border:1px solid #b99a5e!important;color:#f0d7a0!important}
+body.started nav.bottom-nav .tab.active .nav-icon{color:#e8c77e!important}
+body.started .bar{background:#070b13!important;border:1px solid #35445a!important}
+body.started .fill{background:linear-gradient(90deg,#7c9fbe,#dfc27d)!important}
+body.started input,body.started select,body.started textarea{background:#080f1b!important;color:#e9edf4!important;border:1px solid #46556b!important}
+body.started input::placeholder,body.started textarea::placeholder{color:#8e9db1!important}
+body.started #toast{background:#172438!important;color:#f1e4c7!important;border:1px solid #c6a66d!important}
+body:not(.started){background-color:#080c15!important;color:#e9edf4!important}
+body:not(.started) .realm-header,body:not(.started) header.realm-header,body:not(.started) #heroPanel{background:linear-gradient(155deg,rgba(21,31,47,.96),rgba(8,13,22,.97))!important;border:1px solid rgba(202,174,119,.52)!important;color:#e9edf4!important}
+body:not(.started) .realm-heading h1,body:not(.started) #heroPanel h2{color:#f3e6c8!important}
+body:not(.started) .muted,body:not(.started) p{color:#c1ccda!important}
+body:not(.started) #start{background:linear-gradient(135deg,#e2c98f,#b99a5e)!important;color:#111722!important;border:1px solid #f0dba7!important;text-shadow:none!important}
 </style></head><body>
 <header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
