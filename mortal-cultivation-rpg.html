@@ -268,14 +268,21 @@ body.started #battle .battle-scene{height:110px;margin:0 0 12px;border:1px solid
   },1000);
   setInterval(()=>{if(state.created)save();},15000);
   document.addEventListener("visibilitychange",()=>{
-    if(document.visibilityState==="hidden"){if(state.created)save();return;}
+    if(document.visibilityState==="hidden"){
+      // Persist the exact background-entry time so elapsed cultivation can be reconciled on return.
+      if(state.created)save();
+      return;
+    }
     try{
       const stored=JSON.parse(localStorage.getItem(SAVE_KEY));
       if(stored&&stored.created){
-        const progressed=applyOfflineProgress({...stored});
-        // Keep current in-memory progress if the same page merely returned from background.
-        if(!entered){state=progressed;render();}
-        else{state.last=Date.now();save();}
+        // Reconcile offline gains in both the entry screen and an already-open game.
+        // Previously, the entered-game branch discarded these gains.
+        state={...fresh(),...applyOfflineProgress({...stored})};
+        state.cultivating=false;
+        state.last=Date.now();
+        save();
+        render();
       }
     }catch(error){console.warn("Could not restore save",error);}
     lastTick=Date.now();
