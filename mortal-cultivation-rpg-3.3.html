@@ -105,6 +105,30 @@ body.started #battle .battle-scene{height:110px;margin:0 0 12px;border:1px solid
 .bottom-nav button{min-height:48px;padding:5px 2px;border-color:transparent;background:transparent;font-size:11px}
 .bottom-nav .tab.active{border-color:#bda56877;background:#1c293b;color:#f0d7a0;box-shadow:inset 0 0 12px #c9a35b0d}
 .quick-status{order:5;flex:0 0 auto;padding:7px 10px 8px;margin:4px 0 0;border:1px solid #34465d;border-radius:11px;background:linear-gradient(135deg,#101b2b,#0a111d);box-shadow:0 4px 12px #0002;font-family:inherit}
+/* Reference-inspired 3.3 UI: compact xianxia character header and pictogram dock. */
+.header-avatar{display:flex;align-items:center;justify-content:center;flex:0 0 38px;width:38px;height:38px;border:1px solid #b99a5e;border-radius:50%;background:radial-gradient(circle at 35% 25%,#514329,#17130c 70%);color:#f2d58b;font-size:20px;font-weight:700;box-shadow:0 0 12px #c9a35b22,inset 0 0 8px #d9bb7b22}
+.header-avatar span{display:block;line-height:1}
+.header-xp{margin-top:5px;max-width:100%}
+.header-xp-label{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#b8c4d5;font-size:9px;line-height:1.35}
+.header-xp-label strong{color:#e4c47b;font-size:9px;font-weight:600;white-space:nowrap}
+.header-xp-track{height:4px;margin-top:3px;overflow:hidden;border-radius:6px;background:#263142;border:1px solid #3b3322}
+.header-xp-track span{display:block;width:0;height:100%;background:linear-gradient(90deg,#b88b37,#f4d47f);box-shadow:0 0 8px #d9bb7b55;transition:width .25s}
+body.started .realm-header{display:flex;align-items:center;gap:9px;min-height:0;padding:8px 10px;margin:0 -12px 8px;border-bottom:1px solid #5b482a;background:linear-gradient(100deg,#080b10,#17130c 56%,#0a0d12);box-shadow:0 4px 14px #0005}
+body.started .header-avatar{flex-basis:34px;width:34px;height:34px;font-size:18px}
+body.started .realm-heading h1{font-size:16px;line-height:1.25;margin:1px 0;color:#f1dfb6;letter-spacing:.4px}
+body.started .realm-heading .eyebrow{font-size:8px;letter-spacing:.5px;color:#d8b86e}
+body.started .realm-heading .muted{font-size:9px;line-height:1.35}
+body.started .realm-badge{min-width:62px;max-width:78px;padding:5px;border-color:#80652f;background:#13110c}
+body.started .realm-badge-label{font-size:8px}
+body.started .realm-badge strong{font-size:12px;color:#f2d58b}
+body.started .bottom-nav{border-top:1px solid #574526;background:linear-gradient(180deg,#10100e,#070809);box-shadow:0 -5px 20px #0008}
+body.started nav.bottom-nav button{min-height:56px;gap:2px;color:#aaa99f;font-size:10px}
+body.started .bottom-nav .nav-icon{width:25px;height:24px;margin:0 auto;color:#c3a15b}
+.bottom-nav .nav-icon svg{display:block;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+body.started .bottom-nav .tab.active{border-color:#85672f;background:linear-gradient(180deg,#292113,#19150e);color:#f3d78f;box-shadow:inset 0 0 12px #c9a35b12}
+body.started .bottom-nav .tab.active .nav-icon{color:#f0cc6f;filter:drop-shadow(0 0 4px #d9bb7b44)}
+@media(max-width:360px){body.started .header-avatar{flex-basis:30px;width:30px;height:30px;font-size:16px}body.started .realm-badge{min-width:55px}body.started .realm-heading h1{font-size:14px}}
+
 /* 3.3 status strip: pin it directly above the five-tab dock on small screens. */
 body.started .quick-status{position:fixed;z-index:49;left:50%;right:auto;bottom:calc(var(--safe-bottom) + 72px);transform:translateX(-50%);width:calc(100% - 24px);max-width:736px;margin:0;box-shadow:0 4px 18px #0008}
 body.started .page{padding-bottom:150px}
@@ -120,10 +144,10 @@ body.started .page{padding-bottom:150px}
 body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
 @media(max-width:360px){.quick-status{padding:6px 8px}.quick-status-values{font-size:9px;gap:4px}.quick-status-values strong{font-size:10px}.bottom-nav button{font-size:10px}}
 </style></head><body>
-<header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
+<header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="header-avatar" aria-hidden="true"><span>道</span></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div><div class="header-xp"><div class="header-xp-label"><span>修為進度</span><strong id="headerXp">0 / 100</strong></div><div class="header-xp-track"><span id="headerXpFill"></span></div></div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
 <section class="stats"><div class="panel"><small>修為</small><strong id="xp">0</strong></div><div class="panel"><small>下品靈石</small><strong id="stones">0</strong></div><div class="panel"><small>氣血</small><strong id="hp">100/100</strong></div></section>
-<section class="quick-status" id="quickStatus" aria-label="角色即時狀態"><div class="quick-status-top"><span id="quickRealm">凡人</span><span id="quickState">尚未修煉</span></div><div class="quick-status-values"><span>修為 <strong id="quickXp">0</strong></span><span>靈石 <strong id="quickStones">0</strong></span><span>氣血 <strong id="quickHp">100/100</strong></span></div><div class="quick-progress"><span id="quickFill"></span></div></section><nav class="tabs bottom-nav" aria-label="主要導覽"><button class="tab active" data-tab="character"><span class="nav-icon" aria-hidden="true">○</span><span>角色</span></button><button class="tab" data-tab="cultivate"><span class="nav-icon" aria-hidden="true">◇</span><span>洞府</span></button><button class="tab" data-tab="explore"><span class="nav-icon" aria-hidden="true">⌖</span><span>世界</span></button><button class="tab" data-tab="shop"><span class="nav-icon" aria-hidden="true">▤</span><span>商店</span></button><button class="tab" data-tab="bag"><span class="nav-icon" aria-hidden="true">▣</span><span>背包</span></button></nav>
+<section class="quick-status" id="quickStatus" aria-label="角色即時狀態"><div class="quick-status-top"><span id="quickRealm">凡人</span><span id="quickState">尚未修煉</span></div><div class="quick-status-values"><span>修為 <strong id="quickXp">0</strong></span><span>靈石 <strong id="quickStones">0</strong></span><span>氣血 <strong id="quickHp">100/100</strong></span></div><div class="quick-progress"><span id="quickFill"></span></div></section><nav class="tabs bottom-nav" aria-label="主要導覽"><button class="tab active" data-tab="character"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M5.5 20v-2.2a6.5 6.5 0 0 1 13 0V20z"/></svg></span><span>角色</span></button><button class="tab" data-tab="cultivate"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M6 9.5V21h12V9.5M10 21v-6h4v6"/></svg></span><span>洞府</span></button><button class="tab" data-tab="explore"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.4 5.2-5.2 2.4 2.4-5.2z"/></svg></span><span>世界</span></button><button class="tab" data-tab="shop"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9h16l-1 11H5z"/><path d="M8 9V6a4 4 0 0 1 8 0v3M8 13h8"/></svg></span><span>商店</span></button><button class="tab" data-tab="bag"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h14l1 13H4z"/><path d="M9 8V6a3 3 0 0 1 6 0v2M9 13h6"/></svg></span><span>背包</span></button></nav>
 <section class="page" id="cultivate"><div class="panel"><div class="eyebrow">INNER CULTIVATION</div><h2>靜心吐納</h2><div class="detail"><span>角色道號</span><strong id="nameShow">詠祺</strong></div><div class="detail"><span>靈根</span><strong id="rootShow">四屬性偽靈根</strong></div><div class="detail"><span>境界</span><strong id="realmShow">凡人</strong></div><div class="bar"><div class="fill" id="fill"></div></div><div class="detail"><span id="progress">0 / 100 修為</span><span id="rate">尚未修煉</span></div><div class="row"><button class="primary" id="cultivateBtn">開始修煉</button><button id="breakthrough" disabled>嘗試突破</button></div></div></section>
 <section class="page" id="explore"><div class="panel"><div class="eyebrow">THE CULTIVATION WORLD</div><h2>越國・凡俗之地</h2><p class="muted">從山林外圍開始尋找機緣，採集草藥、發現靈石，逐步走進修仙世界。</p><div class="detail"><span>山林外圍</span><span>低危險區域</span></div><button class="primary" id="gather">探索山林</button><button id="openBattle" style="width:100%;margin-top:10px">進入戰鬥試煉</button><div class="detail"><span>附近集市</span><span>凡俗交易</span></div><button id="market">查看集市</button></div></section>
 <section class="page" id="battle"><div class="panel"><div class="eyebrow">AUTO BATTLE</div><h2>山林試煉</h2><div class="battle-scene" aria-hidden="true"></div><p class="muted">以自動戰鬥累積實戰經驗。後續將逐步加入法術、符籙、法寶與更完整的敵人機制。</p><div class="detail"><span>遭遇對手</span><strong>山林野狼 · 氣血 35</strong></div><button class="primary" id="fight">開始自動戰鬥</button><div class="log" id="log">尚未交戰，準備好再出發。</div></div></section>
@@ -173,6 +197,8 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
     $("hero").textContent=entered?state.name:"凡人修仙";
     $("intro").textContent=entered?"靈根："+state.root+"。仙途漫漫，步步為營。":"一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。";
     $("realmTop").textContent=realm();
+    $("headerXp").textContent=Math.floor(state.xp)+" / "+requiredXp();
+    $("headerXpFill").style.width=Math.min(100,state.xp/requiredXp()*100)+"%";
     $("quickRealm").textContent=realm();
     $("quickState").textContent=state.cultivating?"吐納運轉中":(state.created?"靜候機緣":"尚未踏入仙途");
     $("quickXp").textContent=Math.floor(state.xp)+" / "+requiredXp();
