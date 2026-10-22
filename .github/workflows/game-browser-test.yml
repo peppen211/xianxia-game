@@ -33,7 +33,7 @@ jobs:
             const page = await context.newPage();
             const errors=[];
             page.on('pageerror', e => errors.push(e.message));
-            await page.goto('https://peppen211.github.io/xianxia-game/v7.10.html',{waitUntil:'networkidle',timeout:60000});
+            await page.goto('https://peppen211.github.io/xianxia-game/v7.11.html',{waitUntil:'networkidle',timeout:60000});
             await page.screenshot({path:'evidence/01-setup.png',fullPage:true});
             const reserveCard=page.locator('#reserveGrid .card').first();
             await reserveCard.tap();
@@ -56,7 +56,7 @@ jobs:
             await page.screenshot({path:'evidence/05-after-result.png',fullPage:true});
             await context.close();
             await browser.close();
-            require('fs').writeFileSync('evidence/test-report.json',JSON.stringify({url:'https://peppen211.github.io/xianxia-game/v7.10.html',deployedActiveCards:deployed,underfillConfirmShown:underfill,pageErrors:errors,flow:'setup -> deploy card -> battle -> result',status:errors.length?'CHECK_ERRORS':'COMPLETED'},null,2));
+            require('fs').writeFileSync('evidence/test-report.json',JSON.stringify({url:'https://peppen211.github.io/xianxia-game/v7.11.html',deployedActiveCards:deployed,underfillConfirmShown:underfill,pageErrors:errors,flow:'setup -> deploy card -> battle -> result',status:errors.length?'CHECK_ERRORS':'COMPLETED'},null,2));
             if(errors.length) process.exit(1);
           })().catch(e=>{console.error(e);process.exit(1)});
           EOF
