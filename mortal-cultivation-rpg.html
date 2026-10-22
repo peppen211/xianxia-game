@@ -478,6 +478,29 @@ body footer{color:#8391a5!important;font-size:11px!important}
 body #toast{background:#182438!important;color:#f1e4c7!important;border:1px solid #c6a66d!important;font-size:13px!important}
 @media(max-width:390px){body{padding-left:11px!important;padding-right:11px!important}.identity h1{font-size:19px!important}.avatar{width:46px!important;height:46px!important;flex-basis:46px!important}.tabs button{font-size:12px!important;padding:10px 2px!important}.panel{padding:14px!important}.detail{font-size:13px!important}}
 
+
+/* Layout stabilization pass: mobile viewport, content flow, and unified xianxia palette */
+html{height:100%!important;overflow:hidden!important;background:#080c15!important}
+body{width:100%!important;max-width:760px!important;margin:0 auto!important;min-height:0!important;overflow:hidden!important;background-color:#080c15!important;color:#e9edf4!important}
+body.started{height:100dvh!important;height:100vh!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;gap:0!important;padding-top:calc(env(safe-area-inset-top) + 8px)!important;padding-bottom:calc(env(safe-area-inset-bottom) + 70px)!important;background:#080c15!important;background-image:radial-gradient(ellipse at 50% 0%,rgba(79,112,151,.22),transparent 48%),linear-gradient(180deg,#0c1422,#080c15 76%)!important}
+body.started .realm-header{position:relative!important;inset:auto!important;display:flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:space-between!important;width:100%!important;min-width:0!important;margin:0 0 8px!important;padding:10px!important;gap:8px!important;background:linear-gradient(155deg,#151f2f,#0a0f19)!important;border:1px solid rgba(202,174,119,.42)!important;border-radius:12px!important;box-shadow:none!important}
+body.started .realm-location{min-width:0!important;flex:1 1 auto!important}
+body.started .realm-heading h1{font-size:clamp(18px,4.8vw,23px)!important;overflow-wrap:anywhere!important}
+body.started .realm-badge{flex:0 0 auto!important;max-width:110px!important}
+body.started .stats{display:none!important}
+body.started nav.tabs.bottom-nav{position:fixed!important;z-index:50!important;left:0!important;right:0!important;bottom:0!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;flex:0 0 auto!important;width:100%!important;margin:0!important;padding:6px 5px calc(env(safe-area-inset-bottom) + 5px)!important;background:rgba(7,10,16,.98)!important;border-top:1px solid rgba(202,174,119,.48)!important;gap:2px!important}
+body.started nav.bottom-nav button{min-width:0!important;min-height:54px!important;padding:5px 1px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;background:transparent!important;border:0!important;border-radius:8px!important;font-size:11px!important;white-space:nowrap!important}
+body.started nav.bottom-nav .nav-icon{font-size:21px!important;line-height:1!important}
+body.started nav.bottom-nav .tab.active{background:rgba(202,174,119,.13)!important;color:#e7c985!important}
+body.started .page{display:none!important;position:relative!important;flex:1 1 0!important;width:100%!important;min-width:0!important;min-height:0!important;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important;padding:0 0 14px!important;margin:0!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
+body.started .page.active{display:block!important;flex:1 1 0!important;min-height:0!important}
+body.started .page .panel{width:100%!important;min-width:0!important;margin:0 0 10px!important;padding:15px!important;background:linear-gradient(155deg,rgba(21,31,47,.98),rgba(10,15,25,.99))!important;border:1px solid rgba(202,174,119,.48)!important;border-radius:13px!important;box-shadow:0 8px 24px rgba(0,0,0,.22)!important}
+body.started .page h2{font-size:20px!important;color:#ead3a0!important}
+body.started .page p,body.started .page .muted,body.started .page small,body.started .page .detail{font-size:14px!important;line-height:1.75!important}
+body.started .page button{min-height:42px!important}
+body.started footer{display:none!important}
+body:not(.started){background-color:#080c15!important;background-image:linear-gradient(180deg,rgba(6,10,18,.18),rgba(6,10,18,.64)),radial-gradient(ellipse at 50% 18%,#354b68,#080c15 75%)!important;background-size:cover!important;background-position:center!important}
+@media(max-width:390px){body.started .realm-badge{max-width:88px!important}body.started .realm-heading h1{font-size:18px!important}body.started .page .panel{padding:13px!important}}
 </style></head><body>
 <header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
