@@ -451,6 +451,33 @@ body:not(.started) #heroPanel h2{font-size:clamp(25px,7vw,32px)!important;letter
 body:not(.started) #heroPanel p{font-size:14px!important}
 @media(max-width:390px){body{padding-left:11px!important;padding-right:11px!important}.identity h1{font-size:19px!important}.avatar{width:46px!important;height:46px!important;flex-basis:46px!important}.tabs button{font-size:12px!important;padding:10px 2px!important}.panel{padding:14px!important}.detail{font-size:13px!important}}
 
+
+/* HOTFIX: final authoritative styles for all game states */
+html,body,body.started{background-color:#080c15!important;color:#e9edf4!important}
+body,body.started{font-family:"Noto Serif TC","Songti TC","Noto Serif CJK TC",serif!important;background-image:radial-gradient(ellipse at 50% 0%,rgba(79,112,151,.25),transparent 48%),linear-gradient(180deg,#0c1422,#080c15 76%)!important;font-size:15px;line-height:1.65}
+body:not(.started){background-image:linear-gradient(180deg,rgba(6,10,18,.18),rgba(6,10,18,.64)),radial-gradient(ellipse at 50% 18%,#354b68,#080c15 75%)!important;background-size:cover!important;background-position:center!important}
+body header,body .panel,body .page .panel,body #heroPanel{background:linear-gradient(155deg,rgba(21,31,47,.97),rgba(10,15,25,.98))!important;border:1px solid rgba(202,174,119,.52)!important;border-radius:14px!important;box-shadow:inset 0 1px rgba(255,255,255,.035),0 10px 28px rgba(0,0,0,.3)!important;color:#e9edf4!important}
+body:not(.started) header,body:not(.started) #heroPanel{background:linear-gradient(155deg,rgba(21,31,47,.96),rgba(8,13,22,.97))!important}
+body .identity h1,body h1{font-family:"Noto Serif TC","Songti TC",serif!important;font-size:clamp(20px,5.2vw,25px)!important;letter-spacing:2px!important;color:#f3e6c8!important;line-height:1.35}
+body h2{font-family:"Noto Serif TC","Songti TC",serif!important;font-size:20px!important;letter-spacing:1px!important;color:#f0dfb9!important;line-height:1.45}
+body .eyebrow{font-size:10px!important;letter-spacing:2px!important;color:#cbb17d!important}
+body .muted,body small,body p,body label{color:#b8c4d5!important;font-size:14px!important;line-height:1.8!important}
+body .realm{color:#e4d1a5!important;border-color:#bca06b!important;background:rgba(8,14,24,.5)!important;font-size:12px!important}
+body .stats{gap:7px!important}body .stats>div,body .stats .panel{background:rgba(7,12,21,.55)!important;border:1px solid #344256!important;border-radius:10px!important;padding:10px!important}
+body .stats strong{font-size:20px!important;color:#e3c98e!important}
+body .tabs{gap:5px!important;margin:8px 0!important}
+body .tabs button,body button,body .tab{font-family:"Noto Serif TC","Songti TC",serif!important;font-size:13px!important;line-height:1.45!important;border-radius:9px!important;border:1px solid #3b4a60!important;background:linear-gradient(145deg,#1b283b,#101826)!important;color:#dbe4ef!important;padding:11px 8px!important}
+body .tab.active{background:linear-gradient(145deg,#2a2c32,#182337)!important;border-color:#c5a66d!important;color:#f0d7a0!important}
+body button.primary,body #start,body .primary{background:linear-gradient(135deg,#e2c98f,#b99a5e)!important;border:1px solid #f0dba7!important;color:#111722!important;font-weight:700!important;text-shadow:none!important;letter-spacing:1px!important;animation:none!important}
+body .detail{border-bottom:1px solid rgba(184,160,111,.22)!important;padding:11px 0!important;font-size:14px!important;gap:10px!important}
+body .detail span{color:#aebbd0!important}body .detail strong{color:#e8d3a1!important;font-size:14px!important}
+body .bar{background:#080d16!important;border:1px solid #344256!important}body .fill{background:linear-gradient(90deg,#8eaecb,#d9b978)!important}
+body .log{background:rgba(5,9,16,.72)!important;border:1px solid #344256!important;color:#d5dfeb!important;font-size:14px!important;line-height:1.9!important}
+body input,body select,body textarea{background:#0a1220!important;color:#e9edf4!important;border:1px solid #3b4a60!important;font-family:"Noto Serif TC","Songti TC",serif!important;font-size:15px!important}
+body footer{color:#8391a5!important;font-size:11px!important}
+body #toast{background:#182438!important;color:#f1e4c7!important;border:1px solid #c6a66d!important;font-size:13px!important}
+@media(max-width:390px){body{padding-left:11px!important;padding-right:11px!important}.identity h1{font-size:19px!important}.avatar{width:46px!important;height:46px!important;flex-basis:46px!important}.tabs button{font-size:12px!important;padding:10px 2px!important}.panel{padding:14px!important}.detail{font-size:13px!important}}
+
 </style></head><body>
 <header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
