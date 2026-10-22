@@ -36,9 +36,9 @@ jobs:
             await page.screenshot({path:'evidence/01-setup.png',fullPage:true});
             const reserveCard=page.locator('#reserveGrid .card').first();
             await reserveCard.tap();
-  await page.waitForTimeout(500);
-  const deployedAfterTap=await page.locator('#activeGrid .card').count();
-  if(deployedAfterTap===0) throw new Error('卡牌點擊後沒有進入上場區，需修正卡牌操作');
+            await page.waitForTimeout(500);
+            const deployedAfterTap=await page.locator('#activeGrid .card').count();
+            if(deployedAfterTap===0) throw new Error('卡牌點擊後沒有進入上場區，需修正卡牌操作');
             await page.waitForTimeout(400);
             await page.screenshot({path:'evidence/02-card-deployed.png',fullPage:true});
             const deployed=await page.locator('#activeGrid .card').count();
