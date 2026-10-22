@@ -221,7 +221,7 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
   function setPage(id,button){
     const page=$(id);
     if(!page)return;
-    document.querySelectorAll(".tab").forEach(tab=>tab.classList.toggle("active",tab===button));
+    if(button){document.querySelectorAll(".tab").forEach(tab=>tab.classList.toggle("active",tab===button));}
     document.querySelectorAll(".page").forEach(item=>item.classList.toggle("active",item===page));
     const headings={
       character:["角色","修行之路 · 初入仙途","獨立修行 · 自由探索","道"],
@@ -327,9 +327,13 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
       const stored=JSON.parse(localStorage.getItem(SAVE_KEY));
       if(stored&&stored.created){
         const progressed=applyOfflineProgress({...stored});
-        // Keep current in-memory progress if the same page merely returned from background.
+        // Apply cultivation time spent in the background to the live session as well.
         if(!entered){state=progressed;render();}
-        else{state.last=Date.now();save();}
+        else{
+          const away=Math.min(OFFLINE_CAP_MS,Math.max(0,Date.now()-lastTick));
+          if(state.cultivating)state.xp+=(away/3600000)*10*(ROOT_RATE[state.root]||1);
+          state.last=Date.now();save();render();
+        }
       }
     }catch(error){console.warn("Could not restore save",error);}
     lastTick=Date.now();
