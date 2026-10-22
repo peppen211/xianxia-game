@@ -299,8 +299,34 @@ body.started #character .profile-intro{margin:15px 0 0;padding:12px 12px 0;borde
  body.started .realm-badge{min-width:72px;padding:6px}
 }
 
-</style></head><body>
-<header class="realm-header"><div class="realm-location"><div class="realm-mark" aria-hidden="true"><span>道</span></div><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">修行之路 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">獨立修行 · 自由探索</div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
+
+/* 2026-10: grounded xianxia art direction, mountain landscape + jade realm plaque */
+:root{color-scheme:dark;--gold:#b49a65;--jade:#789887;--bg:#121a16;--panel:#202b24;--muted:#c7c9bd}
+body{color:#eee9dc;background:linear-gradient(180deg,#29382e 0%,#1a261f 32%,#111914 100%);background-attachment:fixed}
+header,.panel{border:1px solid #9d916c66;background:linear-gradient(145deg,#29372df5,#1c2821f7);box-shadow:0 7px 22px #070c0870,inset 0 1px #f3ead00c}
+.realm-header{isolation:isolate;overflow:hidden;min-height:126px;align-items:center;padding:21px 17px;border:1px solid #b49a6580;border-radius:17px;background:linear-gradient(112deg,#293a30f5 0%,#34483af0 52%,#1e2e26f5 100%);box-shadow:0 8px 24px #050a0766,inset 0 1px #eee6d51c}
+.realm-header:before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#1d2b23 0%,#1d2b23cc 46%,#1d2b2380 100%);pointer-events:none}
+.realm-landscape{position:absolute;z-index:-2;inset:0;opacity:.8;overflow:hidden;background:linear-gradient(180deg,#a4ad9260 0%,transparent 58%),linear-gradient(145deg,transparent 40%,#667b665e 40.5%,#667b665e 49%,transparent 49.5%),linear-gradient(35deg,transparent 36%,#8c9a7a50 36.5%,#8c9a7a50 44%,transparent 44.5%),linear-gradient(155deg,transparent 47%,#15251e 47.5%,#15251e 70%,transparent 70.5%),linear-gradient(25deg,transparent 48%,#3b5545 48.5%,#3b5545 76%,transparent 76.5%)}
+.realm-heading{position:relative;z-index:1;min-width:0}
+.realm-heading h1{font-size:23px;letter-spacing:1px;color:#f0eadb;text-shadow:0 2px 9px #10181080}
+.realm-header .eyebrow{color:#d4bd86;font-size:10px;letter-spacing:1px}
+.realm-header .muted{color:#d0d4c7;font-size:11px}
+.realm-badge{position:relative;z-index:1;flex:0 0 auto;min-width:93px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 7px;padding:11px 12px;border:1px solid #bca575;border-radius:12px;background:linear-gradient(145deg,#435e4d,#263c30);color:#f0e8d4;box-shadow:inset 0 1px #ffffff20,0 4px 12px #0a110c55}
+.realm-badge-label{grid-column:1/-1;color:#d9c99f;font-size:9px;letter-spacing:1px}
+.realm-badge strong{font-size:16px;color:#fff1c9;white-space:nowrap}
+.realm-seal{display:grid;place-items:center;width:25px;height:25px;border:1px solid #c5ad78;border-radius:50%;color:#e7d6a9;font-size:13px;background:#182a20}
+.avatar{border-color:#b49a65;box-shadow:0 0 0 3px #b49a6524;background:#293a30}
+.eyebrow{color:#d0b77d}
+.realm{border-color:#b49a6577;color:#e1cc9d;background:#25362b}
+.stats strong{color:#e0c88d}
+button,.btn,.tab{border-color:#8b987c88;background:linear-gradient(180deg,#35483a,#26372c);color:#eee9dc}
+button:active,.btn:active{background:#455c49}
+.tab.active{color:#f0d99d;border-color:#c4a76d;background:linear-gradient(180deg,#465a43,#2b4030)}
+.progress,.progress-bar,.bar-fill{accent-color:#9fb49a}
+a{color:#d9c58f}
+@media(max-width:390px){.realm-header{padding:17px 13px;min-height:116px}.realm-heading h1{font-size:21px}.realm-badge{min-width:82px;padding:9px}.realm-badge strong{font-size:14px}}
+\n</style></head><body>
+<header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
 <section class="stats"><div class="panel"><small>修為</small><strong id="xp">0</strong></div><div class="panel"><small>下品靈石</small><strong id="stones">0</strong></div><div class="panel"><small>氣血</small><strong id="hp">100/100</strong></div></section>
 <nav class="tabs bottom-nav" aria-label="主要導覽"><button class="tab active" data-tab="character"><span class="nav-icon">♙</span><span>角色</span></button><button class="tab" data-tab="cultivate"><span class="nav-icon">⌂</span><span>洞府</span></button><button class="tab" data-tab="explore"><span class="nav-icon">▣</span><span>世界</span></button><button class="tab" data-tab="shop"><span class="nav-icon">▤</span><span>商店</span></button><button class="tab" data-tab="bag"><span class="nav-icon">▣</span><span>背包</span></button></nav>
