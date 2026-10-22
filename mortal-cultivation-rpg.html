@@ -31,7 +31,23 @@ dialog{max-width:calc(100vw - 28px);max-height:calc(100dvh - var(--safe-top) - v
 /* Entry screen and in-game layout share the same design tokens, but never share layout overrides. */
 body:not(.started){justify-content:center;padding:calc(var(--safe-top) + 16px) 18px calc(var(--safe-bottom) + 16px);background:linear-gradient(180deg,#111e30,#080c15 82%)}
 body:not(.started) .realm-header{display:none}
-body:not(.started) #heroPanel{display:block;margin:0;padding:30px 18px;text-align:center;border:1px solid #c6a66d66;border-radius:18px;background:linear-gradient(155deg,#17263cf2,#0a111ef7);box-shadow:0 18px 45px #0006}
+body:not(.started){isolation:isolate;justify-content:center;padding:calc(var(--safe-top) + 16px) 18px calc(var(--safe-bottom) + 16px);background:radial-gradient(ellipse at 50% 34%,#31465a66 0%,transparent 44%),linear-gradient(180deg,#101d30 0%,#17263b 36%,#0b1422 72%,#070b13 100%)}
+body:not(.started):before{content:"";position:fixed;z-index:-1;inset:0;pointer-events:none;background:linear-gradient(180deg,#08101b20 0%,transparent 32%,#07101bb0 100%),linear-gradient(150deg,transparent 40%,#31495b50 40.5% 48%,transparent 48.5%),linear-gradient(25deg,transparent 39%,#1d3447 39.5% 50%,transparent 50.5%),linear-gradient(160deg,transparent 48%,#263b4d 48.5% 60%,transparent 60.5%),linear-gradient(10deg,#080d17 0 14%,transparent 14.5%);opacity:.9}
+body:not(.started):after{content:"";position:fixed;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 54%,transparent 0%,#070b1380 100%),repeating-linear-gradient(115deg,transparent 0 34px,#d7d9d61a 35px,transparent 36px 82px);mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 92%)}
+body:not(.started) .realm-header{display:none}
+body:not(.started) #heroPanel{position:relative;z-index:1;display:block;width:100%;margin:8vh 0 0;padding:24px 8px 20px;text-align:center;border:0;border-radius:0;background:transparent;box-shadow:none;transform:translateY(0)}
+body:not(.started) #heroPanel:before,body:not(.started) #heroPanel:after{display:none}
+body:not(.started) #heroPanel .eyebrow{letter-spacing:4px;color:#d8c28e;text-shadow:0 0 18px #d8c28e55}
+body:not(.started) #heroPanel h2{font-size:clamp(30px,8vw,40px);letter-spacing:5px;margin:18px 0 12px;color:#f1e2bf;text-shadow:0 2px 20px #b8d5ef45,0 0 36px #c9ab6a38}
+body:not(.started) #heroPanel p{max-width:310px;margin:0 auto 30px;color:#d0d9e5;font-size:14px;line-height:2;text-shadow:0 1px 12px #000}
+body:not(.started) #start{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:0;min-height:48px;padding:10px 18px;border:0;border-radius:0;background:transparent;color:#f0d7a0;font-size:16px;letter-spacing:5px;font-weight:500;text-shadow:0 0 12px #d9bb7b70;box-shadow:none;animation:immortalFloat 3.2s ease-in-out infinite,immortalGlow 2.8s ease-in-out infinite;transition:color .25s,letter-spacing .25s}
+body:not(.started) #start:before{content:"";position:absolute;left:50%;bottom:2px;width:0;height:1px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,#e7d4a4,transparent);transition:width .35s ease}
+body:not(.started) #start:active{color:#fff1c9;letter-spacing:6px}
+body:not(.started) #start:active:before{width:88%}
+@keyframes immortalFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes immortalGlow{0%,100%{text-shadow:0 0 8px #d9bb7b35}50%{text-shadow:0 0 20px #d9bb7bb3,0 0 34px #8eb8e34a}}
+@media(prefers-reduced-motion:reduce){body:not(.started) #start{animation:none}}
+
 body:not(.started) #heroPanel .eyebrow{letter-spacing:3px;color:var(--gold)}
 body:not(.started) #heroPanel h2{font-size:clamp(28px,7vw,36px);letter-spacing:3px;margin:18px 0;color:#f4e6c6}
 body:not(.started) #heroPanel p{max-width:310px;margin:0 auto 24px;color:#c2cddd}
