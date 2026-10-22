@@ -101,8 +101,8 @@ body.started #battle .battle-scene{height:110px;margin:0 0 12px;border:1px solid
 <section class="page" id="cultivate"><div class="panel"><div class="eyebrow">INNER CULTIVATION</div><h2>靜心吐納</h2><div class="detail"><span>角色道號</span><strong id="nameShow">詠祺</strong></div><div class="detail"><span>靈根</span><strong id="rootShow">四屬性偽靈根</strong></div><div class="detail"><span>境界</span><strong id="realmShow">凡人</strong></div><div class="bar"><div class="fill" id="fill"></div></div><div class="detail"><span id="progress">0 / 100 修為</span><span id="rate">尚未修煉</span></div><div class="row"><button class="primary" id="cultivateBtn">開始修煉</button><button id="breakthrough" disabled>嘗試突破</button></div></div></section>
 <section class="page" id="explore"><div class="panel"><div class="eyebrow">THE CULTIVATION WORLD</div><h2>越國・凡俗之地</h2><p class="muted">從山林外圍開始尋找機緣，採集草藥、發現靈石，逐步走進修仙世界。</p><div class="detail"><span>山林外圍</span><span>低危險區域</span></div><button class="primary" id="gather">探索山林</button><button id="openBattle" style="width:100%;margin-top:10px">進入戰鬥試煉</button><div class="detail"><span>附近集市</span><span>凡俗交易</span></div><button id="market">查看集市</button></div></section>
 <section class="page" id="battle"><div class="panel"><div class="eyebrow">AUTO BATTLE</div><h2>山林試煉</h2><div class="battle-scene" aria-hidden="true"></div><p class="muted">以自動戰鬥累積實戰經驗。後續將逐步加入法術、符籙、法寶與更完整的敵人機制。</p><div class="detail"><span>遭遇對手</span><strong>山林野狼 · 氣血 35</strong></div><button class="primary" id="fight">開始自動戰鬥</button><div class="log" id="log">尚未交戰，準備好再出發。</div></div></section>
-<section class="page" id="shop"><div class="panel"><div class="eyebrow">CULTIVATION MARKET</div><h2>修仙坊市</h2><p class="muted">在此查看靈石交易、丹藥、材料與修行用品。交易功能將逐步開放。</p><div class="detail"><span>目前下品靈石</span><strong id="shopStones">0</strong></div><button class="primary" id="shopMarket">查看坊市</button><div class="log">坊市尚在籌備中，待交易系統開放後即可使用。</div></div></section>
-<section class="page" id="bag"><div class="panel"><div class="eyebrow">YOUR IMMORTAL CAVE</div><h2>洞府與行囊</h2><div class="detail"><span>下品靈石</span><strong id="bagStones">0</strong></div><div class="detail"><span>草藥</span><strong id="herbs">0</strong></div><div class="detail"><span>野獸材料</span><strong id="materials">0</strong></div><p class="muted">進度儲存在此裝置的瀏覽器中，不需要建立遊戲帳號。</p><button id="save">立即存檔</button><button id="reset">重回仙途入口</button></div></section>
+<section class="page" id="shop"><div class="panel"><div class="eyebrow">CULTIVATION MARKET</div><h2>修仙坊市</h2><p class="muted">在此查看靈石交易、丹藥、材料與修行用品。交易功能將逐步開放。</p><div class="detail"><span>目前下品靈石</span><strong id="shopStones">0</strong></div><div class="detail"><span>凝氣散</span><strong>5 枚靈石 · 修為 +20</strong></div><button class="primary" id="buyPill">購買凝氣散</button><div class="detail"><span>回春散</span><strong>4 枚靈石 · 恢復氣血 30</strong></div><button id="buyHeal">購買回春散</button><div class="log">坊市已開放基礎交易。更高階丹藥與法器將隨修行進度逐步解鎖。</div></div></section>
+<section class="page" id="bag"><div class="panel"><div class="eyebrow">YOUR IMMORTAL CAVE</div><h2>洞府與行囊</h2><div class="detail"><span>下品靈石</span><strong id="bagStones">0</strong></div><div class="detail"><span>草藥</span><strong id="herbs">0</strong></div><div class="detail"><span>野獸材料</span><strong id="materials">0</strong></div><div class="detail"><span>凝氣散</span><strong id="pills">0</strong></div><div class="row"><button id="usePill">服用凝氣散</button><button id="useHeal">服用回春散</button></div><p class="muted">進度儲存在此裝置的瀏覽器中，不需要建立遊戲帳號。</p><button id="save">立即存檔</button><button id="reset">重回仙途入口</button></div></section>
 <section class="page active" id="character"><div class="panel"><div class="eyebrow">CULTIVATOR PROFILE</div><h2>角色資料</h2><div class="detail"><span>姓名</span><strong>詠祺</strong></div><div class="detail"><span>靈根</span><strong>四屬性偽靈根</strong></div><div class="detail"><span>起始境界</span><strong>凡人</strong></div><div class="detail"><span>初始資源</span><strong>0</strong></div></div></section><footer>凡人修仙・自由放置 RPG · 開發測試版</footer><div id="toast"></div>
 
 <script>
@@ -111,7 +111,7 @@ body.started #battle .battle-scene{height:110px;margin:0 0 12px;border:1px solid
   const SAVE_KEY="mortalCultivationSaveV2";
   const OFFLINE_CAP_MS=12*60*60*1000;
   const ROOT_RATE={"四屬性偽靈根":0.78};
-  const fresh=()=>({created:false,name:"詠祺",root:"四屬性偽靈根",level:0,xp:0,stones:0,hp:100,maxHp:100,herbs:0,materials:0,cultivating:false,last:Date.now(),log:"尚未交戰，準備好再出發。"});
+  const fresh=()=>({created:false,name:"詠祺",root:"四屬性偽靈根",level:0,xp:0,stones:0,hp:100,maxHp:100,herbs:0,materials:0,pills:0,battleActive:false,cultivating:false,last:Date.now(),log:"尚未交戰，準備好再出發。"});
   let state=fresh();
   let entered=false;
   let toastTimer=null;
@@ -160,6 +160,7 @@ body.started #battle .battle-scene{height:110px;margin:0 0 12px;border:1px solid
     $("breakthrough").disabled=!state.created||state.xp<requiredXp()||state.level>=13;
     $("herbs").textContent=state.herbs;
     $("materials").textContent=state.materials;
+    $("pills").textContent=state.pills;
     $("log").textContent=state.log;
     $("bagStones").textContent=state.stones;
     $("shopStones").textContent=state.stones;
@@ -189,8 +190,12 @@ body.started #battle .battle-scene{height:110px;margin:0 0 12px;border:1px solid
     button.addEventListener("click",()=>setPage(button.dataset.tab,button));
   });
   $("openBattle").addEventListener("click",()=>setPage("battle",null));
-  $("shopMarket").addEventListener("click",()=>toast("修仙坊市將在後續版本開放"));
-  $("market").addEventListener("click",()=>toast("修仙坊市將在後續版本開放"));
+  $("shopMarket").addEventListener("click",()=>setPage("shop",document.querySelector('.tab[data-tab="shop"]')));
+  $("market").addEventListener("click",()=>{setPage("shop",document.querySelector('.tab[data-tab="shop"]'));toast("你來到了附近集市");});
+  $("buyPill").addEventListener("click",()=>{if(!state.created){toast("請先踏入仙途");return;}if(state.stones<5){toast("靈石不足，需要 5 枚下品靈石");return;}state.stones-=5;state.pills++;save();render();toast("購得凝氣散一份");});
+  $("buyHeal").addEventListener("click",()=>{if(!state.created){toast("請先踏入仙途");return;}if(state.stones<4){toast("靈石不足，需要 4 枚下品靈石");return;}state.stones-=4;state.herbs++;save();render();toast("購得回春散一份");});
+  $("usePill").addEventListener("click",()=>{if(state.pills<1){toast("沒有凝氣散");return;}state.pills--;state.xp+=20;save();render();toast("服用凝氣散，修為增加 20");});
+  $("useHeal").addEventListener("click",()=>{if(state.herbs<1){toast("沒有回春散");return;}if(state.hp>=state.maxHp){toast("氣血充盈，無需服藥");return;}state.herbs--;state.hp=Math.min(state.maxHp,state.hp+30);save();render();toast("服用回春散，氣血恢復");});
   $("start").addEventListener("click",()=>{
     if(!state.created)state={...fresh(),created:true};
     entered=true;
