@@ -120,8 +120,16 @@ body:not(.started) footer{display:none!important}
 /* Opening / refreshing always returns to the entry screen; keep save data for later */
 try{window.addEventListener("pageshow",()=>{document.body.classList.remove("started");const panel=document.getElementById("heroPanel");if(panel)panel.hidden=false;});}catch(e){}
 
+
+/* Entry screen background fallback */
+body:not(.started){
+  background-color:#080d19!important;
+  background-size:cover!important;
+  background-position:center!important;
+}
+
 </style></head><body>
-<header><div class="identity"><img class="avatar" src="assets/images/yongqi-avatar.jpg" alt="詠祺角色頭像"><div><div class="eyebrow">MORTAL CULTIVATION · SOLO RPG</div><h1>凡人修仙</h1><div class="muted">自由探索 · 放置修煉 · 自動鬥法</div></div></div><div class="realm">目前境界<br><strong id="realmTop">凡人</strong></div></header>
+<header><div class="identity"><img class="avatar" src="assets/images/yongqi-avatar.jpg" alt="詠祺角色頭像" onerror="this.style.display=&quot;none&quot;"><div><div class="eyebrow">MORTAL CULTIVATION · SOLO RPG</div><h1>凡人修仙</h1><div class="muted">自由探索 · 放置修煉 · 自動鬥法</div></div></div><div class="realm">目前境界<br><strong id="realmTop">凡人</strong></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
 <section class="stats"><div class="panel"><small>修為</small><strong id="xp">0</strong></div><div class="panel"><small>下品靈石</small><strong id="stones">0</strong></div><div class="panel"><small>氣血</small><strong id="hp">100/100</strong></div></section>
 <nav class="tabs"><button class="tab active" data-tab="cultivate">首頁</button><button class="tab" data-tab="explore">探索</button><button class="tab" data-tab="battle">戰鬥</button><button class="tab" data-tab="bag">背包</button><button class="tab" data-tab="character">角色</button></nav>
