@@ -77,6 +77,27 @@ body{position:fixed;inset:0;width:100%;overflow:hidden}
 
 /* v7.4 battle screen: diagonal fighters, expanded arena, post-battle log modal */
 .battle-top{display:flex;align-items:center;justify-content:center;gap:14px;margin:2px 0 7px;color:var(--gold);font-size:13px}
+/* mobile setup readability pass */
+header{padding:2px 0 5px!important}header .eyebrow{font-size:8px;letter-spacing:2px}header h1{font-size:17px;margin:2px 0}header .sub{font-size:9px}
+#setup.screen.active{height:calc(100dvh - 48px - env(safe-area-inset-top))}
+#setup .panel:first-child{padding:6px;margin-bottom:6px}
+#setup .panel:first-child .portrait{width:34px;height:38px;font-size:22px}
+#setup .panel:first-child .sect{display:none}
+#setup .panel:nth-child(2){height:calc(100% - 68px);padding:7px;overflow-y:auto;overscroll-behavior:contain}
+#setup #reserveGrid .card{min-height:72px;padding:4px 3px}
+#setup #reserveGrid .emoji{font-size:21px;line-height:23px}
+#setup #reserveGrid .name{font-size:9px;margin:2px 0}
+#setup #reserveGrid .stars{font-size:8px}
+#setup #reserveGrid .desc{display:-webkit-box;font-size:8px;line-height:1.2;-webkit-line-clamp:2}
+#setup #reserveGrid .slot{min-height:72px}
+#setup .panel:nth-child(2) .note{font-size:8px;line-height:1.2}
+#battle .minirow{display:none}
+#battle .arena{height:clamp(330px,49vh,520px)}
+#battle .enemy-combatant{left:3%;right:auto;top:11%}
+#battle .player-combatant{right:3%;left:auto;bottom:9%}
+#battle .caster.enemy{left:3%;right:auto}
+#battle .caster:not(.enemy){right:3%;left:auto}
+@media(max-height:760px){#setup #reserveGrid .card,#setup #reserveGrid .slot{min-height:62px}#setup #reserveGrid .desc{display:none}}
 .speed-top{border:1px solid #8e7548;border-radius:20px;background:#142238;color:var(--txt);padding:6px 14px;font-weight:800}
 #battle .queue .card{min-height:68px}
 #battle .arena{height:clamp(330px,49vh,520px)}
@@ -133,12 +154,12 @@ ${d.d[nextStar-1]}`;$('fusionModal').classList.add('show')}
 function confirmFusion(){if(!fusionPending)return;let {src,dst,a}=fusionPending;a.star++;let srcArr=src.where==="active"?active:reserve,dstArr=dst.where==="active"?active:reserve;srcArr.splice(src.i,1);let targetIndex=dst.i-(src.where===dst.where&&src.i<dst.i?1:0);dstArr[targetIndex]=a;fusionPending=null;$('fusionModal').classList.remove('show');renderSetup();toast('融合成功！升至 '+ '★'.repeat(a.star))}
 function dropToEmpty(src,dst){if(dst.where==="active"&&dst.i>=playableSlots()){toast("此格本回合尚未開放上場");return}let arr=dst.where==='active'?active:reserve,other=src.where==='active'?active:reserve,c=other[src.i];if(!c||arr[dst.i])return;if(dst.where==="reserve"&&src.where!=="reserve"&&heldCount()>=MAX_HELD_CARDS){toast("持有卡牌已達 12 張上限");return}arr[dst.i]=c;other.splice(src.i,1);renderSetup()}
 function dropToZone(src,where){let c=get(src.where,src.i),dest=where==='active'?active:reserve,other=src.where==='active'?active:reserve;if(!c||src.where===where)return;let idx=dest.findIndex(x=>!x);if(idx<0&&dest.length<(where==='active'?8:12))idx=dest.length;if(idx<0||where==="reserve"&&heldCount()>=MAX_HELD_CARDS){toast(where==='active'?'上場位已滿，請放到指定卡牌上替換':'持有卡牌已達 12 張上限，請先使用或融合卡牌');return}dest[idx]=c;other.splice(src.i,1);renderSetup()}
-function moveSelectedTo(where,i){if(!selectedCard)return;if(where==="active"&&i>=MAX_PLAYABLE_SLOTS){toast("此格本回合尚未開放上場");return}let {c,where:srcWhere,i:srcI}=selectedCard;let dest=where==='active'?active:reserve,src=srcWhere==='active'?active:reserve;if(srcWhere===where){toast('這張卡已在該區域');return}if(dest[i]){[dest[i],src[srcI]]=[src[srcI],dest[i]]}else{dest[i]=c;src.splice(srcI,1)}$('modal').classList.remove('show');selectedCard=null;renderSetup()}
+function moveSelectedTo(where,i){if(!selectedCard)return;if(where==="active"&&i>=playableSlots()){toast("此格本回合尚未開放上場");return}let {c,where:srcWhere,i:srcI}=selectedCard;let dest=where==='active'?active:reserve,src=srcWhere==='active'?active:reserve;if(srcWhere===where){toast('這張卡已在該區域');return}if(dest[i]){[dest[i],src[srcI]]=[src[srcI],dest[i]]}else{dest[i]=c;src.splice(srcI,1)}$('modal').classList.remove('show');selectedCard=null;renderSetup()}
 function toast(s){let t=$("toast");if(!t){t=document.createElement("div");t.id="toast";t.style.cssText="position:fixed;z-index:60;top:15%;left:50%;transform:translateX(-50%);background:#1a293c;border:1px solid #d8b76c;padding:10px 15px;border-radius:12px;font-size:12px";document.body.appendChild(t)}t.textContent=s;t.style.display="block";setTimeout(()=>t.style.display="none",1600)}
 function status(s){let a=[];if(s.shield)a.push("護盾 "+s.shield);if(s.sword)a.push("劍意 "+s.sword);if(s.stun)a.push("封招 "+s.stun);if(s.burn)a.push("灼傷 "+s.burn);if(s.swift)a.push("迅捷 "+s.swift);if(s.weak)a.push("削鋒");return "狀態："+(a.join("、")||"無")}
 function hp(){let pp=Math.max(0,player.hp)/player.max*100,ep=Math.max(0,enemy.hp)/enemy.max*100;$("sPB").style.width=pp+"%";$("sEB").style.width=ep+"%";$("pBar").style.width=pp+"%";$("eBar").style.width=ep+"%";$("sPH").textContent=`${Math.max(0,player.hp)} / 120`;$("sEH").textContent=`${Math.max(0,enemy.hp)} / 120`;$("pHP").textContent=`${Math.max(0,player.hp)}/120`;$("eHP").textContent=`${Math.max(0,enemy.hp)}/120`;$("pStatus").textContent=status(ps);$("eStatus").textContent=status(es);$("pStatusIcons").textContent=[ps.burn?"🔥":"",ps.weak?"⬇️":"",ps.stun?"⛔":"",ps.shield?"🛡️":""].filter(Boolean).join(" ")||"🛡️";$("eStatusIcons").textContent=[es.burn?"🔥":"",es.weak?"⬇️":"",es.stun?"⛔":"",es.shield?"🛡️":""].filter(Boolean).join(" ")||"♨️"}
 function queue(id,deck,pos){let s="";for(let i=0;i<4;i++){let c=deck[(pos+i)%deck.length];s+=cardHTML(c,"queue",i)}$(id).innerHTML=s}
-function start(){if(running)return;const limit=playableSlots();if(active.slice(limit).some(Boolean)){toast("上場卡牌超過本回合上限，無法開始戰鬥");return}logs=[];stats={damage:0,healing:0,shield:0};$("logList").innerHTML="";player={hp:120,max:120};enemy={hp:120,max:120};ps={sword:0,shield:0,stun:0,burn:0,swift:0,weak:0};es={sword:0,shield:0,stun:0,burn:0,swift:0,weak:0};pi=ei=turn=0;running=true;$("setup").classList.remove("active");$("battle").classList.add("active");$("result").classList.remove("show");$("count").style.display="grid";$("count").textContent="2";$("battleStatus").textContent="靈氣匯聚中……";hp();queue("pQueue",active,pi);queue("eQueue",enemyDeck,ei);let n=2;timer=setInterval(()=>{n--;$("count").textContent=n;if(n<=0){clearInterval(timer);timer=null;$("count").style.display="none";next()}},1000)}
+function start(){if(running)return;const limit=playableSlots();if(active.slice(limit).some(Boolean)){toast("上場卡牌超過本回合上限，無法開始戰鬥");return}if(!active.slice(0,limit).some(Boolean)){toast("請至少放置一張上場卡牌");return}logs=[];stats={damage:0,healing:0,shield:0};$("logList").innerHTML="";player={hp:120,max:120};enemy={hp:120,max:120};ps={sword:0,shield:0,stun:0,burn:0,swift:0,weak:0};es={sword:0,shield:0,stun:0,burn:0,swift:0,weak:0};pi=ei=turn=0;running=true;$("setup").classList.remove("active");$("battle").classList.add("active");$("result").classList.remove("show");$("count").style.display="grid";$("count").textContent="2";$("battleStatus").textContent="靈氣匯聚中……";hp();queue("pQueue",active,pi);queue("eQueue",enemyDeck,ei);let n=2;timer=setInterval(()=>{n--;$("count").textContent=n;if(n<=0){clearInterval(timer);timer=null;$("count").style.display="none";next()}},1000)}
 function float(text,kind,side){let el=document.createElement("div");el.className="float "+kind;el.textContent=text;el.style.left=(side==="player"?68:32)+"%";el.style.top=(side==="player"?58:22)+"%";$("arena").appendChild(el);setTimeout(()=>el.remove(),950)}
 function cast(side,c){let el=$(side==="player"?"pCaster":"eCaster"),d=defs[c.n];el.querySelector(".big").textContent=d.e;$(side==="player"?"pCastName":"eCastName").textContent=c.n;el.classList.remove("castp","caste");void el.offsetWidth;el.classList.add(side==="player"?"castp":"caste")}
 function log(s){logs.unshift(s);if(logs.length>80)logs.pop()}
