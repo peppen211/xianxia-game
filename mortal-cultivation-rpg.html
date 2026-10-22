@@ -235,16 +235,32 @@ body.started #battle .battle-scene{height:110px;margin:0 0 12px;border:1px solid
     state.log="你探索了山林外圍，帶著新的收穫返回。";
     save();render();
   });
-  $("fight").addEventListener("click",()=>{
-    if(!state.created){toast("請先踏入仙途");return;}
-    if(state.hp<15){toast("氣血不足，請先休整");return;}
+  let battleTimer=null;
+  function battleRound(){
+    if(!state.created||!state.battleActive)return;
+    if(state.hp<15){
+      state.battleActive=false;clearInterval(battleTimer);battleTimer=null;
+      $("fight").textContent="開始自動戰鬥";
+      state.log+="\n氣血不足，自動戰鬥已停止。";save();render();return;
+    }
     const attack=8+Math.floor(Math.random()*8)+state.level*2;
     const rounds=Math.ceil(35/attack);
     const damage=Math.max(3,rounds*(5+Math.floor(Math.random()*4))-state.level*2);
     state.hp=Math.max(1,state.hp-damage);
     state.xp+=18;state.stones+=2;state.materials++;
-    state.log="自動戰鬥結束！\n你擊退了山林野狼。\n獲得 18 點修為、2 枚靈石與 1 份野獸材料。\n受到 "+damage+" 點傷害。";
+    state.log="自動戰鬥進行中\n你擊退了山林野狼。\n獲得 18 點修為、2 枚靈石與 1 份野獸材料。\n受到 "+damage+" 點傷害。";
     save();render();
+  }
+  $("fight").addEventListener("click",()=>{
+    if(!state.created){toast("請先踏入仙途");return;}
+    if(state.battleActive){
+      state.battleActive=false;clearInterval(battleTimer);battleTimer=null;
+      $("fight").textContent="開始自動戰鬥";state.log+="\n你主動停止了戰鬥。";save();render();return;
+    }
+    if(state.hp<15){toast("氣血不足，請先休整");return;}
+    state.battleActive=true;$("fight").textContent="停止自動戰鬥";
+    state.log="自動戰鬥開始，將持續交戰直到停止或氣血不足。";
+    battleRound();battleTimer=setInterval(battleRound,2500);save();render();
   });
   $("save").addEventListener("click",()=>{save();toast("進度已儲存");});
   $("reset").addEventListener("click",()=>{
