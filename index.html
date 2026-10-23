@@ -61,6 +61,46 @@ main{background:radial-gradient(ellipse at 50% 0%,#39303a55,transparent 55%)}
 
 .portrait-seal{width:54px;height:66px;display:grid;place-items:center;border:1px solid #a58a59;border-radius:48% 48% 8px 8px;background:linear-gradient(160deg,#d8c49a,#3b302b 48%,#1a222b);color:#f2dfb7;font-family:serif;text-shadow:0 2px 8px #000;box-shadow:inset 0 0 0 3px #211c1b,0 6px 14px #0006}
 @media(max-height:740px){.screen{padding-top:8px;gap:7px}.hero{height:190px;min-height:155px}.panel{padding:8px}.bottom{height:62px}}
+
+/* === 九霄問道・水墨仙境視覺增補 v1 === */
+:root{--bg:#101015;--panel:#211e22;--line:#8b7652;--txt:#f2e7d0;--muted:#b8ac99;--gold:#e8c786;--jade:#a8c6b1;--red:#e79b8c}
+html,body{background:#0c0c11}
+.app{background:linear-gradient(180deg,#1d1a20 0%,#111015 70%,#0b0b10 100%);box-shadow:inset 0 0 0 1px #a48a5a,0 0 45px #0009}
+.top{background:linear-gradient(180deg,#2b2529,#17151a);border-bottom:1px solid #8e774f}
+.mark{border-radius:50%;background:radial-gradient(circle at 32% 25%,#fff0c6,#b28b4d 62%,#493522);box-shadow:0 0 0 2px #d8ba7650,inset 0 0 0 1px #fff8}
+.brand strong{font-family:"Noto Serif TC",serif;letter-spacing:2px;color:#f2d69b}
+.currency{background:linear-gradient(180deg,#3a3035,#211d23);border-color:#8b754a}
+.panel,.metric,.stat,.rowitem{background:linear-gradient(145deg,#2b2529,#1b191f);border-color:#9a80501f;box-shadow:inset 0 1px #fff08}
+.hero{border:1px solid #b49a65;background:linear-gradient(90deg,#11121be8 0%,#17151bb8 43%,#15151a22 100%),radial-gradient(ellipse at 75% 22%,#e8d29c55 0 2%,transparent 18%),linear-gradient(160deg,#52636a 0%,#303f43 38%,#28362f 65%,#151d1b 100%)}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;background:repeating-linear-gradient(115deg,transparent 0 17px,#d9cfb512 18px 19px,transparent 20px 35px);mix-blend-mode:screen}
+.moon{background:radial-gradient(circle at 35% 30%,#fff9df,#e8d8a4 54%,#a99b75);box-shadow:0 0 0 7px #e7d6a01a,0 0 34px #f5df9b70}
+.mountain{filter:drop-shadow(0 -1px #a9b1a11a)}
+.cultivator{font-size:76px;filter:drop-shadow(0 0 7px #e5c47c35) drop-shadow(0 12px 5px #000b)}
+.energy-orb{background:radial-gradient(circle at 35% 30%,#fff5d3,#a5e7d3 60%,#4b8e85);box-shadow:0 0 0 5px #b8f5df15,0 0 28px 12px #7df0d055}
+.battle{gap:8px}
+.enemy-scene{background:radial-gradient(ellipse at 50% 86%,#84704a40 0%,transparent 42%),radial-gradient(ellipse at 50% 50%,#50655a 0%,#28352f 34%,#171b22 76%);border:1px solid #9c8454;box-shadow:inset 0 0 34px #0008}
+.enemy-scene:before{width:150px;height:150px;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid #e0c77b25;background:radial-gradient(circle,#e8cf8a12 0 30%,transparent 31%),repeating-radial-gradient(circle,transparent 0 16px,#d8c17a14 17px 18px,transparent 19px 29px);box-shadow:0 0 30px #e8cf8a12}
+.enemy-scene:after{content:"☯　✧　☯";position:absolute;bottom:29px;left:0;right:0;text-align:center;font-size:12px;letter-spacing:18px;color:#e8cf8a35;pointer-events:none}
+.enemy-art{font-size:64px;z-index:1;filter:drop-shadow(0 0 10px #e8c78635) drop-shadow(0 10px 5px #000a);text-shadow:0 0 18px #e8c78630}
+.enemy-label{z-index:2;color:#f3e3bd;text-shadow:0 2px 5px #000}
+.enemy-level{z-index:2;background:#17151bc9;border:1px solid #b49a6538;padding:3px 6px;border-radius:7px}
+.enemy-bottom{z-index:2;background:#1110159c;padding:6px 7px;border:1px solid #ffffff12;border-radius:9px}
+.progress{background:#100f13;border-color:#a58c5225}
+.progress span{background:linear-gradient(90deg,#8eb6a1,#e8d29a);box-shadow:0 0 8px #d9c18430}
+.btn{border:1px solid #d9bf7c38;box-shadow:inset 0 1px #fff3,0 3px 8px #0003;transition:transform .12s,filter .12s}
+.btn:active,.nav:active{transform:scale(.98);filter:brightness(1.1)}
+.primary{background:linear-gradient(135deg,#f0dba5,#b28a4d);color:#2a2118;border-color:#e5cb8b}
+.secondary{background:linear-gradient(135deg,#3b4241,#25272c);border-color:#827657;color:#f0e7d5}
+.jade{background:linear-gradient(135deg,#b5d4b7,#5d9a83);color:#14291f}
+.danger{background:linear-gradient(135deg,#57343a,#332027)}
+.nav.active{background:linear-gradient(180deg,#4a3b32,#29242a);box-shadow:inset 0 0 0 1px #d8bd7745}
+.realm-art{background:radial-gradient(circle at 50% 35%,#e8cf8a30,transparent 28%),linear-gradient(145deg,#435a58,#27383b 48%,#403346);border-color:#a68a5a}
+.rowicon,.idle-icon{background:radial-gradient(circle at 30% 20%,#4c4a3e,#29272a 70%);border:1px solid #b59a5b36;box-shadow:inset 0 1px #fff1}
+.slot{background:linear-gradient(145deg,#2c292c,#19181e);border-color:#8d7955}
+.toast{background:linear-gradient(135deg,#f3dda5,#c59b58);border:1px solid #fff0c2}
+@media(max-width:380px){.enemy-art{font-size:55px}.cultivator{font-size:65px}.hero-copy{max-width:62%}.hero p{max-width:170px}.chip{padding:4px 5px;font-size:8px}}
+@media(prefers-reduced-motion:reduce){.energy-orb,.enemy-art{animation:none}.progress span,.btn{transition:none}}
+
 </style></head><body><div class="app">
 <header class="top"><div class="brand"><div class="mark">☯</div><div><strong>九霄問道</strong><small>NINE HEAVENS · IDLE CULTIVATION</small></div></div><div class="currencies"><div class="currency">🪙 <b id="goldTop">100</b></div><div class="currency">💠 <b id="spiritTop">0</b></div></div></header><div class="toast" id="toast"></div>
 <main>
@@ -85,11 +125,11 @@ main{background:radial-gradient(ellipse at 50% 0%,#39303a55,transparent 55%)}
 </div>
 <script>
 const KEY='nine_heavens_idle_v2'; let storageBlocked=false;
-const realms=[{major:'凡人境',name:'練氣',art:'🧘🏻',desc:'引天地靈氣入體，築下修仙根基。'},{major:'築基境',name:'築基',art:'劍',desc:'靈力凝實，氣海初成，已非凡俗。'},{major:'金丹境',name:'金丹',art:'🧝🏻',desc:'丹成一品，舉手投足皆有靈威。'},{major:'元嬰境',name:'元嬰',art:'劍',desc:'元嬰初生，神識可離體巡遊。'},{major:'化神境',name:'化神',art:'🧚🏻',desc:'神念化境，舉世山河皆在一念。'}];
+const realms=[{major:'凡人境',name:'練氣',art:'🧙🏻‍♂️',desc:'引天地靈氣入體，築下修仙根基。'},{major:'築基境',name:'築基',art:'🧘🏻‍♂️',desc:'靈力凝實，氣海初成，已非凡俗。'},{major:'金丹境',name:'金丹',art:'🧙🏻‍♂️',desc:'丹成一品，舉手投足皆有靈威。'},{major:'元嬰境',name:'元嬰',art:'🧝🏻‍♂️',desc:'元嬰初生，神識可離體巡遊。'},{major:'化神境',name:'化神',art:'🧚🏻‍♂️',desc:'神念化境，舉世山河皆在一念。'}];
 const layerNames=['一','二','三','四','五','六','七','八','九']; const layerDescs=['初入修行，凝神感應天地靈氣，為經脈打下根基。','靈氣逐漸入脈，吐納開始穩定，修行不再全憑機緣。','氣息漸勻，能將少量靈力運用於日常修煉與自保。','經脈漸寬，靈力流轉更順，足以應對山野中的低階妖物。','丹田靈氣漸厚，需兼顧吐納與調息，穩固修行根基。','靈力運轉漸成周天，對功法與法器的掌控更加熟練。','氣海充盈，心神須保持穩定，避免急進導致根基浮動。','本境界後期漸近圓滿，宜積累修為並備妥突破資源。','本境界九層圓滿，根基已具雛形，可為衝擊下一大境界做準備。'];
-const foes=[{name:'山野靈兔',art:'🐇',hp:35,atk:4,xp:18,gold:12,desc:'靈兔警覺地豎起耳朵，牠身上似乎有微弱的靈氣。'},{name:'青紋蛇妖',art:'🐍',hp:54,atk:7,xp:25,gold:18,desc:'蛇妖吐著信子，鱗片間流轉著淡青色妖氣。'},{name:'迷霧山魈',art:'👹',hp:82,atk:10,xp:36,gold:25,desc:'山魈從霧中踏出，石地隨著牠的腳步微微震動。'},{name:'赤焰妖狼',art:'🐺',hp:120,atk:14,xp:52,gold:36,desc:'赤焰沿著狼牙竄動，牠已將你視為獵物。'},{name:'古洞守將',art:'🗿',hp:185,atk:18,xp:78,gold:52,desc:'古老石像緩緩甦醒，守護著洞府深處的機緣。'}];
+const foes=[{name:'山野靈兔',art:'🐇☯️',hp:35,atk:4,xp:18,gold:12,desc:'靈兔警覺地豎起耳朵，牠身上似乎有微弱的靈氣。'},{name:'青紋蛇妖',art:'🐍🟢',hp:54,atk:7,xp:25,gold:18,desc:'蛇妖吐著信子，鱗片間流轉著淡青色妖氣。'},{name:'迷霧山魈',art:'👹🌫️',hp:82,atk:10,xp:36,gold:25,desc:'山魈從霧中踏出，石地隨著牠的腳步微微震動。'},{name:'赤焰妖狼',art:'🐺🔥',hp:120,atk:14,xp:52,gold:36,desc:'赤焰沿著狼牙竄動，牠已將你視為獵物。'},{name:'古洞守將',art:'🗿🔱',hp:185,atk:18,xp:78,gold:52,desc:'古老石像緩緩甦醒，守護著洞府深處的機緣。'}];
 const methods=[{name:'吐納養氣訣',icon:'🌬️',desc:'基礎心法，修為累積 +20%。',bonus:'修為 +20%',cost:0,rate:1.2},{name:'青木長生篇',icon:'🌿',desc:'木靈滋養，放置收益提升。',bonus:'放置收益 +35%',cost:80,rate:1.35},{name:'烈陽鍛體法',icon:'🔥',desc:'以靈火淬體，戰鬥攻擊提升。',bonus:'攻擊 +20%',cost:120,rate:1}];
-const gears=[{name:'桃木劍',icon:'🗡️',slot:'weapon',rarity:'凡品',atk:3,def:0,hp:0,value:18,desc:'桃木削成的短劍，能斬低階妖物。'},{name:'青竹法杖',icon:'🎋',slot:'weapon',rarity:'靈品',atk:7,def:1,hp:0,value:45,desc:'竹節內藏著淡淡靈光。'},{name:'玄鐵劍',icon:'⚔️',slot:'weapon',rarity:'珍品',atk:13,def:2,hp:0,value:90,desc:'玄鐵百煉，劍鋒沉穩而銳利。'},{name:'雲紋道袍',icon:'🥋',slot:'armor',rarity:'靈品',atk:1,def:6,hp:20,value:52,desc:'袍上雲紋可引動護體靈氣。'},{name:'玄龜護心鏡',icon:'🪞',slot:'armor',rarity:'珍品',atk:0,def:10,hp:35,value:100,desc:'鏡背刻有玄龜古紋。'},{name:'聚靈玉佩',icon:'🔮',slot:'charm',rarity:'靈品',atk:4,def:2,hp:12,value:58,desc:'能聚攏四周游離靈氣。'},{name:'九曜仙環',icon:'💍',slot:'charm',rarity:'仙品',atk:10,def:6,hp:45,value:180,desc:'環身浮現九顆星曜，氣息古老。'}];
+const gears=[{name:'桃木劍',icon:'⚔️',slot:'weapon',rarity:'凡品',atk:3,def:0,hp:0,value:18,desc:'桃木削成的短劍，能斬低階妖物。'},{name:'青竹法杖',icon:'🪄',slot:'weapon',rarity:'靈品',atk:7,def:1,hp:0,value:45,desc:'竹節內藏著淡淡靈光。'},{name:'玄鐵劍',icon:'🗡️✨',slot:'weapon',rarity:'珍品',atk:13,def:2,hp:0,value:90,desc:'玄鐵百煉，劍鋒沉穩而銳利。'},{name:'雲紋道袍',icon:'🥻',slot:'armor',rarity:'靈品',atk:1,def:6,hp:20,value:52,desc:'袍上雲紋可引動護體靈氣。'},{name:'玄龜護心鏡',icon:'🪬',slot:'armor',rarity:'珍品',atk:0,def:10,hp:35,value:100,desc:'鏡背刻有玄龜古紋。'},{name:'聚靈玉佩',icon:'💠',slot:'charm',rarity:'靈品',atk:4,def:2,hp:12,value:58,desc:'能聚攏四周游離靈氣。'},{name:'九曜仙環',icon:'☯️💍',slot:'charm',rarity:'仙品',atk:10,def:6,hp:45,value:180,desc:'環身浮現九顆星曜，氣息古老。'}];
 const methodsId='methods';
 let s,enemy;
 function base(){return {major:0,layer:1,xp:0,gold:100,spirit:0,herbs:3,pills:2,kills:0,atk:10,def:3,hp:100,maxHp:100,method:0,ownedMethods:[0],inventory:[],equipped:{weapon:null,armor:null,charm:null},logs:[],last:Date.now(),skill:true,skillWait:0,wood:2,crystal:1,pity:0,draws:0,dupes:0,offlineSec:0};}
