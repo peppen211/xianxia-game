@@ -53,7 +53,7 @@ jobs:
           const { chromium } = require(process.cwd() + '/node_modules/playwright');
           (async () => {
             const browser = await chromium.launch({ headless: true });
-            const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+            const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
             const errors = [];
             page.on('pageerror', error => { errors.push(error.message); console.log('BROWSER PAGE ERROR: ' + error.stack); });
             page.on('console', message => { if (message.type() === 'error') { errors.push(message.text()); console.log('BROWSER CONSOLE ERROR: ' + message.text()); } });
