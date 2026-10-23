@@ -320,7 +320,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
     render();
   });
   $("breakthrough").addEventListener("click",()=>{
-    if(state.xp<requiredXp()||state.level>=13)return;
+    if(!state.created||state.xp<requiredXp()||state.level>=13)return;
     if(Math.random()<0.82){
       state.xp-=requiredXp();
       state.level++;
