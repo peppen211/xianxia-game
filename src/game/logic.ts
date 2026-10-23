@@ -30,11 +30,12 @@ export interface Save {
   artifacts: string[];
   pets: string[];
   quests: QuestState;
+  lastSeenAt: number;
 }
 export const SUMMON_COST = 100;
 export const PILL_COST = 50;
 
-export const newSave = (now: Date = new Date()): Save => ({ level: 0, progress: 0, stones: 0, pills: 1, chars: { xiao: 1 }, artifacts: ["jing"], pets: ["gui"], quests: newQuests(now) });
+export const newSave = (now: Date = new Date()): Save => ({ level: 0, progress: 0, stones: 0, pills: 1, chars: { xiao: 1 }, artifacts: ["jing"], pets: ["gui"], quests: newQuests(now), lastSeenAt: now.getTime() });
 
 export const realmName = (lv: number) => {
   const r = Math.min(Math.floor(lv / 4), REALMS.length - 1);
@@ -73,9 +74,19 @@ export function summon(s: Save, roll: number, now: Date = new Date()): { save: S
   return { got, save: { ...s, stones: s.stones - SUMMON_COST, chars: { ...s.chars, [got.id]: (s.chars[got.id] ?? 0) + 1 }, quests: recordActivity(s.quests, "summon", now) } };
 }
 
+export const OFFLINE_CAP_MINUTES = 8 * 60;
+export const OFFLINE_PROGRESS_PER_MINUTE = 2;
+export const OFFLINE_STONES_PER_MINUTE = 1;
+
 export function enterGame(s: Save, now: Date = new Date()): Save {
-  const quests = recordActivity(s.quests, "login", now);
-  return { ...s, quests };
+  const nowMs = now.getTime();
+  const previous = Number.isSafeInteger(s.lastSeenAt) && s.lastSeenAt > 0 ? s.lastSeenAt : nowMs;
+  const elapsedMinutes = Math.min(OFFLINE_CAP_MINUTES, Math.max(0, Math.floor((nowMs - previous) / 60_000)));
+  const progressGain = Math.min(maxProgress(s.level) - s.progress, elapsedMinutes * OFFLINE_PROGRESS_PER_MINUTE);
+  const stoneGain = elapsedMinutes * OFFLINE_STONES_PER_MINUTE;
+  const alreadyLoggedInToday = s.quests.day === (recordActivity(s.quests, "login", now).day) && (s.quests.daily.login ?? 0) > 0;
+  const quests = alreadyLoggedInToday ? syncQuests(s.quests, now) : recordActivity(s.quests, "login", now);
+  return { ...s, progress: s.progress + Math.max(0, progressGain), stones: s.stones + stoneGain, quests, lastSeenAt: nowMs };
 }
 export const EXPLORE_COST = 10;
 export function explore(s: Save, roll: number, now: Date = new Date()): { save: Save; text: string } {
@@ -116,7 +127,7 @@ export function validateSave(raw: unknown, now: Date = new Date()): Save {
     }
   }
   const ids = (key: string, known: { id: string }[], fallback: string[]) => Array.isArray(data[key]) ? [...new Set((data[key] as unknown[]).filter((id): id is string => typeof id === "string" && known.some((item) => item.id === id)))] : fallback;
-  return { level, progress: Math.min(number("progress", fresh.progress), maxProgress(level)), stones: number("stones", fresh.stones), pills: number("pills", fresh.pills), chars, artifacts: ids("artifacts", ARTIFACTS, fresh.artifacts), pets: ids("pets", PETS, fresh.pets), quests: validateQuests(data['quests'], now) };
+  return { level, progress: Math.min(number("progress", fresh.progress), maxProgress(level)), stones: number("stones", fresh.stones), pills: number("pills", fresh.pills), chars, artifacts: ids("artifacts", ARTIFACTS, fresh.artifacts), pets: ids("pets", PETS, fresh.pets), quests: validateQuests(data['quests'], now), lastSeenAt: number("lastSeenAt", now.getTime()) };
 }
 export const persist = (s: Save) => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {} };
 export const wipe = () => { try { localStorage.removeItem(KEY); } catch {} };
