@@ -1,9 +1,10 @@
-name: Deploy Prototype to GitHub Pages
+name: Deploy Playable Game to GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
       - 'prototype/**'
       - '.github/workflows/deploy-prototype-pages.yml'
   workflow_dispatch:
@@ -27,19 +28,25 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install dependencies
+      - name: Install prototype dependencies
         working-directory: prototype
         run: npm install
-      - name: Run unit tests
+      - name: Run prototype unit tests
         working-directory: prototype
         run: npm test
-      - name: Build web app
+      - name: Build prototype
         working-directory: prototype
         run: npm run build
+      - name: Prepare standalone playable entry
+        run: |
+          mkdir -p deploy
+          cp index.html deploy/index.html
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: prototype/dist
+          path: deploy
 
   deploy:
     environment:
