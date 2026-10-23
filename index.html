@@ -165,6 +165,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
   const ROOT_RATE={"四屬性偽靈根":0.78};
   const fresh=()=>({created:false,name:"詠祺",root:"四屬性偽靈根",level:0,xp:0,stones:0,hp:100,maxHp:100,herbs:0,materials:0,questExplore:0,questWins:0,questExploreClaimed:false,questFightClaimed:false,cultivating:false,last:Date.now(),log:"尚未交戰，準備好再出發。"});
   const boundedNumber=(value,fallback,min,max,integer=false)=>{
+    if(value===null||value===undefined||value==="")return fallback;
     const number=Number(value);
     if(!Number.isFinite(number))return fallback;
     const bounded=Math.min(max,Math.max(min,number));
