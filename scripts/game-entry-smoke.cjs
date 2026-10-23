@@ -152,6 +152,56 @@ async function main() {
       throw new Error("Malformed JSON save was overwritten without preserving the original raw data.");
     }
 
+    const noFundsPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    noFundsPage.on("pageerror", error => errors.push(error.message));
+    await noFundsPage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), makeSave(50, 2));
+    await noFundsPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await noFundsPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await noFundsPage.locator("#start").click();
+    await noFundsPage.locator('button[data-tab="shop"]').click();
+    await noFundsPage.locator("#buyQi").click();
+    const noFundsSave = JSON.parse(await noFundsPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (noFundsSave.stones !== 2 || noFundsSave.xp !== 0) {
+      throw new Error("A failed shop transaction changed currency or granted an item effect.");
+    }
+
+    const lowHpFightPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    lowHpFightPage.on("pageerror", error => errors.push(error.message));
+    await lowHpFightPage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), makeSave(10, 0));
+    await lowHpFightPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await lowHpFightPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await lowHpFightPage.locator("#start").click();
+    await lowHpFightPage.locator('button[data-tab="battle"]').click();
+    await lowHpFightPage.locator("#fight").click();
+    const lowHpFightSave = JSON.parse(await lowHpFightPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (lowHpFightSave.hp !== 10 || lowHpFightSave.xp !== 0 || lowHpFightSave.stones !== 0 || lowHpFightSave.materials !== 0 || lowHpFightSave.questWins !== 0) {
+      throw new Error("A blocked low-HP fight changed character resources or quest progress.");
+    }
+
+    const breakthroughPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    breakthroughPage.on("pageerror", error => errors.push(error.message));
+    await breakthroughPage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), makeSave(100, 0));
+    await breakthroughPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await breakthroughPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await breakthroughPage.locator("#start").click();
+    await breakthroughPage.locator("#breakthrough").click({ force: true });
+    const blockedBreakthrough = JSON.parse(await breakthroughPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (blockedBreakthrough.level !== 0 || blockedBreakthrough.xp !== 0 || blockedBreakthrough.hp !== 100) {
+      throw new Error("Breakthrough without sufficient cultivation unexpectedly changed character state.");
+    }
+
+    const backwardClockPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    backwardClockPage.on("pageerror", error => errors.push(error.message));
+    const futureSave = { ...makeSave(100, 0), xp: 12, cultivating: true, last: Date.now() + 24 * 60 * 60 * 1000 };
+    await backwardClockPage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), futureSave);
+    await backwardClockPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await backwardClockPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await backwardClockPage.locator("#start").click();
+    const backwardClockSave = JSON.parse(await backwardClockPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (backwardClockSave.xp !== 12 || backwardClockSave.cultivating !== false) {
+      throw new Error("A future save timestamp generated offline gains or left cultivation active.");
+    }
+
     if (errors.length) throw new Error("Browser runtime errors: " + errors.join(" | "));
     console.log("PASS: version label, touch styles, safe input selection, transaction guards, offline cap, one-time quest reward, and malformed-save normalization.");
   } finally {
