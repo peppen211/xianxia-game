@@ -28,7 +28,7 @@ describe("game rules", () => {
   });
   it("offline gains are capped at eight hours and update the last-seen timestamp", () => {
     const start = new Date("2026-10-20T00:00:00Z");
-    const s = newSave(start);
+    const s = { ...newSave(start), level: 20 };
     const resumed = enterGame(s, new Date(start.getTime() + 10 * 60 * 60 * 1000));
     expect(resumed.progress).toBe(OFFLINE_CAP_MINUTES * 2);
     expect(resumed.stones).toBe(OFFLINE_CAP_MINUTES);
