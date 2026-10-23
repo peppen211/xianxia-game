@@ -239,3 +239,13 @@ function escapeHtml(value: string): string {
 }
 
 render();
+
+// Offline-first support: once the app has been opened online at least once,
+// the production build can load its cached shell without a network connection.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch((error: unknown) => {
+      console.warn('離線快取註冊失敗；遊戲仍可在線使用。', error);
+    });
+  });
+}
