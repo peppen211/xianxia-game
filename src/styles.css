@@ -207,3 +207,47 @@ button:focus-visible {
 @media (min-width: 520px) {
   .cultivation-backdrop, .scene-fade { max-width: 480px; }
 }
+
+
+.realm-banner {
+  min-height: 174px;
+  border: 1px solid rgba(213, 184, 116, .36);
+  background: linear-gradient(112deg, rgba(10, 26, 39, .94), rgba(18, 52, 62, .76) 54%, rgba(14, 28, 43, .92));
+  box-shadow: inset 0 0 0 4px rgba(3, 12, 22, .36), inset 0 0 0 5px rgba(213, 184, 116, .08), 0 18px 38px rgba(0, 0, 0, .24);
+}
+.realm-banner::before {
+  content: "☯";
+  position: absolute;
+  right: 24%;
+  top: 12%;
+  color: rgba(228, 202, 143, .08);
+  font-size: 7rem;
+  line-height: 1;
+  font-family: serif;
+  z-index: -1;
+}
+.realm-seal {
+  border: 1px solid rgba(223, 189, 111, .65);
+  background: radial-gradient(circle at 35% 25%, rgba(231, 202, 132, .18), rgba(8, 19, 31, .82) 72%);
+  box-shadow: 0 0 22px rgba(217, 179, 98, .12), inset 0 0 0 3px rgba(220, 187, 112, .08);
+}
+.realm-landscape {
+  position: absolute;
+  z-index: 0;
+  inset: 42% -4% 14%;
+  opacity: .86;
+  overflow: hidden;
+  background: linear-gradient(180deg, transparent, rgba(17, 53, 64, .24));
+}
+.realm-landscape span {
+  position: absolute;
+  bottom: -30%;
+  width: 78%;
+  height: 130%;
+  background: linear-gradient(145deg, rgba(83, 137, 136, .35), rgba(11, 27, 40, .95) 58%);
+  clip-path: polygon(0 100%, 18% 55%, 29% 63%, 49% 8%, 62% 46%, 73% 35%, 100% 100%);
+  filter: drop-shadow(0 0 12px rgba(104, 173, 164, .12));
+}
+.realm-landscape span:nth-child(1) { left: -18%; transform: scale(.92); opacity: .7; }
+.realm-landscape span:nth-child(2) { left: 22%; bottom: -38%; transform: scale(1.15); background: linear-gradient(145deg, rgba(96, 146, 142, .3), rgba(9, 23, 37, .98) 65%); }
+.realm-landscape span:nth-child(3) { right: -28%; bottom: -34%; transform: scale(.88); opacity: .75; }
