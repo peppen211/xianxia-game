@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { newSave, cultivate, breakthrough, summon, maxProgress, SUMMON_COST, buyPill, PILL_COST, validateSave, load, persist, wipe, enterGame, OFFLINE_CAP_MINUTES, explore, craftPill, HERB_CRAFT_COST, HERBS_PER_PILL } from "./logic";
+import { newSave, cultivate, breakthrough, summon, maxProgress, MAX_LEVEL, canBreak, SUMMON_COST, buyPill, PILL_COST, validateSave, load, persist, wipe, enterGame, OFFLINE_CAP_MINUTES, explore, craftPill, HERB_CRAFT_COST, HERBS_PER_PILL } from "./logic";
 
 describe("game rules", () => {
   it("invalid local collections cannot block play", () => {
@@ -77,6 +77,14 @@ describe("game rules", () => {
     const r = breakthrough(s, 0.99);
     expect(r.ok).toBe(false);
     expect(r.save.level).toBe(0);
+  });
+  it("cannot break through beyond the final configured realm stage", () => {
+    const finalStage = { ...newSave(), level: MAX_LEVEL, progress: maxProgress(MAX_LEVEL), pills: 100 };
+    expect(canBreak(finalStage)).toBe(false);
+    expect(breakthrough(finalStage, 0)).toEqual({ save: finalStage, ok: false });
+  });
+  it("save validation clamps levels to the final configured stage", () => {
+    expect(validateSave({ ...newSave(), level: MAX_LEVEL + 5 }).level).toBe(MAX_LEVEL);
   });
   it("summon spends stones", () => {
     const r = summon({ ...newSave(), stones: SUMMON_COST }, 0.05);
