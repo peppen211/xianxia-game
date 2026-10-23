@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { newSave, cultivate, breakthrough, summon, maxProgress, SUMMON_COST, buyPill, PILL_COST, validateSave, load, persist, wipe, enterGame, OFFLINE_CAP_MINUTES } from "./logic";
+import { newSave, cultivate, breakthrough, summon, maxProgress, SUMMON_COST, buyPill, PILL_COST, validateSave, load, persist, wipe, enterGame, OFFLINE_CAP_MINUTES, explore, craftPill, HERB_CRAFT_COST, HERBS_PER_PILL } from "./logic";
 
 describe("game rules", () => {
   it("invalid local collections cannot block play", () => {
@@ -40,6 +40,23 @@ describe("game rules", () => {
     const s = { ...newSave(start), progress: maxProgress(0) - 1 };
     const resumed = enterGame(s, new Date(start.getTime() + 60 * 60 * 1000));
     expect(resumed.progress).toBe(maxProgress(0));
+  });
+  it("exploration can yield herbs with a balanced reward", () => {
+    const s = { ...newSave(), stones: 20 };
+    const result = explore(s, 0.35, new Date("2026-10-23T00:00:00Z"));
+    expect(result.save.herbs).toBe(1);
+    expect(result.save.stones).toBe(15);
+    expect(result.text).toContain("凝露草");
+  });
+  it("alchemy crafts a pill only when herbs and stones are sufficient", () => {
+    const ready = { ...newSave(), herbs: HERBS_PER_PILL, stones: HERB_CRAFT_COST };
+    expect(craftPill(ready)).toMatchObject({ herbs: 0, stones: 0, pills: 2 });
+    expect(craftPill({ ...ready, herbs: 0 })).toEqual({ ...ready, herbs: 0 });
+  });
+  it("legacy saves migrate with an empty herb inventory", () => {
+    const legacy = { ...newSave() } as Record<string, unknown>;
+    delete legacy.herbs;
+    expect(validateSave(legacy).herbs).toBe(0);
   });
   it("cultivate gains progress and stones", () => {
     const s = cultivate(newSave());
