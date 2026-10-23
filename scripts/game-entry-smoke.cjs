@@ -233,6 +233,46 @@ async function main() {
       throw new Error("A future save timestamp generated offline gains or left cultivation active.");
     }
 
+    const newFeaturesPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    newFeaturesPage.on("pageerror", error => errors.push(error.message));
+    await newFeaturesPage.addInitScript(save => {
+      localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save));
+      Math.random = () => 0.1;
+    }, { ...makeSave(100, 10), herbs: 2 });
+    await newFeaturesPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await newFeaturesPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await newFeaturesPage.locator("#start").click();
+    await newFeaturesPage.locator('button[data-tab="explore"]').click();
+    await newFeaturesPage.locator('.region-card[data-region="ruins"]').click();
+    if ((await newFeaturesPage.locator("#regionCurrent").innerText()) !== "古修遺跡") {
+      throw new Error("Selecting a region did not update the exploration destination.");
+    }
+    await newFeaturesPage.locator("#gather").click();
+    if (!(await newFeaturesPage.locator("#eventCard").isVisible())) {
+      throw new Error("Deterministic exploration event did not appear for the selected region.");
+    }
+    await newFeaturesPage.locator("#eventOptions button").first().click();
+    const eventSave = JSON.parse(await newFeaturesPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (eventSave.stones !== 20 || eventSave.questExplore !== 1) {
+      throw new Error("Ruins exploration and event rewards did not apply the expected amounts.");
+    }
+    await newFeaturesPage.locator("#openBattle").click();
+    await newFeaturesPage.locator("#skillSword").click();
+    const swordSave = JSON.parse(await newFeaturesPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (swordSave.stones !== 18 || !(await newFeaturesPage.locator("#battleBuffStatus").innerText()).includes("劍氣已備妥")) {
+      throw new Error("Sword skill did not consume its cost and prepare the next battle.");
+    }
+    await newFeaturesPage.locator("#fight").click();
+    const battleSave = JSON.parse(await newFeaturesPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (battleSave.questWins !== 1 || battleSave.xp !== 24 || battleSave.stones !== 22 || !((await newFeaturesPage.locator("#log").innerText()).includes("劍氣提升了本場輸出"))) {
+      throw new Error("Active sword skill did not affect battle outcome or region-specific rewards.");
+    }
+    await newFeaturesPage.locator('button[data-tab="explore"]').click();
+    await newFeaturesPage.locator('.region-card[data-region="market"]').click();
+    if (!(await newFeaturesPage.locator("#gather").isDisabled())) {
+      throw new Error("Safe market region should not allow wilderness gathering.");
+    }
+
     if (errors.length) throw new Error("Browser runtime errors: " + errors.join(" | "));
     console.log("PASS: version label, touch styles, safe input selection, transaction guards, offline cap, one-time quest reward, and malformed-save normalization.");
   } finally {

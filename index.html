@@ -160,14 +160,44 @@ html,body{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-web
 button,.btn,.tab,[role="button"]{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html body input,html body textarea,html body select,html body [contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 .realm-roadmap{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(16,26,42,.55);line-height:1.9}.realm-roadmap p{margin:4px 0}.muted{color:var(--muted);font-size:.9rem;line-height:1.65}
+/* v1.1 design pass: regional atmosphere, balanced cards, and clear touch targets. */
+body.started{background:radial-gradient(ellipse at 50% 0%,#23364a 0%,#0a101a 58%);transition:background .35s ease}
+body.started[data-region="forest"]{background:radial-gradient(ellipse at 50% 0%,#23483f 0%,#0a1517 62%)}
+body.started[data-region="ruins"]{background:radial-gradient(ellipse at 50% 0%,#554532 0%,#15121a 64%)}
+body.started[data-region="cave"]{background:radial-gradient(ellipse at 50% 0%,#273f5a 0%,#0a101b 62%)}
+body.started[data-region="market"]{background:radial-gradient(ellipse at 50% 0%,#4c3b2b 0%,#11121a 62%)}
+body.started .page .panel{border-color:#6b624e;background:linear-gradient(155deg,#172536ed,#0b121eee);box-shadow:0 8px 22px #0003}
+body.started .page h2{letter-spacing:.04em}
+body.started .detail{align-items:center}
+.region-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+.region-card{position:relative;display:flex;min-height:132px;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:5px;overflow:hidden;padding:12px;text-align:left;border:1px solid #71816d;border-radius:12px;background:linear-gradient(180deg,#132d2a,#0c151c);isolation:isolate}
+.region-card:before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,transparent 0%,#07111ad9 100%),radial-gradient(ellipse at 65% 25%,#b6d6c566,transparent 45%),linear-gradient(135deg,#54776a,#1c3a3b 55%,#101924);transition:filter .2s}
+.region-card[data-region="ruins"]:before{background:linear-gradient(180deg,transparent 0%,#07111ad9 100%),radial-gradient(ellipse at 65% 25%,#e5c47a66,transparent 45%),linear-gradient(135deg,#82714f,#4b443b 55%,#161924)}
+.region-card[data-region="cave"]:before{background:linear-gradient(180deg,transparent 0%,#07111ad9 100%),radial-gradient(ellipse at 65% 25%,#9bc9e866,transparent 45%),linear-gradient(135deg,#4b7084,#273c54 55%,#101924)}
+.region-card[aria-pressed="true"]{border-color:#efd49a;box-shadow:inset 0 0 0 1px #efd49a55,0 0 18px #d9bb7b1c}
+.region-card strong{font-size:15px;color:#f3e5c4}.region-card small{font-size:11px;line-height:1.5;color:#d1d9df}
+.region-card .region-risk{align-self:flex-start;padding:2px 7px;border-radius:20px;background:#070d18b8;color:#e9d4a5;font-size:10px}
+.event-card{margin-top:14px;padding:14px;border:1px solid #92794e;border-radius:12px;background:linear-gradient(150deg,#1b2937,#0c1420)}
+.event-options{display:grid;gap:8px;margin-top:12px}.event-options button{text-align:left;min-height:46px}
+.event-result{padding:10px;border-radius:8px;background:#0a111b;color:#d8e3e8;font-size:13px;line-height:1.7}
+.battle-vitals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.vital-card{padding:10px;border:1px solid #42536a;border-radius:10px;background:#0a121f}
+.vital-card strong{display:block;color:#f0dfb8;font-size:13px}
+.vital-track{height:7px;margin-top:7px;border-radius:10px;overflow:hidden;background:#263448}
+.vital-track span{display:block;height:100%;background:linear-gradient(90deg,#70a98e,#d4c07c);transition:width .2s}
+.battle-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+.battle-controls button{min-height:48px}.battle-controls .wide{grid-column:1/-1}
+.battle-status{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0;padding:9px 11px;border:1px solid #3a4c61;border-radius:9px;background:#0b1420;font-size:12px}
+.battle-status strong{color:#cfe4d8}
+@media(max-width:360px){.region-grid{gap:7px}.region-card{min-height:120px;padding:9px}.battle-vitals{gap:6px}.battle-controls{gap:6px}}
 </style></head><body>
 <header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="header-avatar" aria-hidden="true"><span>道</span></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div><div class="header-xp"><div class="header-xp-label"><span>修為進度</span><strong id="headerXp">0 / 100</strong></div><div class="header-xp-track"><span id="headerXpFill"></span></div></div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
 <section class="stats"><div class="panel"><small>修為</small><strong id="xp">0</strong></div><div class="panel"><small>下品靈石</small><strong id="stones">0</strong></div><div class="panel"><small>氣血</small><strong id="hp">100/100</strong></div></section>
 <section class="quick-status" id="quickStatus" aria-label="角色即時狀態"><div class="quick-status-top"><span id="quickRealm">凡人</span><span id="quickState">尚未修煉</span></div><div class="quick-status-values"><span>修為 <strong id="quickXp">0</strong></span><span>靈石 <strong id="quickStones">0</strong></span><span>氣血 <strong id="quickHp">100/100</strong></span></div><div class="quick-progress"><span id="quickFill"></span></div></section><nav class="tabs bottom-nav" aria-label="主要導覽"><button class="tab active" data-tab="character"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M5.5 20v-2.2a6.5 6.5 0 0 1 13 0V20z"/></svg></span><span>角色</span></button><button class="tab" data-tab="cultivate"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M6 9.5V21h12V9.5M10 21v-6h4v6"/></svg></span><span>洞府</span></button><button class="tab" data-tab="explore"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.4 5.2-5.2 2.4 2.4-5.2z"/></svg></span><span>世界</span></button><button class="tab" data-tab="shop"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9h16l-1 11H5z"/><path d="M8 9V6a4 4 0 0 1 8 0v3M8 13h8"/></svg></span><span>商店</span></button><button class="tab" data-tab="bag"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h14l1 13H4z"/><path d="M9 8V6a3 3 0 0 1 6 0v2M9 13h6"/></svg></span><span>背包</span></button></nav>
 <section class="page" id="cultivate"><div class="panel"><div class="eyebrow">INNER CULTIVATION</div><h2>靜心吐納</h2><div class="detail"><span>角色道號</span><strong id="nameShow">詠祺</strong></div><div class="detail"><span>靈根</span><strong id="rootShow">四屬性偽靈根</strong></div><div class="detail"><span>境界</span><strong id="realmShow">凡人</strong></div><div class="bar"><div class="fill" id="fill"></div></div><div class="detail"><span id="progress">0 / 100 修為</span><span id="rate">點擊吐納，積累修為</span></div><div class="row"><button class="primary" id="cultivateBtn">吐納一次</button><button id="breakthrough" disabled>嘗試突破</button></div><p class="muted" id="cultivationHint">練氣五層前，以點擊吐納積累修為。</p></div><div class="panel"><div class="eyebrow">PATH TO IMMORTALITY</div><h2>仙途境界</h2><p class="muted">目前遊戲先開放凡人與練氣期；以下為長期境界規劃，道祖為現階段終點。</p><div class="realm-roadmap"><p>凡人 → 練氣期（十三層）→ 築基期 → 結丹期 → 元嬰期 → 化神期</p><p>煉虛期 → 合體期 → 大乘期 → 真仙 → 金仙 → 太乙玉仙 → 大羅金仙 → 道祖</p></div><p class="muted">抵達道祖後暫不推進後續劇情。</p></div></section>
-<section class="page" id="explore"><div class="panel"><div class="eyebrow">THE CULTIVATION WORLD</div><h2>越國・凡俗之地</h2><p class="muted">從山林外圍開始尋找機緣，採集草藥、發現靈石，逐步走進修仙世界。</p><div class="detail"><span>山林外圍</span><span>低危險區域</span></div><button class="primary" id="gather">探索山林</button><button id="openBattle" style="width:100%;margin-top:10px">進入戰鬥試煉</button><div class="detail"><span>附近集市</span><span>凡俗交易</span></div><button id="market">查看集市</button><div class="quest-board"><div class="eyebrow">ADVENTURER'S BOARD</div><h2>歷練委託</h2><div class="quest-row"><div><strong>林間探路</strong><p class="muted">探索山林 3 次</p><small id="questExploreProgress">進度 0 / 3 · 獎勵 8 靈石</small></div><button id="claimExplore" disabled>領取</button></div><div class="quest-row"><div><strong>清剿野狼</strong><p class="muted">完成戰鬥 2 次</p><small id="questFightProgress">進度 0 / 2 · 獎勵 15 靈石</small></div><button id="claimFight" disabled>領取</button></div></div></div></section>
-<section class="page" id="battle"><div class="panel"><div class="eyebrow">AUTO BATTLE</div><h2>山林試煉</h2><div class="battle-scene" aria-hidden="true"></div><p class="muted">以自動戰鬥累積實戰經驗。後續將逐步加入法術、符籙、法寶與更完整的敵人機制。</p><div class="detail"><span>遭遇對手</span><strong>山林野狼 · 氣血 35</strong></div><button class="primary" id="fight">開始自動戰鬥</button><div class="log" id="log">尚未交戰，準備好再出發。</div></div></section>
+<section class="page" id="explore"><div class="panel"><div class="eyebrow">THE CULTIVATION WORLD</div><h2>越國・尋覓機緣</h2><p class="muted">選擇想前往的區域。不同地點有不同的環境、探索風險與事件機會；目前是逐步擴充中的原型內容。</p><div class="region-grid" role="group" aria-label="選擇探索區域"><button type="button" class="region-card" data-region="forest" aria-pressed="true"><span class="region-risk">低風險</span><strong>迷霧山林</strong><small>草藥、野獸材料<br>適合初次歷練</small></button><button type="button" class="region-card" data-region="ruins" aria-pressed="false"><span class="region-risk">中等風險</span><strong>古修遺跡</strong><small>靈石與未知事件<br>機緣伴隨風險</small></button><button type="button" class="region-card" data-region="cave" aria-pressed="false"><span class="region-risk">修煉地點</span><strong>靈脈洞窟</strong><small>靜心吐納<br>尋找修行資源</small></button><button type="button" class="region-card" data-region="market" aria-pressed="false"><span class="region-risk">安全區域</span><strong>凡俗集市</strong><small>補給與交易<br>暫避危險</small></button></div><div class="detail"><span>目前選擇</span><strong id="regionCurrent">迷霧山林</strong></div><div class="detail"><span>探索消耗</span><span id="regionCost">不額外消耗靈石</span></div><div class="detail"><span>可能收穫</span><span id="regionLoot">草藥、靈石、修為</span></div><button class="primary" id="gather">探索此區域</button><button id="openBattle" style="width:100%;margin-top:10px">進入戰鬥試煉</button><div id="eventCard" class="event-card" hidden><div class="eyebrow">RANDOM ENCOUNTER</div><h2 id="eventTitle">探索發現</h2><p id="eventDescription" class="muted"></p><div id="eventOptions" class="event-options"></div><div id="eventResult" class="event-result" hidden></div></div><div class="quest-board"><div class="eyebrow">ADVENTURER'S BOARD</div><h2>歷練委託</h2><div class="quest-row"><div><strong>林間探路</strong><p class="muted">探索山林 3 次</p><small id="questExploreProgress">進度 0 / 3 · 獎勵 8 靈石</small></div><button id="claimExplore" disabled>領取</button></div><div class="quest-row"><div><strong>清剿野狼</strong><p class="muted">完成戰鬥 2 次</p><small id="questFightProgress">進度 0 / 2 · 獎勵 15 靈石</small></div><button id="claimFight" disabled>領取</button></div></div></div></section>
+<section class="page" id="battle"><div class="panel"><div class="eyebrow">AUTO BATTLE · ACTIVE SKILLS</div><h2>山林試煉</h2><div class="battle-scene" aria-hidden="true"></div><p class="muted">可讓韓立自動完成一場簡化戰鬥，也能在出戰前使用技能準備。技能會實際影響下一場戰鬥的結果。</p><div class="battle-vitals"><div class="vital-card"><strong>韓立 · 氣血 <span id="battlePlayerHp">100/100</span></strong><div class="vital-track"><span id="battlePlayerFill" style="width:100%"></span></div></div><div class="vital-card"><strong id="battleEnemyName">山林野狼</strong><span class="muted" id="battleEnemyHp">威脅：普通</span><div class="vital-track"><span id="battleEnemyFill" style="width:100%;background:linear-gradient(90deg,#bb6558,#e1a17a)"></span></div></div></div><div class="battle-status"><span>戰鬥準備</span><strong id="battleBuffStatus">尚未使用技能</strong></div><div class="battle-controls"><button type="button" id="skillSword">⚔ 劍氣 · 消耗 2 靈石</button><button type="button" id="skillGuard">☯ 護體 · 消耗 1 草藥</button><button type="button" class="primary wide" id="fight">開始自動戰鬥</button><button type="button" class="wide" id="battleRecover">戰後調息（恢復至氣血上限）</button></div><div class="log" id="log">尚未交戰，準備好再出發。</div></div></section>
 <section class="page" id="shop"><div class="panel"><div class="eyebrow">CULTIVATION MARKET</div><h2>修仙坊市</h2><p class="muted">靈石換取修行資源。每次交易立即生效，量力而為。</p><div class="detail"><span>目前下品靈石</span><strong><span id="shopStones">0</span> 枚</strong></div><div class="shop-item"><div><strong>回春散</strong><p class="muted">恢復 40 點氣血，最多回復至上限。</p><small>價格：5 枚下品靈石</small></div><button class="primary" id="buyHeal">購買並服用</button></div><div class="shop-item"><div><strong>凝氣丹</strong><p class="muted">藥力化作 30 點修為。</p><small>價格：8 枚下品靈石</small></div><button class="primary" id="buyQi">購買並服用</button></div><div class="shop-item"><div><strong>百草小包</strong><p class="muted">獲得 3 株草藥，可累積行囊資源。</p><small>價格：3 枚下品靈石</small></div><button class="primary" id="buyHerbs">購買</button></div><div class="log" id="shopLog">坊市已開張。探索與戰鬥取得靈石後，可在此補給。</div></div></section>
 <section class="page" id="bag"><div class="panel"><div class="eyebrow">YOUR IMMORTAL CAVE</div><h2>洞府與行囊</h2><div class="detail"><span>下品靈石</span><strong id="bagStones">0</strong></div><div class="detail"><span>草藥</span><strong id="herbs">0</strong></div><div class="detail"><span>野獸材料</span><strong id="materials">0</strong></div><div class="detail"><span>氣血狀態</span><strong id="bagHp">100 / 100</strong></div><button class="primary" id="rest">消耗 1 株草藥療傷（恢復 20 氣血）</button><p class="muted">進度儲存在此裝置的瀏覽器中，不需要建立遊戲帳號。</p><button id="openSettings" style="width:100%;margin-top:10px">⚙ 遊戲設定</button><button id="save">立即存檔</button><button id="reset">重回仙途入口</button></div></section>
 <section class="page active" id="character"><div class="panel"><div class="eyebrow">CULTIVATOR PROFILE</div><h2>角色資料</h2><div class="detail"><span>姓名</span><strong id="characterName">詠祺</strong></div><div class="detail"><span>靈根</span><strong>四屬性偽靈根</strong></div><div class="detail"><span>當前境界</span><strong id="characterRealm">凡人</strong></div><div class="detail"><span>目前靈石</span><strong id="characterStones">0</strong></div></div></section><footer>凡人修仙・自由放置 RPG · 開發測試 0.1</footer><div id="settingsOverlay" class="settings-overlay" hidden>
@@ -229,6 +259,10 @@ html body input,html body textarea,html body select,html body [contenteditable="
   let state=fresh();
   let entered=false;
   let toastTimer=null;
+  let currentRegion="forest";
+  let activeBattleBuff=null;
+  let activeBattleGuard=false;
+  let lastEncounter=null;
   const $=id=>document.getElementById(id);
   function toast(message){
     const node=$("toast");
@@ -258,6 +292,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
   }
   function render(){
     document.body.classList.toggle("started",entered);
+    document.body.dataset.region=currentRegion;
     $("heroPanel").hidden=entered;
     $("hero").textContent=entered?state.name:"凡人修仙";
     $("intro").textContent=entered?"靈根："+state.root+"。仙途漫漫，步步為營。":"一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。";
@@ -292,6 +327,14 @@ html body input,html body textarea,html body select,html body [contenteditable="
     $("log").textContent=state.log;
     $("bagStones").textContent=state.stones;
     $("shopStones").textContent=state.stones;
+    $("battlePlayerHp").textContent=state.hp+"/"+state.maxHp;
+    $("battlePlayerFill").style.width=Math.max(0,Math.min(100,state.hp/state.maxHp*100))+"%";
+    $("battleEnemyName").textContent=currentRegion==="ruins"?"遺跡守衛":currentRegion==="cave"?"洞窟妖蟲":"山林野狼";
+    $("battleEnemyHp").textContent=lastEncounter?"上次戰果："+lastEncounter:"等待遭遇";
+    $("battleEnemyFill").style.width=lastEncounter?"0%":"100%";
+    $("battleBuffStatus").textContent=activeBattleBuff==="sword"?"劍氣已備妥：下場戰鬥提升傷害":activeBattleGuard?"護體已備妥：下場戰鬥降低受傷":"尚未使用技能";
+    $("skillSword").disabled=!state.created||state.stones<2||Boolean(activeBattleBuff);
+    $("skillGuard").disabled=!state.created||state.herbs<1||activeBattleGuard;
     $("questExploreProgress").textContent="進度 "+Math.min(3,state.questExplore||0)+" / 3 · 獎勵 8 靈石"+(state.questExploreClaimed?" · 已領取":"");
     $("questFightProgress").textContent="進度 "+Math.min(2,state.questWins||0)+" / 2 · 獎勵 15 靈石"+(state.questFightClaimed?" · 已領取":"");
     $("claimExplore").disabled=!state.created||(state.questExplore||0)<3||state.questExploreClaimed;
@@ -311,6 +354,10 @@ html body input,html body textarea,html body select,html body [contenteditable="
       battle:["山林試煉","荒野遭遇 · 自動鬥法","歷練戰鬥 · 積累實戰","戰"]
     };
     const h=headings[id]||headings.character;
+    if(id==="explore")document.body.dataset.region=currentRegion;
+    if(id==="shop")document.body.dataset.region="market";
+    if(id==="cultivate"||id==="character"||id==="bag")document.body.dataset.region="cave";
+    if(id==="battle"){document.body.dataset.region=currentRegion==="ruins"?"ruins":currentRegion==="cave"?"cave":"forest";const scene=document.querySelector(".battle-scene");if(scene)scene.dataset.region=currentRegion;}
     $("pageHeading").textContent=h[0];
     $("locationEyebrow").textContent=h[1];
     $("locationSub").textContent=h[2];
@@ -323,7 +370,42 @@ html body input,html body textarea,html body select,html body [contenteditable="
   });
   $("openBattle").addEventListener("click",()=>setPage("battle",null));
   const openShop=()=>setPage("shop",document.querySelector('.tab[data-tab="shop"]'));
-  $("market").addEventListener("click",openShop);
+  // The former standalone market shortcut was removed; the shop remains reachable via the bottom navigation.
+  const regionInfo={
+    forest:{name:"迷霧山林",cost:"不額外消耗靈石",loot:"草藥、靈石、修為"},
+    ruins:{name:"古修遺跡",cost:"不額外消耗靈石",loot:"較多靈石、材料或風險事件"},
+    cave:{name:"靈脈洞窟",cost:"不額外消耗靈石",loot:"修為、靈石與靈氣事件"},
+    market:{name:"凡俗集市",cost:"安全區域，不進行野外採集",loot:"可前往坊市補給"}
+  };
+  function chooseRegion(id){
+    if(!regionInfo[id])return;
+    currentRegion=id;
+    document.querySelectorAll(".region-card").forEach(card=>card.setAttribute("aria-pressed",String(card.dataset.region===id)));
+    $("regionCurrent").textContent=regionInfo[id].name;
+    $("regionCost").textContent=regionInfo[id].cost;
+    $("regionLoot").textContent=regionInfo[id].loot;
+    document.body.dataset.region=id;
+    const scene=document.querySelector(".battle-scene");
+    if(scene)scene.dataset.region=id;
+    $("gather").disabled=id==="market";
+    $("gather").textContent=id==="market"?"安全區域無法野外探索":"探索此區域";
+    $("eventCard").hidden=true;$("eventResult").hidden=true;$("eventOptions").replaceChildren();
+    render();
+  }
+  document.querySelectorAll(".region-card").forEach(card=>card.addEventListener("click",()=>chooseRegion(card.dataset.region)));
+  function showEvent(title,description,options){
+    $("eventCard").hidden=false;$("eventTitle").textContent=title;$("eventDescription").textContent=description;
+    $("eventResult").hidden=true;$("eventOptions").replaceChildren();
+    options.forEach(option=>{
+      const button=document.createElement("button");button.type="button";button.textContent=option.label;
+      button.addEventListener("click",()=>{
+        if(option.cost&&!option.cost(state)){toast(option.fail||"目前條件不足");return;}
+        const result=option.apply(state);state.log=result;save();render();
+        $("eventResult").textContent=result;$("eventResult").hidden=false;$("eventOptions").replaceChildren();toast(result);
+      });
+      $("eventOptions").append(button);
+    });
+  }
   function purchase(cost,action,success){
     if(!state.created){toast("請先踏入仙途");return;}
     if(state.stones<cost){toast("靈石不足，先去探索或戰鬥吧");$("shopLog").textContent="交易未完成：需要 "+cost+" 枚下品靈石，目前只有 "+state.stones+" 枚。";return;}
@@ -375,25 +457,75 @@ html body input,html body textarea,html body select,html body [contenteditable="
   });
   $("gather").addEventListener("click",()=>{
     if(!state.created){toast("請先踏入仙途");return;}
+    if(currentRegion==="market"){toast("集市是安全區域，請前往坊市補給");return;}
     state.questExplore=(state.questExplore||0)+1;
-    const roll=Math.random();
-    if(roll<0.55){const count=1+Math.floor(Math.random()*3);state.herbs+=count;toast("採集到 "+count+" 株草藥");}
-    else if(roll<0.82){state.stones+=2;toast("找到 2 枚下品靈石");}
-    else{state.xp+=8;toast("獲得 8 點修為");}
-    state.log="你探索了山林外圍，帶著新的收穫返回。";
-    save();render();
+    const roll=Math.random();let result="";
+    if(currentRegion==="forest"){
+      if(roll<0.55){const count=1+Math.floor(Math.random()*3);state.herbs+=count;result="採集到 "+count+" 株草藥";}
+      else if(roll<0.82){state.stones+=2;result="找到 2 枚下品靈石";}
+      else{state.xp+=8;result="獲得 8 點修為";}
+    }else if(currentRegion==="ruins"){
+      if(roll<0.36){state.stones+=4;result="在石縫中找到 4 枚下品靈石";}
+      else if(roll<0.68){state.materials+=1;result="取得 1 份古遺材料";}
+      else{state.hp=Math.max(1,state.hp-5);result="觸動殘存禁制，氣血損失 5 點";}
+    }else{
+      if(roll<0.5){state.xp+=12;result="洞窟靈氣濃郁，獲得 12 點修為";}
+      else if(roll<0.8){state.stones+=3;result="發現 3 枚下品靈石";}
+      else{state.herbs+=1;result="找到 1 株耐陰靈草";}
+    }
+    state.log="你探索了"+regionInfo[currentRegion].name+"。"+result+"。";
+    save();render();toast(result);
+    if(Math.random()<0.35){
+      if(currentRegion==="forest")showEvent("林間微光","樹根旁有一點淡青色光芒，似乎是一株尚未被發現的靈草。",[
+        {label:"小心採集（獲得 1 株草藥）",apply:s=>{s.herbs+=1;return "你小心採下靈草，獲得 1 株草藥。";}},
+        {label:"仔細觀察（獲得 5 點修為）",apply:s=>{s.xp+=5;return "你觀察靈氣流動，獲得 5 點修為。";}},
+        {label:"暫時離開",apply:s=>"你記下位置，沒有額外消耗資源。"}
+      ]);
+      else if(currentRegion==="ruins")showEvent("古壇殘光","石壇的紋路仍有微弱靈光。你可以冒險取物，也可以保守行事。",[
+        {label:"取走供奉靈石（消耗 2 氣血，獲得 6 靈石）",apply:s=>{s.hp=Math.max(1,s.hp-2);s.stones+=6;return "你承受殘餘禁制，取回 6 枚靈石。";}},
+        {label:"搜尋碎片（獲得 1 份材料）",apply:s=>{s.materials+=1;return "你找到一份仍可利用的古遺材料。";}},
+        {label:"不觸碰，離開",apply:s=>"你沒有冒險，平安離開石壇。"}
+      ]);
+      else showEvent("靈脈回響","洞窟深處傳來微弱靈氣回響，似乎可以趁此調息。",[
+        {label:"順勢吐納（獲得 10 點修為）",apply:s=>{s.xp+=10;return "你順勢吐納，獲得 10 點修為。";}},
+        {label:"收集凝露（獲得 2 株草藥）",apply:s=>{s.herbs+=2;return "你收集到 2 株靈草凝露。";}},
+        {label:"記下位置後離開",apply:s=>"你記下洞窟位置，準備日後再來。"}
+      ]);
+    }
+  });
+  $("skillSword").addEventListener("click",()=>{
+    if(!state.created){toast("請先踏入仙途");return;}
+    if(activeBattleBuff||state.stones<2){toast(activeBattleBuff?"已有待觸發的攻擊技能":"靈石不足，無法凝聚劍氣");return;}
+    state.stones-=2;activeBattleBuff="sword";save();render();toast("劍氣已凝聚，下一場戰鬥將提升輸出並降低受傷。");
+  });
+  $("skillGuard").addEventListener("click",()=>{
+    if(!state.created){toast("請先踏入仙途");return;}
+    if(activeBattleGuard||state.herbs<1){toast(activeBattleGuard?"護體效果已準備好":"草藥不足，無法製作護體藥散");return;}
+    state.herbs--;activeBattleGuard=true;save();render();toast("護體藥散已備妥，下一場戰鬥受到的傷害將降低。");
+  });
+  $("battleRecover").addEventListener("click",()=>{
+    if(!state.created){toast("請先踏入仙途");return;}
+    if(state.hp>=state.maxHp){toast("氣血充盈，無需調息");return;}
+    const healed=state.maxHp-state.hp;state.hp=state.maxHp;state.log="戰後調息完成，恢復 "+healed+" 點氣血。";
+    save();render();toast(state.log);
   });
   $("fight").addEventListener("click",()=>{
     if(!state.created){toast("請先踏入仙途");return;}
-    if(state.hp<15){toast("氣血不足，請先休整");return;}
-    const attack=8+Math.floor(Math.random()*8)+state.level*2;
-    const rounds=Math.ceil(35/attack);
-    const damage=Math.max(3,rounds*(5+Math.floor(Math.random()*4))-state.level*2);
-    state.hp=Math.max(1,state.hp-damage);
-    state.questWins=(state.questWins||0)+1;
-    state.xp+=18;state.stones+=2;state.materials++;
-    state.log="自動戰鬥結束！\n你擊退了山林野狼。\n獲得 18 點修為、2 枚靈石與 1 份野獸材料。\n受到 "+damage+" 點傷害。";
-    save();render();
+    if(state.hp<15){toast("氣血不足，請先調息或服用回春散");return;}
+    const enemyNames={forest:"山林野狼",ruins:"遺跡守衛",cave:"洞窟妖蟲"};
+    const enemyName=enemyNames[currentRegion]||"山林野狼";
+    const baseHp=currentRegion==="ruins"?48:currentRegion==="cave"?30:35;
+    const attack=8+Math.floor(Math.random()*8)+state.level*2+(activeBattleBuff==="sword"?12:0);
+    const rounds=Math.ceil(baseHp/attack);
+    const rawDamage=Math.max(3,rounds*(5+Math.floor(Math.random()*4))-state.level*2);
+    const damage=Math.max(1,Math.round(rawDamage*(activeBattleGuard?0.5:1)));
+    state.hp=Math.max(1,state.hp-damage);state.questWins=(state.questWins||0)+1;
+    const xpReward=currentRegion==="ruins"?24:currentRegion==="cave"?15:18;
+    const stoneReward=currentRegion==="ruins"?4:currentRegion==="cave"?3:2;
+    state.xp+=xpReward;state.stones+=stoneReward;state.materials++;
+    state.log="自動戰鬥結束！\n你擊退了"+enemyName+"。\n獲得 "+xpReward+" 點修為、"+stoneReward+" 枚靈石與 1 份材料。\n受到 "+damage+" 點傷害。"+(activeBattleBuff==="sword"?" 劍氣提升了本場輸出。":"")+(activeBattleGuard?" 護體降低了本場傷害。":"");
+    lastEncounter="已擊敗 · "+enemyName;activeBattleBuff=null;activeBattleGuard=false;
+    save();render();toast("戰鬥勝利！"+enemyName+"已被擊退。");
   });
   $("claimExplore").addEventListener("click",()=>{
     if((state.questExplore||0)<3||state.questExploreClaimed)return;
