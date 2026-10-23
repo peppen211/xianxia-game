@@ -6,6 +6,7 @@ on:
       - 'index.html'
       - 'scripts/game-entry-smoke.cjs'
       - '.github/workflows/game-entry-pr-test.yml'
+      - '.github/workflows/deploy-prototype-pages.yml'
 
 permissions:
   contents: read
@@ -15,7 +16,7 @@ jobs:
     # Ubuntu 24.04 has a more mature Playwright dependency path than the newly
     # rolled-out 26.04 image, whose apt downloads timed out in the previous run.
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,9 +37,9 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-chromium-v1
       - name: Install Playwright system dependencies
-        run: timeout 360s npx playwright install-deps chromium
+        run: timeout 600s npx playwright install-deps chromium
       - name: Install Playwright Chromium
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: timeout 360s npx playwright install chromium
+        run: timeout 600s npx playwright install chromium
       - name: Test current standalone game entry on mobile viewport
         run: node scripts/game-entry-smoke.cjs
