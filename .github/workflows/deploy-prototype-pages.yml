@@ -54,8 +54,10 @@ jobs:
             const browser = await chromium.launch({ headless: true });
             const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
             const errors = [];
-            page.on('pageerror', error => errors.push(error.message));
-            page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+            page.on('pageerror', error => { errors.push(error.message); console.log('BROWSER PAGE ERROR: ' + error.stack); });
+            page.on('console', message => { if (message.type() === 'error') { errors.push(message.text()); console.log('BROWSER CONSOLE ERROR: ' + message.text()); } });
+            page.on('requestfailed', request => console.log('FAILED REQUEST: ' + request.url() + ' :: ' + request.failure()?.errorText));
+            page.on('response', response => { if (response.status() >= 400) console.log('HTTP ERROR: ' + response.status() + ' ' + response.url()); });
             let rendered = false;
             for (let attempt = 0; attempt < 6; attempt++) {
               await page.goto('https://peppen211.github.io/xianxia-game/', { waitUntil: 'domcontentloaded', timeout: 60000 });
@@ -64,7 +66,7 @@ jobs:
                 rendered = true;
                 break;
               } catch {
-                console.log('Waiting for published app, attempt ' + (attempt + 1) + '; title=' + await page.title() + '; body=' + (await page.locator('body').innerText()).slice(0, 300));
+                console.log('Waiting for published app, attempt ' + (attempt + 1) + '; title=' + await page.title() + '; body=' + (await page.locator('body').innerText()).slice(0, 300) + '; errors=' + errors.join(' | '));
                 await page.waitForTimeout(5000);
               }
             }
