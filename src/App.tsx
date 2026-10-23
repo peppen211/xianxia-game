@@ -218,8 +218,8 @@ function Game() {
         }} />}
       </main>
 
-      {started && <nav aria-label="遊戲導航" className="fixed bottom-0 left-0 right-0 z-20 mx-auto grid max-w-md grid-cols-5 border-t bg-ink/90 pb-[env(safe-area-inset-bottom)] backdrop-blur">
-        {([["home", "主殿", "殿"], ["battle", "戰鬥", "戰"], ["chars", "角色", "人"], ["art", "古寶", "寶"], ["quests", "任務", "錄"]] as const).map(([k, label, g]) => (
+      {started && <nav aria-label="遊戲導航" className="fixed bottom-0 left-0 right-0 z-20 mx-auto grid max-w-md grid-cols-6 border-t bg-ink/90 pb-[env(safe-area-inset-bottom)] backdrop-blur">
+        {([["home", "主殿", "殿"], ["battle", "戰鬥", "戰"], ["chars", "角色", "人"], ["art", "古寶", "寶"], ["pets", "靈寵", "獸"], ["quests", "任務", "錄"]] as const).map(([k, label, g]) => (
           <Button variant="gamePlain" size="game" key={k} aria-current={tab === k ? "page" : undefined} onClick={() => setTab(k)} className={`flex flex-col items-center py-2.5 ${tab === k ? "text-gold" : "text-muted-foreground"}`}>
             <span className={`font-brush text-2xl ${tab === k ? "drop-shadow-[0_0_8px_var(--gold)]" : ""}`}>{g}</span>
             <span className="text-xs">{label}</span>
