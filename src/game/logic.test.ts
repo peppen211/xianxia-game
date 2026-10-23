@@ -24,7 +24,8 @@ describe("game rules", () => {
     persist(s);
     expect(load()).toEqual(s);
     wipe();
-    expect(load()).toEqual(newSave());
+    const resetAt = new Date("2026-10-23T00:00:00Z");
+    expect(load(resetAt)).toEqual(newSave(resetAt));
   });
   it("offline gains are capped at eight hours and update the last-seen timestamp", () => {
     const start = new Date("2026-10-20T00:00:00Z");
