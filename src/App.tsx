@@ -86,18 +86,28 @@ function Game() {
 
       <header className="relative z-10 px-5 pt-[max(env(safe-area-inset-top),1rem)] text-center">
         <h1 className="font-brush text-gold-grad text-3xl leading-tight drop-shadow">不好意思，本座又突破了</h1>
-        <div className="mt-3 flex justify-center gap-2 text-sm">
+        {started && <div className="mt-3 flex justify-center gap-2 text-sm">
           <span className="panel px-3 py-1">💎 靈石 <b className="text-gold">{save.stones}</b></span>
           <span className="panel px-3 py-1">💊 破境丹 <b className="text-jade">{save.pills}</b></span>
-        </div>
+        </div>}
       </header>
 
       <main className="relative z-10 flex-1 overflow-y-auto px-4 pb-28 pt-4">
         {!started && (
-          <div className="flex min-h-[60dvh] flex-col items-center justify-end gap-6 pb-8">
-            <p className="font-brush text-4xl text-gold">仙途再啟</p>
-            <Button variant="gameGold" size="game" className="w-full py-5 text-2xl" onClick={() => { updateSave((current) => enterGame(current)); startedRef.current = true; setStarted(true); }}>開始遊戲</Button>
-            <p className="text-xs text-muted-foreground">v0.8.0 · 修行錄</p>
+          <div className="flex min-h-[calc(100dvh-12rem)] flex-col items-center justify-center gap-5 pb-8 pt-6 text-center">
+            <div className="relative flex w-full flex-col items-center gap-3 py-8">
+              <div className="absolute inset-x-6 top-0 h-44 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(210,171,91,0.12),transparent_68%)]" />
+              <div className="relative flex h-24 w-24 items-center justify-center rounded-full border border-gold/50 bg-ink/55 shadow-[0_0_48px_rgba(210,171,91,0.16)]">
+                <span className="font-brush text-5xl text-gold">道</span>
+              </div>
+              <p className="relative font-brush text-4xl text-gold-grad">仙途再啟</p>
+              <p className="relative max-w-xs text-sm leading-7 tracking-widest text-muted-foreground">凡骨亦可問長生<br />一念入道，踏上無盡仙途</p>
+              <div className="relative mt-2 flex items-center gap-3 text-xs text-gold/75">
+                <span>修煉問道</span><span>✦</span><span>尋寶結緣</span><span>✦</span><span>逆天破境</span>
+              </div>
+            </div>
+            <Button variant="gameGold" size="game" className="w-full py-5 text-2xl" onClick={() => { updateSave((current) => enterGame(current)); startedRef.current = true; setStarted(true); }}>開始修仙</Button>
+            <p className="text-xs tracking-wider text-muted-foreground">v0.8.2 · 修行錄</p>
           </div>
         )}
         {started && tab === "home" && (
