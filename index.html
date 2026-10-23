@@ -141,6 +141,7 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
 @media(max-width:360px){.quick-status{padding:6px 8px}.quick-status-values{font-size:9px;gap:4px}.quick-status-values strong{font-size:10px}.bottom-nav button{font-size:10px}}
 
 /* 手機觸控修正：避免快速連點觸發雙擊縮放，或把遊戲文字整段選取 */
+html,body,body *{-webkit-user-select:none;user-select:none}
 html,body{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 button,.btn,.tab,[role="button"]{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
