@@ -82,6 +82,24 @@ async function main() {
     if (healedStones.trim() !== "5" || healedHp.trim() !== "90/100" || healedSave.stones !== 5 || healedSave.hp !== 90) {
       throw new Error("Healing purchase did not charge exactly 5 stones and restore 40 HP.");
     }
+    const manualCultivationPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    manualCultivationPage.on("pageerror", error => errors.push(error.message));
+    const preUnlockSave = { ...makeSave(100, 0), xp: 0, cultivating: true, last: Date.now() - 24 * 60 * 60 * 1000 };
+    await manualCultivationPage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), preUnlockSave);
+    await manualCultivationPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await manualCultivationPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await manualCultivationPage.locator("#start").click();
+    let manualSave = JSON.parse(await manualCultivationPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (manualSave.xp !== 0 || manualSave.cultivating !== false) {
+      throw new Error("Cultivation before level 5 must not grant automatic or offline cultivation.");
+    }
+    await manualCultivationPage.locator('button[data-tab="cultivate"]').click();
+    await manualCultivationPage.locator("#cultivateBtn").click();
+    manualSave = JSON.parse(await manualCultivationPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (Math.abs(manualSave.xp - 1.56) > 0.001 || manualSave.cultivating !== false) {
+      throw new Error("Manual cultivation before level 5 should grant one root-adjusted click reward; got xp=" + manualSave.xp);
+    }
+
     const offlinePage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
     offlinePage.on("pageerror", error => errors.push(error.message));
     const twelveHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
