@@ -69,8 +69,8 @@ function render(): void {
           <div><span>靈石</span><strong>${p.spiritStones}</strong></div>
           <div><span>靈草</span><strong>${p.herbs}</strong></div>
         </div>
-        <div class="progress-label"><span>修為進度</span><strong>${p.cultivationProgress.toFixed(1)} / 100</strong></div>
-        <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, p.cultivationProgress)}%"></div></div>
+        <div class="progress-label"><span>修為進度</span><strong id="progress-value">${p.cultivationProgress.toFixed(1)} / 100</strong></div>
+        <div class="progress-track"><div id="progress-fill" class="progress-fill" style="width:${Math.min(100, p.cultivationProgress)}%"></div></div>
         <div class="actions">
           <button id="cultivate" class="primary">${p.isCultivating ? '停止修煉' : '開始修煉'}</button>
           <button id="breakthrough" ${canBreakthrough && p.realmId === 'mortal' ? '' : 'disabled'}>嘗試突破</button>
@@ -139,6 +139,37 @@ function render(): void {
     }
   });
 }
+
+let lastPeriodicSave = Date.now();
+
+window.setInterval(() => {
+  if (!save.player.isCultivating || document.visibilityState !== 'visible') return;
+  settleNow();
+  const progressValue = document.querySelector<HTMLElement>('#progress-value');
+  const progressFill = document.querySelector<HTMLElement>('#progress-fill');
+  if (progressValue) progressValue.textContent = `${save.player.cultivationProgress.toFixed(1)} / 100`;
+  if (progressFill) progressFill.style.width = `${Math.min(100, save.player.cultivationProgress)}%`;
+  if (Date.now() - lastPeriodicSave >= 15_000) {
+    persist();
+    lastPeriodicSave = Date.now();
+  }
+}, 1000);
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    settleNow();
+    persist();
+  } else {
+    const result = settleOfflineCultivation(save.player, save.lastSettledAt, Date.now());
+    save.player = result.player;
+    save.lastSettledAt = result.lastSettledAt;
+    if (result.summary.elapsedSeconds > 0) {
+      offlineSummary = `返回洞府：結算 ${(result.summary.elapsedSeconds / 3600).toFixed(2)} 小時，修為增加 ${result.summary.cultivationGained.toFixed(2)}。`;
+    }
+    persist();
+    render();
+  }
+});
 
 function settleNow(): void {
   const result = settleOfflineCultivation(save.player, save.lastSettledAt, Date.now());
