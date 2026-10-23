@@ -161,6 +161,21 @@ function Game() {
         )}
         {started && tab === "home" && (
           <div className="flex min-h-[60dvh] flex-col justify-end gap-4">
+            <section className="realm-banner relative isolate overflow-hidden rounded-2xl px-5 py-5">
+              <div className="relative z-10 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[10px] tracking-[0.32em] text-jade/90">IMMORTAL JOURNEY · 仙途</p>
+                  <p className="mt-2 font-brush text-2xl text-gold-grad">雲海問道</p>
+                  <p className="mt-1 text-xs tracking-widest text-slate-300/80">靈脈流轉，仙路長明</p>
+                </div>
+                <div className="realm-seal flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-brush text-2xl text-gold">道</div>
+              </div>
+              <div className="realm-landscape" aria-hidden="true"><span /><span /><span /></div>
+              <div className="relative z-10 mt-7 flex items-center justify-between border-t border-gold/20 pt-3 text-xs">
+                <span className="text-slate-300/75">修行紀錄</span>
+                <span className="text-gold">第 {Math.max(1, save.level + 1)} 重天 · 靈氣充盈</span>
+              </div>
+            </section>
             <div className="flex flex-col items-center">
               <div className="pulse-ring flex h-28 w-28 items-center justify-center rounded-full border-2 border-gold bg-ink/70">
                 <span className="font-brush text-5xl text-gold">{realmName(save.level).slice(0, 1)}</span>
