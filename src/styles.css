@@ -90,3 +90,120 @@
 @keyframes floatup { from { opacity: 1; transform: translateY(0) } to { opacity: 0; transform: translateY(-60px) } }
 @keyframes pulsering { 0%,100% { box-shadow: 0 0 0 0 oklch(0.8 0.12 82 / .5) } 50% { box-shadow: 0 0 0 14px oklch(0.8 0.12 82 / 0) } }
 .cultivation-backdrop{background:radial-gradient(ellipse at 50% 28%,rgba(31,78,92,.46),transparent 38%),radial-gradient(ellipse at 80% 60%,rgba(105,77,42,.18),transparent 45%),linear-gradient(180deg,#101b2b 0%,#172c3b 38%,#0d1522 78%,#0b101a 100%)}
+
+
+/* Immersive xianxia visual pass */
+:root {
+  --ink: oklch(0.115 0.035 250);
+  --background: oklch(0.13 0.04 250);
+  --card: oklch(0.19 0.045 245 / 0.78);
+  --border: oklch(0.72 0.11 82 / 0.42);
+  --gold: oklch(0.83 0.13 82);
+  --jade: oklch(0.78 0.13 166);
+  --shadow-glow: 0 0 28px oklch(0.77 0.13 82 / 0.22);
+}
+body {
+  background-image: radial-gradient(ellipse at 50% -10%, rgba(54, 94, 118, .25), transparent 52%);
+  background-attachment: fixed;
+}
+.cultivation-backdrop {
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 28%, rgba(54, 126, 137, .32), transparent 34%),
+    radial-gradient(ellipse at 18% 54%, rgba(35, 95, 91, .17), transparent 38%),
+    radial-gradient(ellipse at 86% 45%, rgba(147, 105, 53, .14), transparent 34%),
+    linear-gradient(180deg, #0b1422 0%, #12283a 38%, #111c2b 70%, #080e18 100%);
+}
+.cultivation-backdrop::before,
+.cultivation-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 18% -20% 8%;
+  pointer-events: none;
+}
+.cultivation-backdrop::before {
+  opacity: .32;
+  background:
+    linear-gradient(135deg, transparent 0 39%, rgba(5, 13, 23, .92) 39.2% 42%, transparent 42.2%),
+    linear-gradient(45deg, transparent 0 48%, rgba(7, 15, 25, .95) 48.2% 52%, transparent 52.2%),
+    linear-gradient(160deg, transparent 0 56%, rgba(8, 17, 28, .9) 56.2% 62%, transparent 62.2%);
+  clip-path: polygon(0 48%, 10% 38%, 18% 50%, 30% 16%, 43% 48%, 54% 26%, 68% 52%, 80% 18%, 100% 49%, 100% 100%, 0 100%);
+  background-color: rgba(13, 32, 44, .35);
+}
+.cultivation-backdrop::after {
+  inset: 42% -10% 0;
+  opacity: .24;
+  background: linear-gradient(180deg, transparent, rgba(71, 137, 142, .2) 32%, transparent 68%);
+  filter: blur(18px);
+  animation: mist-drift 14s ease-in-out infinite alternate;
+}
+.scene-fade {
+  background:
+    linear-gradient(180deg, rgba(6, 12, 22, .42), rgba(6, 12, 22, .04) 22%, rgba(6, 12, 22, .18) 58%, var(--ink) 100%),
+    radial-gradient(ellipse at center, transparent 20%, rgba(4, 9, 17, .25) 100%);
+}
+.panel {
+  position: relative;
+  border-color: rgba(207, 173, 102, .35);
+  background: linear-gradient(145deg, rgba(23, 42, 56, .88), rgba(10, 20, 33, .88));
+  box-shadow: inset 0 1px 0 rgba(255, 235, 177, .07), inset 0 0 0 1px rgba(205, 167, 88, .08), 0 12px 32px rgba(0, 0, 0, .2);
+  backdrop-filter: blur(14px);
+}
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(207, 173, 102, .075);
+  border-radius: calc(var(--radius) - 4px);
+  pointer-events: none;
+}
+header h1 {
+  letter-spacing: .07em;
+  text-shadow: 0 2px 20px rgba(226, 184, 96, .22);
+}
+main > div > h2,
+main h2 {
+  text-shadow: 0 2px 18px rgba(217, 177, 92, .2);
+  letter-spacing: .08em;
+}
+button {
+  touch-action: manipulation;
+}
+nav[aria-label="遊戲導航"] {
+  border-color: rgba(210, 177, 104, .32);
+  background: linear-gradient(180deg, rgba(11, 22, 35, .9), rgba(5, 11, 20, .98));
+  box-shadow: 0 -12px 35px rgba(0, 0, 0, .24);
+}
+nav[aria-label="遊戲導航"] button[aria-current="page"] {
+  position: relative;
+  background: linear-gradient(180deg, rgba(214, 178, 95, .12), transparent);
+}
+nav[aria-label="遊戲導航"] button[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 28%;
+  right: 28%;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--gold);
+  box-shadow: 0 0 12px rgba(232, 195, 112, .7);
+}
+.bar-jade {
+  background: linear-gradient(90deg, #4cae9a, #a8d8ae 60%, #e1d5a1);
+  box-shadow: 0 0 16px rgba(91, 207, 173, .28);
+}
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+@keyframes mist-drift {
+  from { transform: translate3d(-2%, 0, 0) scale(1); }
+  to { transform: translate3d(2%, -3%, 0) scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cultivation-backdrop::after, .pulse-ring, .float-up { animation: none !important; }
+}
+@media (min-width: 520px) {
+  .cultivation-backdrop, .scene-fade { max-width: 480px; }
+}
