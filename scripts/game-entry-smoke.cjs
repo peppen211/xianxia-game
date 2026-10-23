@@ -67,6 +67,12 @@ async function main() {
     const statusLayout = await fullHpPage.locator("#quickStatus").evaluate(node => ({position:getComputedStyle(node).position, parent:node.parentElement?.classList.contains("realm-header")}));
     if (statusLayout.position !== "static" || !statusLayout.parent) throw new Error("Live status must stay inside the realm header, not float above the bottom navigation.");
     if (await fullHpPage.locator(".nav-icon, .header-avatar").count()) throw new Error("Decorative emoji-like navigation/header icons should be absent.");
+    const compactStatus = await fullHpPage.locator("#compactStatus").evaluate(node => ({display:getComputedStyle(node).display,scrollWidth:node.scrollWidth,clientWidth:node.clientWidth,items:[...node.querySelectorAll("span")].map(item=>item.innerText)}));
+    if (compactStatus.display === "none" || compactStatus.scrollWidth > compactStatus.clientWidth + 1 || compactStatus.items.length !== 4) {
+      throw new Error("Compact character status must remain a single non-overflowing row: " + JSON.stringify(compactStatus));
+    }
+    if ((await fullHpPage.locator("#realmPath .realm-step").count()) < 10) throw new Error("Cultivation page should show a detailed realm path.");
+    if (!(await fullHpPage.locator("#breakthroughConditions").innerText()).includes("突破需要修為")) throw new Error("Breakthrough requirements are not rendered.");
     for (const tab of ["cultivate","explore","shop","bag"]) {
       await fullHpPage.locator(`button[data-tab="${tab}"]`).click();
       if (!(await fullHpPage.locator(`#${tab}`).isVisible())) throw new Error("Bottom navigation failed to open " + tab + ".");
@@ -92,11 +98,12 @@ async function main() {
     await injuredPage.locator("#start").click();
     await injuredPage.locator('button[data-tab="shop"]').click();
     await injuredPage.locator("#buyHeal").click();
+    await injuredPage.waitForFunction(() => document.querySelector("#shopStones")?.textContent?.trim() === "5" && document.querySelector("#hp")?.textContent?.trim() === "90/100");
     const healedStones = await injuredPage.locator("#shopStones").innerText();
     const healedHp = await injuredPage.locator("#hp").innerText();
     const healedSave = JSON.parse(await injuredPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
     if (healedStones.trim() !== "5" || healedHp.trim() !== "90/100" || healedSave.stones !== 5 || healedSave.hp !== 90) {
-      throw new Error("Healing purchase did not charge exactly 5 stones and restore 40 HP.");
+      throw new Error("Healing purchase did not charge exactly 5 stones and restore 40 HP. Observed: "+JSON.stringify({healedStones,healedHp,stones:healedSave.stones,hp:healedSave.hp}));
     }
     const manualCultivationPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
     manualCultivationPage.on("pageerror", error => errors.push(error.message));
