@@ -103,7 +103,6 @@ function Game() {
     if (skillCooldown > 0) { setBattleLog(`神通尚需等待 ${skillCooldown} 回合。`); return; }
     setSkillCooldown(2);
     onBattleAttack(2);
-    setBattleLog(`施展「裂山斬」！${battleLog}`);
   };
   const onBattleHeal = () => {
     const current = saveRef.current;
