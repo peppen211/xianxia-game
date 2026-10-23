@@ -405,9 +405,23 @@ input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-sel
     lastTick=Date.now();
   });
   try{
-    const stored=JSON.parse(localStorage.getItem(SAVE_KEY));
-    if(stored&&typeof stored==="object")state=applyOfflineProgress(normalizeSave(stored));
-  }catch(error){console.warn("Could not load save",error);}
+    const rawSave=localStorage.getItem(SAVE_KEY);
+    if(rawSave!==null){
+      try{
+        const stored=JSON.parse(rawSave);
+        if(!stored||typeof stored!=="object"||Array.isArray(stored))throw new Error("存檔格式不是有效的角色資料");
+        state=applyOfflineProgress(normalizeSave(stored));
+      }catch(error){
+        console.warn("Could not parse local save; preserving a backup",error);
+        try{
+          localStorage.setItem(SAVE_KEY+".corruptBackup."+Date.now(),rawSave);
+          toast("存檔格式異常，已嘗試保留原始資料備份。");
+        }catch(backupError){
+          console.warn("Could not back up malformed save",backupError);
+        }
+      }
+    }
+  }catch(error){console.warn("Could not access local save",error);}
   entered=false;
   render();
 })();
