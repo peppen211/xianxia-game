@@ -102,7 +102,7 @@ async function main() {
     const healedHp = await injuredPage.locator("#hp").innerText();
     const healedSave = JSON.parse(await injuredPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
     if (healedStones.trim() !== "5" || healedHp.trim() !== "90/100" || healedSave.stones !== 5 || healedSave.hp !== 90) {
-      throw new Error("Healing purchase did not charge exactly 5 stones and restore 40 HP.");
+      throw new Error("Healing purchase did not charge exactly 5 stones and restore 40 HP. Observed: "+JSON.stringify({healedStones,healedHp,stones:healedSave.stones,hp:healedSave.hp}));
     }
     const manualCultivationPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
     manualCultivationPage.on("pageerror", error => errors.push(error.message));
