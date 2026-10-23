@@ -95,3 +95,28 @@ body { padding-bottom: 82px; }
     border-radius: 16px 16px 0 0;
   }
 }
+
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.settings-actions button {
+  min-height: 38px;
+  padding: 8px 10px;
+  font-size: .78rem;
+}
+@media (max-width: 520px) {
+  footer#settings {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .settings-actions {
+    order: 3;
+    width: 100%;
+  }
+  .settings-actions button {
+    flex: 1;
+  }
+}
