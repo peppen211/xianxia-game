@@ -22,7 +22,9 @@ jobs:
       - name: Run gameplay tests
         run: npm test
       - name: Build production site
-        run: npm run build
+        run: |
+          npm run build
+          cp latest.html dist/latest.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
