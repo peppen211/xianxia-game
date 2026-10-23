@@ -17,9 +17,9 @@
   "elementCounters": {
     "金": "木",
     "木": "土",
+    "土": "水",
     "水": "火",
-    "火": "金",
-    "土": "水"
+    "火": "金"
   },
   "elementDamage": {
     "advantage": 1.35,
@@ -31,19 +31,22 @@
       "cost": 0,
       "tag": "輸出",
       "unlock": "初始解鎖",
-      "effect": "修為累積 +20%"
+      "effect": "修為累積 +20%",
+      "rate": 1.2
     },
     {
       "cost": 80,
       "tag": "放置",
       "unlock": "累積 80 靈石即可解鎖",
-      "effect": "放置收益提升 35%"
+      "effect": "放置收益提升 35%",
+      "rate": 1.35
     },
     {
       "cost": 120,
       "tag": "生存",
       "unlock": "累積 120 靈石即可解鎖",
-      "effect": "戰鬥攻擊提升 20%"
+      "effect": "戰鬥攻擊提升 20%",
+      "rate": 1
     }
   ],
   "chapters": [
@@ -127,5 +130,19 @@
       "dungeon": "天道試煉",
       "unlock": "終局挑戰、長生目標"
     }
-  ]
+  ],
+  "initial": {
+    "gold": 100,
+    "spirit": 0,
+    "herbs": 3,
+    "pills": 2,
+    "atk": 10,
+    "def": 3,
+    "hp": 100,
+    "maxHp": 100,
+    "wood": 2,
+    "crystal": 1
+  },
+  "skillDamageMultiplier": 2.1,
+  "sneakAttackMultiplier": 1.55
 }
