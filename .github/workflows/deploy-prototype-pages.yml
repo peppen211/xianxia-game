@@ -75,14 +75,24 @@ jobs:
             await page.locator('#start').click();
             await page.locator('#cultivateBtn').click();
             await page.getByRole('button', { name: '停止修煉' }).waitFor({ timeout: 10000 });
+            await page.locator('#cultivateBtn').click();
             await page.locator('button[data-tab="explore"]').click();
-            await page.locator('#gather').click();
+            for (let i = 0; i < 3; i++) await page.locator('#gather').click();
+            await page.locator('#claimExplore').waitFor({ state: 'visible' });
+            if (await page.locator('#claimExplore').isDisabled()) throw new Error('Explore quest did not unlock after three gathers.');
+            await page.locator('#claimExplore').click();
+            await page.locator('#openBattle').click();
+            await page.locator('#fight').click();
+            await page.locator('#fight').click();
+            await page.locator('button[data-tab="explore"]').click();
+            if (await page.locator('#claimFight').isDisabled()) throw new Error('Battle quest did not unlock after two fights.');
+            await page.locator('#claimFight').click();
             await page.locator('button[data-tab="shop"]').click();
             await page.locator('#buyHerbs').click();
             await page.locator('button[data-tab="bag"]').click();
             await page.locator('#rest').waitFor({ timeout: 5000 });
             if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
-            console.log('Mobile browser smoke test passed: game rendered, cultivation toggled, exploration, shop, and inventory controls worked.');
+            console.log('Mobile gameplay flow passed: enter, cultivate, explore, claim quest, battle twice, claim reward, purchase supplies, and open inventory.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
