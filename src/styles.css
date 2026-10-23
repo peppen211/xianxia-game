@@ -251,3 +251,83 @@ button:focus-visible {
 .realm-landscape span:nth-child(1) { left: -18%; transform: scale(.92); opacity: .7; }
 .realm-landscape span:nth-child(2) { left: 22%; bottom: -38%; transform: scale(1.15); background: linear-gradient(145deg, rgba(96, 146, 142, .3), rgba(9, 23, 37, .98) 65%); }
 .realm-landscape span:nth-child(3) { right: -28%; bottom: -34%; transform: scale(.88); opacity: .75; }
+
+
+/* Full interface polish: cultivation shortcuts, battle stage, collectible artifacts */
+.realm-shortcut {
+  min-height: 102px;
+  border-color: rgba(208, 177, 107, .27);
+  background: linear-gradient(155deg, rgba(26, 52, 63, .82), rgba(9, 19, 31, .9));
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.realm-shortcut:active { transform: translateY(1px) scale(.97); border-color: rgba(225, 192, 111, .75); }
+.realm-shortcut > span:first-child {
+  color: #e2c47c;
+  text-shadow: 0 0 18px rgba(219, 181, 93, .35);
+}
+.battle-scene {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(110, 48, 50, .25), transparent 42%),
+    linear-gradient(180deg, rgba(18, 28, 42, .96), rgba(8, 14, 24, .96));
+}
+.battle-moon {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: 150px;
+  height: 150px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(211, 179, 130, .16), rgba(172, 94, 77, .06) 55%, transparent 72%);
+  box-shadow: 0 0 60px rgba(170, 93, 77, .1);
+}
+.monster-stage {
+  isolation: isolate;
+  border-bottom: 1px solid rgba(207, 172, 102, .18);
+}
+.monster-stage::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 15% 8% -1px;
+  background: linear-gradient(180deg, transparent, rgba(107, 51, 48, .17));
+  clip-path: polygon(0 100%, 15% 48%, 30% 72%, 50% 18%, 72% 66%, 85% 35%, 100% 100%);
+}
+.monster-aura {
+  position: absolute;
+  z-index: -1;
+  width: 138px;
+  height: 138px;
+  border: 1px solid rgba(194, 109, 91, .3);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(179, 72, 64, .16), transparent 68%);
+  box-shadow: 0 0 35px rgba(168, 65, 60, .16), inset 0 0 25px rgba(168, 65, 60, .08);
+  animation: monster-breathe 3.2s ease-in-out infinite;
+}
+.monster-glyph {
+  position: relative;
+  border: 1px solid rgba(221, 177, 119, .3);
+  background: radial-gradient(circle at 35% 25%, rgba(240, 216, 165, .12), rgba(12, 19, 29, .7) 70%);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .5));
+  text-shadow: 0 0 24px rgba(219, 133, 94, .3);
+}
+.collection-card {
+  overflow: hidden;
+  transition: transform .18s ease, border-color .18s ease;
+}
+.collection-card.is-owned {
+  border-color: rgba(214, 182, 107, .5);
+  background: linear-gradient(120deg, rgba(31, 55, 65, .9), rgba(11, 21, 33, .94));
+}
+.collection-card.is-owned .collection-glyph {
+  box-shadow: 0 0 20px rgba(216, 178, 99, .1), inset 0 0 20px rgba(216, 178, 99, .06);
+}
+.collection-card.is-locked .collection-glyph { border-style: dashed; }
+@keyframes monster-breathe {
+  0%, 100% { transform: scale(.96); opacity: .65; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .monster-aura { animation: none; }
+  .realm-shortcut { transition: none; }
+}
