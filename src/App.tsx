@@ -4,7 +4,7 @@ import { QuestPanel } from "@/game/QuestPanel";
 import {
   ARTIFACTS, CHARACTERS, PETS, PILL_COST, SUMMON_COST, type Rarity, type Save,
   breakthrough, buyPill, canBreak, cultivate, load, maxProgress, newSave, persist,
-  pillsNeeded, realmName, successRate, summon, wipe, enterGame, explore, claimReward,
+  pillsNeeded, realmName, successRate, summon, wipe, enterGame, explore, claimReward, craftPill,
 } from "@/game/logic";
 
 export default function App() { return <Game />; }
@@ -271,7 +271,7 @@ function Game() {
             <Unlock save={save} updateSave={updateSave} kind="pets" />
           </div>
         )}
-        {started && tab === "quests" && <QuestPanel save={save} onClaim={(kind, id) => updateSave((current) => claimReward(current, kind, id))} onExplore={() => {
+        {started && tab === "quests" && <QuestPanel save={save} onClaim={(kind, id) => updateSave((current) => claimReward(current, kind, id))} onCraft={() => { updateSave(craftPill); setToast({ ok: true, text: "丹爐火候正好！\n破境丹 ×1 已煉成" }); }} onExplore={() => {
           const current = saveRef.current;
           if (!current) return;
           const result = explore(current, Math.random());
