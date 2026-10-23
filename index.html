@@ -253,6 +253,53 @@ main{overflow:hidden}.screen{overflow:hidden;padding:8px 10px 8px;gap:6px;scroll
 .ui-modal{position:absolute;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:18px 12px}.ui-modal.show{display:flex}.modal-backdrop{position:absolute;inset:0;background:#05080edb;backdrop-filter:blur(5px)}.modal-card{position:relative;display:flex;flex-direction:column;width:min(100%,520px);max-height:min(84dvh,760px);min-height:140px;border:1px solid #9e8758;border-radius:16px;background:linear-gradient(155deg,#202b3a,#111720 82%);box-shadow:0 18px 70px #0009;overflow:hidden}.modal-head{height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #ffffff15}.modal-head b{font-size:14px;color:var(--gold)}.modal-close{width:32px;height:32px;border-radius:9px;background:#ffffff0d;font-size:15px}.modal-body{padding:12px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#786344 transparent}.modal-body::-webkit-scrollbar{width:4px}.modal-body::-webkit-scrollbar-thumb{background:#786344;border-radius:4px}.modal-body .chronicle-entry{margin-bottom:8px}.modal-body .chronicle-entry p{line-height:1.7}.modal-body .rowitem{margin:0 0 7px!important}.modal-body .rowitem:last-child{margin-bottom:0!important}.modal-body .rowitem button{flex-shrink:0;padding:7px 9px;font-size:10px}.method-detail-grid{display:grid;grid-template-columns:1fr;gap:8px}.method-detail-grid .panel{margin:0}.method-detail-grid p{font-size:11px;line-height:1.7;color:var(--muted)}.method-detail-grid .btn{width:100%;margin-top:8px}.recipe-list{display:flex;flex-direction:column;gap:8px}.recipe-list .panel{margin-top:4px}.modal-body .loglist{max-height:none;overflow:visible}
 @media(max-height:700px){.hero{height:100px;min-height:100px}.hero-copy{top:9px}.hero-copy h2{font-size:18px}.hero-copy p{display:none}.hero-bottom{bottom:5px}.enemy-scene{height:78px!important}.enemy-art{width:66px;height:66px}.battle{padding:6px 8px!important}.screen{padding-top:5px;gap:4px}.corebar{height:45px}.modal-card{max-height:88dvh}}
 @media(max-width:380px){.core-label{font-size:9px}.core-label span{font-size:8px}.core-break{min-width:57px}.currency{font-size:8px;padding:5px 4px}.method-card{padding:6px 3px}.method-card>b{font-size:9px}.method-card .btn{font-size:8px}}
+
+/* Compact five-tab layout: only modal content may scroll */
+.screen{overflow:hidden!important;overflow-y:hidden!important;overscroll-behavior:none!important}
+.screen>*{flex-shrink:0}
+.screen#home{display:none!important}
+.screen#cultivate.active{display:flex!important}
+#cultivate .realm-art,#cultivate .realm-desc,#cultivate .panel:has(#breakBtn),#cultivate #methodList{display:none!important}
+#cultivate .battle{min-height:0!important;height:auto!important;flex:1;gap:5px;padding:7px 8px!important}
+#cultivate .battle>.secthead{margin:0}
+#cultivate .enemy-scene{flex:1;min-height:64px!important;height:auto!important}
+#cultivate .enemy-art{width:68px;height:68px}
+#cultivate #battleStory{display:none}
+#cultivate .battle-actions .btn{min-height:36px}
+#cultivate .idle-card{min-height:60px;padding:7px 9px!important;gap:7px}
+#cultivate .idle-icon{width:35px;height:35px;flex-shrink:0}
+#cultivate .idle-icon svg{width:31px;height:31px}
+#cultivate .idle-text p{display:none}
+#cultivate .chronicle-teaser{padding:7px 9px!important;min-height:44px}
+#cultivate .chronicle-teaser .storyline{display:none!important}
+#cultivate .chronicle-teaser .secthead{margin:0}
+#cultivate .chronicle-teaser .btn{min-height:32px;margin-top:4px!important}
+#cultivate>.page-title{min-height:27px}
+#cultivate>.secthead{margin:0}
+#cultivate .method-cards{display:none!important}
+#journal{display:none!important}
+.screen#journal.active{display:flex!important}
+#journal>*{display:none!important}
+#journal>#journalQuick{display:flex!important;flex-direction:column;gap:9px;width:100%}
+#journalQuick .panel{margin:0;padding:12px}
+#journalQuick .panel b{font-size:12px}
+#journalQuick .panel p{font-size:10px;line-height:1.5;color:var(--muted);margin:5px 0 0}
+#journalQuick .btn{min-height:40px;width:100%}
+#character .scrolllist,#bag .scrolllist,#forge .scrolllist{display:none!important}
+.modal-body{overflow-y:auto!important;overscroll-behavior:contain!important}
+.bottom{grid-template-columns:repeat(5,minmax(0,1fr));height:59px;gap:2px;padding-left:4px;padding-right:4px}
+.bottom .nav{min-width:0;font-size:9px;padding:3px 1px}
+.bottom .ico{height:21px}
+@media(max-height:700px){
+ .top{height:48px}.corebar{height:43px}
+ #cultivate .battle{gap:4px;padding:5px 7px!important}
+ #cultivate .enemy-scene{min-height:52px!important}
+ #cultivate .enemy-art{width:55px;height:55px}
+ #cultivate .idle-card{min-height:52px}
+ #cultivate .chronicle-teaser{min-height:39px}
+ #journalQuick .panel{padding:9px}
+}
+@media(max-width:380px){.bottom .nav{font-size:8px}.bottom .ico svg{width:22px;height:22px}}
 </style></head><body><div class="app">
 <header class="top"><div class="brand"><div class="mark"><svg class="cultivation-seal" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="#f8e6b4" stroke-width="1.4"/><circle cx="32" cy="32" r="22" fill="none" stroke="#f8e6b4" stroke-width=".8" stroke-dasharray="2 4"/><path d="M32 10a11 11 0 0 1 0 22 11 11 0 0 0 0 22 22 22 0 0 1 0-44Z" fill="#f8e6b4"/><circle cx="32" cy="21" r="3" fill="#7e5a32"/><circle cx="32" cy="43" r="3" fill="#f8e6b4"/><path d="M32 2v6M32 56v6M2 32h6M56 32h6" stroke="#f8e6b4" stroke-width="1.5"/></svg></div><div><strong>九霄問道</strong><small>NINE HEAVENS · IDLE CULTIVATION</small></div></div><div class="currencies"><div class="currency">🪙 <b id="goldTop">100</b></div><div class="currency">💠 <b id="spiritTop">0</b></div><div class="currency">🌿 <b id="herbsTop">3</b></div></div></header><div class="corebar"><div class="core-progress"><div class="core-label"><b id="globalRealm">練氣一層</b><span>修為 <strong id="globalXpText">0/100</strong> · 戰力 <strong id="globalPower">18</strong></span></div><div class="progress"><span id="globalXpBar"></span></div></div><button class="btn primary core-break" id="globalBreakBtn">突破</button></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉">✕</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -274,7 +321,7 @@ main{overflow:hidden}.screen{overflow:hidden;padding:8px 10px 8px;gap:6px;scroll
  <div class="panel" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:11px">煉器材料</b><div style="font-size:9px;color:var(--muted);margin-top:4px">🪵 靈木 <b id="woodCount">0</b>　💠 靈晶 <b id="crystalCount">0</b></div></div><button class="btn secondary" id="convertDup">材料交換</button></div>
 </section>
 <section class="screen" id="journal"><div class="page-title"><h2>📜 韓立仙途紀事</h2><span>世界觀 · 勢力 · 主線階段</span></div><div class="panel hanli-intro"><div class="secthead"><span>主角：韓立</span><small id="storyCurrentLabel">當前篇章</small></div><div class="storyline" id="storyCurrentText">出身凡俗，謹慎行事，從微末修行一步步走向更廣闊的天地。</div><div class="story-tags"><span>長生求道</span><span>謹慎自保</span><span>機緣與代價</span><span>凡界至仙界</span></div></div><div class="secthead"><span>主線階段與世界地圖</span><small>依目前境界與試煉進度標示</small></div><div id="hanliChronicle" class="chronicle-list"></div><div class="panel" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:11px">離線放置收益</b><div id="offlineSummary" style="font-size:9px;color:var(--muted);margin-top:4px">修煉從未停止。</div></div><button class="btn secondary" id="claimIdle">領取收益</button></div><div class="secthead"><span>修仙日誌</span><small>最新事件在底部</small></div><div class="loglist" id="logs"></div><div class="action-grid"><button class="btn secondary" id="saveBtn">💾 儲存進度</button><button class="btn danger" id="resetBtn">重新開始</button></div><div class="smallnote">本機儲存；離線收益最多累積 8 小時。主線紀事為精簡世界觀導覽，不改動既有存檔結構。</div></section>
-</main><nav class="bottom"><button class="nav active" data-screen="home"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 25 12 12l5 7 4-5 8 11Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M6 27h20M21 5a5 5 0 0 1 5 5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="22" cy="8" r="3" fill="none" stroke="currentColor"/></svg></span>仙途</button><button class="nav" data-screen="cultivate"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="16" cy="16" r="9" fill="none" stroke="currentColor" stroke-dasharray="1.5 3"/><path d="M16 5a5.5 5.5 0 0 1 0 11 5.5 5.5 0 0 0 0 11 11 11 0 0 1 0-22Z" fill="currentColor"/><circle cx="16" cy="10.5" r="1.5" fill="#292129"/><circle cx="16" cy="21.5" r="1.5" fill="currentColor"/></svg></span>修煉</button><button class="nav" data-screen="character"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 19 12 28 16 19 19 16 29 13 19 4 16 13 12Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="16" cy="16" r="3" fill="currentColor"/></svg></span>角色</button><button class="nav" data-screen="bag"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 11h18l2 17H5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11 12V9a5 5 0 0 1 10 0v3M11 18c2 3 8 3 10 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>法寶</button><button class="nav" data-screen="forge"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 25 8v10l-9 11-9-11V8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="16" cy="14" r="5" fill="none" stroke="currentColor"/><path d="M16 7v3m0 8v3m-7-7h3m8 0h3" stroke="currentColor"/></svg></span>祈寶煉器</button></nav>
+</main><nav class="bottom"><button class="nav active" data-screen="cultivate"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 25 12 12l5 7 4-5 8 11Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M6 27h20M21 5a5 5 0 0 1 5 5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="22" cy="8" r="3" fill="none" stroke="currentColor"/></svg></span>修煉</button><button class="nav" data-screen="cultivate"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="16" cy="16" r="9" fill="none" stroke="currentColor" stroke-dasharray="1.5 3"/><path d="M16 5a5.5 5.5 0 0 1 0 11 5.5 5.5 0 0 0 0 11 11 11 0 0 1 0-22Z" fill="currentColor"/><circle cx="16" cy="10.5" r="1.5" fill="#292129"/><circle cx="16" cy="21.5" r="1.5" fill="currentColor"/></svg></span>修煉</button><button class="nav" data-screen="character"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 19 12 28 16 19 19 16 29 13 19 4 16 13 12Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="16" cy="16" r="3" fill="currentColor"/></svg></span>角色</button><button class="nav" data-screen="bag"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 11h18l2 17H5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11 12V9a5 5 0 0 1 10 0v3M11 18c2 3 8 3 10 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>法寶</button><button class="nav" data-screen="forge"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 25 8v10l-9 11-9-11V8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="16" cy="14" r="5" fill="none" stroke="currentColor"/><path d="M16 7v3m0 8v3m-7-7h3m8 0h3" stroke="currentColor"/></svg></span>煉器</button><button class="nav" data-screen="journal"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 5h16v22H8zM12 11h8M12 16h8M12 21h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>紀事</button></nav>
 </div>
 <script>
 const KEY='nine_heavens_idle_v2'; let storageBlocked=false;
@@ -355,7 +402,29 @@ function renderChronicle(){
  const list=document.getElementById('hanliChronicle');if(!list)return;
  list.innerHTML=hanliStages.map((st,i)=>{const status=i<idx?'已走過':i===idx?'目前篇章':'後續方向';const cls=i<idx?'done':i===idx?'current':'future';return '<article class="chronicle-entry '+cls+'"><div class="chronicle-top"><b>'+esc(st.title)+'</b><span>'+status+'</span></div><div class="chronicle-world">'+esc(st.world)+'</div><p>'+esc(st.event)+'</p><div class="chronicle-task">'+esc(st.task)+'</div></article>'}).join('');
 }
-document.getElementById('attackBtn').onclick=()=>attack(false);document.getElementById('skillBtn').onclick=()=>attack(true);document.getElementById('meditateBtn').onclick=meditate;document.getElementById('breakBtn').onclick=()=>{if(s.xp<xpNeed()){toast('修為尚未圓滿，繼續吐納或試煉吧');return}checkLevel();render()};document.getElementById('drawOne').onclick=()=>draw(1);document.getElementById('drawTen').onclick=()=>draw(10);document.getElementById('craftStaff').onclick=()=>craft('staff');document.getElementById('craftRobe').onclick=()=>craft('robe');document.getElementById('craftCharm').onclick=()=>craft('charm');document.getElementById('convertDup').onclick=convertDup;document.getElementById('claimIdle').onclick=claimIdle;document.getElementById('saveBtn').onclick=()=>{save();toast('進度已儲存')};document.getElementById('resetBtn').onclick=()=>{if(confirm('確定清除存檔並重新開始仙途？')){localStorage.removeItem(KEY);s=base();spawnEnemy();s.logs=[];note('🌱 新的仙途開始了。');render();switchScreen('home')}};document.getElementById('buyPill').onclick=buyPill;
+document.getElementById('attackBtn').onclick=()=>attack(false);document.getElementById('skillBtn').onclick=()=>attack(true);document.getElementById('meditateBtn').onclick=meditate;document.getElementById('breakBtn').onclick=()=>{if(s.xp<xpNeed()){toast('修為尚未圓滿，繼續吐納或試煉吧');return}checkLevel();render()};document.getElementById('drawOne').onclick=()=>draw(1);document.getElementById('drawTen').onclick=()=>draw(10);document.getElementById('craftStaff').onclick=()=>craft('staff');document.getElementById('craftRobe').onclick=()=>craft('robe');document.getElementById('craftCharm').onclick=()=>craft('charm');document.getElementById('convertDup').onclick=convertDup;document.getElementById('claimIdle').onclick=claimIdle;document.getElementById('saveBtn').onclick=()=>{save();toast('進度已儲存')};document.getElementById('resetBtn').onclick=()=>{if(confirm('確定清除存檔並重新開始仙途？')){localStorage.removeItem(KEY);s=base();spawnEnemy();s.logs=[];note('🌱 新的仙途開始了。');render();switchScreen('cultivate')}};document.getElementById('buyPill').onclick=buyPill;
 function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){storageBlocked=true;s=base()}try{const parsed=JSON.parse(raw||'{}');if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('invalid save shape');s=Object.assign(base(),parsed)}catch(e){s=base();if(raw!==null){try{localStorage.setItem(KEY+'_backup_'+Date.now(),raw)}catch(backupError){storageBlocked=true}if(!storageBlocked)toast('偵測到異常存檔，已先保留備份並以新進度啟動；原始備份未刪除。')}}if(!s.ownedMethods)s.ownedMethods=[0];if(!s.equipped)s.equipped={weapon:null,armor:null,charm:null};if(!s.logs)s.logs=[];if(!s.lastOfflineClaim)s.lastOfflineClaim=Date.now();if(!('offlineReport' in s))s.offlineReport=null;let elapsed=Math.min(8*3600,Math.max(0,(Date.now()-(s.last||Date.now()))/1000));if(elapsed>30){let rate=s.method===1?1.35:1,xp=Math.floor(elapsed/12*rate*(s.method===0?1.2:1)*(1+gearPerks().bonusXp)),gold=Math.floor(elapsed/90*rate);s.xp+=xp;s.gold+=gold;s.offlineSec+=elapsed;s.offlineReport={seconds:Math.floor(elapsed),xp,gold,at:Date.now(),source:'離線自動結算'};checkLevel();note(`🌙 離線吐納 ${formatDuration(elapsed)}，收益入帳：修為 +${xp}、靈石 +${gold}。`,'good')}s.lastOfflineClaim=Date.now();spawnEnemy();if(storageBlocked)toast('存檔不可安全讀寫，已暫停自動寫入以保護原始資料。');else save()}
+
+/* Keep the existing game systems and save schema; only reorganize the visible panels. */
+(function prepareCompactTabs(){
+ const home=document.getElementById('home'), cultivate=document.getElementById('cultivate');
+ if(!home||!cultivate)return;
+ const title=cultivate.querySelector('.page-title');
+ const battle=home.querySelector('.battle'), idle=home.querySelector('.idle-card'), teaser=home.querySelector('.chronicle-teaser');
+ const methodHead=[...cultivate.querySelectorAll(':scope > .secthead')].pop();
+ if(title&&battle)cultivate.insertBefore(battle,title.nextSibling);
+ if(battle&&idle)cultivate.insertBefore(idle,battle.nextSibling);
+ if(idle&&teaser)cultivate.insertBefore(teaser,idle.nextSibling);
+ if(methodHead)cultivate.appendChild(methodHead);
+ const navs=[...document.querySelectorAll('.nav[data-screen="cultivate"]')];
+ if(navs.length>1)navs.slice(1).forEach(n=>n.remove());
+ const journal=document.getElementById('journal');
+ if(journal&&!document.getElementById('journalQuick')){
+  const quick=document.createElement('div'); quick.id='journalQuick';
+  quick.innerHTML='<div class="page-title"><h2>📜 主線紀事</h2><span id="storyCurrentLabelQuick">當前階段</span></div><div class="panel"><b>八階段仙途紀事</b><p>查看韓立目前的篇章、世界觀與後續修行方向。</p><button class="btn secondary" onclick="openChronicleModal()">查看完整紀事</button></div><div class="panel"><b>離線放置收益</b><p>收益最多累積 8 小時，詳細結算與最近事件收在彈窗內。</p><button class="btn secondary" onclick="openOfflineModal()">查看收益與領取</button></div><div class="panel"><b>存檔管理</b><p>保留目前存檔；不會因切換分頁重置進度。</p><button class="btn secondary" onclick="openSaveModal()">存檔與設定</button></div>';
+  journal.insertBefore(quick,journal.firstChild);
+ }
+})();
+
 load();render();
 </script></body></html>
