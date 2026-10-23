@@ -13,7 +13,9 @@ npm run dev
 
 ## 驗證
 
-GitHub Actions 工作流程位於 `.github/workflows/prototype-ci.yml`，原型相關檔案變更時會執行單元測試與建置。工作流程存在不代表檢查已通過；請以 Actions 實際執行結果為準。
+GitHub Actions 工作流程位於 `.github/workflows/prototype-ci.yml`，原型相關檔案變更時會執行單元測試與建置。工作流程存在不代表檢查已通過；請以 [Actions 執行記錄](https://github.com/peppen211/xianxia-game/actions/workflows/prototype-ci.yml) 的實際結果為準。
+
+截至 2026-10-23，本次維護已確認 workflow 設定與測試原始碼存在，但目前連線工具未能提供完整 workflow run 清單，且本地執行環境無法連線下載 GitHub 原始碼。因此測試／建置仍標記為未驗證，不可視為通過。任何新提交觸發的 CI，均須在 Actions 頁面確認最終狀態。
 
 ```bash
 npm test
