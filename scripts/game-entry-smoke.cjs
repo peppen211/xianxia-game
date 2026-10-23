@@ -98,6 +98,7 @@ async function main() {
     await injuredPage.locator("#start").click();
     await injuredPage.locator('button[data-tab="shop"]').click();
     await injuredPage.locator("#buyHeal").click();
+    await injuredPage.waitForFunction(() => document.querySelector("#shopStones")?.textContent?.trim() === "5" && document.querySelector("#hp")?.textContent?.trim() === "90/100");
     const healedStones = await injuredPage.locator("#shopStones").innerText();
     const healedHp = await injuredPage.locator("#hp").innerText();
     const healedSave = JSON.parse(await injuredPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
