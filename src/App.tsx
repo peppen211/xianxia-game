@@ -97,7 +97,7 @@ function Game() {
           <div className="flex min-h-[60dvh] flex-col items-center justify-end gap-6 pb-8">
             <p className="font-brush text-4xl text-gold">仙途再啟</p>
             <Button variant="gameGold" size="game" className="w-full py-5 text-2xl" onClick={() => { updateSave((current) => enterGame(current)); startedRef.current = true; setStarted(true); }}>開始遊戲</Button>
-            <p className="text-xs text-muted-foreground">v0.7 · 修行錄</p>
+            <p className="text-xs text-muted-foreground">v0.8.0 · 修行錄</p>
           </div>
         )}
         {started && tab === "home" && (
