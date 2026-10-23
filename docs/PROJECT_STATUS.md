@@ -120,3 +120,6 @@
 - 已從 GitHub 回讀入口原始碼，確認檔案存在且修正語法片段已更新。這是遠端原始碼檢查；**尚未在瀏覽器執行 JavaScript、未執行 npm 測試或建置，也未完成 iPhone 實機操作測試**。
 - 部署狀態：根目錄入口已提交至 `main`。如果 Pages 設定為 `main / (root)`，此入口應成為首頁；但目前連線工具無法讀取 Pages 設定或確認部署完成，因此尚不能宣稱網址已實際可玩。若目前 Pages 使用 GitHub Actions artifact，需將 Pages 發布來源切換為 `main / (root)`，或修正 Actions 發布設定。
 - 測試版本 `0.6` 是本輪迭代標記，並不代表測試通過。下一步應立即確認公開網址顯示的內容，若仍未更新，處理 Pages source／deployment，再完成瀏覽器端驗證。
+
+- 後續補強發布流程 commit：`6a12ea13013bae0ff2a9b17f3db76953c2ce32e2`。已將根目錄 `index.html` 加入 workflow 觸發條件，workflow 會先執行 prototype 的 npm 測試與 build，再將單檔可玩入口作為 Pages artifact 發布；同時加入 `actions/configure-pages@v5`。這樣若 Pages 採 Actions 發布，可自動發布入口；若採 main/root，根目錄入口也已直接存在。
+- 該 workflow 更新已提交並會觸發 push 工作流程，但本次 GitHub 連線工具仍無法讀取一般 push run 清單或公開 Actions 頁面；因此**測試、建置與部署結果仍待實際 run 證據**。公開 Pages 網址也未能由目前網頁檢視工具載入，不能把 commit 當作部署成功證據。
