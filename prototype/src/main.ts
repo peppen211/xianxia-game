@@ -71,6 +71,28 @@ function render(): void {
       <section class="notice"><strong>原型測試提醒</strong><p>此版本只驗證核心流程。境界突破門檻與修煉數值為測試用暫定規則，尚未完成原著考證。</p></section>
       ${offlineSummary ? `<section class="offline"><strong>洞府近況</strong><p>${offlineSummary}</p></section>` : ''}
       ${storageWarning ? `<section class="warning" role="alert">${storageWarning}</section>` : ''}
+      <section class="panel home-dashboard" id="home-dashboard">
+        <div class="section-heading"><h2>洞府一覽</h2><span class="muted">今日修行</span></div>
+        <div class="home-character">
+          <div class="avatar-seal" aria-hidden="true">修</div>
+          <div class="home-character-info">
+            <strong>${escapeHtml(p.name)}</strong>
+            <span>${p.realmId === 'mortal' ? '凡人 · 尚未入道' : `練氣 ${p.realmStage} 層`}</span>
+            <span class="cultivation-state">${p.isCultivating ? '● 正在閉關修煉' : '○ 尚未開始修煉'}</span>
+          </div>
+        </div>
+        <div class="home-progress-label"><span>修為進度</span><strong>${p.cultivationProgress.toFixed(1)}%</strong></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, p.cultivationProgress)}%"></div></div>
+        <div class="home-resources">
+          <div><span>靈石</span><strong>${p.spiritStones}</strong></div>
+          <div><span>靈草</span><strong>${p.herbs}</strong></div>
+        </div>
+        <div class="home-quick-actions">
+          <button type="button" class="primary" id="home-cultivate">${p.isCultivating ? '停止修煉' : '開始修煉'}</button>
+          <button type="button" id="home-explore">${eventSeen ? '山泉已探索' : '前往探索'}</button>
+        </div>
+        <p class="hint">修煉會持續累積修為；離開一段時間後再次回來，可結算離線收益。</p>
+      </section>
       <section class="panel" id="cultivation">
         <div class="section-heading"><h2>角色狀態</h2><span class="muted">人界 · 起始階段</span></div>
         <label class="field">道友稱呼<input id="player-name" maxlength="24" value="${escapeHtml(p.name)}" /></label>
@@ -128,6 +150,21 @@ function render(): void {
     const shell = document.querySelector<HTMLElement>('.shell');
     currentPage = 'home';
     if (shell) shell.dataset.page = 'home';
+  });
+
+  document.querySelector<HTMLButtonElement>('#home-cultivate')?.addEventListener('click', () => {
+    settleNow();
+    save.player.isCultivating = !save.player.isCultivating;
+    save.lastSettledAt = Date.now();
+    offlineSummary = save.player.isCultivating ? '已開始閉關修煉。' : '已停止修煉。';
+    persist();
+    render();
+  });
+  document.querySelector<HTMLButtonElement>('#home-explore')?.addEventListener('click', () => {
+    currentPage = 'exploration';
+    const shell = document.querySelector<HTMLElement>('.shell');
+    if (shell) shell.dataset.page = 'exploration';
+    render();
   });
 
   document.querySelector<HTMLButtonElement>('#cultivate')?.addEventListener('click', () => {
