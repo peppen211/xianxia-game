@@ -139,6 +139,11 @@ body.started .page{padding-bottom:150px}
 .realm-header{order:1}#heroPanel{order:2}.stats{order:3}footer{order:7}
 body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
 @media(max-width:360px){.quick-status{padding:6px 8px}.quick-status-values{font-size:9px;gap:4px}.quick-status-values strong{font-size:10px}.bottom-nav button{font-size:10px}}
+
+/* 手機觸控修正：避免快速連點觸發雙擊縮放，或把遊戲文字整段選取 */
+html,body{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button,.btn,.tab,[role="button"]{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 </style></head><body>
 <header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="header-avatar" aria-hidden="true"><span>道</span></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div><div class="header-xp"><div class="header-xp-label"><span>修為進度</span><strong id="headerXp">0 / 100</strong></div><div class="header-xp-track"><span id="headerXpFill"></span></div></div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
