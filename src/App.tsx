@@ -9,7 +9,7 @@ import {
 
 export default function App() { return <Game />; }
 
-type Tab = "home" | "chars" | "art" | "pets" | "quests";
+type Tab = "home" | "battle" | "chars" | "art" | "pets" | "quests";
 const rarityClass: Record<Rarity, string> = { 凡: "text-r-fan border-r-fan/50", 靈: "text-r-ling border-r-ling/60", 仙: "text-r-xian border-r-xian" };
 
 function Game() {
@@ -19,6 +19,11 @@ function Game() {
   const [toast, setToast] = useState<{ text: string; ok: boolean } | null>(null);
   const [pops, setPops] = useState<{ id: number; text: string }[]>([]);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [enemyIndex, setEnemyIndex] = useState(0);
+  const [enemyHp, setEnemyHp] = useState(45);
+  const [battleLog, setBattleLog] = useState("妖獸現身，請道友出招！");
+  const enemies = [{ name: "山野妖狼", hp: 45, reward: 18 }, { name: "迷霧蛇妖", hp: 75, reward: 32 }, { name: "守山石魈", hp: 120, reward: 55 }];
+  const enemy = enemies[enemyIndex % enemies.length];
   const saveRef = useRef<Save | null>(null);
   const startedRef = useRef(false);
 
@@ -70,6 +75,22 @@ function Game() {
     commitSave(r.save);
     setToast(r.ok ? { ok: true, text: `不好意思，本座又突破了！\n晉入 ${realmName(r.save.level)}` } : { ok: false, text: "突破失敗……道心微損\n修為倒退三成，丹藥已耗" });
   };
+  const onBattleAttack = () => {
+    const current = saveRef.current;
+    if (!current) return;
+    const power = 12 + current.level * 2 + (current.chars.lin ? 8 : 0) + (current.artifacts.includes("jian") ? 5 : 0);
+    const remaining = Math.max(0, enemyHp - power);
+    if (remaining === 0) {
+      const reward = enemy.reward;
+      updateSave(s => ({ ...s, stones: s.stones + reward, progress: Math.min(maxProgress(s.level), s.progress + reward) }));
+      setBattleLog(`擊敗${enemy.name}！獲得靈石 +${reward}、修為 +${reward}。`);
+      setEnemyIndex(i => i + 1);
+      setEnemyHp(enemies[(enemyIndex + 1) % enemies.length].hp);
+    } else {
+      setEnemyHp(remaining);
+      setBattleLog(`你造成 ${power} 點傷害，${enemy.name} 剩餘氣血 ${remaining}。`);
+    }
+  };
   const onSummon = () => {
     const current = saveRef.current;
     if (!current) return;
@@ -107,7 +128,7 @@ function Game() {
               </div>
             </div>
             <Button variant="gameGold" size="game" className="w-full py-5 text-2xl" onClick={() => { updateSave((current) => enterGame(current)); startedRef.current = true; setStarted(true); }}>開始修仙</Button>
-            <p className="text-xs tracking-wider text-muted-foreground">v0.8.2 · 修行錄</p>
+            <p className="text-xs tracking-wider text-muted-foreground">v0.9.0 · 戰鬥篇</p>
           </div>
         )}
         {started && tab === "home" && (
@@ -146,6 +167,21 @@ function Game() {
           </div>
         )}
 
+        {started && tab === "battle" && (
+          <div className="space-y-4">
+            <Title>斬妖除魔</Title>
+            <section className="panel space-y-3 p-5 text-center">
+              <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border-2 border-destructive/60 bg-ink/80 text-5xl">👹</div>
+              <p className="text-xl font-bold text-gold-grad">{enemy.name}</p>
+              <p className="text-sm text-muted-foreground">妖獸階序 {enemyIndex + 1} · 勝利可得靈石與修為</p>
+              <div className="h-3 overflow-hidden rounded-full bg-ink ring-1 ring-border"><div className="h-full rounded-full bg-destructive transition-all" style={{ width: `${Math.max(0, enemyHp / enemy.hp * 100)}%` }} /></div>
+              <p className="text-sm">氣血 {enemyHp} / {enemy.hp}</p>
+              <Button variant="gameGold" size="game" className="w-full py-4 text-xl" onClick={onBattleAttack}>⚔️ 出招攻擊</Button>
+              <p aria-live="polite" className="min-h-12 text-sm leading-6 text-muted-foreground">{battleLog}</p>
+            </section>
+            <section className="panel p-4 text-sm leading-7 text-muted-foreground">戰力依境界、角色與法寶提升。擊敗妖獸可獲得修為與靈石，下一隻妖獸將更強。</section>
+          </div>
+        )}
         {started && tab === "chars" && (
           <div className="space-y-3">
             <Title>道友名錄</Title>
@@ -183,7 +219,7 @@ function Game() {
       </main>
 
       {started && <nav aria-label="遊戲導航" className="fixed bottom-0 left-0 right-0 z-20 mx-auto grid max-w-md grid-cols-5 border-t bg-ink/90 pb-[env(safe-area-inset-bottom)] backdrop-blur">
-        {([["home", "主殿", "殿"], ["chars", "角色", "人"], ["art", "古寶", "寶"], ["pets", "靈寵", "獸"], ["quests", "任務", "錄"]] as const).map(([k, label, g]) => (
+        {([["home", "主殿", "殿"], ["battle", "戰鬥", "戰"], ["chars", "角色", "人"], ["art", "古寶", "寶"], ["quests", "任務", "錄"]] as const).map(([k, label, g]) => (
           <Button variant="gamePlain" size="game" key={k} aria-current={tab === k ? "page" : undefined} onClick={() => setTab(k)} className={`flex flex-col items-center py-2.5 ${tab === k ? "text-gold" : "text-muted-foreground"}`}>
             <span className={`font-brush text-2xl ${tab === k ? "drop-shadow-[0_0_8px_var(--gold)]" : ""}`}>{g}</span>
             <span className="text-xs">{label}</span>
