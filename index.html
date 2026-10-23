@@ -259,7 +259,7 @@ main{overflow:hidden}.screen{overflow:hidden;padding:8px 10px 8px;gap:6px;scroll
 .screen>*{flex-shrink:0}
 .screen#home{display:none!important}
 .screen#cultivate.active{display:flex!important}
-#cultivate .realm-art,#cultivate .realm-desc,#cultivate .panel:has(#breakBtn),#cultivate #methodList{display:none!important}
+#cultivate .realm-art,#cultivate .realm-desc,#cultivate #breakPanel,#cultivate .panel:has(#breakBtn),#cultivate #methodList{display:none!important}
 #cultivate .battle{min-height:0!important;height:auto!important;flex:1;gap:5px;padding:7px 8px!important}
 #cultivate .battle>.secthead{margin:0}
 #cultivate .enemy-scene{flex:1;min-height:64px!important;height:auto!important}
@@ -410,6 +410,7 @@ function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){
  const home=document.getElementById('home'), cultivate=document.getElementById('cultivate');
  if(!home||!cultivate)return;
  const title=cultivate.querySelector('.page-title');
+ const breakPanel=document.getElementById('breakBtn')?.closest('.panel'); if(breakPanel)breakPanel.id='breakPanel';
  const battle=home.querySelector('.battle'), idle=home.querySelector('.idle-card'), teaser=home.querySelector('.chronicle-teaser');
  const methodHead=[...cultivate.querySelectorAll(':scope > .secthead')].pop();
  if(title&&battle)cultivate.insertBefore(battle,title.nextSibling);
