@@ -53,17 +53,17 @@ function render(): void {
   const eventSeen = Boolean(save.eventFlags['herb-spring-found']);
   root!.innerHTML = `
     <main class="shell">
-      <header class="topbar">
+      <header class="topbar" id="home">
         <div><p class="eyebrow">自由放置 RPG · 原型 0.1</p><h1>凡人修仙</h1></div>
         <span class="pill">${p.isCultivating ? '閉關修煉中' : '暫停修煉'}</span>
       </header>
       <section class="notice"><strong>原型測試提醒</strong><p>此版本只驗證核心流程。境界突破門檻與修煉數值為測試用暫定規則，尚未完成原著考證。</p></section>
       ${offlineSummary ? `<section class="offline"><strong>洞府近況</strong><p>${offlineSummary}</p></section>` : ''}
       ${storageWarning ? `<section class="warning" role="alert">${storageWarning}</section>` : ''}
-      <section class="panel">
+      <section class="panel" id="cultivation">
         <div class="section-heading"><h2>角色狀態</h2><span class="muted">人界 · 起始階段</span></div>
         <label class="field">道友稱呼<input id="player-name" maxlength="24" value="${escapeHtml(p.name)}" /></label>
-        <div class="stats">
+        <div class="stats" id="inventory">
           <div><span>境界</span><strong>${p.realmId === 'mortal' ? '凡人' : `練氣 ${p.realmStage} 層`}</strong></div>
           <div><span>靈根</span><strong>四屬性偽靈根</strong></div>
           <div><span>靈石</span><strong>${p.spiritStones}</strong></div>
@@ -77,16 +77,33 @@ function render(): void {
         </div>
         <p class="hint">${canBreakthrough ? '已達原型測試門檻，可由你決定是否嘗試突破。' : '修為累積達到測試門檻後，會開放手動突破。'}</p>
       </section>
-      <section class="panel">
+      <section class="panel" id="exploration">
         <div class="section-heading"><h2>附近探索</h2><span class="muted">試驗地點</span></div>
         <p>洞府外有一處靈草生長的山泉。探索一次可取得少量靈草，並記錄發現事件。</p>
         <button id="explore" ${eventSeen ? 'disabled' : ''}>${eventSeen ? '已探索山泉' : '探索山泉'}</button>
         ${eventSeen ? '<p class="success">事件已記錄：你在山泉旁發現靈草。</p>' : ''}
       </section>
-      <footer><span>原型存檔：${saveBlocked ? '保護模式' : '本機儲存'}</span><button id="reset" class="text-button">重置原型</button></footer>
+      <footer id="settings"><span>原型存檔：${saveBlocked ? '保護模式' : '本機儲存'}</span><button id="reset" class="text-button">重置原型</button></footer>
+      <nav class="bottom-nav" aria-label="遊戲主導航">
+        <button type="button" class="nav-item is-active" data-target="home" aria-label="洞府"><span aria-hidden="true">HOME</span><small>洞府</small></button>
+        <button type="button" class="nav-item" data-target="cultivation" aria-label="修煉"><span aria-hidden="true">QI</span><small>修煉</small></button>
+        <button type="button" class="nav-item" data-target="exploration" aria-label="探索"><span aria-hidden="true">MAP</span><small>探索</small></button>
+        <button type="button" class="nav-item" data-target="inventory" aria-label="行囊"><span aria-hidden="true">BAG</span><small>行囊</small></button>
+        <button type="button" class="nav-item" data-target="settings" aria-label="設定"><span aria-hidden="true">SET</span><small>設定</small></button>
+      </nav>
     </main>
   `;
 
+  document.querySelectorAll<HTMLButtonElement>('.nav-item').forEach((item) => {
+    item.addEventListener('click', () => {
+      const targetId = item.dataset.target;
+      const target = targetId ? document.getElementById(targetId) : null;
+      if (!target) return;
+      document.querySelectorAll('.nav-item').forEach((navItem) => navItem.classList.remove('is-active'));
+      item.classList.add('is-active');
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
   document.querySelector<HTMLButtonElement>('#cultivate')?.addEventListener('click', () => {
     settleNow();
     save.player.isCultivating = !save.player.isCultivating;
