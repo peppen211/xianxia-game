@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="凡人修仙・自由放置 RPG 最新版本與更新資訊。">
+  <title>最新版本｜凡人修仙 RPG</title>
+  <style>
+    :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", sans-serif; background:#000; color:#f7f7f7; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:#000; }
+    main { width:min(100% - 32px, 900px); margin:0 auto; padding:32px 0 calc(32px + env(safe-area-inset-bottom)); }
+    h1 { margin:0 0 36px; font-size:clamp(32px, 8vw, 48px); line-height:1.2; font-weight:850; letter-spacing:.01em; }
+    .card { border:1px solid #242424; border-radius:26px; padding:28px 24px 26px; box-shadow:0 0 0 1px rgba(255,255,255,.02) inset; }
+    .label { color:#aaa; font-size:clamp(20px, 5vw, 28px); font-weight:700; margin:0 0 12px; }
+    .version-row { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .version { font-size:clamp(58px, 15vw, 82px); font-weight:850; line-height:1.05; letter-spacing:-.04em; }
+    .status { border-radius:999px; padding:8px 15px; background:#062714; color:#35d477; font-size:clamp(16px, 4.4vw, 22px); font-weight:750; white-space:nowrap; }
+    .description { color:#b5b5b5; font-size:clamp(18px, 4.7vw, 25px); line-height:1.7; font-weight:600; margin:28px 0 24px; overflow-wrap:anywhere; }
+    .launch { display:flex; align-items:center; justify-content:center; min-height:72px; width:100%; padding:18px 20px; border-radius:999px; background:#f5f5f5; color:#090909; text-decoration:none; font-size:clamp(19px, 5vw, 26px); font-weight:850; text-align:center; transition:transform .15s ease, background .15s ease; }
+    .launch:active { transform:scale(.985); background:#ddd; }
+    .history { display:inline-block; margin-top:24px; color:#f5f5f5; font-size:clamp(17px, 4.5vw, 24px); font-weight:650; text-underline-offset:7px; text-decoration-thickness:1px; }
+    .foot { margin:22px 2px 0; color:#6f6f6f; font-size:13px; line-height:1.6; }
+    @media (min-width:700px) { main { padding-top:42px; } .card { padding:34px 32px 30px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>最新版本</h1>
+    <section class="card" aria-labelledby="version-title">
+      <p class="label" id="version-title">目前版本</p>
+      <div class="version-row">
+        <div class="version">3.2</div>
+        <div class="status">版本入口已更新</div>
+      </div>
+      <p class="description">已整理最新遊戲入口與更新資訊。點擊下方按鈕即可進入修仙世界，版本驗收狀態將以實際測試結果為準。</p>
+      <a class="launch" href="./" aria-label="開啟最新遊戲">開啟最新遊戲</a>
+      <a class="history" href="https://github.com/peppen211/xianxia-game/commits/main/" target="_blank" rel="noopener noreferrer">查看本次程式修改紀錄 ↗</a>
+    </section>
+    <p class="foot">凡人修仙・自由放置 RPG · 手機瀏覽器版</p>
+  </main>
+</body>
+</html>
