@@ -300,8 +300,43 @@ main{overflow:hidden}.screen{overflow:hidden;padding:8px 10px 8px;gap:6px;scroll
  #journalQuick .panel{padding:9px}
 }
 @media(max-width:380px){.bottom .nav{font-size:8px}.bottom .ico svg{width:22px;height:22px}}
+
+/* v0.3 feature pass: compact information cards, choice-rich methods and combat feedback */
+.currencies{gap:4px;max-width:55%;overflow:hidden}.resource-chip{cursor:pointer;min-width:0;white-space:nowrap;user-select:none;transition:filter .15s,transform .15s}.resource-chip:active{transform:scale(.96);filter:brightness(1.25)}
+#cultivate .method-cards{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px!important;overflow:hidden!important;margin:0!important}
+#cultivate .method-card{min-width:0;padding:6px 4px!important;gap:3px!important;border-radius:10px}
+#cultivate .method-card .method-icon{font-size:17px}
+#cultivate .method-card>b{font-size:9px!important;min-height:25px!important}
+#cultivate .method-card>small{font-size:8px!important;min-height:24px!important;line-height:1.35}
+#cultivate .method-card .method-meta{display:block;font-size:7px;color:var(--muted);line-height:1.25}
+#cultivate .method-card .method-tag{display:inline-block;border-radius:5px;padding:2px 4px;background:#ffffff10;font-size:7px;color:var(--gold)}
+#cultivate .method-card .btn{min-height:27px!important;font-size:8px!important;padding:4px 2px!important}
+#cultivate .battle{gap:4px!important}
+#cultivate .battle-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px!important}
+#cultivate .battle-actions .btn{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px!important;padding:5px 2px!important;min-height:34px!important}
+#elementHint{font-size:9px;color:var(--gold);text-align:center;padding:3px 4px;border-radius:7px;background:#e8c77a0b;border:1px solid #e8c77a1c}
+#cultivate .enemy-scene{min-height:76px!important}
+#cultivate .enemy-label{font-size:13px}
+#cultivate .chronicle-teaser .storyline{display:block!important;font-size:9px;line-height:1.3;max-height:25px;overflow:hidden}
+#cultivate .chronicle-teaser{padding:6px 8px!important;min-height:50px!important}
+#cultivate .idle-card{min-height:51px!important;padding:5px 8px!important}
+#cultivate .idle-text b{font-size:10px}
+#cultivate .idle-text p{display:block!important;font-size:8px;line-height:1.3;margin:2px 0 0}
+#cultivate #methodList{flex-shrink:0}
+#cultivate .method-heading{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--gold);margin:0}
+#cultivate .page-title{margin-bottom:0}
+#journalQuick .progress{margin:6px 0}
+#journalQuick .current-node{font-size:10px;color:var(--gold);line-height:1.5}
+#journalQuick .node-meta{font-size:9px;color:var(--muted);line-height:1.5;margin-top:4px}
+#journalQuick .panel .btn{margin-top:7px}
+.gain-float{position:absolute;z-index:120;top:90px;left:50%;transform:translateX(-50%);padding:7px 12px;border-radius:999px;background:#122a24ee;border:1px solid #8ee0c0aa;color:#b9ffdf;font-weight:800;font-size:12px;pointer-events:none;animation:gainRise 1.45s ease-out forwards;box-shadow:0 4px 24px #0008;white-space:nowrap}
+@keyframes gainRise{0%{opacity:0;translate:0 8px;scale:.85}15%{opacity:1}75%{opacity:1}100%{opacity:0;translate:0 -30px;scale:1.05}}
+.stat-flash{animation:statFlash .75s ease-out}
+@keyframes statFlash{0%,100%{filter:none}35%{filter:drop-shadow(0 0 8px #e8c77a);color:var(--gold)}}
+@media(max-height:740px){#cultivate .enemy-scene{min-height:62px!important}#cultivate .enemy-art{width:54px!important;height:54px!important}#cultivate .battle-actions .btn{min-height:31px!important}#cultivate .method-card{padding:4px 3px!important}#cultivate .method-card>small{min-height:19px!important}#cultivate .chronicle-teaser .storyline{max-height:19px}#cultivate .idle-card{min-height:46px!important}}
+@media(max-width:380px){.currencies{gap:2px;max-width:57%}.currency{font-size:8px;padding:4px 3px}.resource-chip b{font-size:8px}#cultivate .method-card .btn{font-size:7px!important}}
 </style></head><body><div class="app">
-<header class="top"><div class="brand"><div class="mark"><svg class="cultivation-seal" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="#f8e6b4" stroke-width="1.4"/><circle cx="32" cy="32" r="22" fill="none" stroke="#f8e6b4" stroke-width=".8" stroke-dasharray="2 4"/><path d="M32 10a11 11 0 0 1 0 22 11 11 0 0 0 0 22 22 22 0 0 1 0-44Z" fill="#f8e6b4"/><circle cx="32" cy="21" r="3" fill="#7e5a32"/><circle cx="32" cy="43" r="3" fill="#f8e6b4"/><path d="M32 2v6M32 56v6M2 32h6M56 32h6" stroke="#f8e6b4" stroke-width="1.5"/></svg></div><div><strong>九霄問道</strong><small>NINE HEAVENS · IDLE CULTIVATION</small></div></div><div class="currencies"><div class="currency">🪙 <b id="goldTop">100</b></div><div class="currency">💠 <b id="spiritTop">0</b></div><div class="currency">🌿 <b id="herbsTop">3</b></div></div></header><div class="corebar"><div class="core-progress"><div class="core-label"><b id="globalRealm">練氣一層</b><span>修為 <strong id="globalXpText">0/100</strong> · 戰力 <strong id="globalPower">18</strong></span></div><div class="progress"><span id="globalXpBar"></span></div></div><button class="btn primary core-break" id="globalBreakBtn">突破</button></div><div class="toast" id="toast"></div>
+<header class="top"><div class="brand"><div class="mark"><svg class="cultivation-seal" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="#f8e6b4" stroke-width="1.4"/><circle cx="32" cy="32" r="22" fill="none" stroke="#f8e6b4" stroke-width=".8" stroke-dasharray="2 4"/><path d="M32 10a11 11 0 0 1 0 22 11 11 0 0 0 0 22 22 22 0 0 1 0-44Z" fill="#f8e6b4"/><circle cx="32" cy="21" r="3" fill="#7e5a32"/><circle cx="32" cy="43" r="3" fill="#f8e6b4"/><path d="M32 2v6M32 56v6M2 32h6M56 32h6" stroke="#f8e6b4" stroke-width="1.5"/></svg></div><div><strong>九霄問道</strong><small>NINE HEAVENS · IDLE CULTIVATION</small></div></div><div class="currencies"><div class="currency resource-chip" data-resource="gold" role="button" tabindex="0" title="靈石用途與取得">🪙 <b id="goldTop">100</b></div><div class="currency resource-chip" data-resource="herbs" role="button" tabindex="0" title="靈草用途與取得">🌿 <b id="herbsTop">3</b></div><div class="currency resource-chip" data-resource="wood" role="button" tabindex="0" title="靈木用途與取得">🪵 <b id="woodTop">2</b></div><div class="currency resource-chip" data-resource="crystal" role="button" tabindex="0" title="靈晶用途與取得">💠 <b id="crystalTop">1</b></div></div></header><div class="corebar"><div class="core-progress"><div class="core-label"><b id="globalRealm">練氣一層</b><span>修為 <strong id="globalXpText">0/100</strong> · 戰力 <strong id="globalPower">18</strong></span></div><div class="progress"><span id="globalXpBar"></span></div></div><button class="btn primary core-break" id="globalBreakBtn">突破</button></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉">✕</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
 <section class="screen active" id="home">
  <div class="hero"><div class="moon"></div><div class="mountain m1"></div><div class="mountain m2"></div><div class="mist"></div><div class="energy-orb"></div><div class="hero-copy"><div class="realm" id="realmEyebrow">青雲山 · 凡人境</div><h2 id="realmName">初入仙途</h2><p id="heroDesc">天地靈氣緩緩流轉。凝神靜氣，踏出修仙第一步。</p></div><div class="cultivator" id="cultivator"><span class="immortal-silhouette">仙</span></div><div class="hero-bottom"><div class="chip">修為 <b id="levelChip">練氣一層</b></div><div class="chip">戰力 <b id="powerChip">18</b></div><div class="chip">靈氣 <b id="qiChip">0%</b></div></div></div>
@@ -426,6 +461,66 @@ function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){
   journal.insertBefore(quick,journal.firstChild);
  }
 })();
+
+
+(function installFeatureLayer(){
+ const home=document.getElementById('home'),cultivate=document.getElementById('cultivate'),journal=document.getElementById('journal');
+ if(!home||!cultivate||!journal)return;
+ const battle=home.querySelector('.battle'),actions=battle&&battle.querySelector('.battle-actions');
+ if(actions&&!document.getElementById('fleeBtn')){
+  const flee=document.createElement('button');flee.id='fleeBtn';flee.className='btn secondary';flee.textContent='🏃 逃跑';flee.onclick=escapeBattle;actions.appendChild(flee);
+  const sneak=document.createElement('button');sneak.id='sneakBtn';sneak.className='btn secondary';sneak.textContent='🗡️ 偷襲';sneak.onclick=sneakAttack;actions.appendChild(sneak);
+ }
+ if(battle&&!document.getElementById('elementHint')){const hint=document.createElement('div');hint.id='elementHint';hint.textContent='五行相剋：金剋木、木剋土、土剋水、水剋火、火剋金';battle.insertBefore(hint,actions)}
+ const methodList=document.getElementById('methodList');
+ if(methodList){const head=methodList.previousElementSibling;if(head&&head.classList.contains('secthead')){head.classList.add('method-heading');head.querySelector('span').textContent='☯️ 心法流派';}}
+ const oldTeaser=document.querySelector('#cultivate .chronicle-teaser');
+ if(oldTeaser){const label=oldTeaser.querySelector('.secthead span');if(label)label.textContent='📜 主線進度';const btn=oldTeaser.querySelector('button');if(btn){btn.textContent='查看章節節點';btn.onclick=()=>switchScreen('journal')}}
+ const resourceInfo={
+  gold:{title:'靈石',icon:'🪙',use:'通用貨幣：解鎖心法、祈寶、購買丹藥與強化角色。',get:'擊敗試煉妖獸、離線放置收益、出售未裝備法寶。'},
+  herbs:{title:'靈草',icon:'🌿',use:'煉丹與靈藥材料，可用於後續藥理系統。',get:'擊敗妖獸有機率掉落、探索事件與部分機緣獲得。'},
+  wood:{title:'靈木',icon:'🪵',use:'煉器基礎材料，用於製作法杖、道袍等法寶。',get:'試煉妖獸掉落、祈寶結果、轉化重複法寶。'},
+  crystal:{title:'靈晶',icon:'💠',use:'高階煉器材料，用於法寶合成與稀有裝備製作。',get:'試煉掉落、祈寶結果、轉化重複法寶。'}
+ };
+ window.openResourceModal=function(key){const r=resourceInfo[key];if(!r)return;const amount=key==='gold'?s.gold:key==='herbs'?s.herbs:key==='wood'?s.wood:s.crystal;openModal(r.icon+' '+r.title,'<div class="panel"><div class="secthead"><span>目前持有</span><b>'+amount+'</b></div><p>'+esc(r.use)+'</p><p><b>取得方式</b><br>'+esc(r.get)+'</p></div>')};
+ document.querySelectorAll('.resource-chip').forEach(el=>{const fn=()=>openResourceModal(el.dataset.resource);el.addEventListener('click',fn);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn()}})});
+ const quick=document.getElementById('journalQuick');
+ if(quick)quick.innerHTML='<div class="page-title"><h2>📜 主線紀事</h2><span id="storyCurrentLabelQuick">第 1 / 8 節點</span></div><div class="panel"><b>當前章節節點</b><div id="nodeCurrent" class="current-node">凡人篇一 · 初入仙途</div><div id="nodeMeta" class="node-meta">地圖：青牛鎮｜副本：山野試煉｜解鎖：基礎吐納</div><div class="progress"><span id="nodeProgressBar"></span></div><div id="nodeProgressText" class="node-meta">試煉進度 0 / 4</div><button class="btn secondary" onclick="openChronicleModal()">查看全部章節節點</button></div><div class="panel"><b>離線放置收益</b><div id="idleClaimNumbers" class="current-node">可領取：計算中</div><p>離線收益最多累積 8 小時。</p><button class="btn secondary" onclick="openOfflineModal()">查看收益與領取</button></div><div class="panel"><b>角色成長與強化</b><p>查看屬性、強化、法寶與配方等詳細資料。</p><button class="btn secondary" onclick="switchScreen(\'character\')">角色面板</button><button class="btn secondary" onclick="openModal(\'煉器配方\',recipeDetailHtml())">煉器配方</button></div>';
+ const methodData=[{tag:'輸出',unlock:'初始解鎖',cost:0,desc:'修為累積 +20%',condition:'入門即得'},{tag:'放置',unlock:'修為達 120 或支付靈石',cost:80,desc:'放置收益提升 35%',condition:'靈石 80'},{tag:'生存',unlock:'達到築基前置或支付靈石',cost:120,desc:'戰鬥攻擊提升 20%',condition:'靈石 120'}];
+ const progressNodes=[
+  {title:'凡人篇一 · 初入仙途',map:'青牛鎮',dungeon:'山野試煉',unlock:'基礎吐納、資源面板',next:'七玄門試煉'},
+  {title:'凡人篇二 · 入門修行',map:'七玄門外山',dungeon:'靈脈巡查',unlock:'心法切換、丹藥補給',next:'宗門任務'},
+  {title:'凡人篇三 · 宗門任務',map:'黃楓谷外圍',dungeon:'迷霧試煉',unlock:'祈寶與法寶欄位',next:'秘境探索'},
+  {title:'凡人篇四 · 秘境機緣',map:'血色秘境',dungeon:'限時秘境',unlock:'稀有材料與煉器',next:'築基考驗'},
+  {title:'凡人篇五 · 築基之路',map:'越國修仙界',dungeon:'宗門試煉場',unlock:'高階心法與強敵',next:'外海航路'},
+  {title:'亂星海篇 · 海域求生',map:'亂星海',dungeon:'妖獸海溝',unlock:'海域材料與法寶成長',next:'古修遺跡'},
+  {title:'靈界篇 · 跨界修行',map:'靈界邊城',dungeon:'跨界遺跡',unlock:'種族勢力與法則修行',next:'仙域探索'},
+  {title:'仙界篇 · 長生問道',map:'仙域',dungeon:'天道試煉',unlock:'終局挑戰與長生目標',next:'終章'}
+ ];
+ window.getNodeIndex=function(){return Math.min(progressNodes.length-1,Math.max(0,s.major+Math.floor(s.kills/4)))};
+ function nodeIndex(){return window.getNodeIndex()}
+ const oldRender=render;
+ render=function(){
+  oldRender();
+  const wt=document.getElementById('woodTop'),ct=document.getElementById('crystalTop');if(wt)wt.textContent=s.wood;if(ct)ct.textContent=s.crystal;
+  const ml=document.getElementById('methodList');
+  if(ml)ml.innerHTML=methods.map((m,i)=>{const d=methodData[i],owned=s.ownedMethods.includes(i),chosen=s.method===i;return '<article class="method-card '+(chosen?'chosen':'')+'"><div class="method-icon">'+m.icon+'</div><b>'+esc(m.name)+'</b><small>'+esc(m.bonus)+'</small><span class="method-tag">'+d.tag+'</span><span class="method-meta">'+(owned?'已解鎖':'解鎖條件：'+d.unlock)+'</span><span class="method-meta">消耗：'+(owned?'已支付':d.cost+' 靈石')+'</span><button class="btn '+(chosen?'jade':'secondary')+'" '+(chosen?'disabled':'')+' onclick="selectMethod('+i+')">'+(chosen?'✓ 修煉中':owned?'切換心法':'解鎖 / 修煉')+'</button></article>'}).join('');
+  const ab=document.getElementById('attackBtn');if(ab)ab.textContent='⚔️ 挑戰';
+  const sb=document.getElementById('skillBtn');if(sb){sb.textContent=s.skill?'✨ 技能可用':'⏳ 冷卻 '+Math.max(0,2-(s.skillWait||0))+' 擊';sb.title=s.skill?'靈氣爆發已準備完成':'普通攻擊累積兩次後恢復技能'}
+  const hint=document.getElementById('elementHint');if(hint){const e=['金','木','水','火','土'][Math.min(4,s.kills%5)],counter={金:'火',木:'金',水:'土',火:'水',土:'木'};hint.textContent='妖獸五行：'+e+'｜建議以 '+counter[e]+' 行制衡；金剋木、木剋土、土剋水、水剋火、火剋金'}
+  const sec=Math.min(8*3600,Math.max(0,(Date.now()-(Number(s.lastOfflineClaim)||Date.now()))/1000)),rate=s.method===1?1.35:1,xp=Math.floor(sec/12*rate*(s.method===0?1.2:1)*(1+gearPerks().bonusXp)),gold=Math.floor(sec/90*rate);
+  const claim=document.getElementById('idleClaimNumbers');if(claim)claim.textContent='可領取：+'+xp+' 修為、+'+gold+' 靈石';
+  const idx=nodeIndex(),node=progressNodes[idx]||progressNodes[0],nl=document.getElementById('storyCurrentLabelQuick'),nc=document.getElementById('nodeCurrent'),nm=document.getElementById('nodeMeta'),np=document.getElementById('nodeProgressBar'),nt=document.getElementById('nodeProgressText');
+  if(nl)nl.textContent='節點 '+(idx+1)+' / '+progressNodes.length;if(nc)nc.textContent=node.title;if(nm)nm.textContent='地圖：'+node.map+'｜副本：'+node.dungeon+'｜解鎖：'+node.unlock;if(np)np.style.width=Math.min(100,(s.kills%4)/4*100)+'%';if(nt)nt.textContent='試煉進度 '+(s.kills%4)+' / 4 · 下一節點：'+node.next;
+ };
+ window.openChronicleModal=function(){const idx=nodeIndex(),list=progressNodes.map((n,i)=>'<article class="chronicle-entry '+(i<idx?'done':i===idx?'current':'future')+'"><div class="chronicle-top"><b>'+esc(n.title)+'</b><span>'+(i<idx?'已解鎖':i===idx?'目前節點':'未解鎖')+'</span></div><div class="chronicle-world">地圖：'+esc(n.map)+' · 副本：'+esc(n.dungeon)+'</div><p>'+esc(hanliStages[Math.min(i,hanliStages.length-1)].event)+'</p><div class="chronicle-task">系統解鎖：'+esc(n.unlock)+'<br>下一節點：'+esc(n.next)+'</div></article>').join('');openModal('主線節點資料庫','<div class="panel"><b>原創遊戲化進度節點</b><p>以下為遊戲進度與系統解鎖用的八階段摘要，不是小說或動畫的逐章全文。</p></div><div class="chronicle-list">'+list+'</div>')};
+})();
+function flashGain(text){let old=document.getElementById('gainFloat');if(old)old.remove();const el=document.createElement('div');el.id='gainFloat';el.className='gain-float';el.textContent=text;document.querySelector('.app')?.appendChild(el);setTimeout(()=>el.remove(),1500);const core=document.querySelector('.corebar');if(core){core.classList.remove('stat-flash');void core.offsetWidth;core.classList.add('stat-flash')}}
+const __oldUpgrade=upgrade;upgrade=function(k){const before=s.gold;__oldUpgrade(k);if(s.gold<before)flashGain(k==='atk'?'攻擊 +3':k==='def'?'防禦 +2':'氣血上限 +20')};
+const __oldMeditate=meditate;meditate=function(){const xp=s.xp,gold=s.gold;__oldMeditate();flashGain('修為成長 · 靈石 +'+Math.max(0,s.gold-gold))};
+const __oldCheckLevel=checkLevel;checkLevel=function(){const layer=s.layer,major=s.major;__oldCheckLevel();if(s.layer!==layer||s.major!==major)flashGain('突破成功 · '+realmText())};
+function escapeBattle(){if(Math.random()<.78){note('🏃 你判斷形勢不利，成功脫離戰鬥。','good');spawnEnemy();render();toast('成功逃離，沒有損失資源')}else{const dmg=Math.max(1,Math.floor(enemy.atk*.7-val('def')*.25));s.hp=Math.max(1,s.hp-dmg);note('🏃 逃跑未果，撤退時受到 '+dmg+' 點傷害。','bad');render();toast('逃跑失敗，受到 '+dmg+' 點傷害')}}
+function sneakAttack(){if(!enemy||enemy.hp<=0)return;const success=Math.random()<.68;if(success){const dmg=Math.max(1,Math.floor(val('atk')*(s.method===2?1.2:1)*1.55));enemy.hp=Math.max(0,enemy.hp-dmg);note('🗡️ 偷襲成功，造成 '+dmg+' 點先手傷害。','good');flashGain('偷襲 +'+dmg+' 傷害');if(enemy.hp<=0){win();render();return}}else note('🗡️ 偷襲被察覺！妖獸搶先反擊。','bad');const taken=Math.max(1,Math.floor((enemy.atk-val('def')+2)*(success?.65:1.2)));s.hp-=taken;if(s.hp<=0){const lost=Math.min(s.gold,Math.floor(s.gold*.06));s.gold-=lost;s.hp=Math.floor(s.maxHp*.55);note('🛟 你退回安全處調息，損失 '+lost+' 靈石。','bad')}if(!s.skill&&++s.skillWait>=2){s.skill=true;note('✨ 靈氣爆發已重新蓄滿。','good')}render()}
 
 load();render();switchScreen('cultivate');
 </script></body></html>
