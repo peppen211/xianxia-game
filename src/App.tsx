@@ -317,8 +317,8 @@ function Title({ children }: { children: React.ReactNode }) {
 
 function Card(p: { glyph: string; rarity: Rarity; name: string; sub?: string; desc: string; owned: boolean; badge: string }) {
   return (
-    <div className={`panel flex items-center gap-4 p-4 ${p.owned ? "" : "opacity-50 grayscale"}`}>
-      <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border-2 bg-ink/70 ${rarityClass[p.rarity]}`}>
+    <div className={`collection-card panel flex items-center gap-4 p-4 ${p.owned ? "is-owned" : "is-locked opacity-65"}`}>
+      <div className={`collection-glyph flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 bg-ink/70 ${rarityClass[p.rarity]}`}>
         <span className="font-brush text-4xl">{p.glyph}</span>
       </div>
       <div className="min-w-0 flex-1">
