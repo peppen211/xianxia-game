@@ -101,6 +101,123 @@ html,body{background:#0c0c11}
 @media(max-width:380px){.enemy-art{font-size:55px}.cultivator{font-size:65px}.hero-copy{max-width:62%}.hero p{max-width:170px}.chip{padding:4px 5px;font-size:8px}}
 @media(prefers-reduced-motion:reduce){.energy-orb,.enemy-art{animation:none}.progress span,.btn{transition:none}}
 
+
+/* === 固定視窗版面：非彈窗分頁禁止捲動 === */
+html,body{
+  width:100%;
+  height:100%;
+  min-height:0;
+  margin:0;
+  overflow:hidden!important;
+  overscroll-behavior:none;
+}
+body{
+  position:fixed;
+  inset:0;
+  -webkit-text-size-adjust:100%;
+}
+.app{
+  width:100%;
+  height:100vh;
+  height:100dvh;
+  max-height:100dvh;
+  min-height:0;
+  overflow:hidden!important;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+main{
+  flex:1 1 0;
+  min-width:0;
+  min-height:0;
+  overflow:hidden!important;
+  contain:layout paint;
+}
+.screen{
+  width:100%;
+  height:100%;
+  min-height:0;
+  max-height:100%;
+  padding:clamp(5px,1.25dvh,10px) 9px 5px!important;
+  gap:clamp(4px,0.85dvh,8px)!important;
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+  -webkit-overflow-scrolling:auto!important;
+  scrollbar-width:none!important;
+  touch-action:pan-x;
+}
+.screen::-webkit-scrollbar,
+.scrolllist::-webkit-scrollbar,
+.loglist::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+.screen>*{min-width:0}
+.screen .scrolllist,
+.scrolllist,
+.loglist{
+  min-height:0;
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+  -webkit-overflow-scrolling:auto!important;
+  scrollbar-width:none!important;
+}
+.screen .scrolllist{flex:1 1 0}
+.screen .loglist{flex:1 1 0}
+.top{flex:0 0 58px;box-sizing:border-box}
+.bottom{
+  box-sizing:border-box;
+  flex:0 0 calc(57px + env(safe-area-inset-bottom,0px));
+  height:calc(57px + env(safe-area-inset-bottom,0px));
+  padding-bottom:calc(4px + env(safe-area-inset-bottom,0px));
+  min-height:57px;
+}
+.nav{min-width:0;min-height:42px;touch-action:manipulation}
+.btn{min-height:36px;touch-action:manipulation}
+.hero{height:clamp(112px,25dvh,205px);min-height:0;max-height:30dvh;flex:0 0 auto}
+.battle{min-height:0;flex:1 1 0}
+.enemy-scene{min-height:0;flex:1 1 0}
+#home .realm-row{flex:0 0 auto}
+#home .battle{min-height:0}
+#cultivate .realm-art{flex:0 0 auto}
+#cultivate .panel{flex:0 0 auto}
+#character .two-col{flex:0 0 auto}
+#bag .slotgrid{flex:0 0 auto}
+#bag .idle-card{flex:0 0 auto}
+#forge .panel{flex:0 0 auto}
+#journal .panel,#journal .action-grid,#journal .smallnote{flex:0 0 auto}
+@media(max-height:760px){
+  .top{flex-basis:48px;height:48px}
+  .bottom{flex-basis:calc(54px + env(safe-area-inset-bottom,0px));height:calc(54px + env(safe-area-inset-bottom,0px));min-height:54px;padding-top:3px}
+  .screen{padding:5px 8px 4px!important;gap:4px!important}
+  .hero{height:clamp(100px,21dvh,155px);max-height:23dvh}
+  .panel{padding:6px!important}
+  .realm-art{height:clamp(52px,10dvh,75px)}
+  .realm-desc{margin:3px 0 4px;padding:5px 7px;line-height:1.4}
+  .rowitem{min-height:40px;padding:5px;gap:6px}
+  .rowicon{width:30px;height:30px}
+  .btn{min-height:32px;padding-top:6px;padding-bottom:6px}
+  .screen .battle{gap:4px}
+}
+@media(max-height:620px){
+  .top{flex-basis:44px;height:44px}
+  .bottom{flex-basis:calc(50px + env(safe-area-inset-bottom,0px));height:calc(50px + env(safe-area-inset-bottom,0px));min-height:50px}
+  .nav .ico{font-size:16px}
+  .nav{font-size:8px;gap:2px}
+  .hero{height:100px;max-height:19dvh}
+  .cultivator{font-size:55px}
+  .page-title h2{font-size:14px}
+  .realm-art{height:48px}
+  .screen .battle{gap:3px}
+  .enemy-art{font-size:48px}
+  .rowitem{min-height:36px}
+}
+@media(max-width:380px){
+  .screen{padding-left:7px!important;padding-right:7px!important}
+  .bottom{gap:2px;padding-left:4px;padding-right:4px}
+  .nav{border-radius:8px}
+  .btn{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .energy-orb{animation:none!important}
+}
+
 </style></head><body><div class="app">
 <header class="top"><div class="brand"><div class="mark">☯</div><div><strong>九霄問道</strong><small>NINE HEAVENS · IDLE CULTIVATION</small></div></div><div class="currencies"><div class="currency">🪙 <b id="goldTop">100</b></div><div class="currency">💠 <b id="spiritTop">0</b></div></div></header><div class="toast" id="toast"></div>
 <main>
