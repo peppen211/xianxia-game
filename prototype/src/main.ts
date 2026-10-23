@@ -1,5 +1,5 @@
 import './style.css';
-import { createInitialPlayer, createSave, readSave, SAVE_KEY, writeSave } from './save/save';
+import { createInitialPlayer, createSave, readSave, SAVE_KEY, validateSave, writeSave } from './save/save';
 import { settleOfflineCultivation } from './systems/cultivation/offline';
 import type { SaveEnvelope } from './core/types';
 
@@ -83,7 +83,7 @@ function render(): void {
         <button id="explore" ${eventSeen ? 'disabled' : ''}>${eventSeen ? '已探索山泉' : '探索山泉'}</button>
         ${eventSeen ? '<p class="success">事件已記錄：你在山泉旁發現靈草。</p>' : ''}
       </section>
-      <footer id="settings"><span>原型存檔：${saveBlocked ? '保護模式' : '本機儲存'}</span><button id="reset" class="text-button">重置原型</button></footer>
+      <footer id="settings"><span>原型存檔：${saveBlocked ? '保護模式' : '本機儲存'}</span><div class="settings-actions"><button id="export-save" type="button">匯出存檔</button><button id="import-save" type="button">匯入存檔</button><input id="save-file" type="file" accept="application/json,.json" hidden /></div><button id="reset" class="text-button">重置原型</button></footer>
       <nav class="bottom-nav" aria-label="遊戲主導航">
         <button type="button" class="nav-item is-active" data-target="home" aria-label="洞府"><span aria-hidden="true">HOME</span><small>洞府</small></button>
         <button type="button" class="nav-item" data-target="cultivation" aria-label="修煉"><span aria-hidden="true">QI</span><small>修煉</small></button>
@@ -138,6 +138,44 @@ function render(): void {
     save.player.name = target.value.trim() || '修仙者';
     persist();
     render();
+  });
+
+  document.querySelector<HTMLButtonElement>('#export-save')?.addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(save, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `xianxia-save-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    offlineSummary = '已匯出目前原型存檔。請將 JSON 檔案保存於安全位置。';
+    render();
+  });
+
+  const saveFileInput = document.querySelector<HTMLInputElement>('#save-file');
+  document.querySelector<HTMLButtonElement>('#import-save')?.addEventListener('click', () => saveFileInput?.click());
+  saveFileInput?.addEventListener('change', async () => {
+    const file = saveFileInput.files?.[0];
+    if (!file) return;
+    try {
+      const parsed: unknown = JSON.parse(await file.text());
+      if (!validateSave(parsed)) throw new Error('存檔格式不符合目前版本。');
+      if (!window.confirm('匯入會取代目前新原型的進度。建議先匯出備份。確定繼續嗎？')) return;
+      save = parsed;
+      saveBlocked = false;
+      storageWarning = '';
+      const result = settleOfflineCultivation(save.player, save.lastSettledAt, Date.now());
+      save.player = result.player;
+      save.lastSettledAt = result.lastSettledAt;
+      offlineSummary = '已匯入存檔，並完成本次離線結算。';
+      persist();
+      render();
+    } catch (error) {
+      storageWarning = error instanceof Error ? `匯入失敗：${escapeHtml(error.message)}` : '匯入失敗，檔案無法辨識。';
+      render();
+    } finally {
+      saveFileInput.value = '';
+    }
   });
 
   document.querySelector<HTMLButtonElement>('#reset')?.addEventListener('click', () => {
