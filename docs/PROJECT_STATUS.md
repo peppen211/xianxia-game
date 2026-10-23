@@ -89,3 +89,14 @@
 
 
 | 0.3 | 2026-10-23 | 依使用者影片參考新增開場首頁、進入仙途按鈕、底部導覽改為頁面切換、手機動態視窗高度與安全區樣式 | `087b2e114e88f17da1f4eacd6354e0168111e8cb`、`b229ec10a5461936684499747ca6c90f0a17c2bb` | 原始碼已提交；CI、部署及 iPhone 實機顯示尚未重新驗證 |
+
+
+## 全整修持續迭代（測試版本 0.4，2026-10-23）
+- 修正重新 render 後可能重新顯示開場首頁的狀態問題：以 `hasEnteredGame` 保存是否已進入遊戲，讓修煉、探索、存檔等操作重新繪製介面時不應再次跳回開場。
+- 修正操作後頁面狀態可能回到洞府的問題：以 `currentPage` 保存目前導覽頁面，render 時保留頁面。
+- 修正手機觸控樣式：不再於整個 body 強制 `touch-action: pan-x`，允許內容面板垂直觸控捲動。
+- 變更檔案：`prototype/src/main.ts`、`prototype/src/style.css`。
+- Commit SHA：`82b0cfe8f9598a514ff00011d2e186ca6adb2fa5`（遊戲狀態修正）、`0a78ec5dc3cdce7914077585c1590ac61f36d4cf`（手機觸控修正）。
+- 驗證：已從 GitHub 回讀原始碼並檢查關鍵字串；這是靜態檢查，**未執行 npm test、npm run build 或 iPhone 瀏覽器實測**。
+- 部署：未確認。GitHub Pages 目前是否採用 Actions artifact、最新部署是否成功，仍待查證；目前不可宣稱已提供可玩網址。
+- 下一步：解決 Pages 發布來源與取得 Actions run 結果，完成 build/test 後再做手機端操作驗證。
