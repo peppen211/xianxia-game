@@ -112,8 +112,33 @@ async function main() {
     const questAfterRepeat = JSON.parse(await questPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
     if (questAfterRepeat.stones !== 8) throw new Error("Explore quest reward was granted more than once.");
 
+    const malformedPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    malformedPage.on("pageerror", error => errors.push(error.message));
+    const malformedSave = {
+      ...makeSave(-999, -50),
+      name: { unexpected: true },
+      level: "not-a-number",
+      xp: "broken",
+      stones: -50,
+      maxHp: 100,
+      herbs: null,
+      materials: "broken",
+      questExplore: -3,
+      questWins: "broken",
+      cultivating: "yes",
+      last: "invalid"
+    };
+    await malformedPage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), malformedSave);
+    await malformedPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await malformedPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await malformedPage.locator("#start").click();
+    const normalizedSave = JSON.parse(await malformedPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (normalizedSave.name !== "詠祺" || normalizedSave.level !== 0 || normalizedSave.xp !== 0 || normalizedSave.stones !== 0 || normalizedSave.hp !== 0 || normalizedSave.herbs !== 0 || normalizedSave.materials !== 0 || normalizedSave.questExplore !== 0 || normalizedSave.questWins !== 0 || normalizedSave.cultivating !== false) {
+      throw new Error("Malformed local save values were not normalized safely: " + JSON.stringify(normalizedSave));
+    }
+
     if (errors.length) throw new Error("Browser runtime errors: " + errors.join(" | "));
-    console.log("PASS: version label, no charge at full HP, valid healing purchase, 12-hour offline cap, and one-time quest reward.");
+    console.log("PASS: version label, touch styles, safe input selection, transaction guards, offline cap, one-time quest reward, and malformed-save normalization.");
   } finally {
     await browser.close();
     await new Promise(resolve => server.close(resolve));
