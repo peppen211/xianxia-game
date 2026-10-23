@@ -104,6 +104,11 @@ function Game() {
     setSkillCooldown(2);
     onBattleAttack(2);
   };
+  const onBattleRecover = () => {
+    setPlayerHp(100);
+    setEnemyHp(enemy.hp);
+    setBattleLog("調息完畢，氣血恢復，重新挑戰當前妖獸。");
+  };
   const onBattleHeal = () => {
     const current = saveRef.current;
     if (!current || current.pills < 1) { setBattleLog("丹藥不足，無法療傷。"); return; }
@@ -200,7 +205,7 @@ function Game() {
               <div className="h-3 overflow-hidden rounded-full bg-ink ring-1 ring-border"><div className="h-full rounded-full bg-destructive transition-all" style={{ width: `${Math.max(0, enemyHp / enemy.hp * 100)}%` }} /></div>
               <p className="text-sm">妖獸氣血 {enemyHp} / {enemy.hp}</p>
               <div className="space-y-1 text-left"><div className="flex justify-between text-xs"><span>道友氣血</span><span>{playerHp} / 100</span></div><div className="h-2 overflow-hidden rounded-full bg-ink"><div className="h-full bg-jade transition-all" style={{ width: `${playerHp}%` }} /></div></div>
-              <Button variant="gameGold" size="game" className="w-full py-4 text-xl" onClick={() => onBattleAttack()}>⚔️ 普通攻擊</Button>
+              {playerHp <= 0 ? <Button variant="gameGold" size="game" className="w-full py-4 text-xl" onClick={onBattleRecover}>🧘 調息重整，再戰一次</Button> : <Button variant="gameGold" size="game" className="w-full py-4 text-xl" onClick={() => onBattleAttack()}>⚔️ 普通攻擊</Button>}
               <div className="grid grid-cols-2 gap-2"><Button variant="gameGhost" size="game" className="py-3" disabled={skillCooldown > 0 || playerHp <= 0} onClick={onBattleSkill}>✦ 裂山斬 {skillCooldown > 0 ? `(${skillCooldown})` : ""}</Button><Button variant="gameGhost" size="game" className="py-3" disabled={save.pills < 1 || playerHp >= 100} onClick={onBattleHeal}>💊 服丹療傷 ({save.pills})</Button></div>
               <p aria-live="polite" className="min-h-12 text-sm leading-6 text-muted-foreground">{battleLog}</p>
             </section>
