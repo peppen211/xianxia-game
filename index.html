@@ -169,7 +169,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
 <section class="page" id="battle"><div class="panel"><div class="eyebrow">AUTO BATTLE</div><h2>山林試煉</h2><div class="battle-scene" aria-hidden="true"></div><p class="muted">以自動戰鬥累積實戰經驗。後續將逐步加入法術、符籙、法寶與更完整的敵人機制。</p><div class="detail"><span>遭遇對手</span><strong>山林野狼 · 氣血 35</strong></div><button class="primary" id="fight">開始自動戰鬥</button><div class="log" id="log">尚未交戰，準備好再出發。</div></div></section>
 <section class="page" id="shop"><div class="panel"><div class="eyebrow">CULTIVATION MARKET</div><h2>修仙坊市</h2><p class="muted">靈石換取修行資源。每次交易立即生效，量力而為。</p><div class="detail"><span>目前下品靈石</span><strong><span id="shopStones">0</span> 枚</strong></div><div class="shop-item"><div><strong>回春散</strong><p class="muted">恢復 40 點氣血，最多回復至上限。</p><small>價格：5 枚下品靈石</small></div><button class="primary" id="buyHeal">購買並服用</button></div><div class="shop-item"><div><strong>凝氣丹</strong><p class="muted">藥力化作 30 點修為。</p><small>價格：8 枚下品靈石</small></div><button class="primary" id="buyQi">購買並服用</button></div><div class="shop-item"><div><strong>百草小包</strong><p class="muted">獲得 3 株草藥，可累積行囊資源。</p><small>價格：3 枚下品靈石</small></div><button class="primary" id="buyHerbs">購買</button></div><div class="log" id="shopLog">坊市已開張。探索與戰鬥取得靈石後，可在此補給。</div></div></section>
 <section class="page" id="bag"><div class="panel"><div class="eyebrow">YOUR IMMORTAL CAVE</div><h2>洞府與行囊</h2><div class="detail"><span>下品靈石</span><strong id="bagStones">0</strong></div><div class="detail"><span>草藥</span><strong id="herbs">0</strong></div><div class="detail"><span>野獸材料</span><strong id="materials">0</strong></div><div class="detail"><span>氣血狀態</span><strong id="bagHp">100 / 100</strong></div><button class="primary" id="rest">消耗 1 株草藥療傷（恢復 20 氣血）</button><p class="muted">進度儲存在此裝置的瀏覽器中，不需要建立遊戲帳號。</p><button id="openSettings" style="width:100%;margin-top:10px">⚙ 遊戲設定</button><button id="save">立即存檔</button><button id="reset">重回仙途入口</button></div></section>
-<section class="page active" id="character"><div class="panel"><div class="eyebrow">CULTIVATOR PROFILE</div><h2>角色資料</h2><div class="detail"><span>姓名</span><strong id="characterName">詠祺</strong></div><div class="detail"><span>靈根</span><strong>四屬性偽靈根</strong></div><div class="detail"><span>起始境界</span><strong>凡人</strong></div><div class="detail"><span>初始資源</span><strong>0</strong></div></div></section><footer>凡人修仙・自由放置 RPG · 開發測試 0.1</footer><div id="settingsOverlay" class="settings-overlay" hidden>
+<section class="page active" id="character"><div class="panel"><div class="eyebrow">CULTIVATOR PROFILE</div><h2>角色資料</h2><div class="detail"><span>姓名</span><strong id="characterName">詠祺</strong></div><div class="detail"><span>靈根</span><strong>四屬性偽靈根</strong></div><div class="detail"><span>當前境界</span><strong id="characterRealm">凡人</strong></div><div class="detail"><span>目前靈石</span><strong id="characterStones">0</strong></div></div></section><footer>凡人修仙・自由放置 RPG · 開發測試 0.1</footer><div id="settingsOverlay" class="settings-overlay" hidden>
   <section class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
     <div class="settings-heading"><div><div class="eyebrow">PERSONAL SETTINGS</div><h2 id="settingsTitle">遊戲設定</h2></div><button type="button" id="closeSettings" class="settings-close" aria-label="關閉設定">✕</button></div>
     <p class="muted">設定只會調整這個裝置上的遊戲顯示，不會清除修仙進度。</p>
@@ -271,6 +271,8 @@ html body input,html body textarea,html body select,html body [contenteditable="
     $("hp").textContent=state.hp+"/"+state.maxHp;
     $("nameShow").textContent=state.created?state.name:"未建立";
     $("characterName").textContent=state.name;
+    $("characterRealm").textContent=realm();
+    $("characterStones").textContent=state.stones;
     $("rootShow").textContent=state.created?state.root:"待測";
     $("realmShow").textContent=realm();
     $("progress").textContent=Math.floor(state.xp)+" / "+requiredXp()+" 修為";
@@ -338,7 +340,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
     save();
     setPage("character",document.querySelector('.tab[data-tab="character"]'));
     render();
-    toast("仙途已開，詠祺道友請起行。");
+    toast("仙途已開，"+state.name+"道友請起行。");
   });
   $("cultivateBtn").addEventListener("click",()=>{
     if(!state.created){toast("請先踏入仙途");return;}
