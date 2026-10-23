@@ -31,20 +31,25 @@ export function validateSave(value: unknown): value is SaveEnvelope {
   if (!value || typeof value !== 'object') return false;
   const save = value as Partial<SaveEnvelope>;
   if (save.schemaVersion !== 1 || typeof save.gameVersion !== 'string' || save.gameVersion.length === 0) return false;
-  if (!Number.isFinite(save.savedAt) || save.savedAt < 0 || !Number.isFinite(save.lastSettledAt) || save.lastSettledAt < 0) return false;
+  if (typeof save.savedAt !== 'number' || !Number.isFinite(save.savedAt) || save.savedAt < 0
+    || typeof save.lastSettledAt !== 'number' || !Number.isFinite(save.lastSettledAt) || save.lastSettledAt < 0) return false;
   if (!save.player || typeof save.player !== 'object') return false;
   const player = save.player as Partial<PlayerState>;
   return typeof player.name === 'string'
     && player.spiritualRootId === 'four_attribute_pseudo'
     && (player.realmId === 'mortal' || player.realmId === 'qi_refining')
+    && typeof player.realmStage === 'number'
     && Number.isInteger(player.realmStage)
     && player.realmStage >= 0
     && (player.realmId !== 'mortal' || player.realmStage === 0)
     && (player.realmId !== 'qi_refining' || (player.realmStage >= 1 && player.realmStage <= 13))
+    && typeof player.cultivationProgress === 'number'
     && Number.isFinite(player.cultivationProgress)
     && player.cultivationProgress >= 0
+    && typeof player.spiritStones === 'number'
     && Number.isFinite(player.spiritStones)
     && player.spiritStones >= 0
+    && typeof player.herbs === 'number'
     && Number.isFinite(player.herbs)
     && player.herbs >= 0
     && typeof player.isCultivating === 'boolean'
