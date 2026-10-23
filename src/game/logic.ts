@@ -26,6 +26,7 @@ export interface Save {
   progress: number;
   stones: number;
   pills: number;
+  herbs: number;
   chars: Record<string, number>;
   artifacts: string[];
   pets: string[];
@@ -35,7 +36,7 @@ export interface Save {
 export const SUMMON_COST = 100;
 export const PILL_COST = 50;
 
-export const newSave = (now: Date = new Date()): Save => ({ level: 0, progress: 0, stones: 0, pills: 1, chars: { xiao: 1 }, artifacts: ["jing"], pets: ["gui"], quests: newQuests(now), lastSeenAt: now.getTime() });
+export const newSave = (now: Date = new Date()): Save => ({ level: 0, progress: 0, stones: 0, pills: 1, herbs: 0, chars: { xiao: 1 }, artifacts: ["jing"], pets: ["gui"], quests: newQuests(now), lastSeenAt: now.getTime() });
 
 export const realmName = (lv: number) => {
   const r = Math.min(Math.floor(lv / 4), REALMS.length - 1);
@@ -97,6 +98,13 @@ export function explore(s: Save, roll: number, now: Date = new Date()): { save: 
   return { save: { ...current, stones: s.stones - EXPLORE_COST + stones, pills: s.pills + (rare ? 1 : 0), quests: recordActivity(current.quests, "explore", now) },
     text: rare ? "雲山奇遇：尋得破境丹 ×1、靈石 +5" : "山間採靈：尋得靈石 +15" };
 }
+export const HERB_CRAFT_COST = 20;
+export const HERBS_PER_PILL = 3;
+export function craftPill(s: Save): Save {
+  if (s.stones < HERB_CRAFT_COST || s.herbs < HERBS_PER_PILL) return s;
+  return { ...s, stones: s.stones - HERB_CRAFT_COST, herbs: s.herbs - HERBS_PER_PILL, pills: s.pills + 1 };
+}
+
 export function claimReward(s: Save, kind: "daily" | "achievement", id: string, now: Date = new Date()): Save {
   const quests = syncQuests(s.quests, now);
   const goals = kind === "daily" ? DAILY_GOALS : ACHIEVEMENT_GOALS;
@@ -127,7 +135,7 @@ export function validateSave(raw: unknown, now: Date = new Date()): Save {
     }
   }
   const ids = (key: string, known: { id: string }[], fallback: string[]) => Array.isArray(data[key]) ? [...new Set((data[key] as unknown[]).filter((id): id is string => typeof id === "string" && known.some((item) => item.id === id)))] : fallback;
-  return { level, progress: Math.min(number("progress", fresh.progress), maxProgress(level)), stones: number("stones", fresh.stones), pills: number("pills", fresh.pills), chars, artifacts: ids("artifacts", ARTIFACTS, fresh.artifacts), pets: ids("pets", PETS, fresh.pets), quests: validateQuests(data['quests'], now), lastSeenAt: number("lastSeenAt", now.getTime()) };
+  return { level, progress: Math.min(number("progress", fresh.progress), maxProgress(level)), stones: number("stones", fresh.stones), pills: number("pills", fresh.pills), herbs: number("herbs", fresh.herbs), chars, artifacts: ids("artifacts", ARTIFACTS, fresh.artifacts), pets: ids("pets", PETS, fresh.pets), quests: validateQuests(data['quests'], now), lastSeenAt: number("lastSeenAt", now.getTime()) };
 }
 export const persist = (s: Save) => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {} };
 export const wipe = () => { try { localStorage.removeItem(KEY); } catch {} };
