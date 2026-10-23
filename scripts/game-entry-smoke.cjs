@@ -48,9 +48,9 @@ async function main() {
       buttonTouchAction: getComputedStyle(document.querySelector("#start")).touchAction,
       buttonUserSelect: getComputedStyle(document.querySelector("#start")).userSelect,
       bodyTextUserSelect: getComputedStyle(document.querySelector("#intro")).userSelect,
-      inputUserSelect: getComputedStyle(Object.assign(document.createElement("input"), { id: "touch-test-input" })).userSelect
+      inputUserSelect: (() => { const input = document.createElement("input"); document.body.append(input); const value = getComputedStyle(input).userSelect; input.remove(); return value; })()
     }));
-    if (touchStyles.buttonTouchAction !== "manipulation" || touchStyles.buttonUserSelect !== "none" || touchStyles.bodyTextUserSelect !== "none") {
+    if (touchStyles.buttonTouchAction !== "manipulation" || touchStyles.buttonUserSelect !== "none" || touchStyles.bodyTextUserSelect !== "none" || touchStyles.inputUserSelect !== "text") {
       throw new Error("Touch interaction styles are missing or overridden: " + JSON.stringify(touchStyles));
     }
     if (!(await fullHpPage.locator("footer").innerText()).includes("開發測試 0.1")) {
