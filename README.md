@@ -1,6 +1,6 @@
 # 凡人修仙・自由放置 RPG
 
-**正式遊玩入口：** https://peppen211.github.io/xianxia-game/
+**正式遊玩入口：** https://peppen211.github.io/xianxia-game/\n\n**目前開發測試輪次：** 開發測試 0.1（進行中，尚未驗收）。輪次編號每輪增加 0.1，並不代表測試通過或已部署。\n\n> 注意：根目錄 `index.html` 是目前公開網站的實際入口；`package.json` 的版本號是程式套件版本，與開發測試輪次分開記錄。
 
 ## v0.8.0
 
