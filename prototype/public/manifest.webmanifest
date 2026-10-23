@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "凡人修仙・自由放置 RPG",
+  "short_name": "凡人修仙",
+  "description": "個人單機修仙放置 RPG 原型",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#10151d",
+  "theme_color": "#10151d",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
