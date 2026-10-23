@@ -137,6 +137,21 @@ async function main() {
       throw new Error("Malformed local save values were not normalized safely: " + JSON.stringify(normalizedSave));
     }
 
+    const corruptPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    corruptPage.on("pageerror", error => errors.push(error.message));
+    const corruptRaw = "{this is not valid JSON";
+    await corruptPage.addInitScript(raw => localStorage.setItem("mortalCultivationSaveV2", raw), corruptRaw);
+    await corruptPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await corruptPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await corruptPage.locator("#start").click();
+    const corruptBackup = await corruptPage.evaluate(() => {
+      const key = Object.keys(localStorage).find(item => item.startsWith("mortalCultivationSaveV2.corruptBackup."));
+      return key ? { key, value: localStorage.getItem(key) } : null;
+    });
+    if (!corruptBackup || corruptBackup.value !== corruptRaw) {
+      throw new Error("Malformed JSON save was overwritten without preserving the original raw data.");
+    }
+
     if (errors.length) throw new Error("Browser runtime errors: " + errors.join(" | "));
     console.log("PASS: version label, touch styles, safe input selection, transaction guards, offline cap, one-time quest reward, and malformed-save normalization.");
   } finally {
