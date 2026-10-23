@@ -85,7 +85,7 @@ async function main() {
     const offlinePage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
     offlinePage.on("pageerror", error => errors.push(error.message));
     const twelveHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
-    const offlineSave = { ...makeSave(100, 0), xp: 0, cultivating: true, last: twelveHoursAgo };
+    const offlineSave = { ...makeSave(100, 0), level: 5, xp: 0, cultivating: true, last: twelveHoursAgo };
     await offlinePage.addInitScript(save => {
       if (sessionStorage.getItem("__offlineSaveSeeded") === "1") return;
       localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save));
@@ -95,12 +95,12 @@ async function main() {
     await offlinePage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
     await offlinePage.locator("#start").click();
     const offlineResult = JSON.parse(await offlinePage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
-    if (Math.abs(offlineResult.xp - 93.6) > 0.01 || offlineResult.cultivating !== false) {
-      throw new Error("Offline cultivation should cap at 12 hours and stop automatically after reload; got xp=" + offlineResult.xp + ", cultivating=" + offlineResult.cultivating);
+    if (Math.abs(offlineResult.xp - 468) > 0.01 || offlineResult.cultivating !== false) {
+      throw new Error("Unlocked offline cultivation should cap at 12 hours and stop automatically after reload; got xp=" + offlineResult.xp + ", cultivating=" + offlineResult.cultivating);
     }
     await offlinePage.reload({ waitUntil: "domcontentloaded" });
     const offlineAfterSecondLoad = JSON.parse(await offlinePage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
-    if (Math.abs(offlineAfterSecondLoad.xp - 93.6) > 0.01 || offlineAfterSecondLoad.cultivating !== false) {
+    if (Math.abs(offlineAfterSecondLoad.xp - 468) > 0.01 || offlineAfterSecondLoad.cultivating !== false) {
       throw new Error("Offline cultivation reward was applied more than once after reloading; xp=" + offlineAfterSecondLoad.xp);
     }
 
