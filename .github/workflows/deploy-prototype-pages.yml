@@ -24,6 +24,7 @@ jobs:
       - name: Build production site
         run: |
           npm run build
+          cp index.html dist/index.html
           cp latest.html dist/latest.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
@@ -71,10 +72,17 @@ jobs:
               }
             }
             if (!rendered) throw new Error('Published game UI did not render after retries.');
-            await page.getByRole('button', { name: '開始修仙' }).click();
-            await page.getByRole('button', { name: '修煉' }).waitFor({ timeout: 10000 });
+            await page.locator('#start').click();
+            await page.locator('#cultivateBtn').click();
+            await page.getByRole('button', { name: '停止修煉' }).waitFor({ timeout: 10000 });
+            await page.locator('button[data-tab="explore"]').click();
+            await page.locator('#gather').click();
+            await page.locator('button[data-tab="shop"]').click();
+            await page.locator('#buyHerbs').click();
+            await page.locator('button[data-tab="bag"]').click();
+            await page.locator('#rest').waitFor({ timeout: 5000 });
             if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
-            console.log('Mobile browser smoke test passed: standalone game rendered, start button worked, and cultivation action was clickable.');
+            console.log('Mobile browser smoke test passed: game rendered, cultivation toggled, exploration, shop, and inventory controls worked.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
