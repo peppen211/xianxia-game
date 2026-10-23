@@ -43,7 +43,7 @@ function Game() {
       persist(next);
       setSave(next);
     };
-    const timer = setInterval(refreshDay, 1000);
+    const timer = setInterval(refreshDay, 60_000);
     document.addEventListener("visibilitychange", refreshDay);
     window.addEventListener("focus", refreshDay);
     return () => { clearInterval(timer); document.removeEventListener("visibilitychange", refreshDay); window.removeEventListener("focus", refreshDay); };
@@ -131,6 +131,7 @@ function Game() {
               <p className="mt-2 text-xs text-muted-foreground">
                 突破需：修為圓滿 ＋ 破境丹 ×{pillsNeeded(save.level)}　成功率 {Math.round(successRate(save) * 100)}%
               </p>
+              <p className="mt-2 text-xs text-muted-foreground">靜心自動修行：每分鐘修為 +2、靈石 +1，離線最多累積 8 小時。</p>
             </section>
 
             <div className="relative grid grid-cols-2 gap-3">
