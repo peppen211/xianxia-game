@@ -361,7 +361,6 @@ body.started footer{display:none}
     $("homeCultivationRate").textContent=autoCultivationUnlocked()?("修為收益："+Math.round(AUTO_CULTIVATION_RATE*(ROOT_RATE[state.root]||1))+" 點／時"):("修為進度："+Math.floor(state.xp)+" / "+requiredXp());
     $("homeXp").textContent=Math.floor(state.xp)+" / "+requiredXp();
     $("homeHp").textContent=state.hp+"/"+state.maxHp;
-    $("homeBreakthrough").disabled=!state.created||state.xp<requiredXp()||state.level>=13;
     $("characterStones").textContent=state.stones;
     $("rootShow").textContent=state.created?state.root:"待測";
     $("realmShow").textContent=realm();
