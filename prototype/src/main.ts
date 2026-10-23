@@ -63,12 +63,6 @@ function render(): void {
       <section class="panel" id="cultivation">
         <div class="section-heading"><h2>角色狀態</h2><span class="muted">人界 · 起始階段</span></div>
         <label class="field">道友稱呼<input id="player-name" maxlength="24" value="${escapeHtml(p.name)}" /></label>
-        <div class="stats" id="inventory">
-          <div><span>境界</span><strong>${p.realmId === 'mortal' ? '凡人' : `練氣 ${p.realmStage} 層`}</strong></div>
-          <div><span>靈根</span><strong>四屬性偽靈根</strong></div>
-          <div><span>靈石</span><strong>${p.spiritStones}</strong></div>
-          <div><span>靈草</span><strong>${p.herbs}</strong></div>
-        </div>
         <div class="progress-label"><span>修為進度</span><strong id="progress-value">${p.cultivationProgress.toFixed(1)} / 100</strong></div>
         <div class="progress-track"><div id="progress-fill" class="progress-fill" style="width:${Math.min(100, p.cultivationProgress)}%"></div></div>
         <div class="actions">
@@ -76,6 +70,16 @@ function render(): void {
           <button id="breakthrough" ${canBreakthrough && p.realmId === 'mortal' ? '' : 'disabled'}>嘗試突破</button>
         </div>
         <p class="hint">${canBreakthrough ? '已達原型測試門檻，可由你決定是否嘗試突破。' : '修為累積達到測試門檻後，會開放手動突破。'}</p>
+      </section>
+      <section class="panel" id="inventory">
+        <div class="section-heading"><h2>行囊與資源</h2><span class="muted">隨身物品</span></div>
+        <div class="stats">
+          <div><span>境界</span><strong>${p.realmId === 'mortal' ? '凡人' : `練氣 ${p.realmStage} 層`}</strong></div>
+          <div><span>靈根</span><strong>四屬性偽靈根</strong></div>
+          <div><span>靈石</span><strong>${p.spiritStones}</strong></div>
+          <div><span>靈草</span><strong>${p.herbs}</strong></div>
+        </div>
+        <p class="hint">探索所得與修仙資源會記錄在此。更多物品與交易功能將在後續階段加入。</p>
       </section>
       <section class="panel" id="exploration">
         <div class="section-heading"><h2>附近探索</h2><span class="muted">試驗地點</span></div>
@@ -85,11 +89,11 @@ function render(): void {
       </section>
       <footer id="settings"><span>原型存檔：${saveBlocked ? '保護模式' : '本機儲存'}</span><div class="settings-actions"><button id="export-save" type="button">匯出存檔</button><button id="import-save" type="button">匯入存檔</button><input id="save-file" type="file" accept="application/json,.json" hidden /></div><button id="reset" class="text-button">重置原型</button></footer>
       <nav class="bottom-nav" aria-label="遊戲主導航">
-        <button type="button" class="nav-item is-active" data-target="home" aria-label="洞府"><span aria-hidden="true">HOME</span><small>洞府</small></button>
-        <button type="button" class="nav-item" data-target="cultivation" aria-label="修煉"><span aria-hidden="true">QI</span><small>修煉</small></button>
-        <button type="button" class="nav-item" data-target="exploration" aria-label="探索"><span aria-hidden="true">MAP</span><small>探索</small></button>
-        <button type="button" class="nav-item" data-target="inventory" aria-label="行囊"><span aria-hidden="true">BAG</span><small>行囊</small></button>
-        <button type="button" class="nav-item" data-target="settings" aria-label="設定"><span aria-hidden="true">SET</span><small>設定</small></button>
+        <button type="button" class="nav-item is-active" data-target="home" aria-label="洞府"><span aria-hidden="true">⌂</span><small>洞府</small></button>
+        <button type="button" class="nav-item" data-target="cultivation" aria-label="修煉"><span aria-hidden="true">☯</span><small>修煉</small></button>
+        <button type="button" class="nav-item" data-target="exploration" aria-label="探索"><span aria-hidden="true">山</span><small>探索</small></button>
+        <button type="button" class="nav-item" data-target="inventory" aria-label="行囊"><span aria-hidden="true">囊</span><small>行囊</small></button>
+        <button type="button" class="nav-item" data-target="settings" aria-label="設定"><span aria-hidden="true">⚙</span><small>設定</small></button>
       </nav>
     </main>
   `;
