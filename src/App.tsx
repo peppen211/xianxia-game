@@ -25,7 +25,9 @@ function Game() {
   const [skillCooldown, setSkillCooldown] = useState(0);
   const [battleLog, setBattleLog] = useState("妖獸現身，請道友出招！");
   const enemies = [{ name: "山野妖狼", hp: 45, reward: 18 }, { name: "迷霧蛇妖", hp: 75, reward: 32 }, { name: "守山石魈", hp: 120, reward: 55 }];
-  const enemy = enemies[enemyIndex % enemies.length];
+  const battleCycle = Math.floor(enemyIndex / enemies.length);
+  const enemyBase = enemies[enemyIndex % enemies.length];
+  const enemy = { ...enemyBase, hp: Math.round(enemyBase.hp * (1 + battleCycle * 0.35)), reward: enemyBase.reward + battleCycle * 12 };
   const saveRef = useRef<Save | null>(null);
   const startedRef = useRef(false);
 
@@ -88,10 +90,10 @@ function Game() {
       updateSave(s => ({ ...s, stones: s.stones + reward, progress: Math.min(maxProgress(s.level), s.progress + reward) }));
       setBattleLog(`擊敗${enemy.name}！獲得靈石 +${reward}、修為 +${reward}。`);
       setEnemyIndex(i => i + 1);
-      setEnemyHp(enemies[(enemyIndex + 1) % enemies.length].hp);
+      setEnemyHp(Math.round(enemies[(enemyIndex + 1) % enemies.length].hp * (1 + Math.floor((enemyIndex + 1) / enemies.length) * 0.35)));
       setPlayerHp(hp => Math.min(100, hp + 12));
     } else {
-      const counter = 5 + enemyIndex * 3;
+      const counter = 5 + (enemyIndex % enemies.length) * 3 + battleCycle * 2 + Math.floor(current.level / 4);
       const hp = Math.max(0, playerHp - counter);
       setEnemyHp(remaining);
       setPlayerHp(hp);
@@ -101,7 +103,7 @@ function Game() {
   };
   const onBattleSkill = () => {
     if (skillCooldown > 0) { setBattleLog(`神通尚需等待 ${skillCooldown} 回合。`); return; }
-    setSkillCooldown(2);
+    setSkillCooldown(3);
     onBattleAttack(2);
   };
   const onBattleRecover = () => {
@@ -224,14 +226,14 @@ function Game() {
             <Title>斬妖除魔</Title>
             <section className="battle-scene panel relative isolate overflow-hidden space-y-4 p-5 text-center">
               <div className="battle-moon" aria-hidden="true" />
-              <div className="relative z-10 flex items-center justify-between text-[10px] tracking-[0.22em] text-slate-300/70"><span>妖域 · 第 {enemyIndex + 1} 重</span><span className="text-red-200">危險等級 {enemyIndex + 1}</span></div>
+              <div className="relative z-10 flex items-center justify-between text-[10px] tracking-[0.22em] text-slate-300/70"><span>妖域 · 第 {battleCycle + 1} 輪</span><span className="text-red-200">妖獸序列 {enemyIndex + 1}</span></div>
               <div className="monster-stage relative z-10 mx-auto flex h-40 w-full items-center justify-center">
                 <div className="monster-aura" aria-hidden="true" />
                 <div className="monster-glyph flex h-28 w-28 items-center justify-center rounded-full text-7xl">{enemyIndex % 3 === 0 ? "🐺" : enemyIndex % 3 === 1 ? "🐍" : "🪨"}</div>
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.32em] text-red-100/65">✦ 妖氣凝結 ✦</span>
               </div>
               <p className="relative z-10 text-2xl font-bold tracking-widest text-gold-grad">{enemy.name}</p>
-              <p className="text-sm text-muted-foreground">妖獸階序 {enemyIndex + 1} · 勝利可得靈石與修為</p>
+              <p className="text-sm text-muted-foreground">妖獸階序 {enemyIndex + 1} · 第 {battleCycle + 1} 輪 · 勝利獎勵 {enemy.reward} 靈石</p>
               <div className="h-3 overflow-hidden rounded-full bg-ink ring-1 ring-border"><div className="h-full rounded-full bg-destructive transition-all" style={{ width: `${Math.max(0, enemyHp / enemy.hp * 100)}%` }} /></div>
               <p className="text-sm">妖獸氣血 {enemyHp} / {enemy.hp}</p>
               <div className="space-y-1 text-left"><div className="flex justify-between text-xs"><span>道友氣血</span><span>{playerHp} / 100</span></div><div className="h-2 overflow-hidden rounded-full bg-ink"><div className="h-full bg-jade transition-all" style={{ width: `${playerHp}%` }} /></div></div>
@@ -239,7 +241,7 @@ function Game() {
               <div className="grid grid-cols-2 gap-2"><Button variant="gameGhost" size="game" className="py-3" disabled={skillCooldown > 0 || playerHp <= 0} onClick={onBattleSkill}>✦ 裂山斬 {skillCooldown > 0 ? `(${skillCooldown})` : ""}</Button><Button variant="gameGhost" size="game" className="py-3" disabled={save.pills < 1 || playerHp >= 100} onClick={onBattleHeal}>💊 服丹療傷 ({save.pills})</Button></div>
               <p aria-live="polite" className="min-h-12 text-sm leading-6 text-muted-foreground">{battleLog}</p>
             </section>
-            <section className="panel p-4 text-sm leading-7 text-muted-foreground">戰力依境界、角色與法寶提升。擊敗妖獸可獲得修為與靈石，下一隻妖獸將更強。</section>
+            <section className="panel p-4 text-sm leading-7 text-muted-foreground">無盡妖域：每擊敗三隻妖獸便進入下一輪。輪數越高，妖獸氣血、反擊與獎勵同步提升。境界、道友與法寶會增強你的戰力。</section>
           </div>
         )}
         {started && tab === "chars" && (
