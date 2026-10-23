@@ -30,13 +30,16 @@ export function createSave(player: PlayerState, now = Date.now()): SaveEnvelope 
 export function validateSave(value: unknown): value is SaveEnvelope {
   if (!value || typeof value !== 'object') return false;
   const save = value as Partial<SaveEnvelope>;
-  if (save.schemaVersion !== 1 || typeof save.savedAt !== 'number') return false;
-  if (typeof save.lastSettledAt !== 'number' || !save.player || typeof save.player !== 'object') return false;
+  if (save.schemaVersion !== 1 || !Number.isFinite(save.savedAt) || !Number.isFinite(save.lastSettledAt)) return false;
+  if (!save.player || typeof save.player !== 'object') return false;
   const player = save.player as Partial<PlayerState>;
   return typeof player.name === 'string'
     && player.spiritualRootId === 'four_attribute_pseudo'
     && (player.realmId === 'mortal' || player.realmId === 'qi_refining')
-    && typeof player.realmStage === 'number'
+    && Number.isInteger(player.realmStage)
+    && player.realmStage >= 0
+    && (player.realmId !== 'mortal' || player.realmStage === 0)
+    && (player.realmId !== 'qi_refining' || (player.realmStage >= 1 && player.realmStage <= 13))
     && Number.isFinite(player.cultivationProgress)
     && player.cultivationProgress >= 0
     && Number.isFinite(player.spiritStones)
@@ -45,7 +48,9 @@ export function validateSave(value: unknown): value is SaveEnvelope {
     && player.herbs >= 0
     && typeof player.isCultivating === 'boolean'
     && !!save.eventFlags
-    && typeof save.eventFlags === 'object';
+    && typeof save.eventFlags === 'object'
+    && !Array.isArray(save.eventFlags)
+    && Object.values(save.eventFlags).every((flag) => typeof flag === 'boolean');
 }
 
 export function readSave(storage: Pick<Storage, 'getItem'> = localStorage): SaveEnvelope | null {
