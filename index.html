@@ -159,12 +159,13 @@ html,body,body *{-webkit-user-select:none;user-select:none}
 html,body{touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 button,.btn,.tab,[role="button"]{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html body input,html body textarea,html body select,html body [contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+.realm-roadmap{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(16,26,42,.55);line-height:1.9}.realm-roadmap p{margin:4px 0}.muted{color:var(--muted);font-size:.9rem;line-height:1.65}
 </style></head><body>
 <header class="realm-header"><div class="realm-landscape" aria-hidden="true"></div><div class="header-avatar" aria-hidden="true"><span>道</span></div><div class="realm-location"><div class="realm-heading"><div class="eyebrow" id="locationEyebrow">山野行旅 · 初入仙途</div><h1 id="pageHeading">角色</h1><div class="muted" id="locationSub">凡人之身，踏上修行路</div><div class="header-xp"><div class="header-xp-label"><span>修為進度</span><strong id="headerXp">0 / 100</strong></div><div class="header-xp-track"><span id="headerXpFill"></span></div></div></div></div><div class="realm-badge"><div class="realm-badge-label">當前境界</div><strong id="realmTop">凡人</strong><span class="realm-seal" aria-hidden="true">凡</span></div></header>
 <section class="panel" id="heroPanel"><div class="eyebrow">山河萬里 · 仙途由你</div><h2 id="hero">凡人修仙</h2><p class="muted" id="intro">一介凡人，四屬偽靈根。無資源、無捷徑，從自己的仙途開始。</p><button id="start" aria-label="踏入仙途">踏入仙途</button></section>
 <section class="stats"><div class="panel"><small>修為</small><strong id="xp">0</strong></div><div class="panel"><small>下品靈石</small><strong id="stones">0</strong></div><div class="panel"><small>氣血</small><strong id="hp">100/100</strong></div></section>
 <section class="quick-status" id="quickStatus" aria-label="角色即時狀態"><div class="quick-status-top"><span id="quickRealm">凡人</span><span id="quickState">尚未修煉</span></div><div class="quick-status-values"><span>修為 <strong id="quickXp">0</strong></span><span>靈石 <strong id="quickStones">0</strong></span><span>氣血 <strong id="quickHp">100/100</strong></span></div><div class="quick-progress"><span id="quickFill"></span></div></section><nav class="tabs bottom-nav" aria-label="主要導覽"><button class="tab active" data-tab="character"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M5.5 20v-2.2a6.5 6.5 0 0 1 13 0V20z"/></svg></span><span>角色</span></button><button class="tab" data-tab="cultivate"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M6 9.5V21h12V9.5M10 21v-6h4v6"/></svg></span><span>洞府</span></button><button class="tab" data-tab="explore"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.4 5.2-5.2 2.4 2.4-5.2z"/></svg></span><span>世界</span></button><button class="tab" data-tab="shop"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9h16l-1 11H5z"/><path d="M8 9V6a4 4 0 0 1 8 0v3M8 13h8"/></svg></span><span>商店</span></button><button class="tab" data-tab="bag"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h14l1 13H4z"/><path d="M9 8V6a3 3 0 0 1 6 0v2M9 13h6"/></svg></span><span>背包</span></button></nav>
-<section class="page" id="cultivate"><div class="panel"><div class="eyebrow">INNER CULTIVATION</div><h2>靜心吐納</h2><div class="detail"><span>角色道號</span><strong id="nameShow">詠祺</strong></div><div class="detail"><span>靈根</span><strong id="rootShow">四屬性偽靈根</strong></div><div class="detail"><span>境界</span><strong id="realmShow">凡人</strong></div><div class="bar"><div class="fill" id="fill"></div></div><div class="detail"><span id="progress">0 / 100 修為</span><span id="rate">尚未修煉</span></div><div class="row"><button class="primary" id="cultivateBtn">開始修煉</button><button id="breakthrough" disabled>嘗試突破</button></div></div></section>
+<section class="page" id="cultivate"><div class="panel"><div class="eyebrow">INNER CULTIVATION</div><h2>靜心吐納</h2><div class="detail"><span>角色道號</span><strong id="nameShow">詠祺</strong></div><div class="detail"><span>靈根</span><strong id="rootShow">四屬性偽靈根</strong></div><div class="detail"><span>境界</span><strong id="realmShow">凡人</strong></div><div class="bar"><div class="fill" id="fill"></div></div><div class="detail"><span id="progress">0 / 100 修為</span><span id="rate">點擊吐納，積累修為</span></div><div class="row"><button class="primary" id="cultivateBtn">吐納一次</button><button id="breakthrough" disabled>嘗試突破</button></div><p class="muted" id="cultivationHint">練氣五層前，以點擊吐納積累修為。</p></div><div class="panel"><div class="eyebrow">PATH TO IMMORTALITY</div><h2>仙途境界</h2><p class="muted">目前遊戲先開放凡人與練氣期；以下為長期境界規劃，道祖為現階段終點。</p><div class="realm-roadmap"><p>凡人 → 練氣期（十三層）→ 築基期 → 結丹期 → 元嬰期 → 化神期</p><p>煉虛期 → 合體期 → 大乘期 → 真仙 → 金仙 → 太乙玉仙 → 大羅金仙 → 道祖</p></div><p class="muted">抵達道祖後暫不推進後續劇情。</p></div></section>
 <section class="page" id="explore"><div class="panel"><div class="eyebrow">THE CULTIVATION WORLD</div><h2>越國・凡俗之地</h2><p class="muted">從山林外圍開始尋找機緣，採集草藥、發現靈石，逐步走進修仙世界。</p><div class="detail"><span>山林外圍</span><span>低危險區域</span></div><button class="primary" id="gather">探索山林</button><button id="openBattle" style="width:100%;margin-top:10px">進入戰鬥試煉</button><div class="detail"><span>附近集市</span><span>凡俗交易</span></div><button id="market">查看集市</button><div class="quest-board"><div class="eyebrow">ADVENTURER'S BOARD</div><h2>歷練委託</h2><div class="quest-row"><div><strong>林間探路</strong><p class="muted">探索山林 3 次</p><small id="questExploreProgress">進度 0 / 3 · 獎勵 8 靈石</small></div><button id="claimExplore" disabled>領取</button></div><div class="quest-row"><div><strong>清剿野狼</strong><p class="muted">完成戰鬥 2 次</p><small id="questFightProgress">進度 0 / 2 · 獎勵 15 靈石</small></div><button id="claimFight" disabled>領取</button></div></div></div></section>
 <section class="page" id="battle"><div class="panel"><div class="eyebrow">AUTO BATTLE</div><h2>山林試煉</h2><div class="battle-scene" aria-hidden="true"></div><p class="muted">以自動戰鬥累積實戰經驗。後續將逐步加入法術、符籙、法寶與更完整的敵人機制。</p><div class="detail"><span>遭遇對手</span><strong>山林野狼 · 氣血 35</strong></div><button class="primary" id="fight">開始自動戰鬥</button><div class="log" id="log">尚未交戰，準備好再出發。</div></div></section>
 <section class="page" id="shop"><div class="panel"><div class="eyebrow">CULTIVATION MARKET</div><h2>修仙坊市</h2><p class="muted">靈石換取修行資源。每次交易立即生效，量力而為。</p><div class="detail"><span>目前下品靈石</span><strong><span id="shopStones">0</span> 枚</strong></div><div class="shop-item"><div><strong>回春散</strong><p class="muted">恢復 40 點氣血，最多回復至上限。</p><small>價格：5 枚下品靈石</small></div><button class="primary" id="buyHeal">購買並服用</button></div><div class="shop-item"><div><strong>凝氣丹</strong><p class="muted">藥力化作 30 點修為。</p><small>價格：8 枚下品靈石</small></div><button class="primary" id="buyQi">購買並服用</button></div><div class="shop-item"><div><strong>百草小包</strong><p class="muted">獲得 3 株草藥，可累積行囊資源。</p><small>價格：3 枚下品靈石</small></div><button class="primary" id="buyHerbs">購買</button></div><div class="log" id="shopLog">坊市已開張。探索與戰鬥取得靈石後，可在此補給。</div></div></section>
@@ -188,6 +189,8 @@ html body input,html body textarea,html body select,html body [contenteditable="
   const SAVE_KEY="mortalCultivationSaveV2";
   const OFFLINE_CAP_MS=12*60*60*1000;
   const ROOT_RATE={"四屬性偽靈根":0.78};
+  const AUTO_CULTIVATION_RATE=50;
+  const CLICK_CULTIVATION_XP=2;
   const fresh=()=>({created:false,name:"詠祺",root:"四屬性偽靈根",level:0,xp:0,stones:0,hp:100,maxHp:100,herbs:0,materials:0,questExplore:0,questWins:0,questExploreClaimed:false,questFightClaimed:false,cultivating:false,last:Date.now(),log:"尚未交戰，準備好再出發。"});
   const boundedNumber=(value,fallback,min,max,integer=false)=>{
     if(value===null||value===undefined||value==="")return fallback;
@@ -235,13 +238,14 @@ html body input,html body textarea,html body select,html body [contenteditable="
     toastTimer=setTimeout(()=>{node.style.display="none";},2200);
   }
   function realm(){return state.level===0?"凡人":"練氣 "+state.level+" 層";}
+  function autoCultivationUnlocked(){return state.level>=5;}
   function requiredXp(){return 100+state.level*35;}
   function applyOfflineProgress(saved){
     const now=Date.now();
     const then=Number(saved.last)||now;
     const elapsed=Math.min(OFFLINE_CAP_MS,Math.max(0,now-then));
     if(saved.created&&saved.cultivating&&elapsed>0){
-      saved.xp=(Number(saved.xp)||0)+(elapsed/3600000)*10*(ROOT_RATE[saved.root]||1);
+      saved.xp=(Number(saved.xp)||0)+(elapsed/3600000)*AUTO_CULTIVATION_RATE*(ROOT_RATE[saved.root]||1);
     }
     saved.cultivating=false;
     saved.last=now;
@@ -277,8 +281,10 @@ html body input,html body textarea,html body select,html body [contenteditable="
     $("realmShow").textContent=realm();
     $("progress").textContent=Math.floor(state.xp)+" / "+requiredXp()+" 修為";
     $("fill").style.width=Math.min(100,state.xp/requiredXp()*100)+"%";
-    $("rate").textContent=state.cultivating?"吐納運轉中":"靜候機緣";
-    $("cultivateBtn").textContent=state.cultivating?"停止修煉":"開始修煉";
+    $("rate").textContent=autoCultivationUnlocked()?(state.cultivating?"自動吐納運轉中":"自動修煉已暫停"):"每次點擊獲得 "+CLICK_CULTIVATION_XP+" 點修為";
+    $("cultivateBtn").textContent=autoCultivationUnlocked()?(state.cultivating?"停止自動修煉":"開始自動修煉"):"吐納一次 +"+CLICK_CULTIVATION_XP;
+    $("cultivateBtn").classList.toggle("primary",!autoCultivationUnlocked()||state.cultivating);
+    $("cultivationHint").textContent=autoCultivationUnlocked()?"已達練氣五層，可自動修煉；主動探索與戰鬥仍可加快成長。":"練氣五層前，以點擊吐納積累修為。達到五層後解鎖自動修煉。";
     $("breakthrough").disabled=!state.created||state.xp<requiredXp()||state.level>=13;
     $("herbs").textContent=state.herbs;
     $("bagHp").textContent=state.hp+" / "+state.maxHp;
@@ -344,10 +350,15 @@ html body input,html body textarea,html body select,html body [contenteditable="
   });
   $("cultivateBtn").addEventListener("click",()=>{
     if(!state.created){toast("請先踏入仙途");return;}
+    if(!autoCultivationUnlocked()){
+      state.cultivating=false;
+      state.xp+=CLICK_CULTIVATION_XP*(ROOT_RATE[state.root]||1);
+      state.last=Date.now();
+      save();render();toast("吐納完成，修為增加");return;
+    }
     state.cultivating=!state.cultivating;
     state.last=Date.now();
-    save();
-    render();
+    save();render();
   });
   $("breakthrough").addEventListener("click",()=>{
     if(!state.created||state.xp<requiredXp()||state.level>=13)return;
@@ -426,7 +437,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
     const elapsed=Math.max(0,now-lastTick);
     lastTick=now;
     if(state.created&&state.cultivating){
-      state.xp+=(elapsed/3600000)*10*(ROOT_RATE[state.root]||1);
+      state.xp+=(elapsed/3600000)*AUTO_CULTIVATION_RATE*(ROOT_RATE[state.root]||1);
       render();
     }
   },1000);
@@ -441,7 +452,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
         if(!entered){state=progressed;render();}
         else{
           const away=Math.min(OFFLINE_CAP_MS,Math.max(0,Date.now()-lastTick));
-          if(state.cultivating)state.xp+=(away/3600000)*10*(ROOT_RATE[state.root]||1);
+          if(state.cultivating)state.xp+=(away/3600000)*AUTO_CULTIVATION_RATE*(ROOT_RATE[state.root]||1);
           state.last=Date.now();save();render();
         }
       }
