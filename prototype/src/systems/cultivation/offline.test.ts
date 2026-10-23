@@ -30,4 +30,20 @@ describe('settleOfflineCultivation', () => {
     const result = settleOfflineCultivation(createInitialPlayer(), 0, 3_600_000);
     expect(result.summary.cultivationGained).toBe(0);
   });
+
+  it('does not pay the same interval twice when the settlement timestamp is reused', () => {
+    const player = { ...createInitialPlayer(), isCultivating: true };
+    const first = settleOfflineCultivation(player, 1_000, 3_601_000);
+    const second = settleOfflineCultivation(first.player, first.lastSettledAt, 3_601_000);
+    expect(second.summary.elapsedSeconds).toBe(0);
+    expect(second.summary.cultivationGained).toBe(0);
+    expect(second.player.cultivationProgress).toBeCloseTo(first.player.cultivationProgress);
+  });
+
+  it('does not mark the offline cap as exceeded at the exact boundary', () => {
+    const player = { ...createInitialPlayer(), isCultivating: true };
+    const result = settleOfflineCultivation(player, 0, MAX_OFFLINE_SECONDS * 1000);
+    expect(result.summary.elapsedSeconds).toBe(MAX_OFFLINE_SECONDS);
+    expect(result.summary.capped).toBe(false);
+  });
 });
