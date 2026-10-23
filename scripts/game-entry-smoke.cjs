@@ -57,6 +57,18 @@ async function main() {
       throw new Error("The game entry does not display development test version 0.1.");
     }
     await fullHpPage.locator("#start").click();
+    const pageScrollModes = await fullHpPage.locator(".page").evaluateAll(nodes => nodes.map(node => ({ id: node.id, overflowY: getComputedStyle(node).overflowY })));
+    if (pageScrollModes.some(page => page.overflowY !== "hidden")) {
+      throw new Error("Navigation pages must not allow vertical scrolling: " + JSON.stringify(pageScrollModes));
+    }
+    await fullHpPage.locator("#homeExplore").click();
+    if (!(await fullHpPage.locator("#explore").isVisible())) throw new Error("Home explore shortcut did not open exploration.");
+    await fullHpPage.locator('button[data-tab="character"]').click();
+    await fullHpPage.locator("#homeBreakthrough").click();
+    if (!(await fullHpPage.locator("#cultivate").isVisible())) throw new Error("Home breakthrough shortcut did not open cultivation.");
+    await fullHpPage.locator('button[data-tab="character"]').click();
+    await fullHpPage.locator("#homeCultivate").click();
+    if (!(await fullHpPage.locator("#cultivate").isVisible())) throw new Error("Home cultivation shortcut did not open cultivation.");
     await fullHpPage.locator('button[data-tab="shop"]').click();
     await fullHpPage.locator("#buyHeal").click();
     const fullHpStones = await fullHpPage.locator("#shopStones").innerText();
