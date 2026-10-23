@@ -29,6 +29,18 @@ describe('versioned prototype save', () => {
     expect(validateSave({ ...save, player: { ...save.player, cultivationProgress: -1 } })).toBe(false);
   });
 
+  it('rejects impossible realm stages and non-boolean event flags', () => {
+    const save = createSave(createInitialPlayer(), 1234);
+    expect(validateSave({ ...save, player: { ...save.player, realmId: 'qi_refining', realmStage: 0 } })).toBe(false);
+    expect(validateSave({ ...save, eventFlags: { 'herb-spring-found': 'yes' } })).toBe(false);
+  });
+
+  it('rejects non-finite timestamps', () => {
+    const save = createSave(createInitialPlayer(), 1234);
+    expect(validateSave({ ...save, savedAt: Number.NaN })).toBe(false);
+    expect(validateSave({ ...save, lastSettledAt: Number.POSITIVE_INFINITY })).toBe(false);
+  });
+
   it('does not treat malformed JSON as a valid save', () => {
     const storage = memoryStorage();
     storage.setItem(SAVE_KEY, '{bad json');
