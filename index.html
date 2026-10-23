@@ -178,7 +178,9 @@ html body input,html body textarea,html body select,html body [contenteditable="
     const name=typeof raw.name==="string"&&raw.name.trim()?raw.name.trim().slice(0,24):base.name;
     const root=typeof raw.root==="string"&&raw.root.trim()?raw.root:base.root;
     const log=typeof raw.log==="string"?raw.log.slice(0,2000):base.log;
-    const last=boundedNumber(raw.last,base.last,1,Number.MAX_SAFE_INTEGER,true);
+    const validLast=typeof raw.last==="number"&&Number.isFinite(raw.last)&&raw.last>0;
+    const last=validLast?boundedNumber(raw.last,base.last,1,Number.MAX_SAFE_INTEGER,true):base.last;
+    const cultivating=validLast&&typeof raw.cultivating==="boolean"?raw.cultivating:false;
     return {
       created:typeof raw.created==="boolean"?raw.created:base.created,
       name,root,
@@ -192,7 +194,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
       questWins:boundedNumber(raw.questWins,base.questWins,0,Number.MAX_SAFE_INTEGER,true),
       questExploreClaimed:typeof raw.questExploreClaimed==="boolean"?raw.questExploreClaimed:base.questExploreClaimed,
       questFightClaimed:typeof raw.questFightClaimed==="boolean"?raw.questFightClaimed:base.questFightClaimed,
-      cultivating:typeof raw.cultivating==="boolean"?raw.cultivating:base.cultivating,
+      cultivating,
       last,log
     };
   }
