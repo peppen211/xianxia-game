@@ -61,14 +61,18 @@ async function main() {
     if (pageScrollModes.some(page => page.overflowY !== "hidden")) {
       throw new Error("Navigation pages must not allow vertical scrolling: " + JSON.stringify(pageScrollModes));
     }
-    await fullHpPage.locator("#homeExplore").click();
-    if (!(await fullHpPage.locator("#explore").isVisible())) throw new Error("Home explore shortcut did not open exploration.");
+    if (await fullHpPage.locator(".home-actions, #homeCultivate, #homeBreakthrough, #homeExplore").count()) {
+      throw new Error("Redundant home shortcuts should not duplicate bottom navigation.");
+    }
+    const statusLayout = await fullHpPage.locator("#quickStatus").evaluate(node => ({position:getComputedStyle(node).position, parent:node.parentElement?.classList.contains("realm-header")}));
+    if (statusLayout.position !== "static" || !statusLayout.parent) throw new Error("Live status must stay inside the realm header, not float above the bottom navigation.");
+    if (await fullHpPage.locator(".nav-icon, .header-avatar").count()) throw new Error("Decorative emoji-like navigation/header icons should be absent.");
+    for (const tab of ["cultivate","explore","shop","bag"]) {
+      await fullHpPage.locator(`button[data-tab="${tab}"]`).click();
+      if (!(await fullHpPage.locator(`#${tab}`).isVisible())) throw new Error("Bottom navigation failed to open " + tab + ".");
+    }
     await fullHpPage.locator('button[data-tab="character"]').click();
-    await fullHpPage.locator("#homeBreakthrough").click();
-    if (!(await fullHpPage.locator("#cultivate").isVisible())) throw new Error("Home breakthrough shortcut did not open cultivation.");
-    await fullHpPage.locator('button[data-tab="character"]').click();
-    await fullHpPage.locator("#homeCultivate").click();
-    if (!(await fullHpPage.locator("#cultivate").isVisible())) throw new Error("Home cultivation shortcut did not open cultivation.");
+    if (!(await fullHpPage.locator("#character").isVisible())) throw new Error("Home tab did not return to the character page.");
     await fullHpPage.locator('button[data-tab="shop"]').click();
     await fullHpPage.locator("#buyHeal").click();
     const fullHpStones = await fullHpPage.locator("#shopStones").innerText();
