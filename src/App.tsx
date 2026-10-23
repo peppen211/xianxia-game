@@ -21,6 +21,8 @@ function Game() {
   const [confirmReset, setConfirmReset] = useState(false);
   const [enemyIndex, setEnemyIndex] = useState(0);
   const [enemyHp, setEnemyHp] = useState(45);
+  const [playerHp, setPlayerHp] = useState(100);
+  const [skillCooldown, setSkillCooldown] = useState(0);
   const [battleLog, setBattleLog] = useState("妖獸現身，請道友出招！");
   const enemies = [{ name: "山野妖狼", hp: 45, reward: 18 }, { name: "迷霧蛇妖", hp: 75, reward: 32 }, { name: "守山石魈", hp: 120, reward: 55 }];
   const enemy = enemies[enemyIndex % enemies.length];
@@ -75,10 +77,11 @@ function Game() {
     commitSave(r.save);
     setToast(r.ok ? { ok: true, text: `不好意思，本座又突破了！\n晉入 ${realmName(r.save.level)}` } : { ok: false, text: "突破失敗……道心微損\n修為倒退三成，丹藥已耗" });
   };
-  const onBattleAttack = () => {
+  const onBattleAttack = (multiplier = 1) => {
     const current = saveRef.current;
     if (!current) return;
-    const power = 12 + current.level * 2 + (current.chars.lin ? 8 : 0) + (current.artifacts.includes("jian") ? 5 : 0);
+    if (playerHp <= 0) { setBattleLog("氣血已盡，請先服用破境丹恢復。"); return; }
+    const power = Math.round((12 + current.level * 2 + (current.chars.lin ? 8 : 0) + (current.artifacts.includes("jian") ? 5 : 0)) * multiplier);
     const remaining = Math.max(0, enemyHp - power);
     if (remaining === 0) {
       const reward = enemy.reward;
@@ -86,10 +89,31 @@ function Game() {
       setBattleLog(`擊敗${enemy.name}！獲得靈石 +${reward}、修為 +${reward}。`);
       setEnemyIndex(i => i + 1);
       setEnemyHp(enemies[(enemyIndex + 1) % enemies.length].hp);
+      setPlayerHp(hp => Math.min(100, hp + 12));
     } else {
+      const counter = 5 + enemyIndex * 3;
+      const hp = Math.max(0, playerHp - counter);
       setEnemyHp(remaining);
-      setBattleLog(`你造成 ${power} 點傷害，${enemy.name} 剩餘氣血 ${remaining}。`);
+      setPlayerHp(hp);
+      setBattleLog(`造成 ${power} 點傷害。妖獸反擊 ${counter} 點，你剩餘氣血 ${hp}。`);
     }
+    if (skillCooldown > 0) setSkillCooldown(v => Math.max(0, v - 1));
+  };
+  const onBattleSkill = () => {
+    if (skillCooldown > 0) { setBattleLog(`神通尚需等待 ${skillCooldown} 回合。`); return; }
+    setSkillCooldown(2);
+    onBattleAttack(2);
+    setBattleLog(`施展「裂山斬」！${battleLog}`);
+  };
+  const onBattleHeal = () => {
+    const current = saveRef.current;
+    if (!current || current.pills < 1) { setBattleLog("丹藥不足，無法療傷。"); return; }
+    if (playerHp >= 100) { setBattleLog("氣血充盈，暫時不需要療傷。"); return; }
+    commitSave({ ...current, pills: current.pills - 1 });
+    const healed = Math.min(100, playerHp + 35);
+    const counter = 5 + enemyIndex * 3;
+    setPlayerHp(Math.max(0, healed - counter));
+    setBattleLog(`服丹恢復氣血，妖獸趁隙反擊 ${counter} 點。`);
   };
   const onSummon = () => {
     const current = saveRef.current;
@@ -175,8 +199,10 @@ function Game() {
               <p className="text-xl font-bold text-gold-grad">{enemy.name}</p>
               <p className="text-sm text-muted-foreground">妖獸階序 {enemyIndex + 1} · 勝利可得靈石與修為</p>
               <div className="h-3 overflow-hidden rounded-full bg-ink ring-1 ring-border"><div className="h-full rounded-full bg-destructive transition-all" style={{ width: `${Math.max(0, enemyHp / enemy.hp * 100)}%` }} /></div>
-              <p className="text-sm">氣血 {enemyHp} / {enemy.hp}</p>
-              <Button variant="gameGold" size="game" className="w-full py-4 text-xl" onClick={onBattleAttack}>⚔️ 出招攻擊</Button>
+              <p className="text-sm">妖獸氣血 {enemyHp} / {enemy.hp}</p>
+              <div className="space-y-1 text-left"><div className="flex justify-between text-xs"><span>道友氣血</span><span>{playerHp} / 100</span></div><div className="h-2 overflow-hidden rounded-full bg-ink"><div className="h-full bg-jade transition-all" style={{ width: `${playerHp}%` }} /></div></div>
+              <Button variant="gameGold" size="game" className="w-full py-4 text-xl" onClick={() => onBattleAttack()}>⚔️ 普通攻擊</Button>
+              <div className="grid grid-cols-2 gap-2"><Button variant="gameGhost" size="game" className="py-3" disabled={skillCooldown > 0 || playerHp <= 0} onClick={onBattleSkill}>✦ 裂山斬 {skillCooldown > 0 ? `(${skillCooldown})` : ""}</Button><Button variant="gameGhost" size="game" className="py-3" disabled={save.pills < 1 || playerHp >= 100} onClick={onBattleHeal}>💊 服丹療傷 ({save.pills})</Button></div>
               <p aria-live="polite" className="min-h-12 text-sm leading-6 text-muted-foreground">{battleLog}</p>
             </section>
             <section className="panel p-4 text-sm leading-7 text-muted-foreground">戰力依境界、角色與法寶提升。擊敗妖獸可獲得修為與靈石，下一隻妖獸將更強。</section>
