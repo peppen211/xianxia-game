@@ -185,7 +185,10 @@ async function main() {
     await breakthroughPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await breakthroughPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
     await breakthroughPage.locator("#start").click();
-    await breakthroughPage.locator("#breakthrough").click({ force: true });
+    const breakthroughButton = breakthroughPage.locator("#breakthrough");
+    if (!(await breakthroughButton.isDisabled())) {
+      throw new Error("Breakthrough should be disabled when cultivation is insufficient.");
+    }
     const blockedBreakthrough = JSON.parse(await breakthroughPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
     if (blockedBreakthrough.level !== 0 || blockedBreakthrough.xp !== 0 || blockedBreakthrough.hp !== 100) {
       throw new Error("Breakthrough without sufficient cultivation unexpectedly changed character state.");
