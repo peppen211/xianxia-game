@@ -2,6 +2,7 @@ import { ACHIEVEMENT_GOALS, DAILY_GOALS, newQuests, recordActivity, syncQuests, 
 
 export const REALMS = ["煉氣", "築基", "金丹", "元嬰", "化神", "煉虛", "合體", "大乘", "渡劫", "真仙"];
 export const STAGES = ["初期", "中期", "後期", "圓滿"];
+export const MAX_LEVEL = REALMS.length * STAGES.length;
 
 export type Rarity = "凡" | "靈" | "仙";
 export interface CharDef { id: string; name: string; title: string; rarity: Rarity; glyph: string; desc: string }
@@ -51,7 +52,7 @@ export function cultivate(s: Save, now: Date = new Date()): Save {
   const stones = 5 + Math.floor(s.level / 2) + (s.artifacts.includes("jian") ? 1 : 0);
   return { ...s, progress: Math.min(maxProgress(s.level), s.progress + gain), stones: s.stones + stones, quests: recordActivity(s.quests, "cultivate", now) };
 }
-export const canBreak = (s: Save) => s.progress >= maxProgress(s.level) && s.pills >= pillsNeeded(s.level);
+export const canBreak = (s: Save) => s.level < MAX_LEVEL && s.progress >= maxProgress(s.level) && s.pills >= pillsNeeded(s.level);
 
 export function breakthrough(s: Save, roll: number, now: Date = new Date()): { save: Save; ok: boolean } {
   if (!canBreak(s)) return { save: s, ok: false };
@@ -134,7 +135,7 @@ export function validateSave(raw: unknown, now: Date = new Date()): Save {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return fresh;
   const data = raw as Record<string, unknown>;
   const number = (key: string, fallback: number) => typeof data[key] === "number" && Number.isSafeInteger(data[key]) && (data[key] as number) >= 0 ? data[key] as number : fallback;
-  const level = Math.min(REALMS.length * 4, number("level", fresh.level));
+  const level = Math.min(MAX_LEVEL, number("level", fresh.level));
   const chars: Record<string, number> = { ...fresh.chars };
   if (data['chars'] && typeof data['chars'] === "object" && !Array.isArray(data['chars'])) {
     const stored = data['chars'] as Record<string, unknown>;
