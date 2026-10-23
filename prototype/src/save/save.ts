@@ -30,7 +30,8 @@ export function createSave(player: PlayerState, now = Date.now()): SaveEnvelope 
 export function validateSave(value: unknown): value is SaveEnvelope {
   if (!value || typeof value !== 'object') return false;
   const save = value as Partial<SaveEnvelope>;
-  if (save.schemaVersion !== 1 || !Number.isFinite(save.savedAt) || !Number.isFinite(save.lastSettledAt)) return false;
+  if (save.schemaVersion !== 1 || typeof save.gameVersion !== 'string' || save.gameVersion.length === 0) return false;
+  if (!Number.isFinite(save.savedAt) || save.savedAt < 0 || !Number.isFinite(save.lastSettledAt) || save.lastSettledAt < 0) return false;
   if (!save.player || typeof save.player !== 'object') return false;
   const player = save.player as Partial<PlayerState>;
   return typeof player.name === 'string'
