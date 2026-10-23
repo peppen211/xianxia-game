@@ -171,7 +171,8 @@ async function main() {
     await lowHpFightPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await lowHpFightPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
     await lowHpFightPage.locator("#start").click();
-    await lowHpFightPage.locator('button[data-tab="battle"]').click();
+    await lowHpFightPage.locator('button[data-tab="explore"]').click();
+    await lowHpFightPage.locator("#openBattle").click();
     await lowHpFightPage.locator("#fight").click();
     const lowHpFightSave = JSON.parse(await lowHpFightPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
     if (lowHpFightSave.hp !== 10 || lowHpFightSave.xp !== 0 || lowHpFightSave.stones !== 0 || lowHpFightSave.materials !== 0 || lowHpFightSave.questWins !== 0) {
