@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { newSave, cultivate, breakthrough, summon, maxProgress, SUMMON_COST, buyPill, PILL_COST, validateSave, load, persist, wipe } from "./logic";
+import { newSave, cultivate, breakthrough, summon, maxProgress, SUMMON_COST, buyPill, PILL_COST, validateSave, load, persist, wipe, enterGame, OFFLINE_CAP_MINUTES } from "./logic";
 
 describe("game rules", () => {
   it("invalid local collections cannot block play", () => {
@@ -25,6 +25,20 @@ describe("game rules", () => {
     expect(load()).toEqual(s);
     wipe();
     expect(load()).toEqual(newSave());
+  });
+  it("offline gains are capped at eight hours and update the last-seen timestamp", () => {
+    const start = new Date("2026-10-20T00:00:00Z");
+    const s = newSave(start);
+    const resumed = enterGame(s, new Date(start.getTime() + 10 * 60 * 60 * 1000));
+    expect(resumed.progress).toBe(OFFLINE_CAP_MINUTES * 2);
+    expect(resumed.stones).toBe(OFFLINE_CAP_MINUTES);
+    expect(resumed.lastSeenAt).toBe(start.getTime() + 10 * 60 * 60 * 1000);
+  });
+  it("offline progress never exceeds the current realm cap", () => {
+    const start = new Date("2026-10-20T00:00:00Z");
+    const s = { ...newSave(start), progress: maxProgress(0) - 1 };
+    const resumed = enterGame(s, new Date(start.getTime() + 60 * 60 * 1000));
+    expect(resumed.progress).toBe(maxProgress(0));
   });
   it("cultivate gains progress and stones", () => {
     const s = cultivate(newSave());
