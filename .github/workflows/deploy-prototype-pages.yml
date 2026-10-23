@@ -62,7 +62,7 @@ jobs:
             for (let attempt = 0; attempt < 6; attempt++) {
               await page.goto('https://peppen211.github.io/xianxia-game/', { waitUntil: 'domcontentloaded', timeout: 60000 });
               try {
-                await page.getByRole('heading', { name: '不好意思，本座又突破了' }).waitFor({ timeout: 8000 });
+                await page.locator('#hero').waitFor({ timeout: 8000 });
                 rendered = true;
                 break;
               } catch {
@@ -74,7 +74,7 @@ jobs:
             await page.getByRole('button', { name: '開始修仙' }).click();
             await page.getByRole('button', { name: '修煉' }).waitFor({ timeout: 10000 });
             if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
-            console.log('Mobile browser smoke test passed: landing screen rendered and cultivation button became available.');
+            console.log('Mobile browser smoke test passed: standalone game rendered, start button worked, and cultivation action was clickable.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
@@ -85,15 +85,9 @@ jobs:
           URL="https://peppen211.github.io/xianxia-game/"
           for attempt in 1 2 3 4 5 6; do
             PAGE="$(curl -fsSL "$URL" || true)"
-            JS_PATH="$(printf "%s" "$PAGE" | grep -oE '/xianxia-game/assets/index-[^" ]+\.js' | head -n 1 || true)"
-            CSS_PATH="$(printf "%s" "$PAGE" | grep -oE '/xianxia-game/assets/index-[^" ]+\.css' | head -n 1 || true)"
-            if printf "%s" "$PAGE" | grep -q "不好意思，本座又突破了" && [ -n "$JS_PATH" ] && [ -n "$CSS_PATH" ]; then
-              JS_CODE="$(curl -fsSL "https://peppen211.github.io$JS_PATH" || true)"
-              CSS_CODE="$(curl -fsSL "https://peppen211.github.io$CSS_PATH" || true)"
-              if [ -n "$JS_CODE" ] && [ -n "$CSS_CODE" ] && printf "%s" "$JS_CODE" | grep -q "仙途再啟"; then
-                echo "Published Vite entry, JavaScript bundle, CSS bundle, and expected game UI verified."
-                exit 0
-              fi
+            if printf "%s" "$PAGE" | grep -q 'id="start"' && printf "%s" "$PAGE" | grep -q 'id="cultivateBtn"' && ! printf "%s" "$PAGE" | grep -q '/src/main.tsx'; then
+              echo "Published standalone game entry and core controls verified."
+              exit 0
             fi
             sleep 10
           done
