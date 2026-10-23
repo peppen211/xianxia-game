@@ -11,7 +11,7 @@
 - **自動化測試（待執行）：** `scripts/game-entry-smoke.cjs`，由 `.github/workflows/game-entry-pr-test.yml` 在 Pull Request 上啟動 Chromium 手機尺寸測試。檢查版本標示、滿血不扣款、受傷時正確扣款與回血。
 - **測試結果：**
   - 靜態檢查：已核對變更定位與目標程式片段；這不是瀏覽器測試。
-  - Playwright：GitHub Actions 已啟動（Run #39956486744），目前停留在「Install Playwright」步驟；尚未進入瀏覽器測試，因此沒有通過或失敗結論。追蹤：https://github.com/peppen211/xianxia-game/actions/runs/39956486744
+  - Playwright：第一次真正進入瀏覽器測試後失敗，原因是入口按鈕的持續動畫讓 Playwright 無法判定按鈕穩定，並非已證實的遊戲邏輯錯誤。已在測試環境關閉動畫後重測，並補上 12 小時離線收益上限與任務獎勵單次領取測試。最新執行紀錄：https://github.com/peppen211/xianxia-game/actions/runs/39956953418。最新執行仍在安裝／準備測試階段，尚未通過。
   - 現有 Vitest 全套：尚未執行。
   - 正式建置：尚未執行。
   - iPhone Safari 真機：尚未測試。
