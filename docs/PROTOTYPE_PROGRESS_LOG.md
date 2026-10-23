@@ -18,6 +18,7 @@
 - `prototype/index.html`
 - `prototype/src/core/types.ts`
 - `prototype/src/save/save.ts`
+- `prototype/src/save/save.test.ts`
 - `prototype/src/systems/cultivation/offline.ts`
 - `prototype/src/systems/cultivation/offline.test.ts`
 - `prototype/src/main.ts`
@@ -32,11 +33,12 @@
 - 修為達到測試門檻後由玩家主動按鈕突破。
 - 一個探索地點、取得一株靈草及一次性事件旗標。
 - 獨立的 `xianxiaPrototypeSaveV1` 存檔 key。
-- 存檔結構初步驗證。
-- 離線結算測試案例已寫入。
+- 存檔結構驗證已加強：時間戳有限值、境界階段、資源非負、事件旗標布林值。
+- 存檔往返、格式錯誤、版本不支援、資源負值、境界階段不可能值及事件旗標型別測試已寫入。
+- GitHub Actions CI 工作流程已建立，會在原型相關變更時執行單元測試及 TypeScript/Vite build。
 
 ## 尚未完成／未驗證
-- 尚未執行 npm install、npm test、TypeScript 檢查或 Vite build。
+- 目前執行環境無法連外安裝 npm 套件，因此尚未在此環境實際執行 npm test、TypeScript 檢查或 Vite build；GitHub commit status 尚未回報檢查結果，不能視為通過。
 - 尚未在瀏覽器執行，也尚未在真實手機／iOS Safari 測試。
 - 尚未部署到 GitHub Pages；目前沒有可確認的線上新原型網址。
 - 尚未驗證存檔錯誤復原、重複結算、背景／前景切換與實際長時間離線。
@@ -45,8 +47,8 @@
 - 尚未完成參考遊戲逐一實測與授權檔核查。
 
 ## 下一個執行步驟
-1. 在可用 Node.js 環境安裝依賴並執行 `npm test`、`npm run build`。
-2. 修正編譯或測試問題，再以本機預覽確認核心操作。
-3. 為核心時間結算、存檔驗證及事件去重補測試。
-4. 設定獨立的 GitHub Pages 預覽部署，不改動既有正式遊戲入口。
+1. 取得 GitHub Actions 實際工作執行結果；若失敗，先修復測試或建置錯誤。
+2. 在可安裝依賴的環境完成 `npm test`、`npm run build`，再以本機預覽確認核心操作。
+3. 補齊事件去重、背景／前景切換與長時間離線結算測試。
+4. 建立獨立預覽部署，避免覆蓋既有正式遊戲入口。
 5. 通過瀏覽器測試後再安排真實手機測試。
