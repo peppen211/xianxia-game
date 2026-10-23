@@ -56,8 +56,19 @@ jobs:
             const errors = [];
             page.on('pageerror', error => errors.push(error.message));
             page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
-            await page.goto('https://peppen211.github.io/xianxia-game/', { waitUntil: 'networkidle', timeout: 60000 });
-            await page.getByRole('heading', { name: '不好意思，本座又突破了' }).waitFor({ timeout: 15000 });
+            let rendered = false;
+            for (let attempt = 0; attempt < 6; attempt++) {
+              await page.goto('https://peppen211.github.io/xianxia-game/', { waitUntil: 'domcontentloaded', timeout: 60000 });
+              try {
+                await page.getByRole('heading', { name: '不好意思，本座又突破了' }).waitFor({ timeout: 8000 });
+                rendered = true;
+                break;
+              } catch {
+                console.log('Waiting for published app, attempt ' + (attempt + 1) + '; title=' + await page.title() + '; body=' + (await page.locator('body').innerText()).slice(0, 300));
+                await page.waitForTimeout(5000);
+              }
+            }
+            if (!rendered) throw new Error('Published game UI did not render after retries.');
             await page.getByRole('button', { name: '開始修仙' }).click();
             await page.getByRole('button', { name: '修煉' }).waitFor({ timeout: 10000 });
             if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
