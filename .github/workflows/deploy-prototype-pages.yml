@@ -37,6 +37,33 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser smoke-test tools
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Verify game renders and starts in a mobile browser
+        run: |
+          cat > /tmp/game-smoke.cjs <<'EOF'
+          const { chromium } = require(process.cwd() + '/node_modules/playwright');
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+            const errors = [];
+            page.on('pageerror', error => errors.push(error.message));
+            page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+            await page.goto('https://peppen211.github.io/xianxia-game/', { waitUntil: 'networkidle', timeout: 60000 });
+            await page.getByRole('heading', { name: '不好意思，本座又突破了' }).waitFor({ timeout: 15000 });
+            await page.getByRole('button', { name: '開始修仙' }).click();
+            await page.getByRole('button', { name: '修煉' }).waitFor({ timeout: 10000 });
+            if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
+            console.log('Mobile browser smoke test passed: landing screen rendered and cultivation button became available.');
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          EOF
+          node /tmp/game-smoke.cjs
       - name: Verify published game entry
         run: |
           set -eu
