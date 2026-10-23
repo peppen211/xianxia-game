@@ -208,7 +208,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
     const log=typeof raw.log==="string"?raw.log.slice(0,2000):base.log;
     const validLast=typeof raw.last==="number"&&Number.isFinite(raw.last)&&raw.last>0;
     const last=validLast?boundedNumber(raw.last,base.last,1,Number.MAX_SAFE_INTEGER,true):base.last;
-    const cultivating=validLast&&typeof raw.cultivating==="boolean"?raw.cultivating:false;
+    const cultivating=validLast&&typeof raw.cultivating==="boolean"&&Number(raw.level)>=5?raw.cultivating:false;
     return {
       created:typeof raw.created==="boolean"?raw.created:base.created,
       name,root,
@@ -244,7 +244,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
     const now=Date.now();
     const then=Number(saved.last)||now;
     const elapsed=Math.min(OFFLINE_CAP_MS,Math.max(0,now-then));
-    if(saved.created&&saved.cultivating&&elapsed>0){
+    if(saved.created&&saved.cultivating&&Number(saved.level)>=5&&elapsed>0){
       saved.xp=(Number(saved.xp)||0)+(elapsed/3600000)*AUTO_CULTIVATION_RATE*(ROOT_RATE[saved.root]||1);
     }
     saved.cultivating=false;
@@ -436,7 +436,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
     const now=Date.now();
     const elapsed=Math.max(0,now-lastTick);
     lastTick=now;
-    if(state.created&&state.cultivating){
+    if(state.created&&state.cultivating&&autoCultivationUnlocked()){
       state.xp+=(elapsed/3600000)*AUTO_CULTIVATION_RATE*(ROOT_RATE[state.root]||1);
       render();
     }
@@ -452,7 +452,7 @@ html body input,html body textarea,html body select,html body [contenteditable="
         if(!entered){state=progressed;render();}
         else{
           const away=Math.min(OFFLINE_CAP_MS,Math.max(0,Date.now()-lastTick));
-          if(state.cultivating)state.xp+=(away/3600000)*AUTO_CULTIVATION_RATE*(ROOT_RATE[state.root]||1);
+          if(state.cultivating&&autoCultivationUnlocked())state.xp+=(away/3600000)*AUTO_CULTIVATION_RATE*(ROOT_RATE[state.root]||1);
           state.last=Date.now();save();render();
         }
       }
