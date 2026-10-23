@@ -94,6 +94,11 @@ async function main() {
     if (Math.abs(offlineResult.xp - 93.6) > 0.01 || offlineResult.cultivating !== false) {
       throw new Error("Offline cultivation should cap at 12 hours and stop automatically after reload; got xp=" + offlineResult.xp + ", cultivating=" + offlineResult.cultivating);
     }
+    await offlinePage.reload({ waitUntil: "domcontentloaded" });
+    const offlineAfterSecondLoad = JSON.parse(await offlinePage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (Math.abs(offlineAfterSecondLoad.xp - 93.6) > 0.01 || offlineAfterSecondLoad.cultivating !== false) {
+      throw new Error("Offline cultivation reward was applied more than once after reloading; xp=" + offlineAfterSecondLoad.xp);
+    }
 
     const questPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
     questPage.on("pageerror", error => errors.push(error.message));
