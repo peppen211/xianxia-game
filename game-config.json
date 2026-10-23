@@ -144,5 +144,17 @@
     "crystal": 1
   },
   "skillDamageMultiplier": 2.1,
-  "sneakAttackMultiplier": 1.55
+  "sneakAttackMultiplier": 1.55,
+  "breakthrough": {
+    "successRate": 0.85,
+    "goldCost": 50,
+    "herbCost": 1,
+    "failHpLoss": 0.25,
+    "successHpRestore": 1
+  },
+  "battle": {
+    "autoIntervalMs": 1200,
+    "fastIntervalMs": 550,
+    "damageFloatMs": 1050
+  }
 }
