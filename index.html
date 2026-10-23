@@ -508,7 +508,7 @@ function openSaveModal(){openModal('存檔管理','<div class="panel"><p>進度�
 function openChronicleModal(){const list=document.getElementById('hanliChronicle').innerHTML;const current=document.getElementById('storyCurrentText').textContent;openModal('韓立仙途紀事','<div class="panel hanli-intro"><div class="secthead"><span>主角：韓立</span><small>'+esc(document.getElementById('storyCurrentLabel').textContent)+'</small></div><div class="storyline">'+esc(current)+'</div><div class="story-tags"><span>長生求道</span><span>謹慎自保</span><span>機緣與代價</span><span>凡界至仙界</span></div></div><div class="chronicle-list">'+list+'</div><div class="action-grid"><button class="btn secondary" onclick="document.getElementById(\'saveBtn\').click();closeModal()">💾 儲存進度</button><button class="btn secondary" onclick="openOfflineModal()">🌙 離線收益</button><button class="btn secondary" onclick="openSaveModal()">⚙ 存檔管理</button></div>')}
 function openOfflineModal(){const report=s.offlineReport;const msg=report?'上次'+(report.source||'放置收益')+'：'+formatDuration(report.seconds)+'｜修為 +'+report.xp+'、靈石 +'+report.gold+'。':'目前尚無新的離線結算紀錄。';openModal('離線放置收益','<div class="panel"><b>離線收益上限：8 小時</b><p>'+esc(msg)+'</p><p>放置計時中，修為與靈石會依現有規則自動結算。</p><button class="btn primary" onclick="claimIdle();closeModal()">領取收益</button></div><div class="panel"><b>最近事件</b><div class="loglist">'+document.getElementById('logs').innerHTML+'</div></div>')}
 function switchScreen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));render()}
-document.querySelectorAll('.nav').forEach(b=>b.addEventListener('click',()=>switchScreen(b.dataset.screen)));
+/* Bottom-nav click handling is attached once by UX patch v1.2. */
 document.getElementById('openChronicle').onclick=()=>openChronicleModal();document.getElementById('globalBreakBtn').onclick=()=>{if(s.xp<xpNeed()){toast('修為尚未圓滿，繼續吐納或試煉吧');return}checkLevel();render()};
 function renderChronicle(){
  const idx=s.major===0?(s.kills>=4?1:0):s.major===1?2:s.major===2?(s.kills>=12?4:3):s.major===3?5:(s.kills>=12?7:6);
@@ -609,6 +609,14 @@ function showDropFloat(text){
  scene.appendChild(el);setTimeout(()=>el.remove(),1500);
 }
 function updateBattleFeedback(text){const el=document.getElementById('battleFeedback');if(el)el.textContent=text}
+showBreakthrough=function(info){
+ let box=document.getElementById('breakthroughOverlay');
+ if(!box){box=document.createElement('div');box.id='breakthroughOverlay';box.className='breakthrough-overlay';box.innerHTML='<div class="breakthrough-card"><div class="breakthrough-seal">☯</div><div class="breakthrough-kicker">天道感應 · 境界升華</div><h2 id="breakthroughTitle">突破成功</h2><p id="breakthroughText"></p><div class="breakthrough-reward" id="breakthroughReward"></div><button class="btn primary" id="breakthroughClose">收攝心神</button></div>';document.body.appendChild(box);box.addEventListener('click',e=>{if(e.target===box)box.classList.remove('show')});box.querySelector('#breakthroughClose').onclick=()=>box.classList.remove('show')}
+ box.querySelector('#breakthroughTitle').textContent=(info.major?'大境界突破':'境界突破成功')+' · '+info.to;
+ box.querySelector('#breakthroughText').textContent='靈脈轟鳴，丹田生輝。你已由'+info.from+'踏入'+info.to+'，修為根基再上一層天。';
+ box.querySelector('#breakthroughReward').innerHTML=info.major?'攻擊 +10　防禦 +5<br>氣血上限 +50 · 氣血已恢復':'攻擊 +2　防禦 +1<br>氣血上限 +10 · 氣血已恢復';
+ box.classList.add('show');
+}
 function switchScreen(id){
  if(id==='bag-modal'){openBagModal();return}
  if(id==='journal-modal'){openChronicleModal();return}
