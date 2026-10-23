@@ -52,7 +52,16 @@ function render(): void {
   const canBreakthrough = p.cultivationProgress >= 100;
   const eventSeen = Boolean(save.eventFlags['herb-spring-found']);
   root!.innerHTML = `
-    <main class="shell">
+    <section class="welcome-screen" id="welcome-screen">
+      <div class="welcome-card">
+        <p class="eyebrow">一念入道 · 凡塵問仙</p>
+        <h1>凡人修仙</h1>
+        <p>一介凡人，踏上漫漫仙途。你的修行，由此開始。</p>
+        <button type="button" id="enter-game" class="primary welcome-enter">踏入仙途</button>
+        <span class="welcome-version">個人修仙紀錄 · 測試版</span>
+      </div>
+    </section>
+    <main class="shell" data-page="home">
       <header class="topbar" id="home">
         <div><p class="eyebrow">自由放置 RPG · 原型 0.1</p><h1>凡人修仙</h1></div>
         <span class="pill">${p.isCultivating ? '閉關修煉中' : '暫停修煉'}</span>
@@ -101,13 +110,21 @@ function render(): void {
   document.querySelectorAll<HTMLButtonElement>('.nav-item').forEach((item) => {
     item.addEventListener('click', () => {
       const targetId = item.dataset.target;
-      const target = targetId ? document.getElementById(targetId) : null;
-      if (!target) return;
+      if (!targetId) return;
+      const shell = document.querySelector<HTMLElement>('.shell');
+      if (!shell) return;
+      shell.dataset.page = targetId;
       document.querySelectorAll('.nav-item').forEach((navItem) => navItem.classList.remove('is-active'));
       item.classList.add('is-active');
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
+  document.querySelector<HTMLButtonElement>('#enter-game')?.addEventListener('click', () => {
+    const welcome = document.querySelector<HTMLElement>('#welcome-screen');
+    if (welcome) welcome.hidden = true;
+    const shell = document.querySelector<HTMLElement>('.shell');
+    if (shell) shell.dataset.page = 'home';
+  });
+
   document.querySelector<HTMLButtonElement>('#cultivate')?.addEventListener('click', () => {
     settleNow();
     save.player.isCultivating = !save.player.isCultivating;
