@@ -39,3 +39,12 @@
 - **已驗證：** 原始碼及測試案例確實存在；workflow 定義了測試與建置步驟。
 - **未驗證：** Actions 實際結果、npm 測試、TypeScript／Vite 建置、手機實測、部署與可開啟的原型網址。
 - **部署網址：** 尚無已驗證的新原型網址。舊版網站網址亦未在本次確認。
+
+
+## 追加追蹤（2026-10-23，後續操作）
+- 已更新 `prototype/README.md`，加入 Actions 工作流程直達連結，並明確記錄測試結果必須以實際 run 為準。提交：`871d57cf1bc6b9d503306c814431749f55654f4a`。
+- 已查詢該提交的 GitHub commit combined status，回傳 statuses 為空陣列；這不等同 CI 通過，也不能證明 workflow 未執行。現有 GitHub connector 沒有列出 repository 全部 workflow runs 的可用操作，無法由此確認 run 結果。
+- 已確認 `prototype/package-lock.json` 不存在。workflow 目前使用 `npm install`，所以並非因缺 lockfile 而無法執行；但建議後續在可連網環境產生並提交 lockfile，提升依賴可重現性。
+- 已檢查本次工作容器：Node.js v22.16.0、npm 10.9.2、全域 TypeScript 5.8.3 可用；Vite 與 Vitest 未安裝。因 DNS 無法解析 github.com，無法 clone repository 或下載依賴，故不能在此環境執行完整測試與建置。僅確認工具版本，不代表專案通過型別檢查。
+- 已查詢目前可用的 Vercel 連線上下文，回傳沒有可見的 team，且可見專案清單為空。由於 Vercel Git 專案建立操作要求 team ID，現在不能建立與 GitHub 連結的獨立預覽專案；不以未驗證的假網址代替。
+- 舊版網站及部署設定未修改。
