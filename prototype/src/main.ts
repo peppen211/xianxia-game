@@ -10,6 +10,8 @@ let save: SaveEnvelope;
 let storageWarning = '';
 let offlineSummary = '';
 let saveBlocked = false;
+let hasEnteredGame = false;
+let currentPage = 'home';
 
 try {
   const raw = localStorage.getItem(SAVE_KEY);
@@ -52,7 +54,7 @@ function render(): void {
   const canBreakthrough = p.cultivationProgress >= 100;
   const eventSeen = Boolean(save.eventFlags['herb-spring-found']);
   root!.innerHTML = `
-    <section class="welcome-screen" id="welcome-screen">
+    <section class="welcome-screen" id="welcome-screen" ${hasEnteredGame ? 'hidden' : ''}>
       <div class="welcome-card">
         <p class="eyebrow">一念入道 · 凡塵問仙</p>
         <h1>凡人修仙</h1>
@@ -61,7 +63,7 @@ function render(): void {
         <span class="welcome-version">個人修仙紀錄 · 測試版</span>
       </div>
     </section>
-    <main class="shell" data-page="home">
+    <main class="shell" data-page="${currentPage}">
       <header class="topbar" id="home">
         <div><p class="eyebrow">自由放置 RPG · 原型 0.1</p><h1>凡人修仙</h1></div>
         <span class="pill">${p.isCultivating ? '閉關修煉中' : '暫停修煉'}</span>
@@ -113,6 +115,7 @@ function render(): void {
       if (!targetId) return;
       const shell = document.querySelector<HTMLElement>('.shell');
       if (!shell) return;
+      currentPage = targetId;
       shell.dataset.page = targetId;
       document.querySelectorAll('.nav-item').forEach((navItem) => navItem.classList.remove('is-active'));
       item.classList.add('is-active');
@@ -120,8 +123,10 @@ function render(): void {
   });
   document.querySelector<HTMLButtonElement>('#enter-game')?.addEventListener('click', () => {
     const welcome = document.querySelector<HTMLElement>('#welcome-screen');
+    hasEnteredGame = true;
     if (welcome) welcome.hidden = true;
     const shell = document.querySelector<HTMLElement>('.shell');
+    currentPage = 'home';
     if (shell) shell.dataset.page = 'home';
   });
 
