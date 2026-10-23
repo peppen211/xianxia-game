@@ -73,8 +73,38 @@ async function main() {
     if (healedStones.trim() !== "5" || healedHp.trim() !== "90/100" || healedSave.stones !== 5 || healedSave.hp !== 90) {
       throw new Error("Healing purchase did not charge exactly 5 stones and restore 40 HP.");
     }
+    const offlinePage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    offlinePage.on("pageerror", error => errors.push(error.message));
+    const twelveHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
+    const offlineSave = { ...makeSave(100, 0), xp: 0, cultivating: true, last: twelveHoursAgo };
+    await offlinePage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), offlineSave);
+    await offlinePage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await offlinePage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await offlinePage.locator("#start").click();
+    const offlineResult = JSON.parse(await offlinePage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (Math.abs(offlineResult.xp - 93.6) > 0.01 || offlineResult.cultivating !== false) {
+      throw new Error("Offline cultivation should cap at 12 hours and stop automatically after reload; got xp=" + offlineResult.xp + ", cultivating=" + offlineResult.cultivating);
+    }
+
+    const questPage = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+    questPage.on("pageerror", error => errors.push(error.message));
+    const questSave = { ...makeSave(100, 0), questExplore: 3, questExploreClaimed: false };
+    await questPage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), questSave);
+    await questPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await questPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    await questPage.locator("#start").click();
+    await questPage.locator('button[data-tab="explore"]').click();
+    await questPage.locator("#claimExplore").click();
+    const questAfterClaim = JSON.parse(await questPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (questAfterClaim.stones !== 8 || questAfterClaim.questExploreClaimed !== true) {
+      throw new Error("Explore quest claim should award exactly 8 stones and mark the quest claimed.");
+    }
+    await questPage.locator("#claimExplore").click({ force: true });
+    const questAfterRepeat = JSON.parse(await questPage.evaluate(() => localStorage.getItem("mortalCultivationSaveV2")));
+    if (questAfterRepeat.stones !== 8) throw new Error("Explore quest reward was granted more than once.");
+
     if (errors.length) throw new Error("Browser runtime errors: " + errors.join(" | "));
-    console.log("PASS: version label, no charge at full HP, and one valid healing purchase.");
+    console.log("PASS: version label, no charge at full HP, valid healing purchase, 12-hour offline cap, and one-time quest reward.");
   } finally {
     await browser.close();
     await new Promise(resolve => server.close(resolve));
