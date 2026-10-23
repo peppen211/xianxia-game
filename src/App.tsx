@@ -185,6 +185,10 @@ function Game() {
             </div>
 
             <section className="panel p-4">
+              <div className="mb-3 flex items-center justify-between border-b border-gold/15 pb-3">
+                <div><p className="text-[10px] tracking-[0.24em] text-muted-foreground">CULTIVATION</p><p className="mt-1 text-sm text-gold">靈脈運轉</p></div>
+                <div className="text-right"><p className="text-[10px] text-muted-foreground">突破機緣</p><p className="mt-1 text-sm text-jade">{Math.round(successRate(save) * 100)}% 成功率</p></div>
+              </div>
               <div className="mb-2 flex justify-between text-sm">
                 <span className="text-jade">修為</span>
                 <span>{save.progress} / {max}</span>
@@ -198,6 +202,11 @@ function Game() {
               <p className="mt-2 text-xs text-muted-foreground">靜心自動修行：每分鐘修為 +2、靈石 +1，離線最多累積 8 小時。</p>
             </section>
 
+            <div className="grid grid-cols-3 gap-2">
+              <button onClick={() => setTab("battle")} className="realm-shortcut panel flex flex-col items-center gap-1 px-2 py-3 text-center"><span className="text-2xl">⚔</span><span className="text-sm text-gold">斬妖台</span><span className="text-[10px] text-muted-foreground">歷練戰力</span></button>
+              <button onClick={() => setTab("chars")} className="realm-shortcut panel flex flex-col items-center gap-1 px-2 py-3 text-center"><span className="text-2xl">✧</span><span className="text-sm text-gold">結交道友</span><span className="text-[10px] text-muted-foreground">招募同伴</span></button>
+              <button onClick={() => setTab("quests")} className="realm-shortcut panel flex flex-col items-center gap-1 px-2 py-3 text-center"><span className="text-2xl">☯</span><span className="text-sm text-gold">雲山秘境</span><span className="text-[10px] text-muted-foreground">奇遇尋寶</span></button>
+            </div>
             <div className="relative grid grid-cols-2 gap-3">
               {pops.map((p) => (
                 <span key={p.id} className="float-up pointer-events-none absolute -top-6 left-0 right-0 text-center text-sm text-jade">{p.text}</span>
@@ -213,9 +222,15 @@ function Game() {
         {started && tab === "battle" && (
           <div className="space-y-4">
             <Title>斬妖除魔</Title>
-            <section className="panel space-y-3 p-5 text-center">
-              <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border-2 border-destructive/60 bg-ink/80 text-5xl">👹</div>
-              <p className="text-xl font-bold text-gold-grad">{enemy.name}</p>
+            <section className="battle-scene panel relative isolate overflow-hidden space-y-4 p-5 text-center">
+              <div className="battle-moon" aria-hidden="true" />
+              <div className="relative z-10 flex items-center justify-between text-[10px] tracking-[0.22em] text-slate-300/70"><span>妖域 · 第 {enemyIndex + 1} 重</span><span className="text-red-200">危險等級 {enemyIndex + 1}</span></div>
+              <div className="monster-stage relative z-10 mx-auto flex h-40 w-full items-center justify-center">
+                <div className="monster-aura" aria-hidden="true" />
+                <div className="monster-glyph flex h-28 w-28 items-center justify-center rounded-full text-7xl">{enemyIndex % 3 === 0 ? "🐺" : enemyIndex % 3 === 1 ? "🐍" : "🪨"}</div>
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.32em] text-red-100/65">✦ 妖氣凝結 ✦</span>
+              </div>
+              <p className="relative z-10 text-2xl font-bold tracking-widest text-gold-grad">{enemy.name}</p>
               <p className="text-sm text-muted-foreground">妖獸階序 {enemyIndex + 1} · 勝利可得靈石與修為</p>
               <div className="h-3 overflow-hidden rounded-full bg-ink ring-1 ring-border"><div className="h-full rounded-full bg-destructive transition-all" style={{ width: `${Math.max(0, enemyHp / enemy.hp * 100)}%` }} /></div>
               <p className="text-sm">妖獸氣血 {enemyHp} / {enemy.hp}</p>
