@@ -44,6 +44,15 @@ async function main() {
     await fullHpPage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), makeSave(100, 10));
     await fullHpPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await fullHpPage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
+    const touchStyles = await fullHpPage.evaluate(() => ({
+      buttonTouchAction: getComputedStyle(document.querySelector("#start")).touchAction,
+      buttonUserSelect: getComputedStyle(document.querySelector("#start")).userSelect,
+      bodyTextUserSelect: getComputedStyle(document.querySelector("#intro")).userSelect,
+      inputUserSelect: getComputedStyle(Object.assign(document.createElement("input"), { id: "touch-test-input" })).userSelect
+    }));
+    if (touchStyles.buttonTouchAction !== "manipulation" || touchStyles.buttonUserSelect !== "none" || touchStyles.bodyTextUserSelect !== "none") {
+      throw new Error("Touch interaction styles are missing or overridden: " + JSON.stringify(touchStyles));
+    }
     if (!(await fullHpPage.locator("footer").innerText()).includes("開發測試 0.1")) {
       throw new Error("The game entry does not display development test version 0.1.");
     }
