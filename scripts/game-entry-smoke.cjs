@@ -125,8 +125,8 @@ async function main() {
       materials: "broken",
       questExplore: -3,
       questWins: "broken",
-      cultivating: "yes",
-      last: "invalid"
+      cultivating: true,
+      last: null
     };
     await malformedPage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), malformedSave);
     await malformedPage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
