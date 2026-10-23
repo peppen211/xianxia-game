@@ -37,3 +37,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published game entry
+        run: |
+          set -eu
+          URL="https://peppen211.github.io/xianxia-game/"
+          for attempt in 1 2 3 4 5 6; do
+            PAGE="$(curl -fsSL "$URL" || true)"
+            if printf "%s" "$PAGE" | grep -q "不好意思，本座又突破了" && printf "%s" "$PAGE" | grep -q "assets/index-"; then
+              echo "Published Vite game entry verified."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Published page does not appear to be the built Vite game. Check GitHub Pages Source setting." >&2
+          exit 1
