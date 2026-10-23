@@ -123,3 +123,16 @@
 
 - 後續補強發布流程 commit：`6a12ea13013bae0ff2a9b17f3db76953c2ce32e2`。已將根目錄 `index.html` 加入 workflow 觸發條件，workflow 會先執行 prototype 的 npm 測試與 build，再將單檔可玩入口作為 Pages artifact 發布；同時加入 `actions/configure-pages@v5`。這樣若 Pages 採 Actions 發布，可自動發布入口；若採 main/root，根目錄入口也已直接存在。
 - 該 workflow 更新已提交並會觸發 push 工作流程，但本次 GitHub 連線工具仍無法讀取一般 push run 清單或公開 Actions 頁面；因此**測試、建置與部署結果仍待實際 run 證據**。公開 Pages 網址也未能由目前網頁檢視工具載入，不能把 commit 當作部署成功證據。
+
+
+## 自動快速開發與手機驗收（測試迭代版本 0.7，2026-10-23）
+- 目標：修復手機瀏覽器自動驗收阻斷，提供明確標示測試迭代版本的遊戲入口。
+- 檢查工具：GitHub repository/API、GitHub Actions workflow/job/log 查詢均可正常取得資料；Actions 可執行 npm 安裝、遊戲測試、建置、部署及 Playwright Chromium。此環境未另外執行本機 npm 命令。
+- 根本原因一：開場「踏入仙途」按鈕持續動畫，Playwright 點擊時無法判定元素穩定。以測試瀏覽器模擬 prefers-reduced-motion 設定，保留真實點擊流程，避免只為測試而移除玩家動畫。
+- 根本原因二：原有 smoke test 進入遊戲後，未先點選「洞府／修煉」導覽頁，便直接點擊位於隱藏頁面的「開始修煉」按鈕，造成測試腳本錯誤。已修正測試流程，先切換至修煉頁，再執行實際點擊；未略過遊戲操作。
+- 變更檔案：`.github/workflows/deploy-prototype-pages.yml`、`latest.html`、本進度文件。
+- 相關提交：`231392c9b346cfa2ea236be70488a243338386b7`（測試偏好減少動態效果）、`aaa29389300be47b90d0e0136394f24ea14b3236`（入口標示測試版本 0.7）、`21c15abaa6fc30c2e612441b82ede6eec7d21685`（修正導覽步驟）。
+- 驗收 run： https://github.com/peppen211/xianxia-game/actions/runs/39948604007
+- 實際結果：`npm install` 通過、`npm test` 通過、`npm run build` 通過、GitHub Pages 部署通過、Playwright 手機尺寸瀏覽器完整流程通過、發布入口檢查通過。Smoke test 涵蓋進入遊戲、開始／停止修煉、探索三次並領取任務、戰鬥兩次並領取任務、購買草藥及開啟背包；測試期間沒有未處理的頁面錯誤。
+- 部署：GitHub Actions 已成功部署，入口為 https://peppen211.github.io/xianxia-game/?test-version=0.7 ，版本資訊頁為 https://peppen211.github.io/xianxia-game/latest.html?test-version=0.7 。
+- 限制：上述手機測試為 GitHub Actions 中 390×844 的 Chromium 行動裝置模擬，不等同真實 iPhone／Android 實機驗收；長期離線收益、跨版本存檔恢復、所有數值邊界仍須另行測試。
