@@ -2,7 +2,7 @@ import { ACHIEVEMENT_GOALS, DAILY_GOALS, newQuests, recordActivity, syncQuests, 
 
 export const REALMS = ["煉氣", "築基", "金丹", "元嬰", "化神", "煉虛", "合體", "大乘", "渡劫", "真仙"];
 export const STAGES = ["初期", "中期", "後期", "圓滿"];
-export const MAX_LEVEL = REALMS.length * STAGES.length;
+export const MAX_LEVEL = REALMS.length * STAGES.length - 1;
 
 export type Rarity = "凡" | "靈" | "仙";
 export interface CharDef { id: string; name: string; title: string; rarity: Rarity; glyph: string; desc: string }
