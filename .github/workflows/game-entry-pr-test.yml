@@ -25,9 +25,18 @@ jobs:
         run: npm test
       - name: Build project
         run: npm run build
-      - name: Install Playwright
-        run: |
-          npm install --no-save playwright
-          npx playwright install --with-deps chromium
+      - name: Install Playwright package
+        run: npm install --no-save playwright
+      - name: Cache Playwright Chromium
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-chromium-v1
+      - name: Install Playwright system dependencies
+        run: timeout 240s npx playwright install-deps chromium
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: timeout 240s npx playwright install chromium
       - name: Test current standalone game entry on mobile viewport
         run: node scripts/game-entry-smoke.cjs
