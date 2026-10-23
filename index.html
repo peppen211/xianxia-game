@@ -17,7 +17,7 @@ h1,h2,h3,p{margin-top:0}h1{font-size:clamp(20px,5vw,25px);line-height:1.4;letter
 .panel{padding:15px;margin:0 0 10px}.panel h2{color:var(--gold-bright)}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;flex:0 0 auto}.stats .panel{padding:9px;margin:0;background:#0b1320;border-color:#344257;border-radius:11px;box-shadow:none}.stats small{font-size:11px}.stats strong{display:block;margin-top:4px;color:var(--gold-bright);font-size:18px;overflow-wrap:anywhere}
 .detail{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #bda56830;color:var(--muted);font-size:13px;line-height:1.65}.detail span{min-width:0}.detail strong{color:var(--gold-bright);text-align:right;font-weight:600;overflow-wrap:anywhere}
-.bar{height:8px;margin:14px 0 6px;overflow:hidden;border:1px solid #344257;border-radius:20px;background:#070b12}.fill{height:100%;width:0;background:linear-gradient(90deg,#91b6d7,#d9bb7b);transition:width .25s}
+.shop-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.shop-item:last-of-type{border-bottom:0}.shop-item>div{min-width:0;flex:1}.shop-item strong{color:var(--gold-bright)}.shop-item p{margin:4px 0}.shop-item button{width:auto;min-width:104px;flex-shrink:0;font-size:12px;padding:10px 11px}@media(max-width:390px){.shop-item{align-items:flex-start;flex-direction:column}.shop-item button{width:100%}}.bar{height:8px;margin:14px 0 6px;overflow:hidden;border:1px solid #344257;border-radius:20px;background:#070b12}.fill{height:100%;width:0;background:linear-gradient(90deg,#91b6d7,#d9bb7b);transition:width .25s}
 button,.btn,.tab{min-width:0;min-height:42px;padding:10px 12px;border:1px solid #3b4b61;border-radius:9px;background:linear-gradient(145deg,#1b293d,#101826);color:#e0e8f1;font-family:inherit;font-size:13px;line-height:1.5;font-weight:600;overflow-wrap:anywhere;cursor:pointer}
 button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}button.primary,#start,.primary{border:1px solid #f0dba7;background:linear-gradient(135deg,#e2c98f,#b99a5e);color:#111722;font-weight:700;text-shadow:none}
 .row{display:flex;gap:8px}.row button{flex:1}
@@ -147,8 +147,8 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
 <section class="page" id="cultivate"><div class="panel"><div class="eyebrow">INNER CULTIVATION</div><h2>靜心吐納</h2><div class="detail"><span>角色道號</span><strong id="nameShow">詠祺</strong></div><div class="detail"><span>靈根</span><strong id="rootShow">四屬性偽靈根</strong></div><div class="detail"><span>境界</span><strong id="realmShow">凡人</strong></div><div class="bar"><div class="fill" id="fill"></div></div><div class="detail"><span id="progress">0 / 100 修為</span><span id="rate">尚未修煉</span></div><div class="row"><button class="primary" id="cultivateBtn">開始修煉</button><button id="breakthrough" disabled>嘗試突破</button></div></div></section>
 <section class="page" id="explore"><div class="panel"><div class="eyebrow">THE CULTIVATION WORLD</div><h2>越國・凡俗之地</h2><p class="muted">從山林外圍開始尋找機緣，採集草藥、發現靈石，逐步走進修仙世界。</p><div class="detail"><span>山林外圍</span><span>低危險區域</span></div><button class="primary" id="gather">探索山林</button><button id="openBattle" style="width:100%;margin-top:10px">進入戰鬥試煉</button><div class="detail"><span>附近集市</span><span>凡俗交易</span></div><button id="market">查看集市</button></div></section>
 <section class="page" id="battle"><div class="panel"><div class="eyebrow">AUTO BATTLE</div><h2>山林試煉</h2><div class="battle-scene" aria-hidden="true"></div><p class="muted">以自動戰鬥累積實戰經驗。後續將逐步加入法術、符籙、法寶與更完整的敵人機制。</p><div class="detail"><span>遭遇對手</span><strong>山林野狼 · 氣血 35</strong></div><button class="primary" id="fight">開始自動戰鬥</button><div class="log" id="log">尚未交戰，準備好再出發。</div></div></section>
-<section class="page" id="shop"><div class="panel"><div class="eyebrow">CULTIVATION MARKET</div><h2>修仙坊市</h2><p class="muted">在此查看靈石交易、丹藥、材料與修行用品。交易功能將逐步開放。</p><div class="detail"><span>目前下品靈石</span><strong id="shopStones">0</strong></div><button class="primary" id="shopMarket">查看坊市</button><div class="log">坊市尚在籌備中，待交易系統開放後即可使用。</div></div></section>
-<section class="page" id="bag"><div class="panel"><div class="eyebrow">YOUR IMMORTAL CAVE</div><h2>洞府與行囊</h2><div class="detail"><span>下品靈石</span><strong id="bagStones">0</strong></div><div class="detail"><span>草藥</span><strong id="herbs">0</strong></div><div class="detail"><span>野獸材料</span><strong id="materials">0</strong></div><p class="muted">進度儲存在此裝置的瀏覽器中，不需要建立遊戲帳號。</p><button id="save">立即存檔</button><button id="reset">重回仙途入口</button></div></section>
+<section class="page" id="shop"><div class="panel"><div class="eyebrow">CULTIVATION MARKET</div><h2>修仙坊市</h2><p class="muted">靈石換取修行資源。每次交易立即生效，量力而為。</p><div class="detail"><span>目前下品靈石</span><strong><span id="shopStones">0</span> 枚</strong></div><div class="shop-item"><div><strong>回春散</strong><p class="muted">恢復 40 點氣血，最多回復至上限。</p><small>價格：5 枚下品靈石</small></div><button class="primary" id="buyHeal">購買並服用</button></div><div class="shop-item"><div><strong>凝氣丹</strong><p class="muted">藥力化作 30 點修為。</p><small>價格：8 枚下品靈石</small></div><button class="primary" id="buyQi">購買並服用</button></div><div class="shop-item"><div><strong>百草小包</strong><p class="muted">獲得 3 株草藥，可累積行囊資源。</p><small>價格：3 枚下品靈石</small></div><button class="primary" id="buyHerbs">購買</button></div><div class="log" id="shopLog">坊市已開張。探索與戰鬥取得靈石後，可在此補給。</div></div></section>
+<section class="page" id="bag"><div class="panel"><div class="eyebrow">YOUR IMMORTAL CAVE</div><h2>洞府與行囊</h2><div class="detail"><span>下品靈石</span><strong id="bagStones">0</strong></div><div class="detail"><span>草藥</span><strong id="herbs">0</strong></div><div class="detail"><span>野獸材料</span><strong id="materials">0</strong></div><div class="detail"><span>氣血狀態</span><strong id="bagHp">100 / 100</strong></div><button class="primary" id="rest">消耗 1 株草藥療傷（恢復 20 氣血）</button><p class="muted">進度儲存在此裝置的瀏覽器中，不需要建立遊戲帳號。</p><button id="save">立即存檔</button><button id="reset">重回仙途入口</button></div></section>
 <section class="page active" id="character"><div class="panel"><div class="eyebrow">CULTIVATOR PROFILE</div><h2>角色資料</h2><div class="detail"><span>姓名</span><strong>詠祺</strong></div><div class="detail"><span>靈根</span><strong>四屬性偽靈根</strong></div><div class="detail"><span>起始境界</span><strong>凡人</strong></div><div class="detail"><span>初始資源</span><strong>0</strong></div></div></section><footer>凡人修仙・自由放置 RPG · 開發測試版</footer><div id="toast"></div>
 
 <script>
@@ -213,6 +213,7 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
     $("cultivateBtn").textContent=state.cultivating?"停止修煉":"開始修煉";
     $("breakthrough").disabled=!state.created||state.xp<requiredXp()||state.level>=13;
     $("herbs").textContent=state.herbs;
+    $("bagHp").textContent=state.hp+" / "+state.maxHp;
     $("materials").textContent=state.materials;
     $("log").textContent=state.log;
     $("bagStones").textContent=state.stones;
@@ -243,8 +244,23 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
     button.addEventListener("click",()=>setPage(button.dataset.tab,button));
   });
   $("openBattle").addEventListener("click",()=>setPage("battle",null));
-  $("shopMarket").addEventListener("click",()=>toast("修仙坊市將在後續版本開放"));
-  $("market").addEventListener("click",()=>toast("修仙坊市將在後續版本開放"));
+  const openShop=()=>setPage("shop",document.querySelector('.tab[data-tab="shop"]'));
+  $("shopMarket").addEventListener("click",openShop);
+  $("market").addEventListener("click",openShop);
+  function purchase(cost,action,success){
+    if(!state.created){toast("請先踏入仙途");return;}
+    if(state.stones<cost){toast("靈石不足，先去探索或戰鬥吧");$("shopLog").textContent="交易未完成：需要 "+cost+" 枚下品靈石，目前只有 "+state.stones+" 枚。";return;}
+    state.stones-=cost;action();state.log=success;save();render();$("shopLog").textContent=success;toast(success);
+  }
+  $("buyHeal").addEventListener("click",()=>purchase(5,()=>{const healed=Math.min(40,state.maxHp-state.hp);state.hp+=healed;state.log=healed>0?"服用回春散，恢復 "+healed+" 點氣血。":"氣血已滿，回春散的藥力無法繼續恢復。";},state.hp<state.maxHp?"服用回春散，氣血逐漸恢復。":"服用回春散，氣血已滿。"));
+  $("buyQi").addEventListener("click",()=>purchase(8,()=>{state.xp+=30;}, "服用凝氣丹，獲得 30 點修為。"));
+  $("buyHerbs").addEventListener("click",()=>purchase(3,()=>{state.herbs+=3;}, "買下百草小包，獲得 3 株草藥。"));
+  $("rest").addEventListener("click",()=>{
+    if(!state.created){toast("請先踏入仙途");return;}
+    if(state.herbs<1){toast("草藥不足，可到坊市購買");return;}
+    if(state.hp>=state.maxHp){toast("氣血充盈，無需療傷");return;}
+    state.herbs--;const healed=Math.min(20,state.maxHp-state.hp);state.hp+=healed;state.log="消耗 1 株草藥，恢復 "+healed+" 點氣血。";save();render();toast(state.log);
+  });
   $("start").addEventListener("click",()=>{
     if(!state.created)state={...fresh(),created:true};
     entered=true;
