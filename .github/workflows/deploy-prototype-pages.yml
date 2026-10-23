@@ -73,6 +73,7 @@ jobs:
             }
             if (!rendered) throw new Error('Published game UI did not render after retries.');
             await page.locator('#start').click();
+            await page.locator('button[data-tab="cultivate"]').click();
             await page.locator('#cultivateBtn').click();
             await page.getByRole('button', { name: '停止修煉' }).waitFor({ timeout: 10000 });
             await page.locator('#cultivateBtn').click();
