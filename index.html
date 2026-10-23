@@ -17,7 +17,7 @@ h1,h2,h3,p{margin-top:0}h1{font-size:clamp(20px,5vw,25px);line-height:1.4;letter
 .panel{padding:15px;margin:0 0 10px}.panel h2{color:var(--gold-bright)}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;flex:0 0 auto}.stats .panel{padding:9px;margin:0;background:#0b1320;border-color:#344257;border-radius:11px;box-shadow:none}.stats small{font-size:11px}.stats strong{display:block;margin-top:4px;color:var(--gold-bright);font-size:18px;overflow-wrap:anywhere}
 .detail{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #bda56830;color:var(--muted);font-size:13px;line-height:1.65}.detail span{min-width:0}.detail strong{color:var(--gold-bright);text-align:right;font-weight:600;overflow-wrap:anywhere}
-.shop-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.shop-item:last-of-type{border-bottom:0}.shop-item>div{min-width:0;flex:1}.shop-item strong{color:var(--gold-bright)}.shop-item p{margin:4px 0}.shop-item button{width:auto;min-width:104px;flex-shrink:0;font-size:12px;padding:10px 11px}@media(max-width:390px){.shop-item{align-items:flex-start;flex-direction:column}.shop-item button{width:100%}}.bar{height:8px;margin:14px 0 6px;overflow:hidden;border:1px solid #344257;border-radius:20px;background:#070b12}.fill{height:100%;width:0;background:linear-gradient(90deg,#91b6d7,#d9bb7b);transition:width .25s}
+.quest-board{margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}.quest-board h2{margin-bottom:8px}.quest-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.quest-row:last-child{border-bottom:0}.quest-row>div{flex:1;min-width:0}.quest-row p{margin:3px 0}.quest-row button{width:auto;min-width:72px;flex-shrink:0}.quest-row button:disabled{opacity:.45}.shop-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.shop-item:last-of-type{border-bottom:0}.shop-item>div{min-width:0;flex:1}.shop-item strong{color:var(--gold-bright)}.shop-item p{margin:4px 0}.shop-item button{width:auto;min-width:104px;flex-shrink:0;font-size:12px;padding:10px 11px}@media(max-width:390px){.shop-item{align-items:flex-start;flex-direction:column}.shop-item button{width:100%}}.bar{height:8px;margin:14px 0 6px;overflow:hidden;border:1px solid #344257;border-radius:20px;background:#070b12}.fill{height:100%;width:0;background:linear-gradient(90deg,#91b6d7,#d9bb7b);transition:width .25s}
 button,.btn,.tab{min-width:0;min-height:42px;padding:10px 12px;border:1px solid #3b4b61;border-radius:9px;background:linear-gradient(145deg,#1b293d,#101826);color:#e0e8f1;font-family:inherit;font-size:13px;line-height:1.5;font-weight:600;overflow-wrap:anywhere;cursor:pointer}
 button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}button.primary,#start,.primary{border:1px solid #f0dba7;background:linear-gradient(135deg,#e2c98f,#b99a5e);color:#111722;font-weight:700;text-shadow:none}
 .row{display:flex;gap:8px}.row button{flex:1}
@@ -145,7 +145,7 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
 <section class="stats"><div class="panel"><small>修為</small><strong id="xp">0</strong></div><div class="panel"><small>下品靈石</small><strong id="stones">0</strong></div><div class="panel"><small>氣血</small><strong id="hp">100/100</strong></div></section>
 <section class="quick-status" id="quickStatus" aria-label="角色即時狀態"><div class="quick-status-top"><span id="quickRealm">凡人</span><span id="quickState">尚未修煉</span></div><div class="quick-status-values"><span>修為 <strong id="quickXp">0</strong></span><span>靈石 <strong id="quickStones">0</strong></span><span>氣血 <strong id="quickHp">100/100</strong></span></div><div class="quick-progress"><span id="quickFill"></span></div></section><nav class="tabs bottom-nav" aria-label="主要導覽"><button class="tab active" data-tab="character"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M5.5 20v-2.2a6.5 6.5 0 0 1 13 0V20z"/></svg></span><span>角色</span></button><button class="tab" data-tab="cultivate"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M6 9.5V21h12V9.5M10 21v-6h4v6"/></svg></span><span>洞府</span></button><button class="tab" data-tab="explore"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.4 5.2-5.2 2.4 2.4-5.2z"/></svg></span><span>世界</span></button><button class="tab" data-tab="shop"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9h16l-1 11H5z"/><path d="M8 9V6a4 4 0 0 1 8 0v3M8 13h8"/></svg></span><span>商店</span></button><button class="tab" data-tab="bag"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h14l1 13H4z"/><path d="M9 8V6a3 3 0 0 1 6 0v2M9 13h6"/></svg></span><span>背包</span></button></nav>
 <section class="page" id="cultivate"><div class="panel"><div class="eyebrow">INNER CULTIVATION</div><h2>靜心吐納</h2><div class="detail"><span>角色道號</span><strong id="nameShow">詠祺</strong></div><div class="detail"><span>靈根</span><strong id="rootShow">四屬性偽靈根</strong></div><div class="detail"><span>境界</span><strong id="realmShow">凡人</strong></div><div class="bar"><div class="fill" id="fill"></div></div><div class="detail"><span id="progress">0 / 100 修為</span><span id="rate">尚未修煉</span></div><div class="row"><button class="primary" id="cultivateBtn">開始修煉</button><button id="breakthrough" disabled>嘗試突破</button></div></div></section>
-<section class="page" id="explore"><div class="panel"><div class="eyebrow">THE CULTIVATION WORLD</div><h2>越國・凡俗之地</h2><p class="muted">從山林外圍開始尋找機緣，採集草藥、發現靈石，逐步走進修仙世界。</p><div class="detail"><span>山林外圍</span><span>低危險區域</span></div><button class="primary" id="gather">探索山林</button><button id="openBattle" style="width:100%;margin-top:10px">進入戰鬥試煉</button><div class="detail"><span>附近集市</span><span>凡俗交易</span></div><button id="market">查看集市</button></div></section>
+<section class="page" id="explore"><div class="panel"><div class="eyebrow">THE CULTIVATION WORLD</div><h2>越國・凡俗之地</h2><p class="muted">從山林外圍開始尋找機緣，採集草藥、發現靈石，逐步走進修仙世界。</p><div class="detail"><span>山林外圍</span><span>低危險區域</span></div><button class="primary" id="gather">探索山林</button><button id="openBattle" style="width:100%;margin-top:10px">進入戰鬥試煉</button><div class="detail"><span>附近集市</span><span>凡俗交易</span></div><button id="market">查看集市</button><div class="quest-board"><div class="eyebrow">ADVENTURER'S BOARD</div><h2>歷練委託</h2><div class="quest-row"><div><strong>林間探路</strong><p class="muted">探索山林 3 次</p><small id="questExploreProgress">進度 0 / 3 · 獎勵 8 靈石</small></div><button id="claimExplore" disabled>領取</button></div><div class="quest-row"><div><strong>清剿野狼</strong><p class="muted">完成戰鬥 2 次</p><small id="questFightProgress">進度 0 / 2 · 獎勵 15 靈石</small></div><button id="claimFight" disabled>領取</button></div></div></div></section>
 <section class="page" id="battle"><div class="panel"><div class="eyebrow">AUTO BATTLE</div><h2>山林試煉</h2><div class="battle-scene" aria-hidden="true"></div><p class="muted">以自動戰鬥累積實戰經驗。後續將逐步加入法術、符籙、法寶與更完整的敵人機制。</p><div class="detail"><span>遭遇對手</span><strong>山林野狼 · 氣血 35</strong></div><button class="primary" id="fight">開始自動戰鬥</button><div class="log" id="log">尚未交戰，準備好再出發。</div></div></section>
 <section class="page" id="shop"><div class="panel"><div class="eyebrow">CULTIVATION MARKET</div><h2>修仙坊市</h2><p class="muted">靈石換取修行資源。每次交易立即生效，量力而為。</p><div class="detail"><span>目前下品靈石</span><strong><span id="shopStones">0</span> 枚</strong></div><div class="shop-item"><div><strong>回春散</strong><p class="muted">恢復 40 點氣血，最多回復至上限。</p><small>價格：5 枚下品靈石</small></div><button class="primary" id="buyHeal">購買並服用</button></div><div class="shop-item"><div><strong>凝氣丹</strong><p class="muted">藥力化作 30 點修為。</p><small>價格：8 枚下品靈石</small></div><button class="primary" id="buyQi">購買並服用</button></div><div class="shop-item"><div><strong>百草小包</strong><p class="muted">獲得 3 株草藥，可累積行囊資源。</p><small>價格：3 枚下品靈石</small></div><button class="primary" id="buyHerbs">購買</button></div><div class="log" id="shopLog">坊市已開張。探索與戰鬥取得靈石後，可在此補給。</div></div></section>
 <section class="page" id="bag"><div class="panel"><div class="eyebrow">YOUR IMMORTAL CAVE</div><h2>洞府與行囊</h2><div class="detail"><span>下品靈石</span><strong id="bagStones">0</strong></div><div class="detail"><span>草藥</span><strong id="herbs">0</strong></div><div class="detail"><span>野獸材料</span><strong id="materials">0</strong></div><div class="detail"><span>氣血狀態</span><strong id="bagHp">100 / 100</strong></div><button class="primary" id="rest">消耗 1 株草藥療傷（恢復 20 氣血）</button><p class="muted">進度儲存在此裝置的瀏覽器中，不需要建立遊戲帳號。</p><button id="save">立即存檔</button><button id="reset">重回仙途入口</button></div></section>
@@ -157,7 +157,7 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
   const SAVE_KEY="mortalCultivationSaveV2";
   const OFFLINE_CAP_MS=12*60*60*1000;
   const ROOT_RATE={"四屬性偽靈根":0.78};
-  const fresh=()=>({created:false,name:"詠祺",root:"四屬性偽靈根",level:0,xp:0,stones:0,hp:100,maxHp:100,herbs:0,materials:0,cultivating:false,last:Date.now(),log:"尚未交戰，準備好再出發。"});
+  const fresh=()=>({created:false,name:"詠祺",root:"四屬性偽靈根",level:0,xp:0,stones:0,hp:100,maxHp:100,herbs:0,materials:0,questExplore:0,questWins:0,questExploreClaimed:false,questFightClaimed:false,cultivating:false,last:Date.now(),log:"尚未交戰，準備好再出發。"});
   let state=fresh();
   let entered=false;
   let toastTimer=null;
@@ -218,6 +218,10 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
     $("log").textContent=state.log;
     $("bagStones").textContent=state.stones;
     $("shopStones").textContent=state.stones;
+    $("questExploreProgress").textContent="進度 "+Math.min(3,state.questExplore||0)+" / 3 · 獎勵 8 靈石"+(state.questExploreClaimed?" · 已領取":"");
+    $("questFightProgress").textContent="進度 "+Math.min(2,state.questWins||0)+" / 2 · 獎勵 15 靈石"+(state.questFightClaimed?" · 已領取":"");
+    $("claimExplore").disabled=!state.created||(state.questExplore||0)<3||state.questExploreClaimed;
+    $("claimFight").disabled=!state.created||(state.questWins||0)<2||state.questFightClaimed;
   }
   function setPage(id,button){
     const page=$(id);
@@ -293,6 +297,7 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
   });
   $("gather").addEventListener("click",()=>{
     if(!state.created){toast("請先踏入仙途");return;}
+    state.questExplore=(state.questExplore||0)+1;
     const roll=Math.random();
     if(roll<0.55){const count=1+Math.floor(Math.random()*3);state.herbs+=count;toast("採集到 "+count+" 株草藥");}
     else if(roll<0.82){state.stones+=2;toast("找到 2 枚下品靈石");}
@@ -307,9 +312,18 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
     const rounds=Math.ceil(35/attack);
     const damage=Math.max(3,rounds*(5+Math.floor(Math.random()*4))-state.level*2);
     state.hp=Math.max(1,state.hp-damage);
+    state.questWins=(state.questWins||0)+1;
     state.xp+=18;state.stones+=2;state.materials++;
     state.log="自動戰鬥結束！\n你擊退了山林野狼。\n獲得 18 點修為、2 枚靈石與 1 份野獸材料。\n受到 "+damage+" 點傷害。";
     save();render();
+  });
+  $("claimExplore").addEventListener("click",()=>{
+    if((state.questExplore||0)<3||state.questExploreClaimed)return;
+    state.questExploreClaimed=true;state.stones+=8;state.log="完成歷練委託「林間探路」，獲得 8 枚下品靈石。";save();render();toast(state.log);
+  });
+  $("claimFight").addEventListener("click",()=>{
+    if((state.questWins||0)<2||state.questFightClaimed)return;
+    state.questFightClaimed=true;state.stones+=15;state.log="完成歷練委託「清剿野狼」，獲得 15 枚下品靈石。";save();render();toast(state.log);
   });
   $("save").addEventListener("click",()=>{save();toast("進度已儲存");});
   $("reset").addEventListener("click",()=>{
