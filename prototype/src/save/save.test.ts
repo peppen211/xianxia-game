@@ -35,6 +35,14 @@ describe('versioned prototype save', () => {
     expect(validateSave({ ...save, eventFlags: { 'herb-spring-found': 'yes' } })).toBe(false);
   });
 
+  it('rejects missing game version and negative timestamps', () => {
+    const save = createSave(createInitialPlayer(), 1234);
+    expect(validateSave({ ...save, gameVersion: '' })).toBe(false);
+    expect(validateSave({ ...save, gameVersion: undefined })).toBe(false);
+    expect(validateSave({ ...save, savedAt: -1 })).toBe(false);
+    expect(validateSave({ ...save, lastSettledAt: -1 })).toBe(false);
+  });
+
   it('rejects non-finite timestamps', () => {
     const save = createSave(createInitialPlayer(), 1234);
     expect(validateSave({ ...save, savedAt: Number.NaN })).toBe(false);
