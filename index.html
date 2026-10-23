@@ -249,7 +249,6 @@ body:not(.started) .quick-status,body:not(.started) .bottom-nav{display:none}
   });
   $("openBattle").addEventListener("click",()=>setPage("battle",null));
   const openShop=()=>setPage("shop",document.querySelector('.tab[data-tab="shop"]'));
-  $("shopMarket").addEventListener("click",openShop);
   $("market").addEventListener("click",openShop);
   function purchase(cost,action,success){
     if(!state.created){toast("請先踏入仙途");return;}
