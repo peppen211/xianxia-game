@@ -366,6 +366,36 @@ main{overflow:hidden}.screen{overflow:hidden;padding:8px 10px 8px;gap:6px;scroll
 @media(max-width:380px){.top.statusline{grid-template-columns:minmax(54px,.7fr) minmax(57px,.8fr) minmax(120px,1.7fr) auto;gap:3px;padding:4px}.top.statusline .currency{font-size:8px}.top.statusline .resource-chip b{font-size:7px}.status-realm b{font-size:8px}.status-xp-label b{font-size:7px}.status-power,.top.statusline .status-power b{font-size:9px}}
 @media(max-height:700px){.top.statusline{height:48px;min-height:48px}}
 
+
+/* Interaction pass: fixed app frame, five-button navigation, combat feedback and modal break-through */
+html,body{height:100%;height:100dvh;overflow:hidden!important;overscroll-behavior:none}
+.app{height:100%;height:100dvh;max-height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+.app>main{flex:1;min-height:0;overflow:hidden}
+.app>main>.screen{height:100%;max-height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-bottom:12px}
+.bottom{grid-template-columns:repeat(5,minmax(0,1fr));height:66px;min-height:66px;padding-bottom:calc(5px + env(safe-area-inset-bottom));gap:3px}
+.bottom .nav{min-width:0;font-size:clamp(8px,2.25vw,10px);white-space:nowrap;gap:4px}
+.bottom .nav .ico{font-size:17px;line-height:1}
+.battle-toggles{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 7px;border:1px solid #ffffff12;border-radius:9px;background:#121a25}
+.toggle-line{display:flex;align-items:center;gap:5px;font-size:9px;color:#e5d9bf;min-height:28px}
+.toggle-line input{accent-color:#d8bd7b;width:15px;height:15px}
+#battleSpeedBtn{min-height:28px;padding:5px 7px;font-size:9px}
+#battleFeedback{font-size:8px;color:var(--muted);flex:1;min-width:75px;text-align:right}
+.damage-float{position:absolute;z-index:20;left:50%;top:38%;transform:translate(-50%,0);font-size:21px;font-weight:900;color:#ffe6a4;text-shadow:0 2px 0 #522d28,0 0 16px #ff9e61;pointer-events:none;animation:damage-rise 1.05s ease-out forwards;white-space:nowrap}
+.damage-float.critical{font-size:25px;color:#ffb2a8}
+.drop-float{position:absolute;z-index:21;left:50%;top:60%;transform:translate(-50%,0);max-width:92%;padding:6px 10px;border-radius:999px;background:#14241fef;border:1px solid #d8bd7b99;color:#f5e5b5;font-size:10px;font-weight:800;text-align:center;pointer-events:none;animation:drop-rise 1.5s ease-out forwards}
+.enemy-scene{position:relative}
+@keyframes damage-rise{0%{opacity:0;transform:translate(-50%,12px) scale(.7)}18%{opacity:1;transform:translate(-50%,-2px) scale(1.12)}100%{opacity:0;transform:translate(-50%,-52px) scale(.92)}}
+@keyframes drop-rise{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-30px) scale(.96)}}
+.break-modal-copy{font-size:11px;line-height:1.65;color:#d7deea}
+.break-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0}
+.break-metric{padding:8px 5px;border:1px solid #d8bd7b30;background:#ffffff06;border-radius:9px;text-align:center}
+.break-metric small{display:block;font-size:8px;color:var(--muted)}
+.break-metric b{display:block;font-size:14px;color:var(--gold);margin-top:4px}
+.break-risk{padding:9px;border-radius:9px;background:#9b594018;border:1px solid #d8876b3a;color:#f0c6b7;font-size:10px;line-height:1.55}
+.breakthrough-modal-aura{animation:break-aura 1.2s ease-in-out infinite alternate}
+@keyframes break-aura{from{box-shadow:0 0 0 #e8c78600}to{box-shadow:0 0 32px #e8c78645}}
+@media(max-height:720px){.bottom{height:58px;min-height:58px}.bottom .nav .ico{font-size:15px}.battle-toggles{padding:4px}.app>main>.screen{padding-top:7px}}
+
 </style></head><body><div class="app">
 <header class="top statusline">
  <div class="status-realm"><small>境界</small><b id="globalRealm">練氣一層</b></div>
@@ -384,7 +414,7 @@ main{overflow:hidden}.screen{overflow:hidden;padding:8px 10px 8px;gap:6px;scroll
 <section class="screen active" id="home">
  <div class="hero"><div class="moon"></div><div class="mountain m1"></div><div class="mountain m2"></div><div class="mist"></div><div class="energy-orb"></div><div class="hero-copy"><div class="realm" id="realmEyebrow">青雲山 · 凡人境</div><h2 id="realmName">初入仙途</h2><p id="heroDesc">天地靈氣緩緩流轉。凝神靜氣，踏出修仙第一步。</p></div><div class="cultivator" id="cultivator"><span class="immortal-silhouette">仙</span></div><div class="hero-bottom"><div class="chip">修為 <b id="levelChip">練氣一層</b></div><div class="chip">戰力 <b id="powerChip">18</b></div><div class="chip">靈氣 <b id="qiChip">0%</b></div></div></div>
  <div class="realm-row"><div class="metric"><small><span class="mini-sigil">✧</span> 修為進度</small><strong id="xpText">0/100</strong><div class="progress"><span id="xpBar"></span></div></div><div class="metric"><small>🪙 靈石</small><strong id="goldMain">100</strong><em>修煉通用</em></div><div class="metric"><small>🌿 靈草</small><strong id="herbMain">3</strong><em>丹藥材料</em></div></div>
- <div class="battle"><div class="secthead"><span>⚔️ 試煉幻境</span><small id="battleStatus">野怪出沒</small></div><div class="enemy-scene"><div class="enemy-label" id="enemyName">山野靈兔</div><div class="enemy-level" id="enemyLevel">Lv.1 · 普通</div><div class="enemy-art" id="enemyArt" aria-label="妖獸圖示"></div><div class="enemy-bottom"><div class="hptext"><span>妖獸氣血</span><span id="enemyHpText">35 / 35</span></div><div class="progress"><span id="enemyBar" style="width:100%;background:linear-gradient(90deg,#e67c74,#ffb39b)"></span></div></div></div><div class="battle-actions"><button class="btn primary" id="attackBtn">⚔️ 斬妖除魔</button><button class="btn secondary" id="skillBtn">✨ 靈氣爆發</button></div><div class="storyline" id="battleStory">靈兔警覺地豎起耳朵，牠身上似乎有微弱的靈氣。</div></div>
+ <div class="battle"><div class="secthead"><span>⚔️ 試煉幻境</span><small id="battleStatus">野怪出沒</small></div><div class="enemy-scene"><div class="enemy-label" id="enemyName">山野靈兔</div><div class="enemy-level" id="enemyLevel">Lv.1 · 普通</div><div class="enemy-art" id="enemyArt" aria-label="妖獸圖示"></div><div class="enemy-bottom"><div class="hptext"><span>妖獸氣血</span><span id="enemyHpText">35 / 35</span></div><div class="progress"><span id="enemyBar" style="width:100%;background:linear-gradient(90deg,#e67c74,#ffb39b)"></span></div></div></div><div class="battle-actions"><button class="btn primary" id="attackBtn">⚔️ 挑戰</button><button class="btn secondary" id="skillBtn">✨ 靈氣爆發</button><button class="btn secondary" id="fleeBtn">🏃 逃跑</button><button class="btn secondary" id="sneakBtn">🗡️ 偷襲</button></div><div class="battle-toggles"><label class="toggle-line"><input type="checkbox" id="autoBattleToggle"> 自動挑戰下一隻</label><button class="btn secondary mini-btn" id="battleSpeedBtn" type="button">戰鬥速度：1×</button><span id="battleFeedback" aria-live="polite">準備迎戰</span></div><div class="storyline" id="battleStory">靈兔警覺地豎起耳朵，牠身上似乎有微弱的靈氣。</div></div>
  <div class="panel idle-card"><div class="idle-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="#d9bf83" stroke-width="1.5"/><circle cx="32" cy="32" r="21" fill="none" stroke="#d9bf83" stroke-width=".8" stroke-dasharray="1 4"/><path d="M32 11a10.5 10.5 0 0 1 0 21 10.5 10.5 0 0 0 0 21 21 21 0 0 1 0-42Z" fill="#d9bf83"/><circle cx="32" cy="21.5" r="2.8" fill="#28332c"/><circle cx="32" cy="42.5" r="2.8" fill="#d9bf83"/><path d="M32 2v6M32 56v6M2 32h6M56 32h6" stroke="#d9bf83"/></svg></div><div class="idle-text"><b>自動吐納 · 放置修煉</b><p id="idleText">離線也會緩慢累積修為與靈石。</p></div><button class="btn secondary" onclick="openOfflineModal()">收益</button><button class="btn jade" id="meditateBtn">開始吐納</button></div>
  <div class="panel chronicle-teaser"><div class="secthead"><span>📜 韓立的仙途</span><small id="storyStageShort">凡人起步</small></div><div id="storyTeaser" class="storyline">從凡人出身踏入修仙界，謹慎求生、積累機緣。</div><button class="btn secondary" id="openChronicle" style="width:100%;margin-top:7px">查看主線世界觀與階段紀事</button></div>
 </section>
@@ -399,9 +429,15 @@ main{overflow:hidden}.screen{overflow:hidden;padding:8px 10px 8px;gap:6px;scroll
  <div class="panel" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:11px">煉器材料</b><div style="font-size:9px;color:var(--muted);margin-top:4px">🪵 靈木 <b id="woodCount">0</b>　💠 靈晶 <b id="crystalCount">0</b></div></div><button class="btn secondary" id="convertDup">材料交換</button></div>
 </section>
 <section class="screen" id="journal"><div class="page-title"><h2>📜 韓立仙途紀事</h2><span>世界觀 · 勢力 · 主線階段</span></div><div class="panel hanli-intro"><div class="secthead"><span>主角：韓立</span><small id="storyCurrentLabel">當前篇章</small></div><div class="storyline" id="storyCurrentText">出身凡俗，謹慎行事，從微末修行一步步走向更廣闊的天地。</div><div class="story-tags"><span>長生求道</span><span>謹慎自保</span><span>機緣與代價</span><span>凡界至仙界</span></div></div><div class="secthead"><span>主線階段與世界地圖</span><small>依目前境界與試煉進度標示</small></div><div id="hanliChronicle" class="chronicle-list"></div><div class="panel" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:11px">離線放置收益</b><div id="offlineSummary" style="font-size:9px;color:var(--muted);margin-top:4px">修煉從未停止。</div></div><button class="btn secondary" id="claimIdle">領取收益</button></div><div class="secthead"><span>修仙日誌</span><small>最新事件在底部</small></div><div class="loglist" id="logs"></div><div class="action-grid"><button class="btn secondary" id="saveBtn">💾 儲存進度</button><button class="btn danger" id="resetBtn">重新開始</button></div><div class="smallnote">本機儲存；離線收益最多累積 8 小時。主線紀事為精簡世界觀導覽，不改動既有存檔結構。</div></section>
-</main><nav class="bottom"><button class="nav active" data-screen="cultivate"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 25 12 12l5 7 4-5 8 11Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M6 27h20M21 5a5 5 0 0 1 5 5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="22" cy="8" r="3" fill="none" stroke="currentColor"/></svg></span>修煉</button><button class="nav" data-screen="cultivate"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="16" cy="16" r="9" fill="none" stroke="currentColor" stroke-dasharray="1.5 3"/><path d="M16 5a5.5 5.5 0 0 1 0 11 5.5 5.5 0 0 0 0 11 11 11 0 0 1 0-22Z" fill="currentColor"/><circle cx="16" cy="10.5" r="1.5" fill="#292129"/><circle cx="16" cy="21.5" r="1.5" fill="currentColor"/></svg></span>修煉</button><button class="nav" data-screen="character"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 19 12 28 16 19 19 16 29 13 19 4 16 13 12Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="16" cy="16" r="3" fill="currentColor"/></svg></span>角色</button><button class="nav" data-screen="bag"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 11h18l2 17H5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11 12V9a5 5 0 0 1 10 0v3M11 18c2 3 8 3 10 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>法寶</button><button class="nav" data-screen="forge"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 25 8v10l-9 11-9-11V8Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="16" cy="14" r="5" fill="none" stroke="currentColor"/><path d="M16 7v3m0 8v3m-7-7h3m8 0h3" stroke="currentColor"/></svg></span>煉器</button><button class="nav" data-screen="journal"><span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 5h16v22H8zM12 11h8M12 16h8M12 21h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>紀事</button></nav>
+</main><nav class="bottom" aria-label="主要導覽">
+ <button class="nav active" data-screen="cultivate" aria-current="page"><span class="ico">☯</span>修煉洞府</button>
+ <button class="nav" data-screen="home"><span class="ico">⚔</span>試煉幻境</button>
+ <button class="nav" data-screen="bag-modal"><span class="ico">🎒</span>法寶背包</button>
+ <button class="nav" data-screen="forge"><span class="ico">💠</span>祈寶煉器</button>
+ <button class="nav" data-screen="journal-modal"><span class="ico">📜</span>仙途紀事</button>
+</nav>
 </div>
-<script type="application/json" id="gameConfigData">{"version":"1.1.0","maxOfflineSeconds":28800,"xp":{"base":100,"majorGrowth":1.28,"layerGrowth":1.17},"skillCooldownHits":2,"elements":["金","木","水","火","土"],"elementCounters":{"金":"木","木":"土","土":"水","水":"火","火":"金"},"elementDamage":{"advantage":1.35,"disadvantage":0.8,"neutral":1},"methods":[{"cost":0,"tag":"輸出","unlock":"初始解鎖","effect":"修為累積 +20%","rate":1.2},{"cost":80,"tag":"放置","unlock":"累積 80 靈石即可解鎖","effect":"放置收益提升 35%","rate":1.35},{"cost":120,"tag":"生存","unlock":"累積 120 靈石即可解鎖","effect":"戰鬥攻擊提升 20%","rate":1}],"chapters":[{"episode":"動畫對應：凡人起步篇，集數依官方平台季別標示","location":"青牛鎮、嘉元城、七玄門","characters":"韓立、墨大夫、張鐵","event":"凡人入門、接觸長春功與掌天瓶，開始學習自保與辨識機緣。","realm":"凡俗至練氣","map":"青牛鎮","dungeon":"山野試煉","unlock":"基礎吐納、靈草採集"},{"episode":"動畫對應：七玄門與升仙令篇，集數依官方平台季別標示","location":"七玄門、升仙會、黃楓谷","characters":"韓立、墨彩環、南宮婉（後續相遇）","event":"從江湖轉入修仙門派，開始接觸修士規則與宗門資源。","realm":"練氣","map":"七玄門外山","dungeon":"靈脈巡查","unlock":"心法切換、丹藥補給"},{"episode":"動畫對應：血色禁地與越國修仙界篇，集數依官方平台季別標示","location":"黃楓谷、血色禁地、越國","characters":"韓立、南宮婉、王蟬","event":"參與高風險秘境與宗門衝突，運用法器、符籙和準備脫困。","realm":"練氣後期至築基","map":"黃楓谷外圍","dungeon":"血色秘境（遊戲化）","unlock":"祈寶、法寶欄位"},{"episode":"動畫對應：亂星海篇，集數依官方平台季別標示","location":"亂星海、坊市、外海","characters":"韓立、紫靈、元瑤","event":"在陌生海域重新累積資源，探索妖獸、坊市與修士勢力。","realm":"結丹前後","map":"亂星海","dungeon":"妖獸海溝","unlock":"海域材料、法寶成長"},{"episode":"動畫對應：重返天南與古修遺跡篇，集數依官方平台季別標示","location":"天南、大晉、墜魔谷、昆吾山","characters":"韓立、南宮婉、慕蘭與正魔各派修士","event":"探索古修傳承並周旋於高階修士勢力，為更高境界做準備。","realm":"元嬰至化神","map":"越國修仙界","dungeon":"古修遺跡","unlock":"高階心法、傀儡與劍陣"},{"episode":"動畫對應：飛升靈界篇，集數依官方平台季別標示","location":"靈界、人族領地、天淵城、廣寒界","characters":"韓立、銀月、各族修士","event":"飛升後重新立足，面對種族勢力、秘境和法則修行。","realm":"煉虛至大乘","map":"靈界邊城","dungeon":"跨界遺跡","unlock":"種族勢力、法則修煉"},{"episode":"動畫對應：仙界篇前中期，集數依官方平台季別標示","location":"北寒仙域、輪迴殿、真言門遺跡","characters":"韓立、南宮婉、輪迴殿相關人物","event":"重新從低處修行，追索時間法則與仙界機緣。","realm":"真仙至大羅方向","map":"北寒仙域","dungeon":"真言門遺跡","unlock":"時間法則、仙器與跨界探索"},{"episode":"動畫對應：仙界終局方向，集數依官方平台季別標示","location":"天庭、魔域及相關界域","characters":"韓立、古或今及各方同道","event":"時間法則、掌天瓶與長年因果交會，主線走向終局對決與長生道途。","realm":"道祖方向","map":"仙域","dungeon":"天道試煉","unlock":"終局挑戰、長生目標"}],"initial":{"gold":100,"spirit":0,"herbs":3,"pills":2,"atk":10,"def":3,"hp":100,"maxHp":100,"wood":2,"crystal":1},"skillDamageMultiplier":2.1,"sneakAttackMultiplier":1.55}</script>
+<script type="application/json" id="gameConfigData">{"version":"1.1.0","maxOfflineSeconds":28800,"xp":{"base":100,"majorGrowth":1.28,"layerGrowth":1.17},"skillCooldownHits":2,"elements":["金","木","水","火","土"],"elementCounters":{"金":"木","木":"土","土":"水","水":"火","火":"金"},"elementDamage":{"advantage":1.35,"disadvantage":0.8,"neutral":1},"methods":[{"cost":0,"tag":"輸出","unlock":"初始解鎖","effect":"修為累積 +20%","rate":1.2},{"cost":80,"tag":"放置","unlock":"累積 80 靈石即可解鎖","effect":"放置收益提升 35%","rate":1.35},{"cost":120,"tag":"生存","unlock":"累積 120 靈石即可解鎖","effect":"戰鬥攻擊提升 20%","rate":1}],"chapters":[{"episode":"動畫對應：凡人起步篇，集數依官方平台季別標示","location":"青牛鎮、嘉元城、七玄門","characters":"韓立、墨大夫、張鐵","event":"凡人入門、接觸長春功與掌天瓶，開始學習自保與辨識機緣。","realm":"凡俗至練氣","map":"青牛鎮","dungeon":"山野試煉","unlock":"基礎吐納、靈草採集"},{"episode":"動畫對應：七玄門與升仙令篇，集數依官方平台季別標示","location":"七玄門、升仙會、黃楓谷","characters":"韓立、墨彩環、南宮婉（後續相遇）","event":"從江湖轉入修仙門派，開始接觸修士規則與宗門資源。","realm":"練氣","map":"七玄門外山","dungeon":"靈脈巡查","unlock":"心法切換、丹藥補給"},{"episode":"動畫對應：血色禁地與越國修仙界篇，集數依官方平台季別標示","location":"黃楓谷、血色禁地、越國","characters":"韓立、南宮婉、王蟬","event":"參與高風險秘境與宗門衝突，運用法器、符籙和準備脫困。","realm":"練氣後期至築基","map":"黃楓谷外圍","dungeon":"血色秘境（遊戲化）","unlock":"祈寶、法寶欄位"},{"episode":"動畫對應：亂星海篇，集數依官方平台季別標示","location":"亂星海、坊市、外海","characters":"韓立、紫靈、元瑤","event":"在陌生海域重新累積資源，探索妖獸、坊市與修士勢力。","realm":"結丹前後","map":"亂星海","dungeon":"妖獸海溝","unlock":"海域材料、法寶成長"},{"episode":"動畫對應：重返天南與古修遺跡篇，集數依官方平台季別標示","location":"天南、大晉、墜魔谷、昆吾山","characters":"韓立、南宮婉、慕蘭與正魔各派修士","event":"探索古修傳承並周旋於高階修士勢力，為更高境界做準備。","realm":"元嬰至化神","map":"越國修仙界","dungeon":"古修遺跡","unlock":"高階心法、傀儡與劍陣"},{"episode":"動畫對應：飛升靈界篇，集數依官方平台季別標示","location":"靈界、人族領地、天淵城、廣寒界","characters":"韓立、銀月、各族修士","event":"飛升後重新立足，面對種族勢力、秘境和法則修行。","realm":"煉虛至大乘","map":"靈界邊城","dungeon":"跨界遺跡","unlock":"種族勢力、法則修煉"},{"episode":"動畫對應：仙界篇前中期，集數依官方平台季別標示","location":"北寒仙域、輪迴殿、真言門遺跡","characters":"韓立、南宮婉、輪迴殿相關人物","event":"重新從低處修行，追索時間法則與仙界機緣。","realm":"真仙至大羅方向","map":"北寒仙域","dungeon":"真言門遺跡","unlock":"時間法則、仙器與跨界探索"},{"episode":"動畫對應：仙界終局方向，集數依官方平台季別標示","location":"天庭、魔域及相關界域","characters":"韓立、古或今及各方同道","event":"時間法則、掌天瓶與長年因果交會，主線走向終局對決與長生道途。","realm":"道祖方向","map":"仙域","dungeon":"天道試煉","unlock":"終局挑戰、長生目標"}],"initial":{"gold":100,"spirit":0,"herbs":3,"pills":2,"atk":10,"def":3,"hp":100,"maxHp":100,"wood":2,"crystal":1},"skillDamageMultiplier":2.1,"sneakAttackMultiplier":1.55,"breakthrough":{"successRate":0.85,"goldCost":50,"herbCost":1,"failHpLoss":0.25,"successHpRestore":1},"battle":{"autoIntervalMs":1200,"fastIntervalMs":550,"damageFloatMs":1050}}</script>
 <script>
 const GAME_CONFIG=JSON.parse(document.getElementById("gameConfigData").textContent);
 const FIVE_ELEMENTS=GAME_CONFIG.elements;
@@ -559,6 +595,108 @@ const __oldMeditate=meditate;meditate=function(){const xp=s.xp,gold=s.gold;__old
 const __oldCheckLevel=checkLevel;checkLevel=function(){const layer=s.layer,major=s.major;__oldCheckLevel();if(s.layer!==layer||s.major!==major)flashGain('突破成功 · '+realmText())};
 function escapeBattle(){if(Math.random()<.78){note('🏃 你判斷形勢不利，成功脫離戰鬥。','good');spawnEnemy();render();toast('成功逃離，沒有損失資源')}else{const dmg=Math.max(1,Math.floor(enemy.atk*.7-val('def')*.25));s.hp=Math.max(1,s.hp-dmg);note('🏃 逃跑未果，撤退時受到 '+dmg+' 點傷害。','bad');render();toast('逃跑失敗，受到 '+dmg+' 點傷害')}}
 function sneakAttack(){if(!enemy||enemy.hp<=0)return;const success=Math.random()<.68;if(success){const elemental=elementMultiplier(),dmg=Math.max(1,Math.floor(val('atk')*(s.method===2?1.2:1)*GAME_CONFIG.sneakAttackMultiplier*elemental.multiplier));enemy.hp=Math.max(0,enemy.hp-dmg);note('🗡️ 偷襲成功，造成 '+dmg+' 點先手傷害。','good');flashGain('偷襲 +'+dmg+' 傷害');if(enemy.hp<=0){win();render();return}}else note('🗡️ 偷襲被察覺！妖獸搶先反擊。','bad');const taken=Math.max(1,Math.floor((enemy.atk-val('def')+2)*(success?.65:1.2)));s.hp-=taken;if(s.hp<=0){const lost=Math.min(s.gold,Math.floor(s.gold*.06));s.gold-=lost;s.hp=Math.floor(s.maxHp*.55);note('🛟 你退回安全處調息，損失 '+lost+' 靈石。','bad')}if(!s.skill&&++s.skillWait>=GAME_CONFIG.skillCooldownHits){s.skill=true;note('✨ 靈氣爆發已重新蓄滿。','good')}render()}
+
+
+/* === UX patch v1.2: module navigation, battle feedback, manual breakthrough === */
+function showDamageFloat(amount,critical=false){
+ const scene=document.querySelector('#home .enemy-scene');if(!scene)return;
+ const el=document.createElement('div');el.className='damage-float'+(critical?' critical':'');el.textContent=(critical?'暴擊 ':'−')+Math.max(0,amount);
+ scene.appendChild(el);setTimeout(()=>el.remove(),GAME_CONFIG.battle.damageFloatMs||1050);
+}
+function showDropFloat(text){
+ const scene=document.querySelector('#home .enemy-scene');if(!scene)return;
+ const el=document.createElement('div');el.className='drop-float';el.textContent=text;
+ scene.appendChild(el);setTimeout(()=>el.remove(),1500);
+}
+function updateBattleFeedback(text){const el=document.getElementById('battleFeedback');if(el)el.textContent=text}
+function switchScreen(id){
+ if(id==='bag-modal'){openBagModal();return}
+ if(id==='journal-modal'){openChronicleModal();return}
+ const target=document.getElementById(id);
+ if(!target||!target.classList.contains('screen'))return;
+ document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));
+ document.querySelectorAll('.bottom .nav').forEach(x=>{const active=x.dataset.screen===id;x.classList.toggle('active',active);if(active)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
+ render();
+}
+document.querySelectorAll('.bottom .nav').forEach(b=>b.addEventListener('click',()=>switchScreen(b.dataset.screen)));
+function openBagModal(){
+ const slots=document.getElementById('slots')?.outerHTML||'';
+ const inv=document.getElementById('inventory')?.innerHTML||'<div class="smallnote">目前沒有法寶。</div>';
+ const pills='<div class="panel"><div class="secthead"><span>🧪 聚氣丹</span><b>持有 ×'+s.pills+'</b></div><p class="smallnote">戰鬥中可恢復氣血，補足續戰能力。</p><button class="btn secondary" onclick="buyPill();openBagModal()">購買聚氣丹 · 30 靈石</button></div>';
+ openModal('法寶與靈物背包','<div class="panel"><div class="secthead"><span>裝備欄位</span><small>攻擊 '+val('atk')+' · 防禦 '+val('def')+'</small></div>'+slots+'</div><div class="panel"><div class="secthead"><span>收藏與裝備</span><small>'+s.inventory.length+' 件法寶</small></div><div class="inventory-modal-list">'+inv+'</div></div>'+pills);
+}
+const __legacyCheckLevel=checkLevel;
+checkLevel=function(){
+ const need=xpNeed();
+ if(s.xp>=need){
+   const excess=s.xp-need;
+   s.pendingXp=(s.pendingXp||0)+excess;
+   s.xp=need;
+ }
+ const hint=document.getElementById('breakHint');
+ if(hint)hint.textContent=s.xp>=need?'靈脈圓滿 · 可嘗試渡劫':'累積修為以突破';
+ const topBtn=document.getElementById('globalBreakBtn');if(topBtn)topBtn.style.display=s.xp>=need?'inline-flex':'none';
+};
+function breakthroughModalHtml(){
+ const need=xpNeed(),ready=s.xp>=need,cost=GAME_CONFIG.breakthrough;
+ const enoughGold=s.gold>=cost.goldCost,enoughHerbs=s.herbs>=cost.herbCost;
+ const chance=Math.round(Math.min(.97,cost.successRate+(s.method===2?.05:0)+(s.method===0?.02:0))*100);
+ return '<div class="breakthrough-modal-aura panel"><div class="breakthrough-seal">☯</div><div class="breakthrough-kicker">天劫將至 · 先定心神</div><h2 style="text-align:center;color:var(--gold);margin:7px 0">境界突破</h2><p class="break-modal-copy">'+(ready?'修為已達圓滿，靈脈正等待最後一擊。':'修為尚未圓滿，請先繼續吐納或挑戰妖獸。')+'</p><div class="break-metric-grid"><div class="break-metric"><small>成功率</small><b>'+chance+'%</b></div><div class="break-metric"><small>修為需求</small><b>'+Math.min(s.xp,need)+'/'+need+'</b></div><div class="break-metric"><small>失敗風險</small><b>損失氣血</b></div></div><div class="panel"><div class="secthead"><span>渡劫資源</span><small>不足時不可開始</small></div><p class="break-modal-copy">🪙 靈石：'+s.gold+'/'+cost.goldCost+'<br>🌿 靈草：'+s.herbs+'/'+cost.herbCost+'<br>成功獎勵：境界提升、攻擊與防禦成長、氣血恢復。</p></div><div class="break-risk">⚠ 天劫風險：失敗將消耗本次渡劫材料，並損失部分氣血；不會刪除或重置存檔。生存心法可提高成功率。</div><div class="action-grid" style="margin-top:10px"><button class="btn secondary" onclick="closeModal()">再做準備</button><button class="btn primary" onclick="attemptBreakthrough()" '+(!ready||!enoughGold||!enoughHerbs?'disabled':'')+'>引動天劫</button></div></div>';
+}
+function openBreakthroughModal(){openModal('渡劫突破',breakthroughModalHtml())}
+function attemptBreakthrough(){
+ const need=xpNeed(),cost=GAME_CONFIG.breakthrough;
+ if(s.xp<need){toast('修為尚未圓滿');openBreakthroughModal();return}
+ if(s.gold<cost.goldCost||s.herbs<cost.herbCost){toast('渡劫資源不足');openBreakthroughModal();return}
+ s.gold-=cost.goldCost;s.herbs-=cost.herbCost;
+ const chance=Math.min(.97,cost.successRate+(s.method===2?.05:0)+(s.method===0?.02:0));
+ const oldRealm=realmText();
+ if(Math.random()<chance){
+   s.xp=0;s.layer++;s.atk+=2;s.def++;s.maxHp+=10;s.hp=s.maxHp;
+   let majorBreak=false;
+   if(s.layer>9){s.layer=1;const oldMajor=s.major;s.major=Math.min(realms.length-1,s.major+1);if(s.major>oldMajor){majorBreak=true;s.atk+=8;s.def+=4;s.maxHp+=40;s.hp=s.maxHp}}
+   const carry=s.pendingXp||0;s.pendingXp=0;s.xp=Math.min(carry,Math.max(0,xpNeed()-1));
+   note('🌌 渡劫成功！由 '+oldRealm+' 踏入 '+realmText()+'，攻擊、防禦與氣血上限提升。','good');
+   closeModal();render();flashGain('突破成功 · '+realmText());showBreakthrough({from:oldRealm,to:realmText(),major:majorBreak});updateBattleFeedback('渡劫成功 · 境界提升');return;
+ }
+ const loss=Math.floor(s.maxHp*cost.failHpLoss);s.hp=Math.max(1,s.hp-loss);
+ note('⚡ 天劫反噬！突破未成，損失氣血 '+loss+'，但修為與存檔仍保留。','bad');
+ render();openBreakthroughModal();updateBattleFeedback('渡劫失敗 · 調息後再試');
+}
+document.getElementById('breakBtn').onclick=openBreakthroughModal;
+document.getElementById('globalBreakBtn').onclick=openBreakthroughModal;
+const __legacyAttackForFeedback=attack;
+attack=function(skill=false){
+ const target=enemy,before=target?target.hp:0;
+ __legacyAttackForFeedback(skill);
+ const dealt=target?Math.max(0,before-target.hp):0;
+ if(dealt>0){showDamageFloat(dealt,dealt>Math.max(1,val('atk')*1.5));updateBattleFeedback('造成 '+dealt+' 傷害 · 妖獸氣血 '+Math.max(0,target.hp)+'/'+target.maxHp)}
+ if(target&&target.hp<=0){const story=document.getElementById('battleStory')?.textContent||'妖獸已被擊敗';showDropFloat('🏆 擊殺成功 · 戰利品已入袋');updateBattleFeedback('妖獸擊敗 · 戰利品已取得')}
+};
+let autoBattleTimer=null,autoBattleEnabled=false,battleFast=false;
+function restartAutoBattle(){
+ if(autoBattleTimer)clearInterval(autoBattleTimer);
+ autoBattleTimer=null;
+ if(!autoBattleEnabled)return;
+ autoBattleTimer=setInterval(()=>{
+  if(!autoBattleEnabled||!document.getElementById('home')?.classList.contains('active'))return;
+  if(!s||!enemy)return;
+  attack(false);
+ },battleFast?(GAME_CONFIG.battle.fastIntervalMs||550):(GAME_CONFIG.battle.autoIntervalMs||1200));
+}
+document.getElementById('autoBattleToggle').addEventListener('change',e=>{
+ autoBattleEnabled=e.target.checked;restartAutoBattle();
+ updateBattleFeedback(autoBattleEnabled?'自動挑戰已啟動':'自動挑戰已暫停');
+});
+document.getElementById('battleSpeedBtn').addEventListener('click',()=>{
+ battleFast=!battleFast;document.getElementById('battleSpeedBtn').textContent='戰鬥速度：'+(battleFast?'2×':'1×');restartAutoBattle();
+ updateBattleFeedback('戰鬥速度 '+(battleFast?'2×':'1×'));
+});
+document.getElementById('fleeBtn').addEventListener('click',()=>{escapeBattle();updateBattleFeedback('已嘗試撤離戰鬥')});
+document.getElementById('sneakBtn').addEventListener('click',()=>{const before=enemy?.hp||0; sneakAttack();const dealt=Math.max(0,before-(enemy?.hp||0));if(dealt)showDamageFloat(dealt,dealt>val('atk')*1.5);if(enemy&&enemy.hp<=0)showDropFloat('🏆 偷襲擊殺 · 戰利品已入袋');updateBattleFeedback('偷襲傷害 '+dealt)});
+document.getElementById('openChronicle').onclick=()=>openChronicleModal();
+document.getElementById('resetBtn').addEventListener('click',()=>{autoBattleEnabled=false;if(autoBattleTimer)clearInterval(autoBattleTimer);autoBattleTimer=null});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 
 load();render();switchScreen('cultivate');
 </script></body></html>
