@@ -148,3 +148,22 @@ body { overflow:hidden; padding:0; touch-action:auto; -webkit-text-size-adjust:1
 .welcome-enter { width:100%; max-width:240px; margin-top:18px; min-height:50px; letter-spacing:.12em; }
 .welcome-version { margin-top:22px; color:#818d97; font-size:.72rem; letter-spacing:.08em; }
 @media (max-height:650px) { .shell { padding-top:max(8px,env(safe-area-inset-top)); gap:6px; } .shell > .panel { padding:12px; } .welcome-card { min-height:260px; padding-block:22px; } .welcome-card h1 { margin-block:6px 12px; } .welcome-version { margin-top:12px; } }
+
+
+/* Test v0.5: make the cave home a useful playable dashboard. */
+.shell[data-page="home"] > #home-dashboard { display:block; }
+.home-dashboard { flex:1 1 auto; }
+.home-character { display:flex; align-items:center; gap:14px; padding:14px; border:1px solid #4a5149; border-radius:14px; background:linear-gradient(135deg,rgba(164,123,67,.16),rgba(17,25,32,.8)); margin-bottom:18px; }
+.avatar-seal { width:54px; height:54px; flex:0 0 54px; display:grid; place-items:center; border:1px solid #a47b43; border-radius:50%; color:#f0d7a2; font-size:1.5rem; background:#29251e; }
+.home-character-info { display:grid; gap:5px; min-width:0; }
+.home-character-info strong { font-size:1.1rem; overflow-wrap:anywhere; }
+.home-character-info span { font-size:.82rem; color:#a7b0b5; }
+.home-character-info .cultivation-state { color:#c6a778; }
+.home-progress-label { display:flex; justify-content:space-between; gap:12px; margin:8px 0; font-size:.88rem; }
+.home-progress-label strong { color:#f0d7a2; }
+.home-resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:16px 0; }
+.home-resources div { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:13px; border-radius:12px; border:1px solid #35434b; background:#111920; }
+.home-resources span { color:#a7b0b5; font-size:.85rem; }
+.home-resources strong { color:#f0d7a2; font-size:1.1rem; }
+.home-quick-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:16px; }
+.home-quick-actions button { min-width:0; padding-inline:8px; }
