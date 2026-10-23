@@ -86,7 +86,11 @@ async function main() {
     offlinePage.on("pageerror", error => errors.push(error.message));
     const twelveHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
     const offlineSave = { ...makeSave(100, 0), xp: 0, cultivating: true, last: twelveHoursAgo };
-    await offlinePage.addInitScript(save => localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save)), offlineSave);
+    await offlinePage.addInitScript(save => {
+      if (sessionStorage.getItem("__offlineSaveSeeded") === "1") return;
+      localStorage.setItem("mortalCultivationSaveV2", JSON.stringify(save));
+      sessionStorage.setItem("__offlineSaveSeeded", "1");
+    }, offlineSave);
     await offlinePage.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await offlinePage.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }" });
     await offlinePage.locator("#start").click();
