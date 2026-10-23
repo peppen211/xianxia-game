@@ -67,6 +67,12 @@ async function main() {
     const statusLayout = await fullHpPage.locator("#quickStatus").evaluate(node => ({position:getComputedStyle(node).position, parent:node.parentElement?.classList.contains("realm-header")}));
     if (statusLayout.position !== "static" || !statusLayout.parent) throw new Error("Live status must stay inside the realm header, not float above the bottom navigation.");
     if (await fullHpPage.locator(".nav-icon, .header-avatar").count()) throw new Error("Decorative emoji-like navigation/header icons should be absent.");
+    const compactStatus = await fullHpPage.locator("#compactStatus").evaluate(node => ({display:getComputedStyle(node).display,scrollWidth:node.scrollWidth,clientWidth:node.clientWidth,items:[...node.querySelectorAll("span")].map(item=>item.innerText)}));
+    if (compactStatus.display === "none" || compactStatus.scrollWidth > compactStatus.clientWidth + 1 || compactStatus.items.length !== 4) {
+      throw new Error("Compact character status must remain a single non-overflowing row: " + JSON.stringify(compactStatus));
+    }
+    if ((await fullHpPage.locator("#realmPath .realm-step").count()) < 10) throw new Error("Cultivation page should show a detailed realm path.");
+    if (!(await fullHpPage.locator("#breakthroughConditions").innerText()).includes("突破需要修為")) throw new Error("Breakthrough requirements are not rendered.");
     for (const tab of ["cultivate","explore","shop","bag"]) {
       await fullHpPage.locator(`button[data-tab="${tab}"]`).click();
       if (!(await fullHpPage.locator(`#${tab}`).isVisible())) throw new Error("Bottom navigation failed to open " + tab + ".");
