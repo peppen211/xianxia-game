@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ACHIEVEMENT_GOALS, DAILY_GOALS } from "./quests";
-import { EXPLORE_COST, type Save } from "./logic";
+import { EXPLORE_COST, HERB_CRAFT_COST, HERBS_PER_PILL, type Save } from "./logic";
 
-export function QuestPanel({ save, onExplore, onClaim }: {
-  save: Save; onExplore: () => void; onClaim: (kind: "daily" | "achievement", id: string) => void;
+export function QuestPanel({ save, onExplore, onCraft, onClaim }: {
+  save: Save; onExplore: () => void; onCraft: () => void; onClaim: (kind: "daily" | "achievement", id: string) => void;
 }) {
   const [view, setView] = useState<"daily" | "achievement">("daily");
   const goals = view === "daily" ? DAILY_GOALS : ACHIEVEMENT_GOALS;
@@ -44,6 +44,12 @@ export function QuestPanel({ save, onExplore, onClaim }: {
       <h3 className="font-brush text-2xl text-gold">雲山探索</h3>
       <p className="text-xs leading-relaxed text-muted-foreground">啟程耗費 {EXPLORE_COST} 靈石 · 採靈得 15 靈石，或奇遇得 5 靈石與破境丹 ×1。</p>
       <Button variant="gameGold" size="game" className="min-h-12 w-full py-3" disabled={save.stones < EXPLORE_COST} onClick={onExplore}>探索雲山（{EXPLORE_COST} 靈石）</Button>
+    </section>
+    <section className="panel space-y-3 p-4">
+      <h3 className="font-brush text-2xl text-gold">靈草丹房</h3>
+      <div className="flex items-center justify-between gap-3 text-sm"><span className="text-muted-foreground">凝露草庫存</span><span className="text-jade">🌿 {save.herbs} 株</span></div>
+      <p className="text-xs leading-relaxed text-muted-foreground">以 {HERBS_PER_PILL} 株凝露草與 {HERB_CRAFT_COST} 靈石煉製一枚破境丹。探索雲山有機會採得靈草。</p>
+      <Button variant="gameGold" size="game" className="min-h-12 w-full py-3" disabled={save.herbs < HERBS_PER_PILL || save.stones < HERB_CRAFT_COST} onClick={onCraft}>煉製破境丹（{HERBS_PER_PILL} 草 · {HERB_CRAFT_COST} 靈石）</Button>
     </section>
   </div>;
 }
