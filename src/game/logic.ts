@@ -94,9 +94,18 @@ export function explore(s: Save, roll: number, now: Date = new Date()): { save: 
   const current = { ...s, quests: syncQuests(s.quests, now) };
   if (s.stones < EXPLORE_COST) return { save: current, text: "靈石不足，無法啟程。" };
   const rare = roll < 0.2;
-  const stones = rare ? 5 : 15;
-  return { save: { ...current, stones: s.stones - EXPLORE_COST + stones, pills: s.pills + (rare ? 1 : 0), quests: recordActivity(current.quests, "explore", now) },
-    text: rare ? "雲山奇遇：尋得破境丹 ×1、靈石 +5" : "山間採靈：尋得靈石 +15" };
+  const herbFound = !rare && roll < 0.5;
+  const stones = rare || herbFound ? 5 : 15;
+  return {
+    save: {
+      ...current,
+      stones: s.stones - EXPLORE_COST + stones,
+      pills: s.pills + (rare ? 1 : 0),
+      herbs: s.herbs + (herbFound ? 1 : 0),
+      quests: recordActivity(current.quests, "explore", now),
+    },
+    text: rare ? "雲山奇遇：尋得破境丹 ×1、靈石 +5" : herbFound ? "靈脈旁採得凝露草 ×1、靈石 +5" : "山間採靈：尋得靈石 +15",
+  };
 }
 export const HERB_CRAFT_COST = 20;
 export const HERBS_PER_PILL = 3;
