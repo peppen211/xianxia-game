@@ -164,6 +164,37 @@ input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-sel
   const OFFLINE_CAP_MS=12*60*60*1000;
   const ROOT_RATE={"四屬性偽靈根":0.78};
   const fresh=()=>({created:false,name:"詠祺",root:"四屬性偽靈根",level:0,xp:0,stones:0,hp:100,maxHp:100,herbs:0,materials:0,questExplore:0,questWins:0,questExploreClaimed:false,questFightClaimed:false,cultivating:false,last:Date.now(),log:"尚未交戰，準備好再出發。"});
+  const boundedNumber=(value,fallback,min,max,integer=false)=>{
+    const number=Number(value);
+    if(!Number.isFinite(number))return fallback;
+    const bounded=Math.min(max,Math.max(min,number));
+    return integer?Math.floor(bounded):bounded;
+  };
+  function normalizeSave(raw){
+    const base=fresh();
+    if(!raw||typeof raw!=="object"||Array.isArray(raw))return base;
+    const maxHp=boundedNumber(raw.maxHp,base.maxHp,1,100000,true);
+    const name=typeof raw.name==="string"&&raw.name.trim()?raw.name.trim().slice(0,24):base.name;
+    const root=typeof raw.root==="string"&&raw.root.trim()?raw.root:base.root;
+    const log=typeof raw.log==="string"?raw.log.slice(0,2000):base.log;
+    const last=boundedNumber(raw.last,base.last,1,Number.MAX_SAFE_INTEGER,true);
+    return {
+      created:typeof raw.created==="boolean"?raw.created:base.created,
+      name,root,
+      level:boundedNumber(raw.level,base.level,0,13,true),
+      xp:boundedNumber(raw.xp,base.xp,0,Number.MAX_SAFE_INTEGER),
+      stones:boundedNumber(raw.stones,base.stones,0,Number.MAX_SAFE_INTEGER,true),
+      hp:boundedNumber(raw.hp,base.hp,0,maxHp,true),maxHp,
+      herbs:boundedNumber(raw.herbs,base.herbs,0,Number.MAX_SAFE_INTEGER,true),
+      materials:boundedNumber(raw.materials,base.materials,0,Number.MAX_SAFE_INTEGER,true),
+      questExplore:boundedNumber(raw.questExplore,base.questExplore,0,Number.MAX_SAFE_INTEGER,true),
+      questWins:boundedNumber(raw.questWins,base.questWins,0,Number.MAX_SAFE_INTEGER,true),
+      questExploreClaimed:typeof raw.questExploreClaimed==="boolean"?raw.questExploreClaimed:base.questExploreClaimed,
+      questFightClaimed:typeof raw.questFightClaimed==="boolean"?raw.questFightClaimed:base.questFightClaimed,
+      cultivating:typeof raw.cultivating==="boolean"?raw.cultivating:base.cultivating,
+      last,log
+    };
+  }
   let state=fresh();
   let entered=false;
   let toastTimer=null;
@@ -375,7 +406,7 @@ input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-sel
   });
   try{
     const stored=JSON.parse(localStorage.getItem(SAVE_KEY));
-    if(stored&&typeof stored==="object")state={...fresh(),...applyOfflineProgress(stored)};
+    if(stored&&typeof stored==="object")state=applyOfflineProgress(normalizeSave(stored));
   }catch(error){console.warn("Could not load save",error);}
   entered=false;
   render();
