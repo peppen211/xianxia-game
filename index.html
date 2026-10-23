@@ -370,7 +370,7 @@ body.started .detail{align-items:center}
   });
   $("openBattle").addEventListener("click",()=>setPage("battle",null));
   const openShop=()=>setPage("shop",document.querySelector('.tab[data-tab="shop"]'));
-  $("market").addEventListener("click",openShop);
+  // The former standalone market shortcut was removed; the shop remains reachable via the bottom navigation.
   const regionInfo={
     forest:{name:"迷霧山林",cost:"不額外消耗靈石",loot:"草藥、靈石、修為"},
     ruins:{name:"古修遺跡",cost:"不額外消耗靈石",loot:"較多靈石、材料或風險事件"},
