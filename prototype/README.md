@@ -13,6 +13,8 @@ npm run dev
 
 ## 驗證
 
+GitHub Actions 工作流程位於 `.github/workflows/prototype-ci.yml`，原型相關檔案變更時會執行單元測試與建置。工作流程存在不代表檢查已通過；請以 Actions 實際執行結果為準。
+
 ```bash
 npm test
 npm run build
@@ -26,11 +28,11 @@ npm run preview
 - 達標後手動突破的原型流程。
 - 一個探索點、一項靈草資源及一次性事件旗標。
 - 獨立的版本化本機存檔 key：`xianxiaPrototypeSaveV1`。
-- 初步離線結算測試案例。
+- 離線結算與存檔驗證的單元測試案例。
 
 ## 明確限制
 - 突破門檻、修煉倍率與離線上限都是原型暫定值，並非已考證的原著規則。
 - 尚未完成完整境界、功法、戰鬥、宗門、秘境、主線與圖鑑。
 - 尚未加入存檔匯出／匯入及舊版存檔遷移。
-- 尚未執行 `npm install`、`npm test`、`npm run build` 或真實手機瀏覽器測試；不可標記為測試通過。
+- 本次工作環境無法連外下載 npm 套件，因此未能在此環境執行 `npm install`、`npm test`、`npm run build`；GitHub Actions 的實際執行結果仍需確認，不能標記為測試通過。真實手機瀏覽器測試也尚未完成。
 - 本原型的存檔與舊版遊戲分離，重置本原型不應影響舊版存檔。
