@@ -34,3 +34,15 @@
 - 未完成：兩份 HTML 完整差異比較、功能清單盤點、歷史玩法整理與重新討論。
 - 下次續接第一步：比較兩份 HTML 的完整程式邏輯，按「已存在／部分存在／未發現／待驗證」分類，再彙整玩法。
 - 驗證範圍：只讀取 GitHub 檔案與部分源碼；未執行瀏覽器或手機 Safari 實測。
+
+
+## 開發測試 0.1：全面修整起始輪
+- 狀態：進行中，待自動化測試與人工驗收。
+- 目標：優先穩定正式入口的核心流程、存檔與離線收益，避免影響既有玩家資料。
+- 已確認：GitHub Pages 部署 workflow 將根目錄 `index.html` 複製到發布目錄；本輪以該入口為主要目標。
+- 已修改（待測）：坊市在滿血時不再扣除回春散費用；入口頁顯示「開發測試 0.1」。
+- 已新增測試（待執行）：`scripts/game-entry-smoke.cjs` 與 `.github/workflows/game-entry-pr-test.yml`，涵蓋版本標示、滿血不扣款、受傷回血與資源扣除。
+- PR：https://github.com/peppen211/xianxia-game/pull/3
+- 尚未完成：Actions 結果、完整核心流程回歸、存檔損壞保護、離線收益重複結算、iPhone Safari 真機測試。
+- 部署：未部署。
+- 詳細紀錄：`docs/DEVELOPMENT_TEST_LOG.md`。
