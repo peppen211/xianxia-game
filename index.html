@@ -1000,6 +1000,163 @@ body .app header.top.statusline .core-break{display:none!important}
  .app>header.top.statusline>.status-resources .resource-icon{font-size:10px!important}
  .app>header.top.statusline>.status-resources .resource-chip b{font-size:9px!important}
 }
+
+/* v0.33: only the top status row; fixed five-column layout */
+body .app>header.top.statusline{
+  box-sizing:border-box!important;
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:auto auto 1fr auto auto!important;
+  align-items:center!important;
+  justify-content:initial!important;
+  gap:6px!important;
+  width:100%!important;
+  height:min(9vh,52px)!important;
+  min-height:min(9vh,52px)!important;
+  max-height:10vh!important;
+  padding:3px 6px!important;
+  margin:0!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  flex:0 0 auto!important;
+}
+body .app>header.top.statusline>.status-name,
+body .app>header.top.statusline>.status-age,
+body .app>header.top.statusline>.status-xp,
+body .app>header.top.statusline>.status-power,
+body .app>header.top.statusline>.status-resources{
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+  min-width:0!important;
+  width:auto!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+}
+body .app>header.top.statusline>.status-name b{font-size:11px!important;line-height:1!important;white-space:nowrap!important}
+body .app>header.top.statusline>.status-age,
+body .app>header.top.statusline>.status-age b,
+body .app>header.top.statusline>.status-age span{font-size:11px!important;line-height:1!important;white-space:nowrap!important}
+body .app>header.top.statusline>.status-xp{
+  display:grid!important;
+  grid-template-rows:auto 3px!important;
+  align-content:center!important;
+  justify-items:stretch!important;
+  gap:3px!important;
+  width:100%!important;
+  min-width:0!important;
+  overflow:hidden!important;
+}
+body .app>header.top.statusline>.status-xp>#globalXpText{
+  display:block!important;
+  min-width:0!important;
+  width:100%!important;
+  font-size:10px!important;
+  line-height:1!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+body .app>header.top.statusline>.status-xp>.progress{
+  display:block!important;
+  width:100%!important;
+  height:3px!important;
+  min-height:3px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+body .app>header.top.statusline>.status-xp>.progress>span{height:3px!important;min-height:3px!important}
+body .app>header.top.statusline>.status-power{
+  flex-direction:row!important;
+  gap:2px!important;
+  font-size:11px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  color:var(--gold)!important;
+}
+body .app>header.top.statusline>.status-power .status-label{font-size:11px!important;white-space:nowrap!important}
+body .app>header.top.statusline>.status-power b{font-size:11px!important;line-height:1!important}
+body .app>header.top.statusline>.status-resources{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:0!important;
+  overflow:visible!important;
+}
+body .app>header.top.statusline>.status-resources>.resource-chip{
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  min-width:0!important;
+  width:auto!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+  font-size:11px!important;
+  line-height:1!important;
+}
+body .app>header.top.statusline>.status-resources>.resource-chip>.status-label{
+  display:inline!important;
+  font-size:11px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  color:var(--gold)!important;
+}
+body .app>header.top.statusline>.status-resources>.resource-chip>b{
+  display:inline-block!important;
+  min-width:0!important;
+  font-size:11px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+body .app>header.top.statusline>.status-version{
+  position:absolute!important;
+  display:block!important;
+  top:1px!important;
+  right:6px!important;
+  z-index:5!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:7px!important;
+  line-height:1!important;
+  color:#a99c87!important;
+  white-space:nowrap!important;
+  pointer-events:none!important;
+}
+body .app>header.top.statusline>.core-break,
+body .app>header.top.statusline>#spiritTop{display:none!important}
+@media(max-width:359px){
+  body .app>header.top.statusline{gap:6px!important;padding:3px 6px!important}
+  body .app>header.top.statusline>.status-name b,
+  body .app>header.top.statusline>.status-age,
+  body .app>header.top.statusline>.status-age b,
+  body .app>header.top.statusline>.status-age span,
+  body .app>header.top.statusline>.status-power,
+  body .app>header.top.statusline>.status-power .status-label,
+  body .app>header.top.statusline>.status-power b,
+  body .app>header.top.statusline>.status-resources>.resource-chip,
+  body .app>header.top.statusline>.status-resources>.resource-chip>.status-label,
+  body .app>header.top.statusline>.status-resources>.resource-chip>b{font-size:9px!important}
+  body .app>header.top.statusline>.status-xp>#globalXpText{font-size:9px!important}
+}
+
 </style>
 
 </head><body class="launch-gate">
@@ -1013,13 +1170,13 @@ body .app header.top.statusline .core-break{display:none!important}
   <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.32">
+<header class="top statusline" aria-label="角色狀態列 v0.33">
   <div class="status-name" aria-label="角色名稱"><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.32</small>
+  <small class="status-version" aria-label="遊戲版本">v0.33</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
