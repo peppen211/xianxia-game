@@ -886,6 +886,17 @@ body .app header.top.statusline .core-break{display:none!important}
  .app>header.top.statusline .status-version{font-size:5px!important}
 }
 
+
+/* v0.25: restore four resources, hide legacy spirit count, pin version to top-right */
+.app>header.top.statusline{position:relative!important;grid-template-columns:minmax(0,.8fr) minmax(0,1.1fr) minmax(0,2.8fr) minmax(0,.8fr)!important;padding-top:5px!important}
+.app>header.top.statusline>.status-resources{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.app>header.top.statusline #spiritTop{display:none!important;visibility:hidden!important;width:0!important;height:0!important;overflow:hidden!important}
+.app>header.top.statusline>.status-version{position:absolute!important;top:2px!important;right:5px!important;z-index:2!important;display:block!important;margin:0!important;padding:0!important;font-size:7px!important;line-height:1!important;color:#9da9bd!important;font-weight:500!important;white-space:nowrap!important;pointer-events:none!important}
+.app>header.top.statusline>.status-power{padding-top:5px!important}
+@media(max-width:380px){
+ .app>header.top.statusline{grid-template-columns:minmax(0,.78fr) minmax(0,1.05fr) minmax(0,2.8fr) minmax(0,.78fr)!important;gap:3px!important}
+ .app>header.top.statusline>.status-version{top:2px!important;right:4px!important;font-size:6px!important}
+}
 </style>
 
 </head><body class="launch-gate">
@@ -899,7 +910,7 @@ body .app header.top.statusline .core-break{display:none!important}
   <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.24">
+<header class="top statusline" aria-label="角色狀態列 v0.25">
   <div class="status-realm" aria-label="目前境界">
     <small>🧘 境界</small>
     <b id="globalRealm">練氣一層</b>
@@ -929,8 +940,9 @@ body .app header.top.statusline .core-break{display:none!important}
     <b id="spiritTop" hidden aria-hidden="true"></b>
   </div>
   <div class="status-power" aria-label="角色戰力">
-    <span>⚔️ 戰力</span><b id="globalPower">18</b><small class="status-version">v0.24</small>
+    <span>⚔️ 戰力</span><b id="globalPower">18</b>
   </div>
+  <small class="status-version" aria-label="遊戲版本">v0.25</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉">✕</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
