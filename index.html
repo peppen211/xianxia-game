@@ -881,9 +881,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
    list.innerHTML=methods.map((m,i)=>{
     const owned=Array.isArray(s.ownedMethods)&&s.ownedMethods.includes(i),selected=s.method===i;
     const cfg=(GAME_CONFIG.methods||[])[i]||{},unlock=cfg.unlock||(i===0?'初始解鎖':'累積靈石解鎖');
-    const condition=owned?'已解鎖':unlock;
+    const condition=unlock+(owned?' · 已解鎖':'');
     const action=selected?'正在修煉':owned?'切換心法':'解鎖 '+m.cost+' 🪙';
-    return '<article class="method-card '+(selected?'chosen':'')+'"><div class="method-icon">'+m.icon+'</div><b>'+esc(m.name)+(selected?' ✓':'')+'</b><small>'+esc(m.bonus)+'</small><div class="method-conditions">條件：'+esc(condition)+' · 消耗：'+(owned?'已支付':Number(m.cost||0)+' 靈石')+'</div><button class="btn '+(selected?'jade':'secondary')+'" '+(selected?'disabled':'')+' onclick="selectMethod('+i+')">'+action+'</button></article>';
+    return '<article class="method-card '+(selected?'chosen':'')+'"><div class="method-icon">'+m.icon+'</div><b>'+esc(m.name)+(selected?' ✓':'')+'</b><small>'+esc(m.bonus)+'</small><div class="method-conditions">條件：'+esc(condition)+' · 消耗：'+Number(m.cost||0)+' 靈石'+(owned?'（已支付）':'')+'</div><button class="btn '+(selected?'jade':'secondary')+'" '+(selected?'disabled':'')+' onclick="selectMethod('+i+')">'+action+'</button></article>';
    }).join('');
   }
  };
