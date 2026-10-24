@@ -1808,13 +1808,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.52">
+<header class="top statusline" aria-label="角色狀態列 v0.53">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.52</small>
+  <small class="status-version" aria-label="遊戲版本">v0.53</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -2537,6 +2537,56 @@ main>.screen#home.active{display:flex!important}
     flex-basis:46px!important;height:46px!important;min-height:46px!important;max-height:46px!important;
     padding-inline:4px!important;gap:2px!important;
   }
+}
+</style>
+
+
+<style id="v053-statusline-readability">
+/* v0.53: improve top-row readability on narrow mobile screens only. */
+#gameApp.app>header.top.statusline{
+  flex:0 0 52px!important;
+  height:52px!important;
+  min-height:52px!important;
+  max-height:52px!important;
+  padding:5px 8px!important;
+  gap:4px!important;
+  grid-template-columns:auto auto minmax(68px,1fr) auto auto!important;
+  align-items:center!important;
+}
+#gameApp.app>header.top.statusline>.status-name{gap:5px!important;min-width:0!important}
+#gameApp.app>header.top.statusline>.status-name .top-avatar{width:30px!important;height:30px!important;flex:0 0 30px!important}
+#gameApp.app>header.top.statusline>.status-name b,
+#gameApp.app>header.top.statusline>.status-age,
+#gameApp.app>header.top.statusline>.status-age b,
+#gameApp.app>header.top.statusline>.status-age span,
+#gameApp.app>header.top.statusline>.status-power,
+#gameApp.app>header.top.statusline>.status-power .status-label,
+#gameApp.app>header.top.statusline>.status-power b,
+#gameApp.app>header.top.statusline>.status-resources>.resource-chip,
+#gameApp.app>header.top.statusline>.status-resources>.resource-chip>.status-label,
+#gameApp.app>header.top.statusline>.status-resources>.resource-chip>b,
+#gameApp.app>header.top.statusline>.status-xp>#globalXpText{
+  font-size:10px!important;
+  line-height:1.15!important;
+}
+#gameApp.app>header.top.statusline>.status-xp{min-width:0!important;align-self:center!important}
+#gameApp.app>header.top.statusline>.status-xp .progress{margin-top:3px!important}
+#gameApp.app>header.top.statusline>.status-resources>.resource-chip{padding:3px 4px!important;gap:2px!important;white-space:nowrap!important}
+#gameApp.app>header.top.statusline>.status-version{top:1px!important;right:4px!important;font-size:8px!important;line-height:1!important}
+@media(max-width:359px){
+  #gameApp.app>header.top.statusline{padding-inline:4px!important;gap:2px!important;grid-template-columns:auto auto minmax(54px,1fr) auto auto!important}
+  #gameApp.app>header.top.statusline>.status-name .top-avatar{width:27px!important;height:27px!important;flex-basis:27px!important}
+  #gameApp.app>header.top.statusline>.status-name b,
+  #gameApp.app>header.top.statusline>.status-age,
+  #gameApp.app>header.top.statusline>.status-age b,
+  #gameApp.app>header.top.statusline>.status-age span,
+  #gameApp.app>header.top.statusline>.status-power,
+  #gameApp.app>header.top.statusline>.status-power .status-label,
+  #gameApp.app>header.top.statusline>.status-power b,
+  #gameApp.app>header.top.statusline>.status-resources>.resource-chip,
+  #gameApp.app>header.top.statusline>.status-resources>.resource-chip>.status-label,
+  #gameApp.app>header.top.statusline>.status-resources>.resource-chip>b,
+  #gameApp.app>header.top.statusline>.status-xp>#globalXpText{font-size:9px!important}
 }
 </style>
 
