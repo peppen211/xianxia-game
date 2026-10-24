@@ -65,7 +65,7 @@ jobs:
 
             await gate.waitFor({ state: 'visible', timeout: 15000 });
             await continueButton.waitFor({ state: 'visible', timeout: 5000 });
-            const launchLabel = (await continueButton.innerText()).trim();
+            const launchLabel = (await continueButton.locator('.continue-label').innerText().catch(() => continueButton.innerText())).trim();
             if (!['繼續修煉', '開始修行'].includes(launchLabel)) {
               throw new Error('Launch gate button label is missing or incorrect: ' + launchLabel);
             }
