@@ -1534,6 +1534,148 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
 }
 </style>
 
+<style id="inner-ui-typography-v045">
+/* v0.45: unify in-game typography with the landing page's refined xianxia visual language.
+   Scoped to #gameApp only; no gameplay, save, or landing-screen behavior is changed. */
+#gameApp{
+  --ui-ink:#f2ead9;
+  --ui-muted:#b6c0cf;
+  --ui-gold:#f0d49b;
+  --ui-gold-soft:rgba(226,188,117,.24);
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif!important;
+  color:var(--ui-ink);
+  font-kerning:normal;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+#gameApp .screen{letter-spacing:.01em}
+#gameApp .page-title{
+  align-items:center;
+  gap:8px;
+  padding:2px 1px 7px;
+  border-bottom:1px solid rgba(226,188,117,.18);
+}
+#gameApp .page-title h2,
+#gameApp .hero h2,
+#gameApp .breakthrough-card h2{
+  font-family:"Kaiti TC","STKaiti","BiauKai","Noto Serif TC","Songti TC",serif!important;
+  font-weight:800;
+  color:#f4dfb0!important;
+  letter-spacing:.06em;
+  text-shadow:0 1px 0 rgba(40,24,9,.9),0 0 12px rgba(226,188,117,.12);
+}
+#gameApp .page-title h2{font-size:17px!important;line-height:1.4}
+#gameApp .page-title>span{
+  color:#bdc7d5;
+  font-size:11px;
+  line-height:1.5;
+  letter-spacing:.025em;
+}
+#gameApp .secthead{
+  min-height:25px;
+  gap:8px;
+  color:#f0d49b;
+  font-size:13px;
+  line-height:1.5;
+  letter-spacing:.035em;
+}
+#gameApp .secthead>span,
+#gameApp .panel>.secthead>span{
+  font-family:"Kaiti TC","STKaiti","BiauKai","Noto Serif TC","Songti TC",serif;
+  font-weight:700;
+}
+#gameApp .secthead small,
+#gameApp .panel small,
+#gameApp .metric small,
+#gameApp .metric em,
+#gameApp .node-meta,
+#gameApp .smallnote{
+  color:var(--ui-muted);
+  font-size:10.5px;
+  line-height:1.65;
+  letter-spacing:.01em;
+}
+#gameApp .panel,
+#gameApp .metric,
+#gameApp .realm-art,
+#gameApp .compact-summary{
+  border-color:rgba(226,188,117,.2);
+}
+#gameApp .panel{
+  border-radius:13px;
+  box-shadow:inset 0 1px 0 rgba(255,238,198,.025);
+}
+#gameApp .panel p,
+#gameApp .realm-desc,
+#gameApp .hero-copy p,
+#gameApp .storyline,
+#gameApp .idle-text p{
+  color:#c4ccda;
+  font-size:12px;
+  line-height:1.75;
+  letter-spacing:.015em;
+}
+#gameApp .panel b,
+#gameApp .compact-summary b,
+#gameApp .idle-text b{
+  color:#f0dfba;
+  font-weight:700;
+}
+#gameApp .metric strong,
+#gameApp .stat b,
+#gameApp .realm-info,
+#gameApp .current-node{
+  font-variant-numeric:tabular-nums;
+}
+#gameApp .btn,
+#gameApp button.nav{
+  font-family:inherit!important;
+  font-weight:650;
+  letter-spacing:.025em;
+  line-height:1.45;
+  -webkit-tap-highlight-color:transparent;
+}
+#gameApp .btn{
+  min-height:36px;
+  padding:8px 11px;
+  border-radius:10px;
+  font-size:12px;
+}
+#gameApp .btn.primary{
+  border:1px solid rgba(255,222,155,.48);
+  box-shadow:inset 0 1px 0 rgba(255,244,208,.12),0 3px 12px rgba(0,0,0,.12);
+}
+#gameApp .btn.secondary{
+  border-color:rgba(226,188,117,.22);
+}
+#gameApp .bottom .nav{
+  font-size:11px;
+  line-height:1.35;
+  letter-spacing:.045em;
+}
+#gameApp .bottom .nav.active{
+  color:#f4dca5;
+  text-shadow:0 0 12px rgba(226,188,117,.18);
+}
+#gameApp input,
+#gameApp select,
+#gameApp textarea{
+  font:inherit;
+  color:var(--ui-ink);
+}
+#gameApp :focus-visible{
+  outline:2px solid rgba(240,212,155,.8);
+  outline-offset:2px;
+}
+@media(max-width:380px){
+  #gameApp .page-title h2{font-size:16px!important}
+  #gameApp .page-title>span{font-size:10px}
+  #gameApp .secthead{font-size:12px}
+  #gameApp .panel p,#gameApp .realm-desc,#gameApp .hero-copy p,#gameApp .storyline{font-size:11.5px}
+  #gameApp .btn{padding:7px 9px;font-size:11.5px}
+}
+</style>
+
 </head><body class="launch-gate">
 <div id="launchGate" class="launch-gate-screen" role="dialog" aria-label="遊戲首頁">
   <div class="launch-title" aria-label="不好意思，本座又突破了"><span>不好意思</span><span>本座又突破了</span><i aria-hidden="true">修仙</i></div>
@@ -1549,13 +1691,13 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.44">
+<header class="top statusline" aria-label="角色狀態列 v0.45">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.44</small>
+  <small class="status-version" aria-label="遊戲版本">v0.45</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
