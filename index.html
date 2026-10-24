@@ -1826,13 +1826,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.69">
+<header class="top statusline" aria-label="角色狀態列 v0.70">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.69</small>
+  <small class="status-version" aria-label="遊戲版本">v0.70</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -1840,7 +1840,7 @@ html,body,#launchGate,#gameApp{
  <div class="hero"><div class="moon"></div><div class="mountain m1"></div><div class="mountain m2"></div><div class="mist"></div><div class="energy-orb"></div><div class="hero-copy"><div class="realm" id="realmEyebrow">青雲山 · 凡人境</div><h2 id="realmName">初入仙途</h2><p id="heroDesc">天地靈氣緩緩流轉。凝神靜氣，踏出修仙第一步。</p></div><div class="cultivator" id="cultivator"><span class="immortal-silhouette">仙</span></div><div class="hero-bottom"><div class="chip">修為 <b id="levelChip">煉氣一層</b></div><div class="chip">戰力 <b id="powerChip">18</b></div><div class="chip">靈氣 <b id="qiChip">0%</b></div></div></div>
  <div class="realm-row"><div class="metric"><small><span class="mini-sigil"></span> 修為進度</small><strong id="xpText">0/100</strong><div class="progress"><span id="xpBar"></span></div></div><div class="metric"><small> 靈石</small><strong id="goldMain">100</strong><em>修煉通用</em></div><div class="metric"><small> 靈草</small><strong id="herbMain">3</strong><em>丹藥材料</em></div></div>
  <div class="battle"><div class="secthead"><span> 試煉幻境</span><small id="battleStatus">野怪出沒</small></div><div class="enemy-scene"><div class="enemy-label" id="enemyName">山野靈兔</div><div class="enemy-level" id="enemyLevel">Lv.1 · 普通</div><div class="enemy-art" id="enemyArt" aria-label="妖獸圖示"></div><div class="enemy-bottom"><div class="hptext"><span>妖獸氣血</span><span id="enemyHpText">35 / 35</span></div><div class="progress"><span id="enemyBar" style="width:100%;background:linear-gradient(90deg,#e67c74,#ffb39b)"></span></div></div></div><div class="battle-actions"><button class="btn primary" id="attackBtn"> 挑戰</button><button class="btn secondary" id="skillBtn"> 靈氣爆發</button><button class="btn secondary" id="fleeBtn"> 逃跑</button><button class="btn secondary" id="sneakBtn"> 偷襲</button></div><div class="battle-toggles"><label class="toggle-line"><input type="checkbox" id="autoBattleToggle"> 自動挑戰下一隻</label><button class="btn secondary mini-btn" id="battleSpeedBtn" type="button">戰鬥速度：1×</button><span id="battleFeedback" aria-live="polite">準備迎戰</span></div><div class="storyline" id="battleStory">靈兔警覺地豎起耳朵，牠身上似乎有微弱的靈氣。</div></div>
- <div class="panel idle-card"><div class="idle-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="#d9bf83" stroke-width="1.5"/><circle cx="32" cy="32" r="21" fill="none" stroke="#d9bf83" stroke-width=".8" stroke-dasharray="1 4"/><path d="M32 11a10.5 10.5 0 0 1 0 21 10.5 10.5 0 0 0 0 21 21 21 0 0 1 0-42Z" fill="#d9bf83"/><circle cx="32" cy="21.5" r="2.8" fill="#28332c"/><circle cx="32" cy="42.5" r="2.8" fill="#d9bf83"/><path d="M32 2v6M32 56v6M2 32h6M56 32h6" stroke="#d9bf83"/></svg></div><div class="idle-text"><b>自動吐納 · 放置修煉</b><p id="idleText">離線也會緩慢累積修為與靈石。</p></div><button class="btn secondary" onclick="openOfflineModal()">收益</button><button class="btn jade" id="meditateBtn">開始吐納</button></div>
+ <div class="panel idle-card"><div class="idle-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="#d9bf83" stroke-width="1.5"/><circle cx="32" cy="32" r="21" fill="none" stroke="#d9bf83" stroke-width=".8" stroke-dasharray="1 4"/><path d="M32 11a10.5 10.5 0 0 1 0 21 10.5 10.5 0 0 0 0 21 21 21 0 0 1 0-42Z" fill="#d9bf83"/><circle cx="32" cy="21.5" r="2.8" fill="#28332c"/><circle cx="32" cy="42.5" r="2.8" fill="#d9bf83"/><path d="M32 2v6M32 56v6M2 32h6M56 32h6" stroke="#d9bf83"/></svg></div><div class="idle-text"><b>靈氣自運 · 自動修行</b><p id="idleText">修為會隨時間自動累積，達到本層圓滿後停在滿格，等待你手動突破。靈石與材料請透過戰鬥取得。</p></div><button class="btn secondary" onclick="openOfflineModal()">收益詳情</button></div>
  <div class="panel chronicle-teaser"><div class="secthead"><span> 韓立的仙途</span><small id="storyStageShort">凡人起步</small></div><div id="storyTeaser" class="storyline">從凡人出身踏入修仙界，謹慎求生、積累機緣。</div><button class="btn secondary" id="openChronicle" style="width:100%;margin-top:7px">查看主線世界觀與階段紀事</button></div>
 </section>
 <section class="screen" id="cultivate"><div class="page-title"><h2><span class="title-sigil"></span> 修煉洞府</h2><span>功法運轉，靈氣自生</span></div><div class="realm-art"><span id="cultArt" class="cultivation-sword">劍</span><div class="realm-info" id="cultRealm">練氣一層 · 靈氣親和</div></div><div class="realm-desc" id="cultLevelDesc">初入修行，凝神感應天地靈氣，為經脈打下根基。</div>
@@ -1986,14 +1986,14 @@ attack=function(skill=false){
  if(target&&target.hp<=0)showDropFloat(' 妖獸擊敗 · 戰利品已入袋');
 };
 function win(){s.kills++;let perks=gearPerks(),gold=enemy.gold,xp=Math.floor(enemy.xp*(1+perks.bonusXp)*(s.method===0?methodXpMultiplier():1));s.gold+=gold;s.spirit++;let drops=[` 靈石 ×${gold}`,` 修為 ×${xp}`];if(Math.random()<.82+perks.bonusDrop){let wood=1+(Math.random()<.22?1:0);s.wood+=wood;drops.push(` 靈木 ×${wood}`)}if(Math.random()<.28+perks.bonusDrop){s.crystal++;drops.push(' 靈晶 ×1')}if(Math.random()<.20){s.herbs++;drops.push(' 靈草 ×1')}if(Math.random()<.10){s.pills++;drops.push(' 聚氣丹 ×1')}if(s.kills%4===0&&Math.random()<.24){let pool=gears.filter(g=>g.rarity!=='凡品'),g=pool[Math.floor(Math.random()*pool.length)];if(!s.inventory.some(it=>it.name===g.name)){s.inventory.push({...g,id:Date.now()+Math.floor(Math.random()*99999)});drops.push(` 稀有掉落：${g.icon}${g.name}（${g.rarity}）`)}else{s.wood+=2;s.crystal++;s.dupes++;drops.push(' 重複機緣：靈木 ×2、靈晶 ×1')}}s.hp=Math.min(val('maxHp'),s.hp+Math.floor(val('maxHp')*.08));s.xp+=xp;checkLevel();note(` 擊敗${enemy.name}！戰利品：${drops.join('、')}。`,'good');let story=document.getElementById('battleStory');if(story)story.textContent=`斬妖成功！本次獲得：${drops.join('、')}。`;spawnEnemy()}
-function meditate(){let rate=s.method===1?methodIdleMultiplier():1,xp=Math.floor(15*rate*(s.method===0?methodXpMultiplier():1));s.xp+=xp;s.gold+=3;checkLevel();note(` 靜坐吐納，吸收天地靈氣，獲得 ${xp} 修為與 3 靈石。`,'good');render();toast('吐納完成，修為增長！')}
+function meditate(){toast('自動修行持續運轉，無需手動吐納；修為圓滿後再手動突破。')}
 function upgrade(k){let cost={atk:35+s.layer*15,def:30+s.layer*13,maxHp:40+s.layer*18}[k];if(s.gold<cost){toast('靈石不足，先去試煉吧');return}s.gold-=cost;s[k]+=k==='atk'?3:k==='def'?2:20;if(k==='maxHp')s.hp+=20;note(` 強化成功，${{atk:'攻擊 +3',def:'防禦 +2',maxHp:'氣血上限 +20'}[k]}。`,'good');render()}
 function equip(id){let it=s.inventory.find(x=>x.id===id);if(!it)return;s.equipped[it.slot]=id;note(` 你裝備了${it.name}，氣息更為穩固。`,'good');render()}
 function sell(id){if(Object.values(s.equipped).includes(id)){toast('請先換下裝備再出售');return}let i=s.inventory.findIndex(x=>x.id===id);if(i<0)return;let it=s.inventory.splice(i,1)[0];s.gold+=it.value;note(` 出售${it.name}，獲得 ${it.value} 靈石。`,'good');render()}
 function draw(n){let cost=n===10?270:30;if(s.gold<cost){toast('靈石不足，去試煉累積靈石吧');return}s.gold-=cost;let results=[];for(let i=0;i<n;i++){s.draws++;s.pity++;let force=s.pity>=10;let roll=Math.random();let g;if(force||roll<.07)g=gears.filter(x=>x.rarity==='仙品'||x.rarity==='珍品')[Math.floor(Math.random()*gears.filter(x=>x.rarity==='仙品'||x.rarity==='珍品').length)];else if(roll<.3)g=gears.filter(x=>x.rarity==='靈品')[Math.floor(Math.random()*gears.filter(x=>x.rarity==='靈品').length)];else if(roll<.62)g=gears.filter(x=>x.rarity==='凡品')[0];if(force)s.pity=0;if(g){let duplicate=s.inventory.some(it=>it.name===g.name);if(duplicate){s.dupes++;s.wood+=2;s.crystal+=1;results.push(` ${g.name} 重複，轉為靈木×2、靈晶×1`)}else{let it={...g,id:Date.now()+i+Math.floor(Math.random()*99999)};s.inventory.push(it);results.push(`${g.icon}${g.name}（${g.rarity}）`)} }else{if(Math.random()<.5){s.wood+=2;results.push(' 靈木×2')}else{s.crystal++;results.push(' 靈晶×1')}}}document.getElementById('drawResult').textContent=results.join('、');note(` 天機祈寶 ${n} 次：${results.join('；')}`,'good');render()}
 function craft(name){let recipe={staff:{wood:3,crystal:2,gear:gears[1]},robe:{wood:2,crystal:3,gear:gears[3]},charm:{wood:1,crystal:4,gear:gears[5]}}[name];if(s.wood<recipe.wood||s.crystal<recipe.crystal){toast('煉器材料不足');return}s.wood-=recipe.wood;s.crystal-=recipe.crystal;let it={...recipe.gear,id:Date.now()+Math.floor(Math.random()*9999)};s.inventory.push(it);note(` 煉器成功！以靈木與靈晶合成${it.name}。`,'good');toast('合成成功！法寶已放入背包');render()}
 function convertDup(){if(s.dupes<=0){toast('目前沒有重複法寶可轉換');return}s.dupes--;s.wood+=3;s.crystal+=2;note(' 將一份重複法寶精煉為靈木×3、靈晶×2。','good');render()}
-function claimIdle(){const xp=Math.max(0,Math.floor(s.pendingIdleXp||0)),gold=Math.max(0,Math.floor(s.pendingIdleGold||0));if(xp===0&&gold===0){toast('放置修為持續自動入帳，稍後再查看收益摘要。');openOfflineModal();return}s.pendingIdleXp=0;s.pendingIdleGold=0;s.offlineReport={seconds:Math.floor(s.pendingIdleSeconds||0),xp,gold,at:Date.now(),source:'放置收益摘要'};s.pendingIdleSeconds=0;note(` 放置收益已自動入帳：修為 +${xp}、靈石 +${gold}。`,'good');save();render();toast(` 本次放置累積：修為 +${xp}、靈石 +${gold}`)}
+function claimIdle(){const xp=Math.max(0,Math.floor(s.pendingIdleXp||0));s.pendingIdleXp=0;s.pendingIdleGold=0;s.idleGoldRemainder=0;s.offlineReport={seconds:Math.floor(s.pendingIdleSeconds||0),xp,gold:0,at:Date.now(),source:'自動修行摘要'};s.pendingIdleSeconds=0;save();render();toast(xp>0?'修為已自動入帳：+'+xp+'；無需手動領取。':'修為持續自動累積；靈石與材料請透過戰鬥取得。');openOfflineModal()}
 function formatDuration(sec){sec=Math.max(0,Math.floor(Number(sec)||0));if(sec<60)return "不到 1 分鐘";const totalMinutes=Math.floor(sec/60);if(totalMinutes<60)return `${totalMinutes} 分鐘`;const hours=Math.floor(totalMinutes/60),minutes=totalMinutes%60;if(hours<24)return minutes?`${hours} 小時 ${minutes} 分`:`${hours} 小時`;const days=Math.floor(hours/24),remainingHours=hours%24;return remainingHours?`${days} 天 ${remainingHours} 小時`:`${days} 天`;}
 function buyPill(){if(s.gold<30){toast('靈石不足');return}s.gold-=30;s.pills++;note(' 購入一枚聚氣丹。','good');render()}
 function usePill(){if(!s.pills){toast('沒有聚氣丹了');return}s.pills--;let n=Math.floor(val('maxHp')*.4);s.hp=Math.min(val('maxHp'),s.hp+n);note(` 使用聚氣丹，恢復 ${n} 氣血。`,'good');render()}
@@ -2005,7 +2005,7 @@ document.getElementById('upgradeList').innerHTML=[['atk','','淬鍊攻勢','攻�
 document.getElementById('methodList').innerHTML=methods.map((m,i)=>'<div class="method-card '+(s.method===i?'chosen':'')+'"><div class="method-icon">'+m.icon+'</div><b>'+m.name+'</b><small>'+m.bonus+'</small><button class="btn '+(s.method===i?'jade':'secondary')+'" onclick="selectMethod('+i+')" '+(s.method===i?'disabled':'')+'>'+(s.ownedMethods.includes(i)?(s.method===i?'修煉中':'切換'):'解鎖 '+m.cost+'')+'</button></div>').join('');
 document.getElementById('slots').innerHTML=['weapon','armor','charm'].map(slot=>{let it=s.inventory.find(x=>x.id===s.equipped[slot]);return `<div class="slot"><span>${it?it.icon:({weapon:'',armor:'',charm:''}[slot])}</span><small>${({weapon:'武器',armor:'護甲',charm:'飾品'}[slot])}</small><b>${it?it.name:'空欄'}</b></div>`}).join('');
 document.getElementById('bagCount').textContent=`${s.inventory.length} 件法寶`;document.getElementById('inventory').innerHTML=s.inventory.length?s.inventory.slice().reverse().map(it=>{let on=Object.values(s.equipped).includes(it.id);return `<div class="rowitem"><div class="rowicon">${it.icon}</div><div class="rowbody"><b>${it.name} <span class="rarity">· ${it.rarity}</span> ${on?'<span class="equipped-badge"> 生效中</span>':''}</b><small>攻擊 +${it.atk} · 防禦 +${it.def} · 氣血 +${it.hp}<br>${it.desc}<br><span class="gear-trait">${gearTrait(it)}</span></small></div><button onclick="${on?'':'equip('+it.id+')'}" ${on?'disabled':''}>${on?'已裝備':'裝備'}</button><button onclick="sell(${it.id})" ${on?'disabled':''}>出售</button></div>`}).join(''):'<div class="smallnote">尚無法寶。前往「祈寶煉器」抽取、合成，或在試煉中尋找稀有戰利品。</div>';
-document.getElementById('pillCount').textContent=s.pills;document.getElementById('buyPill').onclick=buyPill;document.getElementById('pity').textContent=s.pity;document.getElementById('woodCount').textContent=s.wood;document.getElementById('crystalCount').textContent=s.crystal;document.getElementById('woodMini').textContent=s.wood;document.getElementById('crystalMini').textContent=s.crystal;let idleEl=document.getElementById('offlineSummary');if(idleEl){let report=s.offlineReport;idleEl.textContent=report?`上次${report.source||'放置收益'}：${formatDuration(report.seconds)}｜修為 +${report.xp}、靈石 +${report.gold}。離線最多累積 24 小時。`:`放置計時中：最多累積 24 小時。每 30 秒可領取一次；修為與靈石分開顯示。`}renderChronicle();renderLogs();save()}
+document.getElementById('pillCount').textContent=s.pills;document.getElementById('buyPill').onclick=buyPill;document.getElementById('pity').textContent=s.pity;document.getElementById('woodCount').textContent=s.wood;document.getElementById('crystalCount').textContent=s.crystal;document.getElementById('woodMini').textContent=s.wood;document.getElementById('crystalMini').textContent=s.crystal;let idleEl=document.getElementById('offlineSummary');if(idleEl){let report=s.offlineReport;idleEl.textContent=report?`上次${report.source||'自動修行'}：${formatDuration(report.seconds)}｜修為 +${report.xp}。修為自動入帳；靈石與材料透過戰鬥取得。`:`自動修行持續運轉，修為最多離線累積 24 小時；靈石與材料請透過戰鬥取得。`}renderChronicle();renderLogs();save()}
 function selectMethod(i){
  i=Number(i);const m=methods[i];if(!m){toast('找不到這個功法');return}
  const modal=document.getElementById('uiModal'),title=document.getElementById('modalTitle');
@@ -2052,8 +2052,8 @@ function renderChronicle(){
  const list=document.getElementById('hanliChronicle');if(!list)return;
  list.innerHTML=hanliStages.map((st,i)=>{const status=i<idx?'已走過':i===idx?'目前篇章':'後續方向';const cls=i<idx?'done':i===idx?'current':'future';const node=GAME_CONFIG.chapters[Math.min(i,GAME_CONFIG.chapters.length-1)]||{};return '<article class="chronicle-entry '+cls+'"><div class="chronicle-top"><b>'+esc(st.title)+'</b><span>'+status+'</span></div><div class="chronicle-world">'+esc(st.world)+'</div><p>'+esc(st.event)+'</p><div class="chronicle-task">'+esc(st.task)+'</div><div class="node-meta"> 地圖：'+esc(node.map||node.location||'探索區域')+'　｜　 副本：'+esc(node.dungeon||'未解鎖')+'</div><div class="node-meta"> 解鎖：'+esc(node.unlock||'依主線進度開放')+'　｜　境界：'+esc(node.realm||'依進度提升')+'</div><div class="node-meta"> '+esc(node.episode||'主線篇章節點')+'</div></article>'}).join('');
 }
-document.getElementById('attackBtn').onclick=()=>attack(false);document.getElementById('skillBtn').onclick=()=>attack(true);document.getElementById('meditateBtn').onclick=meditate;document.getElementById('breakBtn').onclick=()=>{if(s.xp<xpNeed()){toast('修為尚未圓滿，繼續吐納或試煉吧');return}openBreakthroughModal()};document.getElementById('drawOne').onclick=()=>draw(1);document.getElementById('drawTen').onclick=()=>draw(10);document.getElementById('craftStaff').onclick=()=>craft('staff');document.getElementById('craftRobe').onclick=()=>craft('robe');document.getElementById('craftCharm').onclick=()=>craft('charm');document.getElementById('convertDup').onclick=convertDup;document.getElementById('claimIdle').onclick=claimIdle;document.getElementById('saveBtn').onclick=()=>{save();toast('進度已儲存')};document.getElementById('resetBtn').onclick=()=>{if(confirm('確定清除存檔並重新開始仙途？')){localStorage.removeItem(KEY);s=base();spawnEnemy();s.logs=[];note(' 新的仙途開始了。');render();switchScreen('cultivate')}};document.getElementById('buyPill').onclick=buyPill;
-function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){storageBlocked=true;s=base()}try{const parsed=JSON.parse(raw||'{}');if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('invalid save shape');s=Object.assign(base(),parsed)}catch(e){s=base();if(raw!==null){try{localStorage.setItem(KEY+'_backup_'+Date.now(),raw)}catch(backupError){storageBlocked=true}if(!storageBlocked)toast('偵測到異常存檔，已先保留備份並以新進度啟動；原始備份未刪除。')}}if(!s.ownedMethods)s.ownedMethods=[0];if(!Array.isArray(s.methodLevels))s.methodLevels=[1,1,1];s.methodLevels=Array.from({length:3},(_,i)=>Math.max(1,Math.min(10,Math.floor(Number(s.methodLevels[i])||1))));if(!s.equipped)s.equipped={weapon:null,armor:null,charm:null};if(!s.logs)s.logs=[];if(!s.lastOfflineClaim)s.lastOfflineClaim=Date.now();if(!('offlineReport' in s))s.offlineReport=null;let elapsed=Math.min(GAME_CONFIG.maxOfflineSeconds,Math.max(0,(Date.now()-(s.last||Date.now()))/1000));if(elapsed>30){let rate=s.method===1?methodIdleMultiplier():1,xp=Math.floor(elapsed/12*rate*(s.method===0?methodXpMultiplier():1)*(1+gearPerks().bonusXp)),gold=Math.floor(elapsed/90*rate);s.xp+=xp;s.gold+=gold;s.offlineSec+=elapsed;s.offlineReport={seconds:Math.floor(elapsed),xp,gold,at:Date.now(),source:'離線自動結算'};checkLevel();note(` 離線吐納 ${formatDuration(elapsed)}，收益入帳：修為 +${xp}、靈石 +${gold}。`,'good')}s.lastOfflineClaim=Date.now();spawnEnemy();if(storageBlocked)toast('存檔不可安全讀寫，已暫停自動寫入以保護原始資料。');else save()}
+document.getElementById('attackBtn').onclick=()=>attack(false);document.getElementById('skillBtn').onclick=()=>attack(true);document.getElementById('breakBtn').onclick=()=>{if(s.xp<xpNeed()){toast('修為尚未圓滿，繼續放置修行或挑戰妖獸吧');return}openBreakthroughModal()};document.getElementById('drawOne').onclick=()=>draw(1);document.getElementById('drawTen').onclick=()=>draw(10);document.getElementById('craftStaff').onclick=()=>craft('staff');document.getElementById('craftRobe').onclick=()=>craft('robe');document.getElementById('craftCharm').onclick=()=>craft('charm');document.getElementById('convertDup').onclick=convertDup;document.getElementById('claimIdle').onclick=claimIdle;document.getElementById('saveBtn').onclick=()=>{save();toast('進度已儲存')};document.getElementById('resetBtn').onclick=()=>{if(confirm('確定清除存檔並重新開始仙途？')){localStorage.removeItem(KEY);s=base();spawnEnemy();s.logs=[];note(' 新的仙途開始了。');render();switchScreen('cultivate')}};document.getElementById('buyPill').onclick=buyPill;
+function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){storageBlocked=true;s=base()}try{const parsed=JSON.parse(raw||'{}');if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('invalid save shape');s=Object.assign(base(),parsed)}catch(e){s=base();if(raw!==null){try{localStorage.setItem(KEY+'_backup_'+Date.now(),raw)}catch(backupError){storageBlocked=true}if(!storageBlocked)toast('偵測到異常存檔，已先保留備份並以新進度啟動；原始備份未刪除。')}}if(!s.ownedMethods)s.ownedMethods=[0];if(!Array.isArray(s.methodLevels))s.methodLevels=[1,1,1];s.methodLevels=Array.from({length:3},(_,i)=>Math.max(1,Math.min(10,Math.floor(Number(s.methodLevels[i])||1))));if(!s.equipped)s.equipped={weapon:null,armor:null,charm:null};if(!s.logs)s.logs=[];if(!s.lastOfflineClaim)s.lastOfflineClaim=Date.now();if(!('offlineReport' in s))s.offlineReport=null;let elapsed=Math.min(GAME_CONFIG.maxOfflineSeconds,Math.max(0,(Date.now()-(s.last||Date.now()))/1000));if(elapsed>30){let rate=s.method===1?methodIdleMultiplier():1,rawXp=Math.floor(elapsed/12*rate*(s.method===0?methodXpMultiplier():1)*(1+gearPerks().bonusXp)),xp=Math.min(rawXp,Math.max(0,xpNeed()-s.xp));s.xp+=xp;s.pendingIdleXp=(s.pendingIdleXp||0)+xp;s.pendingIdleGold=0;s.idleGoldRemainder=0;s.offlineSec+=elapsed;s.offlineReport={seconds:Math.floor(elapsed),xp,gold:0,at:Date.now(),source:'離線自動修行'};checkLevel();note(` 離線自動修行 ${formatDuration(elapsed)}，修為 +${xp}；靈石與材料由戰鬥取得。`,'good')}s.lastOfflineClaim=Date.now();spawnEnemy();if(storageBlocked)toast('存檔不可安全讀寫，已暫停自動寫入以保護原始資料。');else save()}
 
 /* Keep the existing game systems and save schema; only reorganize the visible panels. */
 (function prepareCompactTabs(){
@@ -2097,7 +2097,7 @@ function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){
  window.openResourceModal=function(key){const r=resourceInfo[key];if(!r)return;const amount=key==='gold'?s.gold:key==='herbs'?s.herbs:key==='wood'?s.wood:s.crystal;openModal(r.icon+' '+r.title,'<div class="panel"><div class="secthead"><span>目前持有</span><b>'+amount+'</b></div><p>'+esc(r.use)+'</p><p><b>取得方式</b><br>'+esc(r.get)+'</p></div>')};
  document.querySelectorAll('.resource-chip').forEach(el=>{const fn=()=>openResourceModal(el.dataset.resource);el.addEventListener('click',fn);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn()}})});
  const quick=document.getElementById('journalQuick');
- if(quick)quick.innerHTML='<div class="page-title"><h2> 主線紀事</h2><span id="storyCurrentLabelQuick">第 1 / 8 節點</span></div><div class="panel"><b>當前章節節點</b><div id="nodeCurrent" class="current-node">凡人篇一 · 初入仙途</div><div id="nodeMeta" class="node-meta">地圖：青牛鎮｜副本：山野試煉｜解鎖：基礎吐納</div><div class="progress"><span id="nodeProgressBar"></span></div><div id="nodeProgressText" class="node-meta">試煉進度 0 / 4</div><button class="btn secondary" onclick="openChronicleModal()">查看全部章節節點</button></div><div class="panel"><b>離線放置收益</b><div id="idleClaimNumbers" class="current-node">可領取：計算中</div><p>離線收益最多累積 24 小時。</p><button class="btn secondary" onclick="openOfflineModal()">查看收益與領取</button></div><div class="panel"><b>角色成長與強化</b><p>查看屬性、強化、法寶與配方等詳細資料。</p><button class="btn secondary" onclick="switchScreen(\'character\')">角色面板</button><button class="btn secondary" onclick="openModal(\'煉器配方\',recipeDetailHtml())">煉器配方</button></div>';
+ if(quick)quick.innerHTML='<div class="page-title"><h2> 主線紀事</h2><span id="storyCurrentLabelQuick">第 1 / 8 節點</span></div><div class="panel"><b>當前章節節點</b><div id="nodeCurrent" class="current-node">凡人篇一 · 初入仙途</div><div id="nodeMeta" class="node-meta">地圖：青牛鎮｜副本：山野試煉｜解鎖：基礎吐納</div><div class="progress"><span id="nodeProgressBar"></span></div><div id="nodeProgressText" class="node-meta">試煉進度 0 / 4</div><button class="btn secondary" onclick="openChronicleModal()">查看全部章節節點</button></div><div class="panel"><b>自動修行摘要</b><div id="idleClaimNumbers" class="current-node">修為持續自動累積</div><p>修為圓滿後等待手動突破；離線最多計算 24 小時。靈石與材料由戰鬥取得。</p><button class="btn secondary" onclick="openOfflineModal()">查看修行詳情</button></div><div class="panel"><b>角色成長與強化</b><p>查看屬性、強化、法寶與配方等詳細資料。</p><button class="btn secondary" onclick="switchScreen(\'character\')">角色面板</button><button class="btn secondary" onclick="openModal(\'煉器配方\',recipeDetailHtml())">煉器配方</button></div>';
  const methodData=GAME_CONFIG.methods.map(m=>({tag:m.tag,unlock:m.unlock,cost:m.cost,desc:m.effect,condition:m.unlock}));
  const progressNodes=GAME_CONFIG.chapters.map((c,i)=>({title:['凡人篇一 · 初入仙途','凡人篇二 · 入門修行','凡人篇三 · 宗門與秘境','亂星海篇 · 海域求生','凡界後期 · 古修傳承','靈界篇 · 跨界修行','仙界篇 · 時間法則','仙界終局 · 長生問道'][i],map:c.map,dungeon:c.dungeon,unlock:c.unlock,next:['七玄門試煉','宗門任務','秘境探索','古修遺跡','飛升靈界','仙域探索','天庭之戰','終章'][i],episode:c.episode,location:c.location,characters:c.characters,event:c.event,realm:c.realm}));
  window.getNodeIndex=function(){return Math.min(progressNodes.length-1,Math.max(0,s.major+Math.floor(s.kills/4)))};
@@ -2249,17 +2249,19 @@ function startIdleProgression(){
   const now=Date.now(),dt=Math.min(5,Math.max(0,(now-last)/1000));last=now;
   const rate=(s.method===0?methodXpMultiplier():s.method===1?methodIdleMultiplier():1)*(1+(gearPerks().bonusXp||0));
   s.pendingIdleSeconds=(s.pendingIdleSeconds||0)+dt;
-  s.idleXpRemainder=(s.idleXpRemainder||0)+dt/((GAME_CONFIG.idle&&GAME_CONFIG.idle.xpIntervalSeconds)||12)*rate;
-  const addXp=Math.floor(s.idleXpRemainder);
-  if(addXp>0){s.idleXpRemainder-=addXp;s.xp+=addXp;s.pendingIdleXp=(s.pendingIdleXp||0)+addXp;checkLevel();render()}
-  s.idleGoldRemainder=(s.idleGoldRemainder||0)+dt/((GAME_CONFIG.idle&&GAME_CONFIG.idle.goldIntervalSeconds)||90)*(s.method===1?methodIdleMultiplier():1);
-  const addGold=Math.floor(s.idleGoldRemainder);
-  if(addGold>0){s.idleGoldRemainder-=addGold;s.gold+=addGold;s.pendingIdleGold=(s.pendingIdleGold||0)+addGold;render()}
+  s.pendingIdleGold=0;s.idleGoldRemainder=0;
+  const need=Math.max(1,Number(xpNeed())||1);
+  if(Number(s.xp||0)>=need){s.xp=need;s.idleXpRemainder=0}
+  else{
+   s.idleXpRemainder=(s.idleXpRemainder||0)+dt/((GAME_CONFIG.idle&&GAME_CONFIG.idle.xpIntervalSeconds)||12)*rate;
+   const addXp=Math.min(Math.floor(s.idleXpRemainder),Math.max(0,need-Number(s.xp||0)));
+   if(addXp>0){s.idleXpRemainder-=addXp;s.xp+=addXp;s.pendingIdleXp=(s.pendingIdleXp||0)+addXp;checkLevel();if(s.xp>=need){s.xp=need;s.idleXpRemainder=0}render()}
+  }
   if(now-lastSave>=((GAME_CONFIG.idle&&GAME_CONFIG.idle.saveIntervalMs)||15000)){save();lastSave=now}
  },1000);
 }
 window.addEventListener('pagehide',()=>save());
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.last){const now=Date.now(),elapsed=Math.min(60,Math.max(0,(now-s.last)/1000));if(elapsed>2){const rate=(s.method===0?1.2:s.method===1?1.35:1)*(1+(gearPerks().bonusXp||0));const xp=Math.floor(elapsed/((GAME_CONFIG.idle&&GAME_CONFIG.idle.xpIntervalSeconds)||12)*rate);if(xp>0){s.xp+=xp;s.pendingIdleXp=(s.pendingIdleXp||0)+xp;checkLevel();render()}}}save()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.last){const now=Date.now(),elapsed=Math.min(60,Math.max(0,(now-s.last)/1000));if(elapsed>2&&Number(s.xp||0)<xpNeed()){const rate=(s.method===0?methodXpMultiplier():s.method===1?methodIdleMultiplier():1)*(1+(gearPerks().bonusXp||0));const xp=Math.min(Math.floor(elapsed/((GAME_CONFIG.idle&&GAME_CONFIG.idle.xpIntervalSeconds)||12)*rate),Math.max(0,xpNeed()-Number(s.xp||0)));if(xp>0){s.xp+=xp;s.pendingIdleXp=(s.pendingIdleXp||0)+xp;checkLevel();if(s.xp>=xpNeed()){s.xp=xpNeed();s.idleXpRemainder=0}render()}}}save()}});
 
 
 /* === v1.4 verified interaction layer: preserve save schema and legacy functions === */
@@ -2955,7 +2957,7 @@ main>.screen#home.active{display:flex!important}
 #gameApp #cultivate .idle-progress-track{height:6px;overflow:hidden;border-radius:99px;background:#ffffff16;margin-top:5px}
 #gameApp #cultivate .idle-progress-track>span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#70c9a7,#e8c77a);transition:width .25s}
 #gameApp #cultivate .idle-runtime-note{font-size:9px;color:var(--muted);line-height:1.55}
-#gameApp #cultivate>.idle-card>.btn{grid-row:4!important;min-height:37px!important;width:100%!important;margin:0!important;padding:7px 6px!important;font-size:10px!important;white-space:normal!important;line-height:1.3!important}
+#gameApp #cultivate>.idle-card>.btn{grid-row:3!important;min-height:37px!important;width:100%!important;margin:0!important;padding:7px 6px!important;font-size:10px!important;white-space:normal!important;line-height:1.3!important}
 #gameApp #cultivate>.idle-card>#meditateBtn{font-weight:800!important}
 #gameApp #cultivate>.path-shortcuts{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:0!important;flex:0 0 auto!important}
 #gameApp #cultivate>.path-shortcuts .btn{min-width:0!important;min-height:36px!important;width:100%!important;font-size:10px!important;padding:6px!important}
@@ -3042,19 +3044,18 @@ main>.screen#home.active{display:flex!important}
   }
   if(idleCard){
     var idleText=idleCard.querySelector('#idleText');
-    if(idleText)idleText.textContent='放置修煉會自動累積修為與靈石；數值已即時入帳，離線收益最多計算 24 小時。';
+    if(idleText)idleText.textContent='修為會隨時間自動累積，達到本層圓滿後停在滿格，等待你手動突破。靈石與材料請透過戰鬥取得。';
     var rewardButton=idleCard.querySelector('button[onclick="openOfflineModal()"]');
     if(rewardButton){rewardButton.textContent='收益詳情';rewardButton.title='查看本次放置收益、上次結算與累積規則'}
     var meditate=byId('meditateBtn');
-    if(meditate){meditate.textContent='吐納一周天';meditate.title='單次主動吐納：依目前功法增加修為與 3 靈石，不是開關。'}
+    if(meditate)meditate.remove();
     var progress=byId('idleProgressPanel');
     if(!progress){
       progress=document.createElement('div');
       progress.id='idleProgressPanel';
       progress.innerHTML=
-        '<div><div class="idle-progress-head"><span>修為放置進度</span><b id="idleXpRateText">計算中</b></div><div class="idle-progress-track" role="progressbar" aria-label="下一點放置修為進度"><span id="idleXpProgressBar"></span></div></div>'+
-        '<div><div class="idle-progress-head"><span>靈石放置進度</span><b id="idleGoldRateText">計算中</b></div><div class="idle-progress-track" role="progressbar" aria-label="下一點放置靈石進度"><span id="idleGoldProgressBar"></span></div></div>'+
-        '<div id="idleRuntimeNote" class="idle-runtime-note">放置收益將持續累積。</div>';
+        '<div><div class="idle-progress-head"><span>本層修為進度</span><b id="idleXpRateText">計算中</b></div><div class="idle-progress-track" role="progressbar" aria-label="本層修為進度"><span id="idleXpProgressBar"></span></div></div>'+
+        '<div id="idleRuntimeNote" class="idle-runtime-note">修為自動累積至圓滿，等待手動突破。</div>';
       var idleTextElement=idleCard.querySelector('.idle-text');
       if(idleTextElement)idleTextElement.after(progress);
       else idleCard.insertBefore(progress,idleCard.firstChild);
@@ -3134,24 +3135,17 @@ main>.screen#home.active{display:flex!important}
     var hint=byId('breakHint');
     if(hint)hint.textContent=cap?'已達目前版本最高境界':Number(s.xp||0)>=need?'修為圓滿 · 可查看渡劫條件':'修為尚未圓滿';
     var breakButtonState=byId('breakBtn');if(breakButtonState)breakButtonState.disabled=false;
-    var xpRate=Number(s.method)===0?1.2:Number(s.method)===1?1.35:1;
-    try{if(typeof gearPerks==='function')xpRate*=1+(gearPerks().bonusXp||0)}catch(_e){}
-    var goldRate=Number(s.method)===1?1.35:1;
-    var xpProgress=Math.max(0,Math.min(.999,Number(s.idleXpRemainder||0)%1));
-    var goldProgress=Math.max(0,Math.min(.999,Number(s.idleGoldRemainder||0)%1));
-    var xpText=byId('idleXpRateText'),goldText=byId('idleGoldRateText');
-    if(xpText)xpText.textContent='約 +'+xpRate.toFixed(2)+' 修為 / 12 秒';
-    if(goldText)goldText.textContent='約 +'+goldRate.toFixed(2)+' 靈石 / 90 秒';
-    var xpBar=byId('idleXpProgressBar'),goldBar=byId('idleGoldProgressBar');
-    if(xpBar)xpBar.style.width=(xpProgress*100)+'%';
-    if(goldBar)goldBar.style.width=(goldProgress*100)+'%';
+    var needForProgress=Math.max(1,Number(xpNeed())||1);
+    var xpNow=Math.max(0,Math.min(needForProgress,Number(s.xp)||0));
+    var xpProgress=Math.max(0,Math.min(1,xpNow/needForProgress));
+    var xpText=byId('idleXpRateText');
+    if(xpText)xpText.textContent=Math.floor(xpNow)+' / '+needForProgress+(xpNow>=needForProgress?' · 圓滿待突破':'');
+    var xpBar=byId('idleXpProgressBar');
+    if(xpBar){xpBar.style.width=(xpProgress*100)+'%';xpBar.parentElement.setAttribute('aria-valuemin','0');xpBar.parentElement.setAttribute('aria-valuemax',String(needForProgress));xpBar.parentElement.setAttribute('aria-valuenow',String(Math.floor(xpNow)))}
     var runtime=byId('idleRuntimeNote');
-    if(runtime){
-      var sec=Math.floor(Number(s.pendingIdleSeconds||0));
-      runtime.textContent='本次運行累積 '+(typeof formatDuration==='function'?formatDuration(sec):sec+' 秒')+'；目前放置修為 +'+Math.floor(Number(s.pendingIdleXp||0))+'、靈石 +'+Math.floor(Number(s.pendingIdleGold||0))+'（已計入資源）。';
-    }
-    var med=byId('meditateBtn');
-    if(med){med.textContent='吐納一周天';med.disabled=false}
+    if(runtime){var sec=Math.floor(Number(s.pendingIdleSeconds||0));runtime.textContent='自動修行已即時入帳。'+(xpNow>=needForProgress?'本層修為已圓滿，進度維持滿格，請手動突破。':'持續累積至本層圓滿。')+' 累積運行 '+(typeof formatDuration==='function'?formatDuration(sec):sec+' 秒')+'；本次自動修為 +'+Math.floor(Number(s.pendingIdleXp||0))+'。'}
+    s.pendingIdleGold=0;s.idleGoldRemainder=0;
+    var med=byId('meditateBtn');if(med)med.remove();
   }
 
   /* The shared index remains the single source for cards, unlock costs, and the detailed modal. */
@@ -3170,21 +3164,18 @@ main>.screen#home.active{display:flex!important}
   window.openOfflineModal=function(){
     var report=s.offlineReport;
     var currentXp=Math.floor(Number(s.pendingIdleXp||0));
-    var currentGold=Math.floor(Number(s.pendingIdleGold||0));
     var seconds=Math.floor(Number(s.pendingIdleSeconds||0));
-    var previous=report?'上次摘要：'+formatDuration(report.seconds)+'，修為 +'+report.xp+'、靈石 +'+report.gold+'。':'尚無已整理的收益摘要。';
-    var cost=(GAME_CONFIG.breakthrough||{});
-    var xpRate=Number(s.method)===0?1.2:Number(s.method)===1?1.35:1;
-    try{if(typeof gearPerks==='function')xpRate*=1+(gearPerks().bonusXp||0)}catch(_e){}
-    var goldRate=Number(s.method)===1?1.35:1;
-    openModal('放置修煉 · 收益詳情',
-      '<div class="panel"><div class="secthead"><span>目前放置狀態</span><small>最多 24 小時</small></div>'+
-      '<p>放置收益會持續自動累積，不需要按啟動。資源在累積時就已即時加入角色數值。</p>'+
+    var need=Math.max(1,Number(xpNeed())||1);
+    var xpNow=Math.max(0,Math.min(need,Number(s.xp)||0));
+    var previous=report?'上次摘要：'+formatDuration(report.seconds)+'，修為 +'+(Number(report.xp)||0)+'。':'修為持續自動累積，尚無離線摘要。';
+    openModal('自動修行 · 詳情',
+      '<div class="panel"><div class="secthead"><span>自動修行狀態</span><small>離線最多 24 小時</small></div>'+
+      '<p>修為自動累積並即時入帳，無需手動啟動或領取。達到本層圓滿後會停在滿格，等待手動突破。</p>'+
       '<p>目前功法：'+esc(methods[Number(s.method)]?methods[Number(s.method)].name:'基礎功法')+'</p>'+
-      '<p>修為收益：約 +'+xpRate.toFixed(2)+'／12 秒；靈石收益：約 +'+goldRate.toFixed(2)+'／90 秒。</p>'+
-      '<p>本次遊玩累積：'+formatDuration(seconds)+'<br>已入帳修為：+'+currentXp+'<br>已入帳靈石：+'+currentGold+'</p></div>'+
-      '<div class="panel"><div class="secthead"><span>上次收益摘要</span></div><p>'+esc(previous)+'</p>'+
-      '<button type="button" class="btn primary" style="width:100%" onclick="if(Number(s.pendingIdleXp||0)>0||Number(s.pendingIdleGold||0)>0)claimIdle();openOfflineModal()">整理本次收益摘要</button></div>'+
+      '<p>本層修為：'+Math.floor(xpNow)+' / '+need+(xpNow>=need?'（圓滿，等待突破）':'')+'</p>'+
+      '<p>本次運行累積：'+formatDuration(seconds)+'<br>本次自動修為：+'+Math.floor(currentXp)+'</p>'+
+      '<p>靈石、靈草、靈木與靈晶請透過戰鬥、掉落或原有玩法取得，不再由放置修行產生。</p></div>'+
+      '<div class="panel"><div class="secthead"><span>上次修行摘要</span></div><p>'+esc(previous)+'</p></div>'+
       '<div class="panel"><div class="secthead"><span>近期修煉紀錄</span></div><div class="loglist">'+((byId('logs')&&byId('logs').innerHTML)||'<p>尚無修行紀錄。</p>')+'</div></div>');
   };
   var originalOpenMethodDetails=window.openMethodDetails;
