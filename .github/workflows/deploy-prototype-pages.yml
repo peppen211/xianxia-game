@@ -112,7 +112,7 @@ jobs:
             if (await page.locator('#journalV14Dock #openNodeDatabase').count()) throw new Error('仙途分頁仍有重複的整份紀事資料庫按鈕。');
             const firstArcButton = arcCards.nth(0).locator('.journal-arc-toggle');
             const firstArcContent = arcCards.nth(0).locator('.journal-arc-content');
-            await firstArcButton.click();
+            if ((await firstArcButton.getAttribute('aria-expanded')) === 'true') await firstArcButton.click();
             if ((await firstArcButton.getAttribute('aria-expanded')) !== 'false' || await firstArcContent.isVisible()) throw new Error('單一主線階段收合按鈕未生效。');
             await firstArcButton.click();
             if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true' || !(await firstArcContent.isVisible())) throw new Error('單一主線階段展開按鈕未生效。');
@@ -120,12 +120,17 @@ jobs:
             const nodeExtra = page.locator('#journalHybridStages .journal-node-extra').first();
             await nodeToggle.click();
             if ((await nodeToggle.getAttribute('aria-expanded')) !== 'true' || !(await nodeExtra.isVisible())) throw new Error('節點地圖與解鎖條件按鈕未生效。');
-            await page.locator('#toggleJournalStages').click();
-            if (!(await arcCards.nth(7).locator('.journal-arc-content').isVisible())) throw new Error('全部展開階段按鈕未生效。');
-            await page.locator('#toggleJournalStages').click();
-            if (await arcCards.nth(7).locator('.journal-arc-content').isVisible()) throw new Error('全部收起階段按鈕未生效。');
-            console.log('Journal UI regression passed: eight stages, working accordions, no duplicate or unrelated cards.');
-            await arcCards.nth(0).locator('.journal-arc-toggle').click();
+            if (await page.locator('#toggleJournalStages').count()) throw new Error('進度總覽仍有全部展開／收起按鈕。');
+            const secondArcButton = arcCards.nth(1).locator('.journal-arc-toggle');
+            const secondArcContent = arcCards.nth(1).locator('.journal-arc-content');
+            if ((await secondArcButton.getAttribute('aria-expanded')) !== 'true') await secondArcButton.click();
+            if (!(await secondArcContent.isVisible())) throw new Error('第二階段無法展開。');
+            if ((await firstArcButton.getAttribute('aria-expanded')) === 'true' || await firstArcContent.isVisible()) throw new Error('展開第二階段時，第一階段沒有自動收起。');
+            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true') await firstArcButton.click();
+            if (!(await firstArcContent.isVisible()) || await secondArcContent.isVisible()) throw new Error('階段切換未維持單一展開狀態。');
+            console.log('Journal UI regression passed: eight stages, one-open accordion, no bulk toggle or unrelated cards.');
+            const storyArcButton = arcCards.nth(0).locator('.journal-arc-toggle');
+            if ((await storyArcButton.getAttribute('aria-expanded')) !== 'true') await storyArcButton.click();
             const storyButton = arcCards.nth(0).locator('.journal-read-story');
             if (!(await storyButton.isVisible()) || await storyButton.isDisabled()) throw new Error('第一階段的閱讀本篇劇情按鈕不可用。');
             await storyButton.click();
@@ -138,8 +143,22 @@ jobs:
             if ((await novelReader.innerText()).length < 650) throw new Error('第一回正文篇幅仍像摘要，內容長度不足。');
             if (!(await novelReader.innerText()).includes('山雨入門')) throw new Error('第一回正文標題缺失。');
             if (await novelReader.locator('.novel-chapter-nav button').count() !== 2) throw new Error('小說章節導覽按鈕缺失。');
+            const closeStoryFooter = page.locator('#uiModal.novel-reading-mode #modalFooter button');
+            if (!(await closeStoryFooter.isVisible()) || !(await page.locator('#uiModal .modal-close').innerText()).includes('關閉')) throw new Error('小說閱讀器缺少明確關閉操作。');
+            await closeStoryFooter.click();
+            await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
+            if (await page.locator('#journalHybridStages').isHidden()) throw new Error('關閉劇情後沒有返回仙途。');
+            if ((await storyArcButton.getAttribute('aria-expanded')) !== 'true') await storyArcButton.click();
+            await storyButton.click();
+            await novelReader.waitFor({ state: 'visible', timeout: 3000 });
             await page.locator('#uiModal .modal-close').click();
-            console.log('Novel reader regression passed: chapter opens, detailed paragraphs render, navigation controls exist.');
+            await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
+            if ((await storyArcButton.getAttribute('aria-expanded')) !== 'true') await storyArcButton.click();
+            await storyButton.click();
+            await novelReader.waitFor({ state: 'visible', timeout: 3000 });
+            await page.keyboard.press('Escape');
+            await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
+            console.log('Novel reader regression passed: chapter content, footer close, header close, Escape, and return to journal.');
 
 
             await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
