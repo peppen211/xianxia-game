@@ -1793,6 +1793,24 @@ html,body,#launchGate,#gameApp{
 })();
 </script>
 
+
+<style id="v060-method-detail-polish">
+/* v0.60: clear modal close control and readable method detail states. */
+#gameApp .modal-close{display:grid!important;place-items:center!important;flex:0 0 32px!important;padding:0!important;font-size:25px!important;font-weight:500!important;line-height:1!important;color:var(--gold)!important;border:1px solid #b99a5d55!important;background:#ffffff0a!important}
+#gameApp .method-focus-card{position:relative;padding:15px!important;border:1px solid #b99a5d99!important;background:linear-gradient(145deg,#253044,#18212d)!important}
+#gameApp .method-focus-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid #c8a96b;background:#c8a96b18;color:var(--gold);font-family:serif;font-size:22px;margin-bottom:9px}
+#gameApp .method-focus-role{font-size:10px;color:var(--gold);letter-spacing:.08em;margin-bottom:3px}
+#gameApp .method-focus-card h3{margin:0 0 8px;font-size:18px;line-height:1.4;color:#f5e4bf}
+#gameApp .method-focus-card p,#gameApp .method-detail-grid .panel p{font-size:12px;line-height:1.8;color:#c3ccda;margin:7px 0}
+#gameApp .method-state{display:inline-flex;margin-top:8px;padding:5px 8px;border-radius:8px;background:#ffffff0b;color:#c3ccda;font-size:10px}
+#gameApp .method-state.active{background:#8ee0c01a;border:1px solid #8ee0c055;color:#a5f1d2}
+#gameApp .method-detail-actions,#gameApp .method-card-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;width:100%;margin-top:8px}
+#gameApp .method-detail-actions .btn,#gameApp .method-card-actions .btn{width:100%;min-width:0;min-height:35px;white-space:normal;line-height:1.35;overflow-wrap:anywhere}
+#gameApp .method-detail-grid .secthead{margin:0 0 5px;font-size:11px}
+#gameApp .method-detail-grid .panel{padding:12px!important}
+#gameApp .method-other-list .secthead{margin-bottom:8px}
+@media(max-width:380px){#gameApp .method-focus-card h3{font-size:16px}#gameApp .method-detail-grid .panel{padding:10px!important}#gameApp .method-card-actions{gap:5px}}
+</style>
 </head><body class="launch-gate">
 <div id="launchGate" class="launch-gate-screen" role="dialog" aria-label="遊戲首頁">
   <div class="launch-title" aria-label="不好意思，本座又突破了"><span>不好意思</span><span>本座又突破了</span><i aria-hidden="true">修仙</i></div>
@@ -1808,13 +1826,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.59">
+<header class="top statusline" aria-label="角色狀態列 v0.60">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.59</small>
+  <small class="status-version" aria-label="遊戲版本">v0.60</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
