@@ -1808,13 +1808,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.53">
+<header class="top statusline" aria-label="角色狀態列 v0.58">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.57</small>
+  <small class="status-version" aria-label="遊戲版本">v0.58</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -1978,7 +1978,6 @@ function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){
  const battle=home.querySelector('.battle'), idle=home.querySelector('.idle-card'), teaser=home.querySelector('.chronicle-teaser');
  const methodHead=[...cultivate.querySelectorAll(':scope > .secthead')].pop();
  /* Keep battle, idle rewards, and story teaser on the Trial screen. */
- if(methodHead)cultivate.appendChild(methodHead);
  const navs=[...document.querySelectorAll('.nav[data-screen="cultivate"]')];
  if(navs.length>1)navs.slice(1).forEach(n=>n.remove());
  const journal=document.getElementById('journal');
