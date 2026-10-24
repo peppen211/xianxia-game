@@ -55,3 +55,12 @@
 - 靜態驗證：字體規則已變更；launch-gate 字體規則比對相同；圖示字體排除；Actions 執行中／等待中，瀏覽器實際渲染與 iPhone Safari 尚未驗證。
 - Git commit：`5a36e8c67988c8db82bde5c9ffd31c8b78d58616`。
 - 下一步：確認自動建置、部署與正式網址的 v0.75。
+
+## Phase 04：仙途按鈕與功能歸屬整理（UI v0.77）
+- 狀態：程式與自動化測試已提交；待 GitHub Actions 確認。
+- 修改檔案：`index.html`、`.github/workflows/deploy-prototype-pages.yml`。
+- 移除仙途分頁內重複的整份紀事資料庫按鈕，以及放置收益／存檔安全卡；原功能不刪除，僅從主線紀事頁移出。
+- 八大主線階段與 32 節摘要保留；新增單一階段展開／收合、全部展開／收起、節點地圖與解鎖條件展開。
+- CI 新增手機瀏覽器回歸：八階段、按鈕互動、重複入口與不相關卡片檢查。
+- 存檔：未更改 `nine_heavens_idle_v2` key 或存檔資料結構。
+- 待驗證：GitHub Actions 完成、公開頁版本 v0.77、iPhone Safari 真機驗收。

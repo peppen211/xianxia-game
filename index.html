@@ -1879,13 +1879,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.76">
+<header class="top statusline" aria-label="角色狀態列 v0.77">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.76</small>
+  <small class="status-version" aria-label="遊戲版本">v0.77</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -2458,27 +2458,50 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
  const journal=document.getElementById('journal');
  if(journal){
   let dock=document.getElementById('journalV14Dock');
-  if(!dock){dock=document.createElement('div');dock.id='journalV14Dock';dock.innerHTML='<div class="page-title"><h2>韓立的仙途</h2><span>凡人篇 · 主線階段與世界觀</span></div><div class="panel journal-hybrid-intro"><b>韓立編年紀事</b><p>從凡人起步到仙界道途，保留八大階段與完整節點卡片。已解鎖節點可閱讀，未解鎖節點會標示條件。</p><button class="btn primary" style="width:100%" id="openNodeDatabase">開啟完整紀事資料庫</button></div><div class="secthead journal-section-heading"><span>八大主線階段</span><small>地圖 · 副本 · 境界 · 解鎖條件</small></div><div id="journalHybridStages"></div><div class="panel"><b>放置收益</b><p id="idleSummaryV14">已自動入帳 · 收益最多累積 24 小時。</p><button class="btn secondary" style="width:100%" onclick="openOfflineModal()">查看收益摘要</button></div><div class="panel"><b>存檔安全</b><p>沿用既有存檔欄位與 nine_heavens_idle_v2，不重置角色進度。</p><button class="btn secondary" style="width:100%" onclick="openSaveModal()">存檔管理</button></div>';journal.insertBefore(dock,journal.firstChild)}
-  /* v0.76: hybrid journal overview with eight readable story arc cards. */
+  if(!dock){dock=document.createElement('div');dock.id='journalV14Dock';dock.innerHTML='<div class="page-title"><h2>韓立的仙途</h2><span>凡人篇 · 主線階段與世界觀</span></div><div class="panel journal-hybrid-intro"><b>仙途進度總覽</b><p id="journalProgressSummary">讀取主線節點進度中…</p><button type="button" class="btn primary" style="width:100%" id="toggleJournalStages" aria-expanded="false">全部展開階段</button></div><div class="secthead journal-section-heading"><span>八大主線階段</span><small>展開階段閱讀故事與解鎖資料</small></div><div id="journalHybridStages"></div>';journal.insertBefore(dock,journal.firstChild)}
+  /* v0.77: single inline chapter hierarchy with working accordions and no duplicate/off-topic cards. */
   const hybridStages=document.getElementById('journalHybridStages');
   if(hybridStages && Array.isArray(chapterNodes)){
     const arcNames=['凡人起步','黃楓谷與越國','亂星海歷練','重返天南與古修遺跡','化神與凡界遠行','靈界求道','靈界終章','仙界道途'];
     hybridStages.innerHTML=arcNames.map((arcName,arcIndex)=>{
       const nodes=chapterNodes.filter(n=>n.arc===arcIndex+1);
-      const unlocked=nodes.filter(nodeUnlocked).length;
-      return '<section class="journal-arc-card"><header class="journal-arc-head"><b>第 '+(arcIndex+1)+' 階段｜'+arcName+'</b><span>'+unlocked+' / '+nodes.length+' 節解鎖</span></header>'+
-        nodes.map(n=>{
-          const isOpen=nodeUnlocked(n),nodeIndex=chapterNodes.indexOf(n);
-          return '<article class="journal-node-card '+(isOpen?'is-open':'is-locked')+'"><div class="journal-node-title"><b>'+esc(n.title)+'</b><span>'+(isOpen?'已解鎖':'未解鎖')+'</span></div>'+
-            '<p>'+esc(isOpen?n.summary:'達成「'+n.unlock+'」等條件後可閱讀此節摘要。')+'</p>'+
-            '<div class="journal-node-meta">地圖：'+esc(n.map)+'　·　副本：'+esc(n.dungeon)+'<br>境界：'+esc(n.realm)+'　·　條件：'+esc(n.unlock)+'</div>'+
-            (isOpen?'<button type="button" class="btn secondary journal-read-node" onclick="openChapterNode('+nodeIndex+')">閱讀節點</button>':'')+
-            '</article>';
-        }).join('')+'</section>';
+      const unlocked=nodes.filter(nodeUnlocked).length,expanded=unlocked>0;
+      const contents=nodes.map(n=>{
+        const isOpen=nodeUnlocked(n);
+        return '<article class="journal-node-card '+(isOpen?'is-open':'is-locked')+'"><div class="journal-node-title"><b>'+esc(n.title)+'</b><span>'+(isOpen?'已解鎖':'未解鎖')+'</span></div>'+
+          '<p>'+esc(isOpen?n.summary:'此節尚未解鎖。解鎖條件：'+n.unlock+'。')+'</p>'+
+          '<div class="journal-node-extra" hidden><div class="journal-node-meta">地圖：'+esc(n.map)+'　·　副本：'+esc(n.dungeon)+'<br>境界：'+esc(n.realm)+'　·　條件：'+esc(n.unlock)+'</div></div>'+
+          '<button type="button" class="btn secondary journal-node-toggle" aria-expanded="false">查看地圖與解鎖條件</button></article>';
+      }).join('');
+      return '<section class="journal-arc-card '+(expanded?'is-expanded':'')+'"><button type="button" class="journal-arc-toggle" aria-expanded="'+expanded+'"><span class="journal-arc-label"><b>第 '+(arcIndex+1)+' 階段｜'+arcName+'</b><small>'+unlocked+' / '+nodes.length+' 節解鎖</small></span><span class="journal-arc-indicator" aria-hidden="true">'+(expanded?'−':'+')+'</span></button><div class="journal-arc-content" '+(expanded?'':'hidden')+'>'+contents+'</div></section>';
     }).join('');
+    const unlockedTotal=chapterNodes.filter(nodeUnlocked).length,summary=document.getElementById('journalProgressSummary');
+    if(summary)summary.textContent='目前已解鎖 '+unlockedTotal+' / '+chapterNodes.length+' 個主線節點。展開八大階段，可查看故事摘要、地圖、副本、境界與解鎖條件。';
+    const updateToggleAll=()=>{
+      const cards=[...hybridStages.querySelectorAll('.journal-arc-card')],expanded=cards.length>0&&cards.every(card=>card.classList.contains('is-expanded'));
+      const button=document.getElementById('toggleJournalStages');
+      if(button){button.textContent=expanded?'全部收起階段':'全部展開階段';button.setAttribute('aria-expanded',String(expanded));button.dataset.state=cards.every(card=>!card.classList.contains('is-expanded'))?'collapsed':expanded?'expanded':'mixed';}
+    };
+    hybridStages.querySelectorAll('.journal-arc-toggle').forEach(button=>button.addEventListener('click',()=>{
+      const card=button.closest('.journal-arc-card'),content=card&&card.querySelector('.journal-arc-content');if(!card||!content)return;
+      const expand=!card.classList.contains('is-expanded');card.classList.toggle('is-expanded',expand);content.hidden=!expand;button.setAttribute('aria-expanded',String(expand));
+      const icon=button.querySelector('.journal-arc-indicator');if(icon)icon.textContent=expand?'−':'+';
+      updateToggleAll();
+    }));
+    hybridStages.querySelectorAll('.journal-node-toggle').forEach(button=>button.addEventListener('click',()=>{
+      const extra=button.closest('.journal-node-card')?.querySelector('.journal-node-extra');if(!extra)return;
+      const expand=extra.hidden;extra.hidden=!expand;button.setAttribute('aria-expanded',String(expand));button.textContent=expand?'收起地圖與條件':'查看地圖與解鎖條件';
+    }));
+    const toggleAll=document.getElementById('toggleJournalStages');
+    if(toggleAll)toggleAll.addEventListener('click',()=>{
+      const cards=[...hybridStages.querySelectorAll('.journal-arc-card')],expand=cards.some(card=>!card.classList.contains('is-expanded'));
+      cards.forEach(card=>{card.classList.toggle('is-expanded',expand);const content=card.querySelector('.journal-arc-content'),button=card.querySelector('.journal-arc-toggle');if(content)content.hidden=!expand;if(button){button.setAttribute('aria-expanded',String(expand));const icon=button.querySelector('.journal-arc-indicator');if(icon)icon.textContent=expand?'−':'+';}});
+      updateToggleAll();
+    });
+    updateToggleAll();
   }
   journal.querySelectorAll(':scope > *:not(#journalV14Dock)').forEach(el=>el.style.display='none');
-  document.getElementById('openNodeDatabase').onclick=()=>openChronicleModal();
+  const openNodeDatabase=document.getElementById('openNodeDatabase'); if(openNodeDatabase)openNodeDatabase.onclick=()=>openChronicleModal();
  }
  /* Replace the old long-scroll story UI with a single compact module entry point. */
  document.querySelectorAll('.screen').forEach(el=>{el.scrollTop=0});
@@ -3082,8 +3105,8 @@ main>.screen#home.active{display:flex!important}
 
 /* v0.76: retain v0.75 typography scale; repair only journal layout and cards. */
 </style>
-<style id="v076-journal-hybrid-layout">
-/* v0.76: fix journal cascade conflict; only affect the fifth tab. */
+<style id="v077-journal-hybrid-layout">
+/* v0.77: one source of chapter content, working stage controls, no unrelated feature cards. */
 #gameApp #journal.active{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important;box-sizing:border-box!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;padding:14px!important}
 #gameApp #journal.active>*:not(#journalV14Dock){display:none!important}
 #gameApp #journal.active>#journalV14Dock{display:flex!important;flex:1 0 auto!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important;width:100%!important;min-width:0!important;min-height:0!important;box-sizing:border-box!important}
@@ -3094,18 +3117,25 @@ main>.screen#home.active{display:flex!important}
 #gameApp #journalV14Dock .journal-hybrid-intro p{margin:8px 0!important;line-height:1.65!important}
 #gameApp #journalV14Dock .journal-section-heading{margin:4px 0 0!important;line-height:1.4!important}
 #gameApp #journalHybridStages{display:flex!important;flex-direction:column!important;gap:12px!important;width:100%!important;min-width:0!important}
-#gameApp #journalHybridStages .journal-arc-card{display:flex!important;flex-direction:column!important;gap:10px!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;padding:12px!important;border:1px solid rgba(184,155,114,.65)!important;border-radius:15px!important;background:linear-gradient(145deg,rgba(27,37,48,.98),rgba(16,24,34,.98))!important}
-#gameApp #journalHybridStages .journal-arc-head{display:flex!important;justify-content:space-between!important;align-items:flex-start!important;flex-wrap:wrap!important;gap:4px 10px!important;padding-bottom:8px!important;border-bottom:1px solid rgba(184,155,114,.35)!important;line-height:1.45!important}
-#gameApp #journalHybridStages .journal-arc-head span{color:var(--muted);font-size:.92em!important}
+#gameApp #journalHybridStages .journal-arc-card{display:flex!important;flex-direction:column!important;gap:0!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;border:1px solid rgba(184,155,114,.65)!important;border-radius:15px!important;overflow:hidden!important;background:linear-gradient(145deg,rgba(27,37,48,.98),rgba(16,24,34,.98))!important}
+#gameApp #journalHybridStages .journal-arc-toggle{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;width:100%!important;min-width:0!important;padding:13px!important;border:0!important;border-radius:0!important;background:rgba(184,155,114,.08)!important;text-align:left!important;white-space:normal!important;line-height:1.45!important}
+#gameApp #journalHybridStages .journal-arc-toggle:active{background:rgba(184,155,114,.18)!important}
+#gameApp #journalHybridStages .journal-arc-label{display:flex!important;flex:1 1 auto!important;flex-direction:column!important;gap:4px!important;min-width:0!important}
+#gameApp #journalHybridStages .journal-arc-label b{overflow-wrap:anywhere!important}
+#gameApp #journalHybridStages .journal-arc-label small{font-size:.9em!important;font-weight:500!important;color:var(--muted)!important}
+#gameApp #journalHybridStages .journal-arc-indicator{flex:0 0 auto!important;color:#e8c786!important;font-size:22px!important;line-height:1!important}
+#gameApp #journalHybridStages .journal-arc-content{display:flex!important;flex-direction:column!important;gap:9px!important;padding:10px!important}
+#gameApp #journalHybridStages .journal-arc-content[hidden],#gameApp #journalHybridStages .journal-node-extra[hidden]{display:none!important}
 #gameApp #journalHybridStages .journal-node-card{display:flex!important;flex-direction:column!important;gap:7px!important;min-width:0!important;box-sizing:border-box!important;padding:11px!important;border:1px solid rgba(184,155,114,.22)!important;border-radius:11px!important;background:rgba(6,13,22,.45)!important}
-#gameApp #journalHybridStages .journal-node-card.is-locked{opacity:.78!important}
+#gameApp #journalHybridStages .journal-node-card.is-locked{opacity:.82!important}
 #gameApp #journalHybridStages .journal-node-title{display:flex!important;justify-content:space-between!important;align-items:flex-start!important;flex-wrap:wrap!important;gap:4px 8px!important;line-height:1.45!important}
 #gameApp #journalHybridStages .journal-node-title span{font-size:.88em!important;color:#d8b778!important}
 #gameApp #journalHybridStages .journal-node-card p{margin:0!important;line-height:1.7!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#gameApp #journalHybridStages .journal-node-extra{padding-top:5px!important;border-top:1px solid rgba(184,155,114,.18)!important}
 #gameApp #journalHybridStages .journal-node-meta{color:var(--muted)!important;font-size:.9em!important;line-height:1.65!important;overflow-wrap:anywhere!important}
-#gameApp #journalHybridStages .journal-read-node{align-self:flex-start!important;max-width:100%!important}
+#gameApp #journalHybridStages .journal-node-toggle{align-self:flex-start!important;max-width:100%!important;white-space:normal!important;line-height:1.45!important}
 #gameApp #journalV14Dock button{white-space:normal!important;line-height:1.45!important;overflow-wrap:anywhere!important}
-@media(max-width:420px){#gameApp #journal.active{padding:10px!important;gap:10px!important}#gameApp #journalV14Dock .panel,#gameApp #journalHybridStages .journal-arc-card{padding:10px!important}#gameApp #journalHybridStages .journal-node-card{padding:9px!important}}
+@media(max-width:420px){#gameApp #journal.active{padding:10px!important;gap:10px!important}#gameApp #journalV14Dock .panel,#gameApp #journalHybridStages .journal-arc-content{padding:10px!important}#gameApp #journalHybridStages .journal-node-card{padding:9px!important}}
 </style>
 
 <script id="v061-cultivation-page-repair-script">

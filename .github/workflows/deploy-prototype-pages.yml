@@ -103,6 +103,29 @@ jobs:
             await page.locator('#uiModal .modal-close').click();
             await modal.waitFor({ state: 'hidden', timeout: 3000 });
 
+            // Regression checks for the fifth tab: no duplicate database action or unrelated save/reward cards.
+            await page.locator('#gameApp .bottom .nav[data-screen="journal"]').click();
+            const arcCards = page.locator('#journalHybridStages .journal-arc-card');
+            if (await arcCards.count() !== 8) throw new Error('仙途分頁應顯示八大主線階段。');
+            const journalText = await page.locator('#journalV14Dock').innerText();
+            if (journalText.includes('存檔安全') || journalText.includes('放置收益')) throw new Error('仙途分頁仍包含不屬於主線紀事的功能卡。');
+            if (await page.locator('#journalV14Dock #openNodeDatabase').count()) throw new Error('仙途分頁仍有重複的整份紀事資料庫按鈕。');
+            const firstArcButton = arcCards.nth(0).locator('.journal-arc-toggle');
+            const firstArcContent = arcCards.nth(0).locator('.journal-arc-content');
+            await firstArcButton.click();
+            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'false' || await firstArcContent.isVisible()) throw new Error('單一主線階段收合按鈕未生效。');
+            await firstArcButton.click();
+            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true' || !(await firstArcContent.isVisible())) throw new Error('單一主線階段展開按鈕未生效。');
+            const nodeToggle = page.locator('#journalHybridStages .journal-node-toggle').first();
+            const nodeExtra = page.locator('#journalHybridStages .journal-node-extra').first();
+            await nodeToggle.click();
+            if ((await nodeToggle.getAttribute('aria-expanded')) !== 'true' || !(await nodeExtra.isVisible())) throw new Error('節點地圖與解鎖條件按鈕未生效。');
+            await page.locator('#toggleJournalStages').click();
+            if (!(await arcCards.nth(7).locator('.journal-arc-content').isVisible())) throw new Error('全部展開階段按鈕未生效。');
+            await page.locator('#toggleJournalStages').click();
+            if (await arcCards.nth(7).locator('.journal-arc-content').isVisible()) throw new Error('全部收起階段按鈕未生效。');
+            console.log('Journal UI regression passed: eight stages, working accordions, no duplicate or unrelated cards.');
+
             await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').waitFor({ state: 'visible', timeout: 5000 });
