@@ -46,3 +46,12 @@
 - 尚未完成：Actions 結果、完整核心流程回歸、存檔損壞保護、離線收益重複結算、iPhone Safari 真機測試。
 - 部署：未部署。
 - 詳細紀錄：`docs/DEVELOPMENT_TEST_LOG.md`。
+
+## Phase 03：遊戲內字體可讀性調整（UI v0.75）
+- 狀態：程式已提交；自動建置與部署結果待 Actions 確認。
+- 修改檔案：根目錄 `index.html`。
+- 已完成：遊戲 UI 固定 px 字體約放大 25%；圖示尺寸維持；首頁啟動畫面（`#launchGate`）字體規則比對未變；版本標示為 v0.75。
+- 存檔影響：未修改存檔 key、資料欄位或遊戲計算；`nine_heavens_idle_v2` key 保留。
+- 靜態驗證：字體規則已變更；launch-gate 字體規則比對相同；圖示字體排除；Actions 執行中／等待中，瀏覽器實際渲染與 iPhone Safari 尚未驗證。
+- Git commit：`5a36e8c67988c8db82bde5c9ffd31c8b78d58616`。
+- 下一步：確認自動建置、部署與正式網址的 v0.75。
