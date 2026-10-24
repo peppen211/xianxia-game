@@ -131,7 +131,11 @@ jobs:
             await storyButton.click();
             const novelReader = page.locator('#modalBody .novel-reader');
             await novelReader.waitFor({ state: 'visible', timeout: 3000 });
-            if (await novelReader.locator('p').count() < 5) throw new Error('小說式章節敘述不足。');
+            if (await novelReader.locator('p').count() < 8) throw new Error('小說式章節敘述不足，至少需八個段落。');
+            const readerMode = await page.locator('#uiModal').evaluate(el => ({ position: getComputedStyle(el).position, rect: (() => { const r=el.getBoundingClientRect(); return { x:r.x, y:r.y, width:r.width, height:r.height }; })() }));
+            const viewport = page.viewportSize();
+            if (readerMode.position !== 'fixed' || readerMode.rect.width < viewport.width - 2 || readerMode.rect.height < viewport.height - 2) throw new Error('小說閱讀器沒有覆蓋整個手機畫面。');
+            if ((await novelReader.innerText()).length < 650) throw new Error('第一回正文篇幅仍像摘要，內容長度不足。');
             if (!(await novelReader.innerText()).includes('山雨入門')) throw new Error('第一回正文標題缺失。');
             if (await novelReader.locator('.novel-chapter-nav button').count() !== 2) throw new Error('小說章節導覽按鈕缺失。');
             await page.locator('#uiModal .modal-close').click();
