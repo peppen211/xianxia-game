@@ -749,7 +749,88 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 }
 
 </style>
-</head><body><div class="app">
+
+<style id="launch-gate-and-statusline-v2">
+/* Launch gate: keep the existing game and its save system intact behind a minimal start screen. */
+body.launch-gate{overflow:hidden!important;background:#0b111b!important}
+body.launch-gate .app{display:none!important}
+.launch-gate-screen{
+  position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;padding:24px 20px calc(24px + env(safe-area-inset-bottom));box-sizing:border-box;text-align:center;
+  color:#f4ead5;background:radial-gradient(ellipse at 50% 38%,rgba(72,102,139,.28),transparent 42%),linear-gradient(180deg,#111b2a 0%,#0b111b 75%,#090e16 100%);
+}
+.launch-title{font-size:clamp(27px,6vw,38px);font-weight:800;letter-spacing:.14em}
+.launch-subtitle{font-size:12px;letter-spacing:.22em;color:#9daec2;margin-top:-6px}
+.launch-realm-label{margin-top:36px;font-size:12px;color:#9daec2;letter-spacing:.12em}
+.launch-realm-summary{font-size:clamp(18px,4.8vw,24px);font-weight:700;line-height:1.4;color:#f4dca5;max-width:90vw;overflow-wrap:anywhere}
+.launch-continue{
+  margin-top:26px;width:min(270px,82vw);min-height:50px;padding:12px 22px;border:1px solid #cba96c;border-radius:14px;
+  color:#fff4d8;background:linear-gradient(135deg,#795b32,#4c3a26);box-shadow:0 8px 28px #0005;
+  font-size:16px;font-weight:700;letter-spacing:.08em;cursor:pointer;touch-action:manipulation
+}
+.launch-continue:active{transform:translateY(1px)}
+body:not(.launch-gate) .launch-gate-screen{display:none!important}
+/* Final override after all existing styles: a single compact row on the actual game header. */
+body .app header.top.statusline{
+  box-sizing:border-box!important;display:grid!important;
+  grid-template-columns:minmax(0,.82fr) minmax(0,1.12fr) minmax(0,2.75fr) minmax(0,.78fr)!important;
+  align-items:center!important;justify-content:stretch!important;gap:4px!important;width:100%!important;
+  height:min(9vh,58px)!important;min-height:0!important;max-height:10vh!important;padding:4px 6px!important;margin:0!important;overflow:hidden!important;
+}
+body .app header.top.statusline>.status-realm,
+body .app header.top.statusline>.status-xp,
+body .app header.top.statusline>.currencies,
+body .app header.top.statusline>.status-power{
+  box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  min-width:0!important;max-width:100%!important;margin:0!important;padding:0!important;overflow:hidden!important;
+}
+body .app header.top.statusline>.status-realm{flex-direction:column!important;gap:1px!important;white-space:nowrap!important}
+body .app header.top.statusline .status-realm small,
+body .app header.top.statusline .status-xp-label small{font-size:9px!important;line-height:1.1!important;white-space:nowrap!important}
+body .app header.top.statusline .status-realm b{
+  display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:11px!important;line-height:1.2!important;white-space:nowrap!important
+}
+body .app header.top.statusline>.status-xp{flex-direction:column!important;gap:3px!important}
+body .app header.top.statusline .status-xp-label{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:3px!important;width:100%!important;min-width:0!important;line-height:1.1!important;white-space:nowrap!important
+}
+body .app header.top.statusline .status-xp-label b{min-width:0!important;font-size:10px!important;white-space:nowrap!important}
+body .app header.top.statusline .status-xp .progress{display:block!important;width:100%!important;height:4px!important;min-height:4px!important;margin:0!important;overflow:hidden!important}
+body .app header.top.statusline>.currencies{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:2px!important}
+body .app header.top.statusline .resource-chip{
+  display:flex!important;align-items:center!important;justify-content:center!important;gap:1px!important;min-width:0!important;
+  margin:0!important;padding:2px 1px!important;font-size:12px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important
+}
+body .app header.top.statusline .resource-chip .resource-label{display:none!important}
+body .app header.top.statusline .resource-chip b{min-width:0!important;font-size:10px!important;line-height:1.1!important}
+body .app header.top.statusline .resource-chip .reward-dot{display:none!important}
+body .app header.top.statusline>.status-power{flex-direction:column!important;gap:1px!important;white-space:nowrap!important;font-size:9px!important;line-height:1.1!important}
+body .app header.top.statusline .status-power span{display:block!important;font-size:9px!important;white-space:nowrap!important}
+body .app header.top.statusline .status-power b{font-size:11px!important;line-height:1.1!important}
+body .app header.top.statusline #spiritTop,
+body .app header.top.statusline .core-break{display:none!important}
+@media(max-width:380px){
+  body .app header.top.statusline{grid-template-columns:minmax(0,.78fr) minmax(0,1.05fr) minmax(0,2.8fr) minmax(0,.78fr)!important;gap:3px!important;padding:3px 4px!important}
+  body .app header.top.statusline .status-realm small,
+  body .app header.top.statusline .status-xp-label small,
+  body .app header.top.statusline .status-power span{font-size:8px!important}
+  body .app header.top.statusline .status-realm b,
+  body .app header.top.statusline .status-power b{font-size:10px!important}
+  body .app header.top.statusline .status-xp-label b,
+  body .app header.top.statusline .resource-chip b{font-size:9px!important}
+  body .app header.top.statusline .resource-chip{font-size:11px!important}
+}
+</style>
+
+</head><body class="launch-gate">
+<div id="launchGate" class="launch-gate-screen" role="dialog" aria-label="遊戲首頁">
+  <div class="launch-title">九霄問道</div>
+  <div class="launch-subtitle">修仙放置 RPG</div>
+  <div class="launch-realm-label">目前境界</div>
+  <div id="launchRealmSummary" class="launch-realm-summary">讀取修行境界中…</div>
+  <button type="button" id="continueCultivationBtn" class="launch-continue" onclick="enterGameFromLanding()">繼續修煉</button>
+</div>
+<div class="app">
 <header class="top statusline">
  <div class="status-realm"><small>🧘 境界</small><b id="globalRealm">練氣一層</b></div>
  <div class="status-xp"><div class="status-xp-label"><small>✨ 修為</small><b id="globalXpText">0/100</b></div><div class="progress"><span id="globalXpBar" style="width:0%"></span></div></div>
@@ -1206,4 +1287,24 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
  render();
 })();
 
-</script></body></html>
+</script>
+<script id="launch-gate-controller">
+(function(){
+  const summary=document.getElementById('launchRealmSummary');
+  const realm=document.getElementById('globalRealm');
+  if(summary&&realm){
+    const syncRealm=()=>{summary.textContent=(realm.textContent||'練氣一層').trim()};
+    syncRealm();
+    if(window.MutationObserver)new MutationObserver(syncRealm).observe(realm,{childList:true,characterData:true,subtree:true});
+  }
+  window.enterGameFromLanding=function(){
+    document.body.classList.remove('launch-gate');
+    const gate=document.getElementById('launchGate');
+    if(gate)gate.setAttribute('aria-hidden','true');
+    const app=document.querySelector('.app');
+    if(app)app.setAttribute('aria-hidden','false');
+  };
+})();
+</script>
+
+</body></html>
