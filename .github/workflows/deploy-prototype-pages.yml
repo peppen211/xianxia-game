@@ -65,8 +65,9 @@ jobs:
 
             await gate.waitFor({ state: 'visible', timeout: 15000 });
             await continueButton.waitFor({ state: 'visible', timeout: 5000 });
-            if ((await continueButton.innerText()).trim() !== '繼續修煉') {
-              throw new Error('Launch gate button label is missing or incorrect.');
+            const launchLabel = (await continueButton.innerText()).trim();
+            if (!['繼續修煉', '開始修行'].includes(launchLabel)) {
+              throw new Error('Launch gate button label is missing or incorrect: ' + launchLabel);
             }
             if (await app.isVisible()) throw new Error('Main game is visible before the player enters.');
             if (!(await page.locator('body').evaluate(el => el.classList.contains('launch-gate')))) {
@@ -79,6 +80,28 @@ jobs:
             if (await page.locator('body').evaluate(el => el.classList.contains('launch-gate'))) {
               throw new Error('Launch-gate state remained after clicking continue.');
             }
+
+            // Mobile regression checks for cultivation content.
+            const methodCards = page.locator('#cultivate #methodList > .method-card');
+            await methodCards.first().waitFor({ state: 'visible', timeout: 5000 });
+            if (await methodCards.count() !== 3) throw new Error('Expected three cultivation method cards to be visible.');
+            if (!(await page.locator('#breakMaterialSummary').isVisible())) throw new Error('Breakthrough material requirements are missing.');
+            if (!(await page.locator('#idleProgressPanel').isVisible())) throw new Error('Idle cultivation progress panel is missing.');
+            if (await page.locator('#cultivate > .hero .cultivator').isVisible()) throw new Error('Legacy cultivation illustration should be hidden in the compact guide.');
+
+            await methodCards.first().locator('.method-details-button').click();
+            const modal = page.locator('#uiModal');
+            await modal.waitFor({ state: 'visible', timeout: 5000 });
+            if (!(await page.locator('#modalBody').innerText()).includes('實際效果')) throw new Error('Method detail content did not open.');
+            await page.locator('#uiModal .modal-close').click();
+            await modal.waitFor({ state: 'hidden', timeout: 3000 });
+
+            await page.locator('#breakBtn').click();
+            await modal.waitFor({ state: 'visible', timeout: 5000 });
+            const breakthroughText = await page.locator('#modalBody').innerText();
+            if (!breakthroughText.includes('靈石') || !breakthroughText.includes('靈草')) throw new Error('Breakthrough dialog must show required materials.');
+            await page.locator('#uiModal .modal-close').click();
+            await modal.waitFor({ state: 'hidden', timeout: 3000 });
 
             await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
