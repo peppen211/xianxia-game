@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#11151f"><title>九霄問道｜修仙放置 RPG</title>
+<meta name="theme-color" content="#11151f"><title>不好意思，本座又突破了｜修仙放置 RPG</title>
 <style>
 :root{--bg:#10141d;--panel:#1b2230;--line:#3c4960;--txt:#f3f0e8;--muted:#9da9bd;--gold:#e8c77a;--jade:#8ee0c0;--red:#ff9b9b}
 *{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",system-ui,sans-serif;overscroll-behavior:none}button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.35}
@@ -1340,24 +1340,82 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
 
 </style>
 
+
+<style id="v037-calligraphy-launch-title">
+/* v0.37: style only the existing launch title; preserve the game and save system. */
+.launch-gate-screen{
+  gap:clamp(8px,1.5vh,14px)!important;
+  background:
+    radial-gradient(ellipse at 50% 27%,rgba(224,183,104,.18),transparent 34%),
+    radial-gradient(ellipse at 50% 42%,rgba(41,72,112,.3),transparent 50%),
+    linear-gradient(180deg,#07101d 0%,#101c2c 46%,#070d17 100%)!important;
+}
+.launch-title{
+  position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;
+  gap:0!important;width:min(96vw,620px)!important;margin:0 auto!important;padding:12px 0 4px!important;
+  color:#f9e6b4!important;font-family:"Kaiti TC","STKaiti","BiauKai","Noto Serif TC",serif!important;
+  font-size:clamp(39px,10vw,74px)!important;font-weight:900!important;letter-spacing:.035em!important;
+  line-height:1.04!important;text-align:center!important;
+  background:linear-gradient(180deg,#fff5d2 0%,#ffe8a2 22%,#dca74c 52%,#fff0b4 67%,#a96d2b 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 2px 0 #5d3514) drop-shadow(0 4px 0 rgba(28,15,7,.9)) drop-shadow(0 0 11px rgba(255,194,92,.42));
+}
+.launch-title span{display:block;max-width:100%;white-space:nowrap}
+.launch-title span:first-child{font-size:.83em;letter-spacing:.12em}
+.launch-title span:nth-child(2){font-size:1em;letter-spacing:.015em}
+.launch-title:before{
+  content:"";position:absolute;z-index:-1;left:50%;top:50%;width:min(78vw,460px);aspect-ratio:1;
+  transform:translate(-50%,-48%);border:1px solid rgba(226,188,117,.26);border-radius:50%;
+  box-shadow:0 0 0 8px rgba(226,188,117,.035),inset 0 0 34px rgba(226,188,117,.08),0 0 38px rgba(226,188,117,.09);
+  -webkit-text-fill-color:initial;pointer-events:none
+}
+.launch-title i{
+  position:absolute;right:clamp(2px,4vw,25px);top:48%;transform:translateY(-50%);
+  padding:7px 4px;border-radius:2px;background:linear-gradient(180deg,#e65c52,#9f1c24);
+  color:#fff0d0;-webkit-text-fill-color:#fff0d0;font-family:"Kaiti TC","STKaiti","BiauKai",serif;
+  font-size:clamp(11px,2.5vw,16px);font-style:normal;letter-spacing:.12em;
+  writing-mode:vertical-rl;box-shadow:0 0 10px rgba(227,67,57,.25)
+}
+.launch-subtitle{
+  margin-top:0!important;color:#f4e2bd!important;font-family:"Kaiti TC","STKaiti","BiauKai","Noto Serif TC",serif!important;
+  font-size:clamp(14px,3.6vw,19px)!important;letter-spacing:.28em!important;
+  text-shadow:0 1px 8px rgba(238,194,117,.48)
+}
+.launch-realm-label{margin-top:clamp(12px,2.4vh,28px)!important}
+.launch-continue{
+  margin-top:clamp(14px,3vh,28px)!important;width:min(340px,86vw)!important;min-height:58px!important;
+  border:1px solid #f4d28a!important;border-radius:999px!important;
+  color:#fff0ca!important;background:linear-gradient(180deg,#6e4b24 0%,#21180f 55%,#0d1118 100%)!important;
+  box-shadow:inset 0 0 0 2px rgba(248,217,153,.18),inset 0 0 22px rgba(238,181,78,.2),0 0 22px rgba(225,169,76,.22)!important;
+  font-family:"Kaiti TC","STKaiti","BiauKai","Noto Serif TC",serif!important;
+  font-size:clamp(19px,4.8vw,25px)!important;letter-spacing:.16em!important
+}
+@media(max-height:740px){
+ .launch-gate-screen{gap:6px!important;padding-top:12px!important;padding-bottom:calc(12px + env(safe-area-inset-bottom))!important}
+ .launch-title{font-size:clamp(34px,8.5vw,58px)!important;padding-top:4px!important}
+ .launch-realm-label{margin-top:6px!important}
+ .launch-continue{margin-top:8px!important;min-height:50px!important}
+}
+</style>
+
 </head><body class="launch-gate">
 <div id="launchGate" class="launch-gate-screen" role="dialog" aria-label="遊戲首頁">
-  <div class="launch-title">九霄問道</div>
-  <div class="launch-subtitle">修仙放置 RPG</div>
+  <div class="launch-title" aria-label="不好意思，本座又突破了"><span>不好意思</span><span>本座又突破了</span><i aria-hidden="true">修仙</i></div>
+  <div class="launch-subtitle">一念入道，萬法歸心</div>
   <div class="launch-realm-label">目前境界</div>
   <div id="launchRealmSummary" class="launch-realm-summary">煉氣一層</div>
   <div class="launch-guidance">靜心凝神，踏入你的修行之路。</div>
-  <button type="button" id="continueCultivationBtn" class="launch-continue" onclick="enterGameFromLanding()">繼續修煉</button>
+  <button type="button" id="continueCultivationBtn" class="launch-continue" onclick="enterGameFromLanding()">開始修行　›</button>
   <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.36">
+<header class="top statusline" aria-label="角色狀態列 v0.37">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.36</small>
+  <small class="status-version" aria-label="遊戲版本">v0.37</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -1876,7 +1934,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
 
 
 <style id="v036-fixed-three-layer-layout">
-/* v0.36: lock top status and bottom navigation; only the active middle screen scrolls vertically. */
+/* v0.37: lock top status and bottom navigation; only the active middle screen scrolls vertically. */
 html,body{width:100%;height:100%;margin:0;overflow:hidden!important;overscroll-behavior:none!important}
 #gameApp.app{width:100%;max-width:560px;height:100vh;height:100dvh;min-height:0;margin:0 auto;display:flex;flex-direction:column;overflow:hidden!important}
 #gameApp.app>header.top.statusline{position:relative;z-index:20;flex:0 0 52px!important;width:100%;height:52px!important;min-height:52px!important;max-height:52px!important;overflow:hidden!important}
