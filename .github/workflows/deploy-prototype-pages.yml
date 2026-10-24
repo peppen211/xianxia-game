@@ -125,6 +125,18 @@ jobs:
             await page.locator('#toggleJournalStages').click();
             if (await arcCards.nth(7).locator('.journal-arc-content').isVisible()) throw new Error('全部收起階段按鈕未生效。');
             console.log('Journal UI regression passed: eight stages, working accordions, no duplicate or unrelated cards.');
+            await arcCards.nth(0).locator('.journal-arc-toggle').click();
+            const storyButton = arcCards.nth(0).locator('.journal-read-story');
+            if (!(await storyButton.isVisible()) || await storyButton.isDisabled()) throw new Error('第一階段的閱讀本篇劇情按鈕不可用。');
+            await storyButton.click();
+            const novelReader = page.locator('#modalBody .novel-reader');
+            await novelReader.waitFor({ state: 'visible', timeout: 3000 });
+            if (await novelReader.locator('p').count() < 5) throw new Error('小說式章節敘述不足。');
+            if (!(await novelReader.innerText()).includes('山雨入門')) throw new Error('第一回正文標題缺失。');
+            if (await novelReader.locator('.novel-chapter-nav button').count() !== 2) throw new Error('小說章節導覽按鈕缺失。');
+            await page.locator('#uiModal .modal-close').click();
+            console.log('Novel reader regression passed: chapter opens, detailed paragraphs render, navigation controls exist.');
+
 
             await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
