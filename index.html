@@ -1826,13 +1826,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.66">
+<header class="top statusline" aria-label="角色狀態列 v0.67">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.66</small>
+  <small class="status-version" aria-label="遊戲版本">v0.67</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -1882,6 +1882,31 @@ const layerNames=['一','二','三','四','五','六','七','八','九']; const 
 const foes=[{name:'山野靈兔',art:'rabbit',hp:35,atk:4,xp:18,gold:12,desc:'靈兔警覺地豎起耳朵，牠身上似乎有微弱的靈氣。'},{name:'青紋蛇妖',art:'serpent',hp:54,atk:7,xp:25,gold:18,desc:'蛇妖吐著信子，鱗片間流轉著淡青色妖氣。'},{name:'迷霧山魈',art:'mountain-spirit',hp:82,atk:10,xp:36,gold:25,desc:'山魈從霧中踏出，石地隨著牠的腳步微微震動。'},{name:'赤焰妖狼',art:'spirit-wolf',hp:120,atk:14,xp:52,gold:36,desc:'赤焰沿著狼牙竄動，牠已將你視為獵物。'},{name:'古洞守將',art:'stone-guardian',hp:185,atk:18,xp:78,gold:52,desc:'古老石像緩緩甦醒，守護著洞府深處的機緣。'}];
 const methods=[{name:'吐納養氣訣',icon:'氣',desc:'基礎功法，修為累積 +20%。',bonus:'修為 +20%',cost:GAME_CONFIG.methods[0].cost,rate:GAME_CONFIG.methods[0].rate},{name:'青木長生篇',icon:'木',desc:'木靈滋養，放置收益提升。',bonus:'放置收益 +35%',cost:GAME_CONFIG.methods[1].cost,rate:GAME_CONFIG.methods[1].rate},{name:'烈陽鍛體法',icon:'陽',desc:'以靈火淬體，戰鬥攻擊提升。',bonus:'攻擊 +20%',cost:GAME_CONFIG.methods[2].cost,rate:GAME_CONFIG.methods[2].rate}];
 const gears=[{name:'桃木劍',icon:'',slot:'weapon',rarity:'凡品',atk:3,def:0,hp:0,value:18,desc:'桃木削成的短劍，能斬低階妖物。'},{name:'青竹法杖',icon:'',slot:'weapon',rarity:'靈品',atk:7,def:1,hp:0,value:45,desc:'竹節內藏著淡淡靈光。'},{name:'玄鐵劍',icon:'',slot:'weapon',rarity:'珍品',atk:13,def:2,hp:0,value:90,desc:'玄鐵百煉，劍鋒沉穩而銳利。'},{name:'雲紋道袍',icon:'',slot:'armor',rarity:'靈品',atk:1,def:6,hp:20,value:52,desc:'袍上雲紋可引動護體靈氣。'},{name:'玄龜護心鏡',icon:'',slot:'armor',rarity:'珍品',atk:0,def:10,hp:35,value:100,desc:'鏡背刻有玄龜古紋。'},{name:'聚靈玉佩',icon:'',slot:'charm',rarity:'靈品',atk:4,def:2,hp:12,value:58,desc:'能聚攏四周游離靈氣。'},{name:'九曜仙環',icon:'',slot:'charm',rarity:'仙品',atk:10,def:6,hp:45,value:180,desc:'環身浮現九顆星曜，氣息古老。'}];
+
+/* 功法修煉階級資料：每套功法 1～20 階，各階皆有專屬修煉方式與效果說明。 */
+const methodLevelBlueprints=[
+ {modes:['靜坐吐納','循經導氣','小周天運轉','靈台守一','丹田蓄氣'],focus:'修為累積',base:20,unit:'修為收益'},
+ {modes:['引木靈入體','觀木養息','青氣循脈','靈根共鳴','長生周天'],focus:'放置修行',base:35,unit:'放置收益'},
+ {modes:['烈陽淬皮','氣血搬運','靈火煉骨','筋脈震盪','護體陽罡'],focus:'戰鬥與突破',base:20,unit:'攻擊加成'}
+];
+function methodLevelInfo(methodIndex,level){
+ const bp=methodLevelBlueprints[methodIndex]||methodLevelBlueprints[0];
+ const lv=Math.max(1,Math.min(20,Math.floor(Number(level)||1)));
+ const modes=bp.modes;
+ const mode=modes[(lv-1)%modes.length];
+ const percent=bp.base+(lv-1)*(methodIndex===1?2:methodIndex===2?1:2);
+ const phase=lv<=5?'初悟':lv<=10?'精進':lv<=15?'大成':'圓滿';
+ const effect=methodIndex===0?'修為收益 +'+percent+'%，主動吐納更有效率。':methodIndex===1?'放置修為與靈石收益 +'+percent+'%，適合長時間修煉。':'攻擊加成 +'+percent+'%，突破成功率另依功法階段逐步提升。';
+ const practices=[
+  '凝神靜坐，調整呼吸，使靈氣沿經脈緩緩運行。',
+  '依照功法路線導引靈氣，穩定周天並避免氣息紊亂。',
+  '配合靈石或靈草輔助修煉，檢視靈力是否運轉順暢。',
+  '在安全洞府中反覆運行功法，逐步提升控制精度。',
+  '完成當階周天後調息固本，再進入下一階修煉。'
+ ];
+ return {level:lv,phase:phase,mode:mode,practice:practices[(lv-1)%practices.length],effect:effect,percent:percent};
+}
+
 const methodsId='methods';
 let s,enemy;
 function base(){return {major:0,layer:1,xp:0,gold:GAME_CONFIG.initial.gold,spirit:GAME_CONFIG.initial.spirit,herbs:GAME_CONFIG.initial.herbs,pills:GAME_CONFIG.initial.pills,kills:0,atk:GAME_CONFIG.initial.atk,def:GAME_CONFIG.initial.def,hp:GAME_CONFIG.initial.hp,maxHp:GAME_CONFIG.initial.maxHp,method:0,ownedMethods:[0],inventory:[],equipped:{weapon:null,armor:null,charm:null},logs:[],last:Date.now(),lastOfflineClaim:Date.now(),offlineReport:null,skill:true,skillWait:0,wood:GAME_CONFIG.initial.wood,crystal:GAME_CONFIG.initial.crystal,element:'金',pity:0,draws:0,dupes:0,offlineSec:0};}
@@ -1983,11 +2008,13 @@ function methodDetailHtml(index=s.method){
   {role:'木靈滋養功法',overview:'借木靈之氣滋養修行，重視穩定與長時間累積。',effect:'主動吐納修為提高 35%；離線修為與離線靈石收益均提高 35%。',use:'適合長時間放置、希望持續累積修為與靈石時使用。',limit:'此功法不會提高戰鬥攻擊傷害；切換離開後，該加成不再生效。'},
   {role:'戰鬥與渡劫功法',overview:'以烈陽靈力淬鍊身軀，偏重迎戰與突破準備。',effect:'戰鬥攻擊傷害提高 20%；突破成功率額外提高 5 個百分點，仍受最高 97% 上限限制。',use:'面對較強妖獸或準備境界突破時使用。',limit:'此功法不提高吐納及離線修為收益；突破仍會消耗既定材料。'}
  ][i];
- const actions=methods.map((item,j)=>'<button type="button" class="btn '+(j===i?'jade':'secondary')+'" onclick="openMethodDetails('+j+')">'+esc(item.name)+(s.method===j?' · 正在修煉':' · 查看詳情')+'</button>').join('');
+ const levelRows=Array.from({length:20},(_,n)=>{const info=methodLevelInfo(i,n+1);return '<article class="panel" style="padding:10px!important;margin:0 0 7px"><div class="secthead"><span>第 '+info.level+' 階 · '+info.phase+'</span><small>'+esc(info.mode)+'</small></div><p><b>修煉模式：</b>'+esc(info.practice)+'</p><p><b>本階效果：</b>'+esc(info.effect)+'</p></article>'}).join('');
+const actions=methods.map((item,j)=>'<button type="button" class="btn '+(j===i?'jade':'secondary')+'" onclick="openMethodDetails('+j+')">'+esc(item.name)+(s.method===j?' · 正在修煉':' · 查看詳情')+'</button>').join('');
  return '<div class="method-detail-grid">'+
   '<article class="panel method-focus-card"><div class="method-focus-mark">'+esc(m.icon)+'</div><div class="method-focus-role">'+esc(detail.role)+'</div><h3>'+esc(m.name)+'</h3><p>'+esc(detail.overview)+'</p><div class="method-state '+(selected?'active':'')+'">'+(selected?'目前正在修煉 · 效果已生效':owned?'已解鎖 · 可立即切換':'尚未解鎖')+'</div></article>'+
   '<article class="panel"><div class="secthead"><span>實際效果</span><small>'+esc(cfg.tag||'功法')+'</small></div><p>'+esc(detail.effect)+'</p><div class="secthead"><span>適用情境</span></div><p>'+esc(detail.use)+'</p><div class="secthead"><span>效果說明</span></div><p>'+esc(detail.limit)+'</p></article>'+
   '<article class="panel"><div class="secthead"><span>解鎖與消耗</span></div><p>解鎖條件：'+esc(cfg.unlock||'初始解鎖')+'</p><p>解鎖消耗：'+(owned?'已支付':Number(m.cost||0)+' 靈石')+'</p><p>效果倍率：'+(i===0?'修為 ×1.20':i===1?'吐納／放置收益 ×1.35':'攻擊 ×1.20；突破成功率 +5 個百分點')+'</p><button type="button" class="btn primary" style="width:100%" '+(selected?'disabled':'')+' onclick="selectMethod('+i+')">'+(selected?'正在修煉':owned?'切換此功法，立即生效':'消耗 '+Number(m.cost||0)+' 靈石並解鎖')+'</button></article>'+
+  '<article class="panel"><div class="secthead"><span>功法 1～20 階修煉階級</span><small>逐階查看</small></div><p>每一階都有對應的修煉模式與效果方向；數值是本遊戲的成長設計，不代表原作官方等級。</p><div style="max-height:420px;overflow:auto;padding-right:3px">'+levelRows+'</div></article>'+
   '<article class="panel method-other-list"><div class="secthead"><span>其他功法</span><small>點選查看詳細資料</small></div><div class="method-detail-actions">'+actions+'</div></article>'+
  '</div>'
 }function recipeDetailHtml(){return '<div class="recipe-list"><article class="rowitem"><div class="rowicon"></div><div class="rowbody"><b>青竹法杖</b><small>需要：靈木 ×3、靈晶 ×2<br>效果：攻擊 +7、防禦 +1</small></div><button class="btn primary" onclick="craft(\'staff\');openModal(\'煉器配方\',recipeDetailHtml())">合成</button></article><article class="rowitem"><div class="rowicon"></div><div class="rowbody"><b>雲紋道袍</b><small>需要：靈木 ×2、靈晶 ×3<br>效果：防禦 +6、氣血 +20</small></div><button class="btn primary" onclick="craft(\'robe\');openModal(\'煉器配方\',recipeDetailHtml())">合成</button></article><article class="rowitem"><div class="rowicon"></div><div class="rowbody"><b>聚靈玉佩</b><small>需要：靈晶 ×4、靈木 ×1<br>效果：攻擊 +4、防禦 +2、氣血 +12</small></div><button class="btn primary" onclick="craft(\'charm\');openModal(\'煉器配方\',recipeDetailHtml())">合成</button></article><div class="panel">目前材料： 靈木 '+s.wood+' ·  靈晶 '+s.crystal+'</div></div>'}
