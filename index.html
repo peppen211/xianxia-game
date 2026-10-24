@@ -827,11 +827,11 @@ body .app header.top.statusline .core-break{display:none!important}
   body .app header.top.statusline .resource-chip{font-size:11px!important}
 }
 
-/* v0.21: direct one-row status layout, four stable columns */
+/* v0.22: status bar layout wins against legacy important grid rules */
 .app>header.top.statusline{
   box-sizing:border-box;width:100%;height:clamp(46px,8vh,56px);min-height:46px;max-height:56px;
   padding:4px 7px;display:grid;
-  grid-template-columns:minmax(56px,.9fr) minmax(48px,.85fr) minmax(136px,2.15fr) max-content;
+  grid-template-columns:minmax(56px,.9fr) minmax(48px,.85fr) minmax(136px,2.15fr) max-content!important;
   align-items:center;gap:4px;overflow:hidden;flex:0 0 auto;
 }
 .app>header.top.statusline>.status-realm,
@@ -856,7 +856,7 @@ body .app header.top.statusline .core-break{display:none!important}
 .app>header.top.statusline #spiritTop,
 .app>header.top.statusline .core-break{display:none;width:0;height:0;overflow:hidden}
 @media(max-width:380px){
- .app>header.top.statusline{grid-template-columns:minmax(51px,.85fr) minmax(42px,.7fr) minmax(124px,2fr) max-content;gap:3px;padding-left:5px;padding-right:5px}
+ .app>header.top.statusline{grid-template-columns:minmax(51px,.85fr) minmax(42px,.7fr) minmax(124px,2fr) max-content!important;gap:3px;padding-left:5px;padding-right:5px}
  .app>header.top.statusline>.status-realm small{font-size:6px}
  .app>header.top.statusline>.status-realm b{font-size:8px}
  .app>header.top.statusline>.status-resources>.resource-chip{gap:1px;padding-left:1px;padding-right:1px}
@@ -880,7 +880,7 @@ body .app header.top.statusline .core-break{display:none!important}
   <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.21">
+<header class="top statusline" aria-label="角色狀態列 v0.22">
  <div class="status-realm">
   <small>🧘 境界</small>
   <b id="globalRealm">練氣一層</b>
@@ -896,7 +896,7 @@ body .app header.top.statusline .core-break{display:none!important}
   <div class="currency resource-chip" data-resource="crystal" role="button" tabindex="0" title="靈晶用途與取得" aria-label="靈晶"><span class="resource-icon" aria-hidden="true">💠</span><span class="resource-label">靈晶</span><b id="crystalTop">1</b><i class="reward-dot" aria-hidden="true"></i></div>
   <b id="spiritTop" hidden aria-hidden="true"></b>
  </div>
- <div class="status-power"><span>⚔️ 戰力</span><b id="globalPower">18</b><small class="status-version">v0.21</small></div>
+ <div class="status-power"><span>⚔️ 戰力</span><b id="globalPower">18</b><small class="status-version">v0.22</small></div>
  <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉">✕</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
