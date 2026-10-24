@@ -826,6 +826,82 @@ body .app header.top.statusline .core-break{display:none!important}
   body .app header.top.statusline .resource-chip b{font-size:9px!important}
   body .app header.top.statusline .resource-chip{font-size:11px!important}
 }
+
+/* v0.4: authoritative one-row status bar; matches the explicit header markup above */
+.app>header.top.statusline{
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:clamp(46px,8vh,56px)!important;
+  min-height:46px!important;
+  max-height:56px!important;
+  padding:4px 7px!important;
+  display:grid!important;
+  grid-template-columns:minmax(54px,.82fr) minmax(62px,1fr) minmax(132px,2.05fr) max-content!important;
+  align-items:center!important;
+  gap:4px!important;
+  overflow:hidden!important;
+  flex:0 0 auto!important;
+}
+.app>header.top.statusline>.status-realm,
+.app>header.top.statusline>.status-xp,
+.app>header.top.statusline>.status-resources,
+.app>header.top.statusline>.status-power{min-width:0!important;margin:0!important}
+.app>header.top.statusline>.status-realm,
+.app>header.top.statusline>.status-xp{display:flex!important;flex-direction:column!important;justify-content:center!important;gap:3px!important}
+.app>header.top.statusline>.status-realm small,
+.app>header.top.statusline>.status-xp .status-xp-label small{font-size:7px!important;line-height:1!important;white-space:nowrap!important}
+.app>header.top.statusline>.status-realm b{display:block!important;max-width:100%!important;font-size:9px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.app>header.top.statusline>.status-xp .status-xp-label{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:2px!important;white-space:nowrap!important}
+.app>header.top.statusline>.status-xp .status-xp-label b{font-size:8px!important;line-height:1!important;white-space:nowrap!important}
+.app>header.top.statusline>.status-xp .progress{display:block!important;width:100%!important;height:5px!important;margin:0!important;overflow:hidden!important;border-radius:99px!important}
+.app>header.top.statusline>.status-xp .progress span{display:block!important;height:100%!important}
+.app>header.top.statusline>.status-resources{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-items:center!important;
+  gap:2px!important;
+  width:100%!important;
+  max-width:none!important;
+  overflow:hidden!important;
+}
+.app>header.top.statusline>.status-resources>.resource-chip{
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+  min-width:0!important;
+  width:100%!important;
+  min-height:30px!important;
+  padding:3px 2px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+  font-size:10px!important;
+}
+.app>header.top.statusline .resource-icon{display:inline-block!important;flex:0 0 auto!important;font-size:11px!important;line-height:1!important}
+.app>header.top.statusline .resource-label{display:none!important}
+.app>header.top.statusline>.status-resources>.resource-chip b{display:inline-block!important;min-width:0!important;font-size:9px!important;font-weight:800!important;line-height:1!important;font-variant-numeric:tabular-nums!important}
+.app>header.top.statusline>.status-resources .reward-dot{display:none!important}
+.app>header.top.statusline>.status-power{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;white-space:nowrap!important;font-size:8px!important;line-height:1!important}
+.app>header.top.statusline>.status-power b{font-size:10px!important;line-height:1!important}
+.app>header.top.statusline #spiritTop,
+.app>header.top.statusline .core-break{display:none!important;width:0!important;height:0!important;overflow:hidden!important}
+@media(max-width:380px){
+ .app>header.top.statusline{
+  grid-template-columns:minmax(47px,.78fr) minmax(54px,.92fr) minmax(112px,1.9fr) max-content!important;
+  gap:3px!important;padding-left:5px!important;padding-right:5px!important;
+ }
+ .app>header.top.statusline>.status-realm small,
+ .app>header.top.statusline>.status-xp .status-xp-label small{font-size:6px!important}
+ .app>header.top.statusline>.status-realm b{font-size:8px!important}
+ .app>header.top.statusline>.status-resources>.resource-chip{gap:1px!important;padding-left:1px!important;padding-right:1px!important}
+ .app>header.top.statusline .resource-icon{font-size:10px!important}
+ .app>header.top.statusline>.status-resources>.resource-chip b{font-size:8px!important}
+ .app>header.top.statusline>.status-power{font-size:7px!important}
+ .app>header.top.statusline>.status-power b{font-size:9px!important}
+}
+
 </style>
 
 </head><body class="launch-gate">
@@ -839,15 +915,21 @@ body .app header.top.statusline .core-break{display:none!important}
   <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline">
- <div class="status-realm"><small>🧘 境界</small><b id="globalRealm">練氣一層</b></div>
- <div class="status-xp"><div class="status-xp-label"><small>✨ 修為</small><b id="globalXpText">0/100</b></div><div class="progress"><span id="globalXpBar" style="width:0%"></span></div></div>
- <div class="currencies">
-  <div class="currency resource-chip" data-resource="gold" role="button" tabindex="0" title="靈石用途與取得">🪙 <span class="resource-label">靈石</span><b id="goldTop">100</b><i class="reward-dot" aria-hidden="true"></i></div>
-  <div class="currency resource-chip" data-resource="herbs" role="button" tabindex="0" title="靈草用途與取得">🌿 <span class="resource-label">靈草</span><b id="herbsTop">3</b><i class="reward-dot" aria-hidden="true"></i></div>
-  <div class="currency resource-chip" data-resource="wood" role="button" tabindex="0" title="靈木用途與取得">🪵 <span class="resource-label">靈木</span><b id="woodTop">2</b><i class="reward-dot" aria-hidden="true"></i></div>
-  <div class="currency resource-chip" data-resource="crystal" role="button" tabindex="0" title="靈晶用途與取得">💠 <span class="resource-label">靈晶</span><b id="crystalTop">1</b><i class="reward-dot" aria-hidden="true"></i></div>
-  <b id="spiritTop" style="display:none">0</b>
+<header class="top statusline" aria-label="角色狀態列">
+ <div class="status-realm">
+  <small>🧘 境界</small>
+  <b id="globalRealm">練氣一層</b>
+ </div>
+ <div class="status-xp">
+  <div class="status-xp-label"><small>✨ 修為</small><b id="globalXpText">0/100</b></div>
+  <div class="progress" aria-label="修為進度"><span id="globalXpBar" style="width:0%"></span></div>
+ </div>
+ <div class="status-resources" aria-label="修行資源">
+  <div class="currency resource-chip" data-resource="gold" role="button" tabindex="0" title="靈石用途與取得" aria-label="靈石"><span class="resource-icon" aria-hidden="true">🪙</span><span class="resource-label">靈石</span><b id="goldTop">100</b><i class="reward-dot" aria-hidden="true"></i></div>
+  <div class="currency resource-chip" data-resource="herbs" role="button" tabindex="0" title="靈草用途與取得" aria-label="靈草"><span class="resource-icon" aria-hidden="true">🌿</span><span class="resource-label">靈草</span><b id="herbsTop">3</b><i class="reward-dot" aria-hidden="true"></i></div>
+  <div class="currency resource-chip" data-resource="wood" role="button" tabindex="0" title="靈木用途與取得" aria-label="靈木"><span class="resource-icon" aria-hidden="true">🪵</span><span class="resource-label">靈木</span><b id="woodTop">2</b><i class="reward-dot" aria-hidden="true"></i></div>
+  <div class="currency resource-chip" data-resource="crystal" role="button" tabindex="0" title="靈晶用途與取得" aria-label="靈晶"><span class="resource-icon" aria-hidden="true">💠</span><span class="resource-label">靈晶</span><b id="crystalTop">1</b><i class="reward-dot" aria-hidden="true"></i></div>
+  <b id="spiritTop" hidden aria-hidden="true"></b>
  </div>
  <div class="status-power"><span>⚔️ 戰力</span><b id="globalPower">18</b></div>
  <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
