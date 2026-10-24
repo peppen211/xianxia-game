@@ -626,10 +626,10 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 #home .hero-bottom .chip:nth-child(1),#home .hero-bottom .chip:nth-child(2),#home .realm-row .metric:nth-child(1),#home .realm-row .metric:nth-child(2){display:none!important}
 @media(max-width:359px){.app>header.top.statusline{padding-left:4px!important;padding-right:27px!important;grid-template-columns:minmax(0,1.02fr) minmax(0,.58fr) minmax(0,1.32fr) minmax(0,.76fr) minmax(0,.82fr)!important;gap:2px!important}.app>header.top.statusline>.status-name b{font-size:10px!important}.app>header.top.statusline>.status-age{font-size:8px!important}.app>header.top.statusline>.status-xp #globalXpText{font-size:8px!important}.app>header.top.statusline>.status-power{font-size:9px!important;gap:1px!important}.app>header.top.statusline>.status-resources .resource-icon{font-size:10px!important}.app>header.top.statusline>.status-resources .resource-chip b{font-size:9px!important}}
 
-/* v0.31: continuous realm-based age formula; keep age readable in the compact status row */
+/* v0.32: continuous realm-based age formula; keep age readable in the compact status row */
 .app>header.top.statusline>.status-age{font-variant-numeric:tabular-nums lining-nums!important;font-feature-settings:"tnum" 1!important}
 
-/* v0.31: restrained xianxia status and navigation */
+/* v0.32: restrained xianxia status and navigation */
 .top.statusline{height:52px;min-height:52px;padding:0 9px;gap:7px;display:flex;justify-content:space-between;white-space:nowrap;font-family:"Noto Serif TC",serif}
 .status-name,.status-age,.status-xp,.status-power,.status-resources{display:flex;align-items:center;gap:4px;min-width:0}
 .status-name b{font-size:12px;color:var(--gold)}.status-age{font-size:10px;color:var(--txt)}.status-age span{font-size:9px;color:var(--muted)}
@@ -639,7 +639,7 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 .resource-icon,.method-icon,.rowicon,.slot>span,.idle-icon{color:#d5bd83}
 @media(max-width:390px){.top.statusline{gap:4px;padding:0 6px}.status-name b{font-size:11px}.status-version{display:none}.status-xp{min-width:46px}}
 
-/* v0.31 · 凡人修仙式圖示：僅 CSS 線條與幾何，無彩色 Emoji */
+/* v0.32 · 凡人修仙式圖示：僅 CSS 線條與幾何，無彩色 Emoji */
 .top.statusline{position:relative;height:54px;min-height:54px;display:flex!important;grid-template-columns:none!important;align-items:center;justify-content:space-between;gap:7px;padding:0 8px 2px;white-space:nowrap;background:linear-gradient(180deg,#29242a,#171519);border-bottom:1px solid #9a8153;font-family:"Noto Serif TC",serif}
 .status-name,.status-age,.status-xp,.status-power{display:flex;align-items:center;gap:4px;min-width:0}
 .status-name b{font-size:12px;color:#e7d2a0}.status-age{font-size:10px;color:#ded7c8}.status-age span,.status-label{font-size:9px;color:#a99c87}
@@ -667,6 +667,22 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 .cultivation-sword:after{content:"";position:absolute;left:8px;top:23px;width:14px;height:3px;background:#bca06b;transform:rotate(-35deg);border-radius:2px}
 .resource-icon{display:none!important}.reward-dot{display:none!important}
 @media(max-width:390px){.top.statusline{gap:4px;padding-left:6px;padding-right:6px}.status-name b{font-size:11px}.status-version{font-size:6px}.status-xp{min-width:43px}.status-power,.status-resources.currency{font-size:9px}}
+
+/* 功能操作與紀事標記：用低飽和金玉線條取代原圖示 */
+#attackBtn,#sneakBtn,#skillBtn,#fleeBtn,#craftStaff,#craftRobe,#craftCharm,#buyPill,#saveBtn,#resetBtn{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+#attackBtn:before,#sneakBtn:before,#skillBtn:before,#fleeBtn:before,#craftStaff:before,#craftRobe:before,#craftCharm:before,#buyPill:before,#saveBtn:before,#resetBtn:before{content:"";display:inline-block;flex:0 0 11px;width:11px;height:11px;box-sizing:border-box;border:1px solid #c7ad75;opacity:.9}
+#attackBtn:before,#sneakBtn:before{width:2px;height:14px;flex-basis:2px;border:0;background:#d2bc88;transform:rotate(38deg);box-shadow:3px 5px 0 -1px #d2bc88}
+#skillBtn:before{border-radius:50%;box-shadow:inset 0 0 0 2px #4b4435, inset 0 0 0 3px #c7ad75}
+#fleeBtn:before{width:9px;height:9px;border-radius:50% 50% 2px 2px;transform:rotate(45deg)}
+#craftStaff:before{width:3px;height:13px;flex-basis:3px;border:0;background:#b7c2a6;transform:rotate(25deg);box-shadow:3px 0 0 -1px #b7c2a6}
+#craftRobe:before{clip-path:polygon(25% 0,75% 0,100% 35%,75% 45%,70% 100%,30% 100%,25% 45%,0 35%);background:#b8aa91;border:0}
+#craftCharm:before{transform:rotate(45deg);border-radius:1px}
+#buyPill:before{border-radius:8px;transform:rotate(-35deg);background:linear-gradient(90deg,transparent 45%,#c7ad75 45%,#c7ad75 55%,transparent 55%)}
+#saveBtn:before{border-radius:2px;background:linear-gradient(#c7ad75,#c7ad75) 2px 2px/5px 3px no-repeat}
+#resetBtn:before{border-radius:50%;border-right-color:transparent;transform:rotate(-35deg)}
+#home .chronicle-teaser .secthead>span:before,#journal .hanli-intro .secthead>span:before{content:"";display:inline-block;width:10px;height:12px;margin-right:6px;vertical-align:-2px;border:1px solid #bda777;border-radius:1px;background:linear-gradient(#bda777,#bda777) 2px 3px/6px 1px no-repeat,linear-gradient(#bda777,#bda777) 2px 7px/6px 1px no-repeat}
+#home .metric:nth-child(2) small:before{content:"";display:inline-block;width:7px;height:7px;margin-right:5px;border:1px solid #c7ad75;transform:rotate(45deg)}
+#home .metric:nth-child(3) small:before{content:"";display:inline-block;width:7px;height:9px;margin-right:5px;border:1px solid #9aaf8d;border-radius:70% 70% 65% 15%;transform:rotate(45deg)}
 </style>
 <!-- Merge restoration: keep the original classic home screen reachable from the Trial tab. -->
 <style id="classic-merge-restoration">
@@ -997,13 +1013,13 @@ body .app header.top.statusline .core-break{display:none!important}
   <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.31">
+<header class="top statusline" aria-label="角色狀態列 v0.32">
   <div class="status-name" aria-label="角色名稱"><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.31</small>
+  <small class="status-version" aria-label="遊戲版本">v0.32</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
