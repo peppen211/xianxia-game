@@ -1879,13 +1879,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.82">
+<header class="top statusline" aria-label="角色狀態列 v0.83">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.82</small>
+  <small class="status-version" aria-label="遊戲版本">v0.83</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2450,9 +2450,12 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
  ].map((r,i)=>({id:'hanli-node-'+(i+1),title:r[0],summary:r[1],map:r[2],dungeon:r[3],realm:r[4],unlock:r[5],gateMajor:r[6],gateKills:r[7],arc:Math.floor(i/4)+1}));
  function nodeUnlocked(n){return Number(s.major||0)>n.gateMajor||(Number(s.major||0)===n.gateMajor&&Number(s.kills||0)>=n.gateKills)}
  window.openChronicleModal=function(){
-  const nodes=chapterNodes.map((n,i)=>{
-   const unlocked=nodeUnlocked(n),current=unlocked&&chapterNodes.slice(i+1).every(next=>!nodeUnlocked(next));
-   return '<article class="chronicle-node '+(unlocked?'':'locked')+'"><h3>'+(unlocked?' ':' ')+(i+1)+'. '+esc(n.title)+(current?' · 當前':'')+'</h3><div class="meta"> '+esc(n.map)+'｜ '+esc(n.dungeon)+'｜境界：'+esc(n.realm)+'<br> 條件：'+esc(n.unlock)+'｜節點 '+n.arc+'</div><p>'+(unlocked?esc(n.summary):'此節點尚未解鎖。達成條件後可閱讀遊戲原創章節摘要。')+'</p>'+(unlocked?'<button class="btn secondary" onclick="openChapterNode('+i+')">閱讀節點全文</button>':'')+'</article>';
+  /* Display order is separate from permanent node IDs, so reading progress and save compatibility remain intact. */
+  const displayOrder=[0,3,2,1,...chapterNodes.map((_,i)=>i).filter(i=>i>3)];
+  const nodes=displayOrder.map((nodeIndex,displayIndex)=>{
+   const n=chapterNodes[nodeIndex];
+   const unlocked=nodeUnlocked(n),current=unlocked&&displayOrder.slice(displayIndex+1).every(nextIndex=>!nodeUnlocked(chapterNodes[nextIndex]));
+   return '<article class="chronicle-node '+(unlocked?'':'locked')+'"><h3>'+(unlocked?' ':' ')+(displayIndex+1)+'. '+esc(n.title)+(current?' · 當前':'')+'</h3><div class="meta"> '+esc(n.map)+'｜ '+esc(n.dungeon)+'｜境界：'+esc(n.realm)+'<br> 條件：'+esc(n.unlock)+'｜節點 '+n.arc+'｜識別碼 '+esc(n.id)+'</div><p>'+(unlocked?esc(n.summary):'此節點尚未解鎖。達成條件後可閱讀遊戲原創章節摘要。')+'</p>'+(unlocked?'<button class="btn secondary" onclick="openChapterNode('+nodeIndex+')">閱讀節點全文</button>':'')+'</article>';
   }).join('');
   openModal('仙途紀事｜節點資料庫','<div class="panel"><b>主線節點資料庫 · '+chapterNodes.length+' 節</b><p class="smallnote">每節包含地圖、副本、境界與解鎖條件。下列文字為遊戲原創摘要與節點資料，不包含《凡人修仙傳》小說或動畫的受版權保護全文。</p><div class="smallnote">目前解鎖 '+chapterNodes.filter(nodeUnlocked).length+' / '+chapterNodes.length+' 節</div></div>'+nodes);
  };
@@ -3288,7 +3291,7 @@ main>.screen#home.active{display:flex!important}
 /* v0.81: the bottom action is the only close button during novel reading. */
 #gameApp #uiModal.novel-reading-mode .modal-close{display:none!important}
 
-/* v0.82: show the exact cultivation/map/story prerequisites for locked stages. */
+/* v0.83: show the exact cultivation/map/story prerequisites for locked stages. */
 #gameApp #journalHybridStages .journal-stage-lock-note{padding:10px 12px;margin:0 0 10px;border:1px solid rgba(184,155,114,.24);border-radius:10px;background:rgba(7,13,22,.62);color:var(--muted);font-size:13px;line-height:1.65;overflow-wrap:anywhere}
 #gameApp #journalHybridStages .journal-stage-lock-note[hidden]{display:none!important}
 #gameApp #journalHybridStages .journal-read-story:disabled{opacity:.58;cursor:not-allowed}
