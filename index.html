@@ -1826,13 +1826,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.68">
+<header class="top statusline" aria-label="角色狀態列 v0.69">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.68</small>
+  <small class="status-version" aria-label="遊戲版本">v0.69</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -3194,6 +3194,139 @@ main>.screen#home.active{display:flex!important}
   try{if(typeof window.render==='function')window.render();else if(typeof render==='function')render()}catch(error){console.error('Initial cultivation UI render failed:',error)}
   if(window.__cultivationProgressTimer)clearInterval(window.__cultivationProgressTimer);
   window.__cultivationProgressTimer=setInterval(function(){try{updateProgressUi()}catch(_e){}},1000);
+})();
+</script>
+
+
+<script id="v069-map-strength-system">
+(function installMapStrengthSystem(){
+  'use strict';
+  /* 只調整地圖與敵人強度；沿用既有戰鬥、掉落、存檔與角色養成。 */
+  const mapList = [
+    ['五里溝','人界',1],['七玄門','人界',2],['神手谷・墨居仁藥園','人界',3],['嘉元城・墨府','人界',4],['太南谷・太南小會','人界',5],
+    ['黃楓谷・宗門洞府','人界',6],['太岳山脈','人界',7],['血色禁地','人界',8],['燕家堡','人界',9],['越京・黑煞教','人界',10],
+    ['靈石礦脈・古傳送陣','人界',11],['亂星海・小寰島','人界',12],['魁星島','人界',13],['天星城・內星海','人界',14],['虛天殿','人界',15],
+    ['外星海・風雷翅之旅','人界',16],['奇淵島・陰冥鬼霧','人界',17],['落雲宗・雲夢山','人界',18],['慕蘭草原・天南邊境戰','人界',19],['墜魔谷','人界',20],
+    ['殘存藥園','人界',21],['大晉・大衍神君','人界',22],['昆吾山','人界',23],['小極宮・極北冰原','人界',24],['重返亂星海・化神破界','人界',25],
+    ['落日之墓','靈界',26],['天淵城','靈界',27],['風元大陸・人族領地','靈界',28],['木族領地','靈界',29],['蠻荒地域・夜叉追擊','靈界',30],
+    ['飛靈族・聖子試煉','靈界',31],['地淵・冥河','靈界',32],['雷鳴大陸','靈界',33],['天雲諸族領地','靈界',34],['魔金山脈','靈界',35],
+    ['廣寒界','靈界',36],['風元大陸・合體立足','靈界',37],['天淵城・魔劫戰線','靈界',38],['魔界・幻夜城','靈界',39],['苦靈島','靈界',40],
+    ['藍瀑湖','靈界',41],['木族戰場','靈界',42],['小修羅界','靈界',43],['元合島・青元宮','靈界',44],['血天大陸','靈界',45],
+    ['小靈天','靈界',46],['鳴煞主戰場','靈界',47],['龍島・道果大會與飛升準備','靈界',48],
+    ['北寒仙域・飛升台','仙界',49],['黑風海域','仙界',50],['冥寒仙府','仙界',51],['荒瀾大陸・雷暴海','仙界',52],['上阿大陸・蒼流宮','仙界',53],
+    ['小天幽境・伏凌宗','仙界',54],['古雲大陸・燭龍道','仙界',55],['冥寒大陸・北寒仙宮','仙界',56],['臨荒大陸・蠻荒大陸','仙界',57],['四盟仙區','仙界',58],
+    ['金源仙域','仙界',59],['灰界','仙界',60],['中土仙域・天庭','仙界',61],['蠻荒界域','仙界',62],['時間長河・輪迴之秘・道祖終局','仙界',63]
+  ].map((m,i)=>({name:m[0],world:m[1],level:i+1}));
+  if(typeof s!=='object'||!s)return;
+  if(!Number.isFinite(Number(s.mapIndex)))s.mapIndex=0;
+  s.mapIndex=Math.max(0,Math.min(mapList.length-1,Math.floor(Number(s.mapIndex)||0)));
+  if(typeof s.mapBossWins!=='number')s.mapBossWins=0;
+  let pendingBoss=false;
+  let currentType='普通';
+  const oldSpawnEnemy=spawnEnemy;
+  const oldWin=win;
+  function mapScale(index){return 1+index*0.105+Math.floor(index/5)*0.08}
+  function currentMap(){return mapList[Math.max(0,Math.min(mapList.length-1,Number(s.mapIndex)||0))]}
+  function enemyBaseForMap(index){
+    const stage=Math.min(foes.length-1,Math.floor(index/Math.max(1,Math.ceil(mapList.length/foes.length))));
+    return foes[stage]||foes[0];
+  }
+  function scaleEnemy(f,multiplier,type,index){
+    const realmScale=1+Math.max(0,Number(s.major)||0)*0.45+(Math.max(1,Number(s.layer)||1)-1)*0.12;
+    const scale=realmScale*mapScale(index)*multiplier;
+    const rewardScale=mapScale(index)*multiplier;
+    return {...f,type,mapIndex:index,mapName:currentMap().name,world:currentMap().world,
+      maxHp:Math.max(1,Math.floor(f.hp*scale)),hp:Math.max(1,Math.floor(f.hp*scale)),
+      atk:Math.max(1,Math.floor(f.atk*scale)),def:Math.max(0,Math.floor((f.def||0)*scale)),
+      xp:Math.max(1,Math.floor(f.xp*rewardScale)),gold:Math.max(1,Math.floor(f.gold*rewardScale)),
+      element:FIVE_ELEMENTS[(index+(s.kills||0))%FIVE_ELEMENTS.length]};
+  }
+  spawnEnemy=function(){
+    const index=Math.max(0,Math.min(mapList.length-1,Number(s.mapIndex)||0));
+    const base=enemyBaseForMap(index);
+    const roll=Math.random();
+    if(roll<0.23){
+      currentType='精英';
+      enemy=scaleEnemy({...base,name:'精英・'+base.name,desc:'此地靈氣凝聚，出現了更強大的精英妖獸。'},1.8,currentType,index);
+    }else{
+      currentType='普通';
+      enemy=scaleEnemy(base,1,currentType,index);
+    }
+    pendingBoss=false;
+    renderMapStrength();
+  };
+  function spawnBoss(){
+    if(Number(s.mapIndex)>=mapList.length-1&&Number(s.mapBossWins)>=mapList.length){toast('已擊敗終局首領，仙途已至目前地圖終點。');return}
+    const index=Math.max(0,Math.min(mapList.length-1,Number(s.mapIndex)||0));
+    const base=enemyBaseForMap(index);
+    currentType='首領';
+    pendingBoss=true;
+    enemy=scaleEnemy({...base,name:currentMap().name+'・鎮圖首領',desc:'鎮守此地的首領現身。擊敗後即可前往下一張地圖。'},3.15,currentType,index);
+    renderMapStrength();
+    note(' 你主動進入「'+currentMap().name+'」首領挑戰。','good');
+    render();
+    toast('首領挑戰開始！擊敗首領即可進入下一張地圖。');
+  }
+  win=function(){
+    const defeated=enemy&&enemy.type==='首領';
+    const defeatedMap=Number(s.mapIndex)||0;
+    oldWin();
+    if(defeated){
+      s.mapBossWins=Math.max(Number(s.mapBossWins)||0,defeatedMap+1);
+      if(defeatedMap<mapList.length-1){
+        s.mapIndex=defeatedMap+1;
+        note(' 首領已擊敗！解鎖下一張地圖：'+currentMap().name+'。','good');
+        toast('首領討伐成功！前往新地圖：'+currentMap().name);
+      }else{
+        s.mapIndex=defeatedMap;
+        note(' 終局地圖首領已擊敗，當前地圖已達規劃終點。','good');
+        toast('終局首領討伐成功！');
+      }
+      save();
+      renderMapStrength();
+    }
+  };
+  function ensureControls(){
+    const battle=document.querySelector('#home .battle');
+    if(!battle)return;
+    let mapPanel=document.getElementById('mapStrengthPanel');
+    if(!mapPanel){
+      mapPanel=document.createElement('div');
+      mapPanel.id='mapStrengthPanel';
+      mapPanel.className='panel';
+      mapPanel.innerHTML='<div class="secthead"><span>地圖試煉</span><small id="mapWorldLabel">人界 · 第 1 / 63 張</small></div><div id="mapStrengthName" style="font-size:12px;font-weight:800;color:var(--gold);margin-top:5px">五里溝</div><div id="mapStrengthDesc" style="font-size:9px;color:var(--muted);line-height:1.5;margin:4px 0 8px">普通與精英妖獸隨機出現；挑戰首領後前往下一張地圖。</div><button type="button" class="btn primary" id="challengeMapBoss" style="width:100%">挑戰本圖首領 · 前往下一強度</button>';
+      battle.before(mapPanel);
+    }
+    const label=document.getElementById('mapStrengthName');
+    if(label)label.textContent=currentMap().name;
+    const button=document.getElementById('challengeMapBoss');
+    if(button)button.onclick=spawnBoss;
+  }
+  function renderMapStrength(){
+    ensureControls();
+    const m=currentMap(),index=Number(s.mapIndex)||0;
+    const world=document.getElementById('mapWorldLabel');
+    const name=document.getElementById('mapStrengthName');
+    const desc=document.getElementById('mapStrengthDesc');
+    const enemyName=document.getElementById('enemyName');
+    const enemyLevel=document.getElementById('enemyLevel');
+    const status=document.getElementById('battleStatus');
+    if(world)world.textContent=m.world+' · 第 '+(index+1)+' / '+mapList.length+' 張';
+    if(name)name.textContent=m.name;
+    if(desc)desc.textContent='強度係數 ×'+mapScale(index).toFixed(2)+'；普通／精英隨機出現，擊敗本圖首領即可推進。';
+    if(enemyName&&enemy)enemyName.textContent=enemy.name;
+    if(enemyLevel&&enemy)enemyLevel.textContent='地圖 '+(index+1)+' · '+(enemy.type||currentType);
+    if(status)status.textContent=(enemy&&enemy.type==='首領')?'首領挑戰中':(enemy&&enemy.type==='精英')?'精英妖獸出沒':'野怪出沒';
+    const button=document.getElementById('challengeMapBoss');
+    if(button){button.textContent=index===mapList.length-1?'挑戰終局首領':'挑戰本圖首領 · 前往下一強度';button.disabled=!!(enemy&&enemy.type==='首領')}
+  }
+  const oldRender=render;
+  render=function(){oldRender();renderMapStrength()};
+  ensureControls();
+  /* 初次安裝只調整當前遭遇的地圖係數，不碰既有存檔與資源。 */
+  spawnEnemy();
+  render();
+  window.xianxiaMapStrength={maps:mapList,getCurrentMap:currentMap,challengeBoss:spawnBoss};
 })();
 </script>
 
