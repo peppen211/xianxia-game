@@ -1449,7 +1449,7 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
   <button type="button" id="continueCultivationBtn" class="launch-continue" onclick="enterGameFromLanding()"><span class="continue-label">開始修行</span><span class="continue-arrow" aria-hidden="true">›</span></button>
   <section id="launch-character-intro-v039" class="launch-character-intro" aria-labelledby="launch-character-heading">
   <h2 id="launch-character-heading">角色資訊</h2>
-  <p><strong>角色名稱：</strong>韓立<br><strong>目前境界：</strong><span id="launchIntroRealm">煉氣一層</span><br><strong>修行目標：</strong>穩步提升修為，尋求境界突破。</p>
+  <p><strong>角色名稱：</strong><span id="launchIntroName">韓立</span><br><strong>目前境界：</strong><span id="launchIntroRealm">煉氣一層</span><br><strong>修行目標：</strong>穩步提升修為，尋求境界突破。</p>
 </section>
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
@@ -1943,6 +1943,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
   const summary=document.getElementById('launchRealmSummary');
   const realm=document.getElementById('globalRealm');
   const lastRealm=document.getElementById('launchLastRealm');
+  const introRealm=document.getElementById('launchIntroRealm');
+  const introName=document.getElementById('launchIntroName');
+  const characterName=document.getElementById('statusCharacterName');
 
   /* Every fresh document load starts on the launch gate, even when a save exists. */
   body.classList.add('launch-gate');
@@ -1952,6 +1955,8 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
   const syncRealm=()=>{
     const current=(realm&&realm.textContent||'煉氣一層').trim()||'煉氣一層';
     if(summary)summary.textContent=current;
+    if(introRealm)introRealm.textContent=current;
+    if(introName)introName.textContent=(characterName&&characterName.textContent||'韓立').trim()||'韓立';
     if(lastRealm&&!lastRealm.hidden)lastRealm.textContent='上次境界：'+current;
   };
   syncRealm();
