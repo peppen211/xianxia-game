@@ -1351,13 +1351,13 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
   <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.35">
+<header class="top statusline" aria-label="角色狀態列 v0.36">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.35</small>
+  <small class="status-version" aria-label="遊戲版本">v0.36</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -1873,5 +1873,25 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
   };
 })();
 </script>
+
+
+<style id="v036-fixed-three-layer-layout">
+/* v0.36: lock top status and bottom navigation; only the active middle screen scrolls vertically. */
+html,body{width:100%;height:100%;margin:0;overflow:hidden!important;overscroll-behavior:none!important}
+#gameApp.app{width:100%;max-width:560px;height:100vh;height:100dvh;min-height:0;margin:0 auto;display:flex;flex-direction:column;overflow:hidden!important}
+#gameApp.app>header.top.statusline{position:relative;z-index:20;flex:0 0 52px!important;width:100%;height:52px!important;min-height:52px!important;max-height:52px!important;overflow:hidden!important}
+#gameApp.app>main{position:relative;flex:1 1 0%!important;width:100%;min-width:0;min-height:0!important;max-width:100%;overflow:hidden!important}
+#gameApp.app>main>.screen{display:none;width:100%;max-width:100%;height:100%;max-height:100%;min-width:0;min-height:0!important;box-sizing:border-box;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain;overscroll-behavior-x:none;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+#gameApp.app>main>.screen.active{display:flex}
+#gameApp.app>nav.bottom{position:relative;z-index:20;flex:0 0 calc(63px + env(safe-area-inset-bottom))!important;width:100%;height:calc(63px + env(safe-area-inset-bottom))!important;min-height:calc(63px + env(safe-area-inset-bottom))!important;max-height:calc(63px + env(safe-area-inset-bottom))!important;box-sizing:border-box;overflow:hidden!important;grid-template-columns:repeat(5,minmax(0,1fr));padding-bottom:max(4px,env(safe-area-inset-bottom))}
+#gameApp .screen,#gameApp .screen *{min-width:0}
+#gameApp .screen{scrollbar-width:thin;scrollbar-color:#786344 transparent}
+#gameApp .screen::-webkit-scrollbar{width:3px}
+#gameApp .screen::-webkit-scrollbar-thumb{background:#786344;border-radius:4px}
+#gameApp .bottom .nav{min-width:0;overflow:hidden;white-space:nowrap}
+#gameApp .bottom .nav .ico{font-size:0!important;line-height:0!important}
+#gameApp .bottom .nav .ico svg{display:block;width:20px;height:20px;max-width:20px;max-height:20px}
+@media(max-width:359px){#gameApp.app>header.top.statusline{flex-basis:52px!important;height:52px!important;min-height:52px!important;max-height:52px!important}#gameApp.app>nav.bottom{grid-template-columns:repeat(5,minmax(0,1fr))}}
+</style>
 
 </body></html>
