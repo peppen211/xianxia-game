@@ -1407,6 +1407,33 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
 #launchGate .launch-continue .continue-arrow{position:absolute!important;right:clamp(22px,6vw,30px)!important;top:50%!important;transform:translateY(-50%)!important;line-height:1!important;letter-spacing:0!important}
 </style>
 
+<style id="launch-character-intro-v039">
+/* v0.39: detailed character introduction beneath the landing action. */
+#launchGate .launch-character-intro{
+  width:min(340px,86vw);max-height:clamp(112px,19vh,176px);overflow:auto;
+  margin:clamp(4px,1.1vh,10px) auto 0;padding:12px 15px;
+  border:1px solid rgba(226,188,117,.22);border-radius:12px;
+  background:linear-gradient(145deg,rgba(24,34,49,.78),rgba(9,15,25,.72));
+  box-shadow:inset 0 1px 0 rgba(255,231,180,.05),0 8px 22px rgba(0,0,0,.12);
+  text-align:left;scrollbar-width:thin;overscroll-behavior:contain;
+}
+#launchGate .launch-character-intro h2{
+  margin:0 0 6px;text-align:center;color:#f0d49b;
+  font-family:"Kaiti TC","STKaiti","BiauKai","Noto Serif TC",serif;
+  font-size:14px;letter-spacing:.16em;font-weight:700;
+}
+#launchGate .launch-character-intro p{
+  margin:0;color:#bdc8d7;font-size:12px;line-height:1.75;
+  letter-spacing:.025em;text-align:justify;
+}
+#launchGate .launch-character-intro strong{color:#f0d49b;font-weight:600}
+@media(max-height:740px){
+  #launchGate .launch-character-intro{max-height:15vh;padding:9px 12px}
+  #launchGate .launch-character-intro p{font-size:11px;line-height:1.6}
+  #launchGate .launch-character-intro h2{font-size:13px;margin-bottom:4px}
+}
+</style>
+
 </head><body class="launch-gate">
 <div id="launchGate" class="launch-gate-screen" role="dialog" aria-label="遊戲首頁">
   <div class="launch-title" aria-label="不好意思，本座又突破了"><span>不好意思</span><span>本座又突破了</span><i aria-hidden="true">修仙</i></div>
@@ -1415,16 +1442,20 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
   <div id="launchRealmSummary" class="launch-realm-summary">煉氣一層</div>
   <div class="launch-guidance">靜心凝神，踏入你的修行之路。</div>
   <button type="button" id="continueCultivationBtn" class="launch-continue" onclick="enterGameFromLanding()"><span class="continue-label">開始修行</span><span class="continue-arrow" aria-hidden="true">›</span></button>
-  <div id="launchLastRealm" class="launch-last-realm" hidden></div>
+  <section id="launch-character-intro-v039" class="launch-character-intro" aria-labelledby="launch-character-heading">
+  <h2 id="launch-character-heading">角色介紹・韓立</h2>
+  <p><strong>出身平凡，步步求生。</strong>韓立原是凡俗農家子弟，因機緣踏入修仙世界。沒有驚世天資，也不輕信天降好運，他憑著謹慎心性、縝密盤算與不肯放棄的毅力，在危機四伏的修行路上尋找生機。從採藥煉丹、累積修為，到尋覓功法、法器與突破契機，他始終先求自保，再謀長遠。對他而言，修仙不是一時逞強，而是每一步都走得穩，直到有朝一日突破自身極限。</p>
+</section>
+<div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.38">
+<header class="top statusline" aria-label="角色狀態列 v0.39">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.38</small>
+  <small class="status-version" aria-label="遊戲版本">v0.39</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
