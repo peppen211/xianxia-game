@@ -1157,6 +1157,187 @@ body .app>header.top.statusline>#spiritTop{display:none!important}
   body .app>header.top.statusline>.status-xp>#globalXpText{font-size:9px!important}
 }
 
+
+/* v0.34: ink-wash xianxia visual pass; presentation only */
+:root{
+ --bg:#0b1115!important;
+ --panel:rgba(20,30,40,.8)!important;
+ --line:#b89b72!important;
+ --txt:#eee7d8!important;
+ --muted:#b2ad9f!important;
+ --gold:#d8b778!important;
+ --jade:#9bb8a5!important;
+}
+html,body{
+ background:
+   radial-gradient(ellipse at 50% 18%,rgba(91,112,110,.18),transparent 48%),
+   radial-gradient(ellipse at 8% 72%,rgba(135,119,91,.12),transparent 35%),
+   linear-gradient(180deg,#111a1d 0%,#0a1013 60%,#090e11 100%)!important;
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.18;
+ background:
+  radial-gradient(ellipse at 20% 24%,transparent 0 18%,rgba(207,202,183,.08) 19%,transparent 35%),
+  radial-gradient(ellipse at 75% 48%,rgba(210,207,190,.07),transparent 30%),
+  repeating-linear-gradient(116deg,transparent 0 43px,rgba(225,219,198,.018) 44px,transparent 47px);
+ mix-blend-mode:screen;
+}
+.app{
+ position:relative!important;isolation:isolate;
+ background:
+  radial-gradient(ellipse at 50% 35%,rgba(74,93,89,.22),transparent 52%),
+  linear-gradient(180deg,rgba(18,28,31,.97),rgba(8,14,17,.99) 88%)!important;
+}
+.app:before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.22;
+ background:
+  radial-gradient(ellipse at 10% 35%,rgba(200,195,174,.14),transparent 27%),
+  radial-gradient(ellipse at 90% 58%,rgba(190,184,165,.1),transparent 31%);
+ filter:blur(13px);
+}
+.panel,.metric,.stat,.rowitem,.realm-art,.enemy-scene,.idle-card,.chronicle-teaser,
+.modal-card,.modal-head,.modal-body,.inventory-slot,.equipment-slot{
+ background:rgba(20,30,40,.8)!important;
+ border-color:#b89b72!important;
+ box-shadow:inset 0 0 0 1px rgba(184,155,114,.08),0 5px 18px rgba(0,0,0,.16);
+}
+.top.statusline{
+ background:rgba(9,15,18,.94)!important;
+ border-bottom:1px solid #b89b72!important;
+ box-shadow:0 3px 14px rgba(0,0,0,.28);
+}
+body .app>header.top.statusline{grid-template-columns:auto auto auto minmax(0,1fr) auto auto!important;gap:5px!important}
+body .app>header.top.statusline>.status-name{justify-content:flex-start!important;gap:5px!important;overflow:visible!important}
+.top-avatar{
+ position:relative;display:inline-block;flex:0 0 30px;width:30px;height:30px;
+ border:1px solid #b89b72;border-radius:50%;overflow:hidden;
+ background:radial-gradient(circle at 50% 27%,#d4c8ad 0 14%,transparent 15%),
+ linear-gradient(145deg,#43504c,#172127 65%,#080d10);
+ box-shadow:0 0 0 2px rgba(184,155,114,.12),inset 0 0 9px #0009;
+}
+.top-avatar:before{
+ content:"";position:absolute;left:7px;top:4px;width:15px;height:14px;
+ border-radius:48% 48% 40% 40%;background:#17191a;
+ box-shadow:0 -3px 0 2px #17191a,0 5px 0 1px #b4a58a;
+}
+.top-avatar:after{
+ content:"";position:absolute;left:5px;bottom:-5px;width:19px;height:18px;
+ border-radius:48% 48% 0 0;background:linear-gradient(90deg,#27343a,#d4c8ad 46%,#25333a);
+ border:1px solid #b89b72;
+}
+.top-avatar i{
+ position:absolute;z-index:2;left:13px;top:10px;width:3px;height:7px;
+ border-radius:50%;background:#b89b72;box-shadow:-4px 2px 0 -1px #b89b72,4px 2px 0 -1px #b89b72;
+}
+body .app>header.top.statusline .status-name b,
+body .app>header.top.statusline .status-age b,
+body .app>header.top.statusline .status-xp b,
+body .app>header.top.statusline .status-power b,
+body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
+.hero{
+ border:1px solid #b89b72!important;
+ background:
+  radial-gradient(ellipse at 52% 34%,rgba(198,195,171,.18),transparent 28%),
+  linear-gradient(180deg,rgba(36,55,56,.92),rgba(18,34,34,.92) 58%,rgba(10,19,19,.98))!important;
+ box-shadow:inset 0 0 0 1px rgba(184,155,114,.12),0 8px 22px #0005;
+}
+.hero:before{
+ content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+ background:
+  radial-gradient(ellipse at 20% 72%,rgba(217,214,194,.14),transparent 25%),
+  radial-gradient(ellipse at 78% 50%,rgba(208,211,193,.13),transparent 24%),
+  linear-gradient(180deg,transparent 48%,rgba(5,11,12,.44));
+}
+.mountain{filter:drop-shadow(0 -1px 0 rgba(184,155,114,.16))}
+.mist{background:rgba(198,205,190,.13)!important;filter:blur(13px)}
+.cultivator{font-size:0!important;width:112px;height:132px;right:18px;bottom:24px;z-index:2}
+.immortal-silhouette{
+ display:block;position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+ width:65px;height:86px;font-size:0!important;
+ background:linear-gradient(100deg,#111a1d,#a79a7e 48%,#172326 78%);
+ clip-path:polygon(42% 0,58% 0,65% 12%,60% 23%,74% 34%,100% 55%,89% 64%,70% 53%,78% 100%,22% 100%,30% 53%,11% 64%,0 55%,26% 34%,40% 23%,35% 12%);
+ filter:drop-shadow(0 3px 6px #000a);
+}
+.immortal-silhouette:before{
+ content:"";position:absolute;left:24px;top:-4px;width:19px;height:24px;border-radius:48% 48% 40% 40%;
+ background:#171a19;box-shadow:0 -5px 0 3px #171a19;
+}
+.immortal-silhouette:after{
+ content:"";position:absolute;left:11px;top:42px;width:43px;height:3px;background:#cbb37c;
+ transform:rotate(-12deg);opacity:.72;
+}
+.energy-orb{background:#d8c28b!important;box-shadow:0 0 24px 9px rgba(216,194,139,.24)!important}
+.panel,.metric,.stat,.rowitem,.chip,.btn,.nav{border-radius:10px}
+.btn.primary{
+ background:linear-gradient(135deg,#f0d99d 0%,#d0ad69 48%,#a77e43 100%)!important;
+ color:#191710!important;border:1px solid #f0d99d!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.25),0 3px 10px rgba(0,0,0,.28);
+}
+.btn.primary:active{filter:brightness(.92)}
+.btn.secondary{
+ background:rgba(20,30,40,.88)!important;border:1px solid #b89b72!important;color:#e4d6b9!important;
+}
+.btn.jade{background:linear-gradient(135deg,#b8c7a8,#748c78)!important;color:#17201a!important}
+.bottom{
+ background:rgba(7,11,13,.96)!important;
+ border-top:1px solid #b89b72!important;
+ box-shadow:0 -4px 18px rgba(0,0,0,.3);
+}
+.bottom .nav{
+ position:relative;background:transparent!important;color:#a8a394!important;
+ border-radius:8px!important;gap:4px!important;font-size:10px!important;
+}
+.bottom .nav .ico{
+ position:relative;display:block;width:23px;height:22px;font-size:0!important;line-height:0!important;
+}
+.bottom .nav .ico:before,.bottom .nav .ico:after{
+ content:"";position:absolute;display:block;box-sizing:border-box;
+}
+.bottom .nav[data-screen="home"] .ico:before{
+ left:3px;top:8px;width:17px;height:12px;border:1.7px solid currentColor;border-top:0;
+}
+.bottom .nav[data-screen="home"] .ico:after{
+ left:3px;top:2px;width:17px;height:17px;border-left:1.7px solid currentColor;border-top:1.7px solid currentColor;transform:rotate(45deg) scale(.72);
+}
+.bottom .nav[data-screen="cultivate"] .ico:before{
+ left:10px;top:1px;width:4px;height:17px;border:1.5px solid currentColor;border-radius:2px;transform:rotate(38deg);
+}
+.bottom .nav[data-screen="cultivate"] .ico:after{
+ left:4px;top:10px;width:15px;height:7px;border:1.5px solid currentColor;border-radius:1px;transform:rotate(38deg);
+}
+.bottom .nav[data-screen="forge"] .ico:before{
+ left:1px;bottom:1px;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-bottom:18px solid currentColor;opacity:.85;
+}
+.bottom .nav[data-screen="forge"] .ico:after{
+ left:8px;bottom:1px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:11px solid rgba(7,11,13,.95);
+}
+.bottom .nav[data-screen="bag"] .ico:before{
+ left:3px;top:7px;width:17px;height:14px;border:1.6px solid currentColor;border-radius:3px;
+}
+.bottom .nav[data-screen="bag"] .ico:after{
+ left:7px;top:3px;width:9px;height:7px;border:1.6px solid currentColor;border-bottom:0;border-radius:5px 5px 0 0;
+}
+.bottom .nav[data-screen="journal"] .ico:before{
+ left:3px;top:5px;width:4px;height:4px;border-radius:50%;background:currentColor;box-shadow:7px 0 0 currentColor,14px 0 0 currentColor;
+}
+.bottom .nav[data-screen="journal"] .ico:after{
+ left:3px;top:15px;width:18px;border-top:1.6px solid currentColor;
+}
+.bottom .nav.active{
+ color:#e5c681!important;background:linear-gradient(180deg,rgba(184,155,114,.2),rgba(184,155,114,.05))!important;
+ box-shadow:inset 0 0 0 1px rgba(184,155,114,.34)!important;
+}
+.bottom .nav.active .ico{filter:drop-shadow(0 0 4px rgba(216,183,120,.2))}
+.page-title h2,.secthead,.hero h2,.metric strong,.stat b{color:#e8d4a5}
+.progress{border-color:rgba(184,155,114,.25)!important;background:rgba(5,10,12,.9)!important}
+.progress span{background:linear-gradient(90deg,#8f9d8c,#d8b778)!important}
+.status-version{color:#b89b72!important}
+@media(max-width:380px){
+ .top-avatar{flex-basis:25px;width:25px;height:25px}
+ .bottom .nav{font-size:9px!important}
+ .bottom .nav .ico{transform:scale(.9)}
+}
+
 </style>
 
 </head><body class="launch-gate">
@@ -1170,13 +1351,13 @@ body .app>header.top.statusline>#spiritTop{display:none!important}
   <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.33">
-  <div class="status-name" aria-label="角色名稱"><b id="statusCharacterName">韓立</b></div>
+<header class="top statusline" aria-label="角色狀態列 v0.34">
+  <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.33</small>
+  <small class="status-version" aria-label="遊戲版本">v0.34</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -1540,11 +1721,11 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
 /* === v1.4 verified interaction layer: preserve save schema and legacy functions === */
 (function installV14(){
  const navSpec=[
-  {id:'cultivate',label:'功法修煉',icon:''},
-  {id:'home',label:'歷練試煉',icon:''},
-  {id:'bag',label:'法寶丹藥',icon:''},
-  {id:'forge',label:'機緣祈寶',icon:''},
-  {id:'journal',label:'仙途紀事',icon:''}
+  {id:'home',label:'首頁',icon:'house'},
+  {id:'cultivate',label:'修煉',icon:'sword'},
+  {id:'forge',label:'探索',icon:'mountain'},
+  {id:'bag',label:'背包',icon:'bag'},
+  {id:'journal',label:'更多',icon:'more'}
  ];
  const navRoot=document.querySelector('.bottom');
  if(navRoot){
