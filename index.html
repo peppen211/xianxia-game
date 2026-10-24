@@ -491,81 +491,35 @@ main{flex:1 1 auto;min-height:0;overflow:hidden!important;position:relative}
 
 #journal>#journalV14Dock{display:flex!important;flex-direction:column;gap:8px;flex:1;min-height:0}
 
-/* v1.5 layout correction */
-html,body,.app{height:100%;height:100dvh;overflow:hidden!important;overscroll-behavior:none}
-.app{min-height:0}
-.top.statusline{height:clamp(38px,8vh,56px);min-height:0;max-height:10vh;flex:0 0 auto;display:grid;grid-template-columns:minmax(48px,.78fr) minmax(66px,1fr) minmax(136px,2.2fr) minmax(40px,.58fr);gap:3px;padding:3px 5px;align-items:center;overflow:hidden}
-.status-realm,.status-xp,.status-power{min-width:0}
-.status-realm small,.status-xp-label small{font-size:7px;line-height:1}
-.status-realm b{font-size:9px;line-height:1.1}
-.status-xp-label b{font-size:8px;line-height:1}
-.status-xp .progress{height:5px;margin:2px 0 0}
-.top.statusline .currencies{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;min-width:0;width:100%;max-width:none;overflow:hidden}
-.top.statusline .resource-chip{display:grid;grid-template-columns:10px minmax(0,1fr);grid-template-rows:10px 11px;align-items:center;justify-items:center;gap:0;padding:1px 0;min-width:0;width:100%;height:25px;line-height:1;overflow:hidden;border-radius:5px;font-size:8px;white-space:nowrap}
-.top.statusline .resource-chip .resource-icon{grid-column:1;grid-row:2;font-size:8px;line-height:1}
-.top.statusline .resource-chip .resource-label{grid-column:1/3;grid-row:1;display:block;font-size:5.8px;line-height:1;text-align:center;white-space:nowrap;color:var(--muted)}
-.top.statusline .resource-chip b{grid-column:2;grid-row:2;justify-self:start;font-size:8px;line-height:1;max-width:100%;overflow:hidden}
-.top.statusline .status-power{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:7px;white-space:nowrap}
-.top.statusline .status-power b{font-size:10px;line-height:1}
-#spiritTop,.hero-bottom,.realm-row,.metric{display:none!important}
-main{position:relative;flex:1 1 auto;min-height:0;overflow:hidden!important}
-.screen{display:none!important;position:absolute;inset:0;height:100%;min-height:0;overflow:hidden!important;overscroll-behavior:none;padding:7px 8px!important;gap:6px!important}
-.screen.active{display:flex!important}
-.screen>*{flex-shrink:0}
-.screen .page-title{flex:0 0 auto;margin:0;min-height:24px}
-.screen .page-title h2{font-size:14px}
-#home .hero,#home .idle-card,#home .chronicle-teaser{display:none!important}
-#home .battle{display:flex!important;flex-direction:column;flex:1 1 auto;min-height:0!important;height:100%;overflow:hidden;padding:8px!important;gap:7px!important}
-#home .enemy-scene{height:auto!important;min-height:100px!important;flex:1 1 auto;max-height:34vh;position:relative}
-#home .battle-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;flex:0 0 auto}
-#home #attackBtn{grid-column:1/-1;min-height:44px;font-size:15px;font-weight:900;letter-spacing:1px;box-shadow:0 4px 16px #e8c77a26}
-#home .battle-toggles{display:flex;flex-wrap:wrap;align-items:center;gap:5px;flex:0 0 auto}
-#home #battleStory{display:none!important}
-#cultivate .realm-art{height:54px;min-height:54px;flex:0 0 54px}
-#cultivate .realm-desc{font-size:9px;line-height:1.25;flex:0 0 auto}
-#cultivate .panel:has(#breakBtn){flex:0 0 auto;padding:8px!important}
-#cultivate #methodList{display:grid!important;grid-template-columns:minmax(0,1fr);gap:5px;overflow:hidden!important;min-height:0;flex:1 1 auto}
-#cultivate .method-card{display:grid!important;grid-template-columns:26px minmax(0,1fr) auto;grid-template-rows:auto auto auto;align-items:center;gap:2px 6px;padding:6px!important;min-height:0}
-#cultivate .method-card .method-icon{grid-column:1;grid-row:1/4;font-size:18px}
-#cultivate .method-card>b{grid-column:2;grid-row:1;font-size:10px}
-#cultivate .method-card small{grid-column:2;grid-row:2;font-size:8px;line-height:1.2}
-#cultivate .method-card .method-tag{grid-column:2;grid-row:3;font-size:7px}
-#cultivate .method-card .method-meta{grid-column:2;grid-row:auto;font-size:7px;line-height:1.15}
-#cultivate .method-card button{grid-column:3;grid-row:1/4;max-width:88px;min-height:30px;font-size:8px;padding:4px}
-#character,#bag,#forge,#journal{gap:6px}
-#character .hidden-content,#character .scrolllist,#bag .hidden-content,#bag .scrolllist{display:none!important}
-#bag .slotgrid{flex:0 0 auto}
-#forge .panel{flex:0 0 auto;padding:9px!important}
-#forge .realm-art{flex:0 0 auto}
-#forge .forge-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
-#journal #journalV14Dock{display:flex!important;flex-direction:column;gap:8px;flex:1;min-height:0}
-#journal #journalV14Dock .panel{padding:10px!important;flex:0 0 auto}
-#journal #journalV14Dock p{font-size:10px;line-height:1.45;color:var(--muted);margin:6px 0}
-#journal>:not(#journalV14Dock){display:none!important}
-.bottom{height:clamp(58px,9vh,68px);min-height:58px;flex:0 0 auto;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:4px 5px calc(4px + env(safe-area-inset-bottom));overflow:hidden}
-.nav{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;white-space:nowrap;padding:3px 1px;border-radius:9px}
-.nav>span:not(.ico){font-size:inherit;line-height:1.1}
-.nav .ico{font-size:18px;line-height:1}
-.nav.active{color:var(--gold);background:#e8c77a14;box-shadow:inset 0 0 0 1px #e8c77a35}
-.ui-modal{z-index:100}
-.modal-card{max-height:min(88dvh,760px);display:flex;flex-direction:column}
-.modal-body{overflow:auto;min-height:0;overscroll-behavior:contain}
-.chronicle-list{display:flex;flex-direction:column;gap:7px}
-.chronicle-entry{padding:10px;border:1px solid #ffffff16;border-radius:12px;background:#202b39;margin:0}
-.chronicle-entry.future{opacity:.6}
-.chronicle-entry h3,.chronicle-entry b{color:var(--gold)}
-.chronicle-entry p{font-size:10px;line-height:1.65;color:#d5deea;margin:7px 0}
-.chronicle-entry .meta,.chronicle-world,.chronicle-task{font-size:9px;line-height:1.55;color:var(--muted)}
-.chronicle-entry button{width:100%;margin-top:7px}
-@media(max-width:380px){
- .top.statusline{grid-template-columns:minmax(42px,.72fr) minmax(58px,1fr) minmax(124px,2.15fr) minmax(31px,.52fr);gap:2px;padding:3px}
- .top.statusline .resource-chip{grid-template-columns:9px minmax(0,1fr)}
- .top.statusline .resource-chip .resource-label{font-size:5.5px}
- .top.statusline .resource-chip b{font-size:7px}
- .status-realm b{font-size:8px}
- #home .enemy-scene{min-height:90px!important}
- .nav{font-size:8px}
-}
+/* === 42f3da21 additive layout patch: compact one-line status, duplicate-stat cleanup, five equal tabs === */
+.top.statusline{height:clamp(46px,9.4vh,68px)!important;max-height:10vh!important;min-height:0!important;display:grid!important;grid-template-columns:minmax(62px,.9fr) minmax(82px,1.35fr) minmax(150px,3fr) minmax(42px,.62fr);align-items:center;gap:clamp(3px,.7vw,8px);padding:4px clamp(5px,1vw,12px)!important;overflow:hidden}
+.top.statusline .status-realm,.top.statusline .status-xp,.top.statusline .currencies,.top.statusline .status-power{min-width:0;max-width:100%;align-self:center}
+.top.statusline .status-realm{display:flex;flex-direction:column;gap:1px;overflow:hidden}
+.top.statusline .status-realm small,.top.statusline .status-power span,.top.statusline .status-xp-label small{font-size:clamp(7px,1.05vw,10px);line-height:1.1;white-space:nowrap}
+.top.statusline .status-realm b{font-size:clamp(9px,1.35vw,13px);line-height:1.15;white-space:nowrap}
+.top.statusline .status-xp-label{display:flex;justify-content:space-between;align-items:center;gap:3px;min-width:0}
+.top.statusline .status-xp-label b{font-size:clamp(8px,1.2vw,12px);white-space:nowrap}
+.top.statusline .status-xp .progress{height:5px;margin-top:4px}
+.top.statusline .currencies{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(2px,.45vw,6px);align-items:center}
+.top.statusline .resource-chip{display:flex;align-items:center;justify-content:center;gap:2px;min-width:0;max-width:100%;padding:3px 1px!important;border:1px solid #ffffff12;border-radius:7px;white-space:nowrap;overflow:hidden;font-size:clamp(8px,1.1vw,12px);line-height:1.1}
+.top.statusline .resource-chip .resource-label{display:none!important}
+.top.statusline .resource-chip b{font-size:clamp(8px,1.1vw,12px);font-variant-numeric:tabular-nums}
+.top.statusline .resource-chip .reward-dot{display:none!important}
+.top.statusline #spiritTop,.top.statusline .core-break{display:none!important}
+.top.statusline .status-power{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;white-space:nowrap;overflow:hidden}
+.top.statusline .status-power b{font-size:clamp(10px,1.5vw,15px);line-height:1.1}
+#home .hero-bottom,#home .realm-row,#home .hero .hero-bottom{display:none!important}
+#home .hero{min-height:0!important;height:clamp(90px,16vh,145px)!important;flex:0 0 auto!important;overflow:hidden}
+#home .battle{min-height:0!important;flex:1 1 auto!important;overflow:hidden}
+#home .idle-card{flex:0 0 auto!important;min-height:0!important}
+#home .metric,#home .realm-row .metric{display:none!important}
+main .screen{overflow:hidden!important;overscroll-behavior:none}
+.bottom{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:4px!important;width:100%;min-height:clamp(54px,8.5vh,70px)!important;padding:5px max(5px,env(safe-area-inset-right)) calc(5px + env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left))!important}
+.bottom .nav{display:flex!important;flex-direction:column!important;align-items:center;justify-content:center;gap:3px!important;min-width:0!important;width:100%;height:100%;padding:4px 1px!important;border-radius:10px;font-size:clamp(8px,1.1vw,11px)!important;line-height:1.1;white-space:normal!important;text-align:center}
+.bottom .nav .ico{display:block!important;font-size:clamp(16px,2.4vh,22px)!important;line-height:1.1}
+.bottom .nav.active{background:linear-gradient(180deg,#bfa66a26,#bfa66a0b)!important;border:1px solid #e8c77a88!important;color:#f5d992!important;box-shadow:inset 0 0 0 1px #e8c77a18}
+@media(max-width:420px){.top.statusline{grid-template-columns:minmax(51px,.8fr) minmax(72px,1.12fr) minmax(124px,2.35fr) minmax(35px,.55fr);gap:2px;padding:3px 4px!important}.top.statusline .status-realm small,.top.statusline .status-power span,.top.statusline .status-xp-label small{font-size:7px}.top.statusline .status-realm b{font-size:9px}.top.statusline .resource-chip{gap:1px;font-size:9px}.top.statusline .resource-chip b{font-size:9px}.top.statusline .status-xp-label b{font-size:8px}.bottom{gap:2px!important}.bottom .nav{font-size:8px!important}}
+@media(max-height:620px){.top.statusline{height:9vh!important}#home .hero{height:12vh!important}#home .enemy-scene{min-height:95px!important}.bottom{min-height:50px!important}}
 
 </style></head><body><div class="app">
 <header class="top statusline">
@@ -608,7 +562,7 @@ main{position:relative;flex:1 1 auto;min-height:0;overflow:hidden!important}
  <button class="nav" data-screen="journal-modal"><span class="ico">📜</span>仙途紀事</button>
 </nav>
 </div>
-<script type="application/json" id="gameConfigData">{"version":"1.3.0","maxOfflineSeconds":28800,"xp":{"base":100,"majorGrowth":1.28,"layerGrowth":1.17},"skillCooldownHits":2,"elements":["金","木","水","火","土"],"elementCounters":{"金":"木","木":"土","土":"水","水":"火","火":"金"},"elementDamage":{"advantage":1.35,"disadvantage":0.8,"neutral":1},"methods":[{"cost":0,"tag":"輸出","unlock":"初始解鎖","effect":"修為累積 +20%","rate":1.2},{"cost":80,"tag":"放置","unlock":"累積 80 靈石即可解鎖","effect":"放置收益提升 35%","rate":1.35},{"cost":120,"tag":"生存","unlock":"累積 120 靈石即可解鎖","effect":"戰鬥攻擊提升 20%","rate":1}],"chapters":[{"episode":"動畫對應：凡人起步篇，集數依官方平台季別標示","location":"青牛鎮、嘉元城、七玄門","characters":"韓立、墨大夫、張鐵","event":"凡人入門、接觸長春功與掌天瓶，開始學習自保與辨識機緣。","realm":"凡俗至練氣","map":"青牛鎮","dungeon":"山野試煉","unlock":"基礎吐納、靈草採集"},{"episode":"動畫對應：七玄門與升仙令篇，集數依官方平台季別標示","location":"七玄門、升仙會、黃楓谷","characters":"韓立、墨彩環、南宮婉（後續相遇）","event":"從江湖轉入修仙門派，開始接觸修士規則與宗門資源。","realm":"練氣","map":"七玄門外山","dungeon":"靈脈巡查","unlock":"心法切換、丹藥補給"},{"episode":"動畫對應：血色禁地與越國修仙界篇，集數依官方平台季別標示","location":"黃楓谷、血色禁地、越國","characters":"韓立、南宮婉、王蟬","event":"參與高風險秘境與宗門衝突，運用法器、符籙和準備脫困。","realm":"練氣後期至築基","map":"黃楓谷外圍","dungeon":"血色秘境（遊戲化）","unlock":"祈寶、法寶欄位"},{"episode":"動畫對應：亂星海篇，集數依官方平台季別標示","location":"亂星海、坊市、外海","characters":"韓立、紫靈、元瑤","event":"在陌生海域重新累積資源，探索妖獸、坊市與修士勢力。","realm":"結丹前後","map":"亂星海","dungeon":"妖獸海溝","unlock":"海域材料、法寶成長"},{"episode":"動畫對應：重返天南與古修遺跡篇，集數依官方平台季別標示","location":"天南、大晉、墜魔谷、昆吾山","characters":"韓立、南宮婉、慕蘭與正魔各派修士","event":"探索古修傳承並周旋於高階修士勢力，為更高境界做準備。","realm":"元嬰至化神","map":"越國修仙界","dungeon":"古修遺跡","unlock":"高階心法、傀儡與劍陣"},{"episode":"動畫對應：飛升靈界篇，集數依官方平台季別標示","location":"靈界、人族領地、天淵城、廣寒界","characters":"韓立、銀月、各族修士","event":"飛升後重新立足，面對種族勢力、秘境和法則修行。","realm":"煉虛至大乘","map":"靈界邊城","dungeon":"跨界遺跡","unlock":"種族勢力、法則修煉"},{"episode":"動畫對應：仙界篇前中期，集數依官方平台季別標示","location":"北寒仙域、輪迴殿、真言門遺跡","characters":"韓立、南宮婉、輪迴殿相關人物","event":"重新從低處修行，追索時間法則與仙界機緣。","realm":"真仙至大羅方向","map":"北寒仙域","dungeon":"真言門遺跡","unlock":"時間法則、仙器與跨界探索"},{"episode":"動畫對應：仙界終局方向，集數依官方平台季別標示","location":"天庭、魔域及相關界域","characters":"韓立、古或今及各方同道","event":"時間法則、掌天瓶與長年因果交會，主線走向終局對決與長生道途。","realm":"道祖方向","map":"仙域","dungeon":"天道試煉","unlock":"終局挑戰、長生目標"}],"initial":{"gold":100,"spirit":0,"herbs":3,"pills":2,"atk":10,"def":3,"hp":100,"maxHp":100,"wood":2,"crystal":1},"skillDamageMultiplier":2.1,"sneakAttackMultiplier":1.55,"breakthrough":{"successRate":0.85,"goldCost":50,"herbCost":1,"failHpLoss":0.25,"successHpRestore":1},"battle":{"autoIntervalMs":1400,"fastIntervalMs":900,"damageFloatMs":1050,"speedIntervalsMs":{"1":1400,"2":900,"3":550}},"idle":{"xpIntervalSeconds":12,"goldIntervalSeconds":90,"saveIntervalMs":15000,"offlineCapSeconds":28800}}</script>
+<script type="application/json" id="gameConfigData">{"version":"1.3.0","maxOfflineSeconds":28800,"xp":{"base":100,"majorGrowth":1.28,"layerGrowth":1.17},"skillCooldownHits":2,"elements":["金","木","水","火","土"],"elementCounters":{"金":"木","木":"土","土":"水","水":"火","火":"金"},"elementDamage":{"advantage":1.35,"disadvantage":0.8,"neutral":1},"methods":[{"cost":0,"tag":"輸出","unlock":"吐納已解鎖（0 靈石）","effect":"修為累積 +20%","rate":1.2},{"cost":80,"tag":"放置","unlock":"累積 80 靈石即可解鎖","effect":"放置收益提升 35%","rate":1.35},{"cost":120,"tag":"生存","unlock":"累積 120 靈石即可解鎖","effect":"戰鬥攻擊提升 20%","rate":1}],"chapters":[{"episode":"動畫對應：凡人起步篇，集數依官方平台季別標示","location":"青牛鎮、嘉元城、七玄門","characters":"韓立、墨大夫、張鐵","event":"凡人入門、接觸長春功與掌天瓶，開始學習自保與辨識機緣。","realm":"凡俗至練氣","map":"青牛鎮","dungeon":"山野試煉","unlock":"基礎吐納、靈草採集"},{"episode":"動畫對應：七玄門與升仙令篇，集數依官方平台季別標示","location":"七玄門、升仙會、黃楓谷","characters":"韓立、墨彩環、南宮婉（後續相遇）","event":"從江湖轉入修仙門派，開始接觸修士規則與宗門資源。","realm":"練氣","map":"七玄門外山","dungeon":"靈脈巡查","unlock":"心法切換、丹藥補給"},{"episode":"動畫對應：血色禁地與越國修仙界篇，集數依官方平台季別標示","location":"黃楓谷、血色禁地、越國","characters":"韓立、南宮婉、王蟬","event":"參與高風險秘境與宗門衝突，運用法器、符籙和準備脫困。","realm":"練氣後期至築基","map":"黃楓谷外圍","dungeon":"血色秘境（遊戲化）","unlock":"祈寶、法寶欄位"},{"episode":"動畫對應：亂星海篇，集數依官方平台季別標示","location":"亂星海、坊市、外海","characters":"韓立、紫靈、元瑤","event":"在陌生海域重新累積資源，探索妖獸、坊市與修士勢力。","realm":"結丹前後","map":"亂星海","dungeon":"妖獸海溝","unlock":"海域材料、法寶成長"},{"episode":"動畫對應：重返天南與古修遺跡篇，集數依官方平台季別標示","location":"天南、大晉、墜魔谷、昆吾山","characters":"韓立、南宮婉、慕蘭與正魔各派修士","event":"探索古修傳承並周旋於高階修士勢力，為更高境界做準備。","realm":"元嬰至化神","map":"越國修仙界","dungeon":"古修遺跡","unlock":"高階心法、傀儡與劍陣"},{"episode":"動畫對應：飛升靈界篇，集數依官方平台季別標示","location":"靈界、人族領地、天淵城、廣寒界","characters":"韓立、銀月、各族修士","event":"飛升後重新立足，面對種族勢力、秘境和法則修行。","realm":"煉虛至大乘","map":"靈界邊城","dungeon":"跨界遺跡","unlock":"種族勢力、法則修煉"},{"episode":"動畫對應：仙界篇前中期，集數依官方平台季別標示","location":"北寒仙域、輪迴殿、真言門遺跡","characters":"韓立、南宮婉、輪迴殿相關人物","event":"重新從低處修行，追索時間法則與仙界機緣。","realm":"真仙至大羅方向","map":"北寒仙域","dungeon":"真言門遺跡","unlock":"時間法則、仙器與跨界探索"},{"episode":"動畫對應：仙界終局方向，集數依官方平台季別標示","location":"天庭、魔域及相關界域","characters":"韓立、古或今及各方同道","event":"時間法則、掌天瓶與長年因果交會，主線走向終局對決與長生道途。","realm":"道祖方向","map":"仙域","dungeon":"天道試煉","unlock":"終局挑戰、長生目標"}],"initial":{"gold":100,"spirit":0,"herbs":3,"pills":2,"atk":10,"def":3,"hp":100,"maxHp":100,"wood":2,"crystal":1},"skillDamageMultiplier":2.1,"sneakAttackMultiplier":1.55,"breakthrough":{"successRate":0.85,"goldCost":50,"herbCost":1,"failHpLoss":0.25,"successHpRestore":1},"battle":{"autoIntervalMs":1400,"fastIntervalMs":900,"damageFloatMs":1050,"speedIntervalsMs":{"1":1400,"2":900,"3":550}},"idle":{"xpIntervalSeconds":12,"goldIntervalSeconds":90,"saveIntervalMs":15000,"offlineCapSeconds":28800}}</script>
 <script>
 const GAME_CONFIG=JSON.parse(document.getElementById("gameConfigData").textContent);
 const FIVE_ELEMENTS=GAME_CONFIG.elements;
@@ -1022,37 +976,6 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
  /* Keep saved values untouched; all five tabs only change the active panel. */
  switchScreen('home');
  render();
-})();
-
-
-/* v1.5 final UI and chapter-node wiring; preserve legacy save schema */
-(function(){
- const resources=[["goldTop","🪙","靈石","gold"],["herbsTop","🌿","靈草","herbs"],["woodTop","🪵","靈木","wood"],["crystalTop","💠","靈晶","crystal"]];
- resources.forEach(([id,icon,label,key])=>{const old=document.getElementById(id),chip=old&&old.closest(".resource-chip");if(!chip)return;chip.innerHTML='<span class="resource-icon" aria-hidden="true">'+icon+'</span><span class="resource-label">'+label+'</span><b id="'+id+'">'+(s[key]||0)+'</b><i class="reward-dot" aria-hidden="true"></i>';chip.setAttribute("aria-label",label+"；目前持有 "+(s[key]||0))});
- const chapterTitles=['凡人篇一 · 初入仙途','凡人篇二 · 入門修行','凡人篇三 · 宗門與秘境','亂星海篇 · 海域求生','凡界後期 · 古修傳承','靈界篇 · 跨界修行','仙界篇 · 時間法則','仙界終局 · 長生問道'];
- const nextTitles=['七玄門試煉','宗門任務','秘境探索','古修遺跡','飛升靈界','仙域探索','天庭之戰','終章'];
- const chapterData=GAME_CONFIG.chapters.map((c,i)=>({title:chapterTitles[i]||('主線篇章 '+(i+1)),map:c.map||'未知地圖',dungeon:c.dungeon||'主線試煉',unlock:c.unlock||'完成前置節點',next:nextTitles[i]||'後續篇章',episode:c.episode||'主線篇章',location:c.location||c.map||'修仙界',characters:c.characters||'韓立與相關人物',event:c.event||'本節描述修行、探索與機緣的發展。',realm:c.realm||'依角色境界推進'}));
- const tabs=[{id:"cultivate",label:"功法修煉",icon:"☯"},{id:"home",label:"歷練試煉",icon:"⚔"},{id:"bag",label:"法寶丹藥",icon:"🧪"},{id:"forge",label:"機緣祈寶",icon:"💠"},{id:"journal",label:"仙途紀事",icon:"📜"}];
- const nav=document.querySelector(".bottom");
- if(nav){nav.innerHTML=tabs.map(t=>'<button type="button" class="nav" data-screen="'+t.id+'" aria-label="'+t.label+'"><span class="ico">'+t.icon+'</span><span>'+t.label+'</span></button>').join("");nav.onclick=e=>{const b=e.target.closest(".nav[data-screen]");if(b){e.preventDefault();switchScreen(b.dataset.screen)}}}
- window.switchScreen=function(id){if(id==="bag-modal")id="bag";if(id==="journal-modal"){openChronicleModal();return}if(!tabs.some(t=>t.id===id))id="home";document.querySelectorAll("main .screen").forEach(el=>{el.classList.toggle("active",el.id===id);el.scrollTop=0});document.querySelectorAll(".bottom .nav").forEach(el=>{const on=el.dataset.screen===id;el.classList.toggle("active",on);if(on)el.setAttribute("aria-current","page");else el.removeAttribute("aria-current")});render()};
- const priorRender=window.render;
- window.render=function(){priorRender();resources.forEach(([id,icon,label,key])=>{const el=document.getElementById(id);if(el){el.textContent=String(Number(s[key]||0));const chip=el.closest(".resource-chip");if(chip)chip.setAttribute("aria-label",label+"；目前持有 "+el.textContent)}});const xp=Math.max(0,Number(s.xp||0)),need=Math.max(1,xpNeed()),xt=document.getElementById("globalXpText"),xb=document.getElementById("globalXpBar");if(xt)xt.textContent=Math.floor(xp)+"/"+need;if(xb)xb.style.width=Math.min(100,xp/need*100)+"%";const list=document.getElementById("methodList");if(list)list.innerHTML=methods.map((m,i)=>{const d=GAME_CONFIG.methods[i]||{unlock:"累積靈石解鎖",cost:m.cost},owned=Array.isArray(s.ownedMethods)&&s.ownedMethods.includes(i),chosen=s.method===i,condition=i===0?"吐納已解鎖":d.unlock;return '<article class="method-card '+(chosen?"chosen":"")+'"><div class="method-icon">'+m.icon+'</div><b>'+esc(m.name)+(chosen?" ✓":"")+'</b><small>'+esc(m.bonus)+'</small><span class="method-tag">'+esc(d.tag||"心法")+'</span><span class="method-meta">解鎖條件：'+esc(condition)+(owned?" · 已解鎖":"")+'</span><span class="method-meta">消耗：'+(i===0?"0":Number(m.cost||0))+' 靈石'+(owned?"（已支付）":"")+'</span><button class="btn '+(chosen?"jade":"secondary")+'" '+(chosen?"disabled":"")+' onclick="selectMethod('+i+')">'+(chosen?"✓ 修煉中":owned?"切換心法":"解鎖 / 修煉")+'</button></article>'}).join("")};
- const summaries=[
- "韓立出身凡俗，最初只求改善家境與尋找出路。接觸修行後，他沒有把機緣當作保證，而是逐步建立謹慎觀察、保留退路與積累資源的行事方式。此節作為凡人篇起點，呈現從普通少年踏入修仙世界的第一道門檻。",
- "進入七玄門與接觸墨家相關事件後，韓立開始理解凡俗武學、師徒關係與修行傳承背後的風險。他學會以實際證據判斷他人意圖，並把基本功、藥物知識與自我保護視為長期生存的根基。",
- "掌天瓶與藥草機緣令修行資源循環出現轉機。韓立一面熟悉宗門規矩，一面透過準備、培育與交易累積資本；升仙會、黃楓谷與血色禁地等事件，讓他逐步接觸修士間的競爭與秘境風險。",
- "築基後，韓立面對的已不只是個人修煉，還包括越國正魔勢力、宗門衝突與更高風險的資源爭奪。他以情報、法器、丹藥和撤退計畫降低風險，在局勢變化中尋找可持續修行的空間。",
- "結丹與亂星海篇把故事推向遠行求生。坊市交易、外海探索、妖獸材料與勢力角力交織，韓立必須重新建立立足點；古修洞府與各類傳承帶來機緣，也要求他衡量代價與自身能力。",
- "重返天南、墜魔谷、昆吾山與大晉相關事件逐步擴大修仙世界的歷史縱深。韓立面對古修遺跡、各方強者與因果牽連，持續以準備、判斷和適時退讓避開不必要的死局，向更高境界推進。",
- "飛升靈界後，韓立重新面對不同種族、城市防線與更高階修士的秩序。天淵城、廣寒界及靈界諸域的探索將資源管理擴展到族群局勢、法則修煉與長期布局，凡界經驗成為新旅程的基礎。",
- "仙界篇以更高層次的仙域勢力、傳承與時間法則為主軸。韓立在新的規則中重新累積力量，辨識輪迴殿、真言門等相關線索，逐步走向更高境界與長生道途的終局抉擇。"
- ];
- function nodeIdx(){return Math.min(chapterData.length-1,Math.max(0,Number(s.major||0)+Math.floor(Number(s.kills||0)/4)))}
- window.openChapterNode=function(i){i=Number(i);const n=chapterData[i];if(!n)return;if(i>nodeIdx()){toast("此節點尚未解鎖，請先完成前置修煉與試煉");return}openModal(n.title,'<article class="chronicle-entry"><h3>'+esc(n.title)+'</h3><div class="chronicle-world">篇章：'+esc(n.episode)+'<br>地點：'+esc(n.location)+'<br>地圖：'+esc(n.map)+' · 副本：'+esc(n.dungeon)+'<br>人物：'+esc(n.characters)+'<br>境界：'+esc(n.realm)+'</div><p>'+esc(summaries[i]||n.event)+'</p><div class="chronicle-task">解鎖條件：'+esc(n.unlock)+'<br>下一節點：'+esc(n.next)+'</div></article>')};
- window.openChronicleModal=function(){const idx=nodeIdx(),list=chapterData.map((n,i)=>{const unlocked=i<=idx;return '<article class="chronicle-entry '+(i<idx?"done":i===idx?"current":"future")+'"><div class="chronicle-top"><b>'+(unlocked?"📖 ":"🔒 ")+(i+1)+". "+esc(n.title)+'</b><span>'+(i<idx?"已完成":i===idx?"目前節點":"未解鎖")+'</span></div><div class="chronicle-world">篇章：'+esc(n.episode)+'<br>地圖：'+esc(n.map)+' · 副本：'+esc(n.dungeon)+'<br>地點：'+esc(n.location)+' · 境界：'+esc(n.realm)+'</div><p>'+esc(n.event)+'</p><div class="chronicle-task">解鎖條件：'+esc(n.unlock)+'<br>下一節點：'+esc(n.next)+'</div><button class="btn secondary" '+(unlocked?'onclick="openChapterNode('+i+')"':'disabled')+'>'+(unlocked?"閱讀節點全文":"🔒 尚未解鎖")+'</button></article>'}).join("");openModal("仙途紀事｜八階段主線節點資料庫",'<div class="panel"><b>八階段篇章節點資料庫</b><p>每一節包含篇章索引、地點、地圖、副本、人物、境界、解鎖條件與原創章節摘要。點擊已解鎖節點可在彈窗閱讀完整遊戲摘要；不複製小說或動畫受版權保護的原文。</p><p>目前進度：第 '+(idx+1)+' / '+chapterData.length+' 階段。</p></div><div class="chronicle-list">'+list+'</div>')};
- const j=document.getElementById("journal");if(j){const dock=document.getElementById("journalV14Dock");if(dock){dock.style.display="flex";const b=document.getElementById("openNodeDatabase");if(b)b.onclick=openChronicleModal}j.querySelectorAll(':scope > *:not(#journalV14Dock)').forEach(el=>el.style.display="none")}
- document.querySelectorAll("main .screen").forEach(el=>el.scrollTop=0);switchScreen("home");render();
 })();
 
 </script></body></html>
