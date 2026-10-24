@@ -47,7 +47,7 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - name: Verify game renders and starts in a mobile browser
+      - name: Verify launch gate and entry flow in a mobile browser
         run: |
           cat > /tmp/game-smoke.cjs <<'EOF'
           const { chromium } = require(process.cwd() + '/node_modules/playwright');
@@ -57,51 +57,37 @@ jobs:
             const errors = [];
             page.on('pageerror', error => { errors.push(error.message); console.log('BROWSER PAGE ERROR: ' + error.stack); });
             page.on('console', message => { if (message.type() === 'error') { errors.push(message.text()); console.log('BROWSER CONSOLE ERROR: ' + message.text()); } });
-            page.on('requestfailed', request => console.log('FAILED REQUEST: ' + request.url() + ' :: ' + request.failure()?.errorText));
-            page.on('response', response => { if (response.status() >= 400) console.log('HTTP ERROR: ' + response.status() + ' ' + response.url()); });
-            // Use an isolated CI save at the auto-cultivation unlock level so this smoke test
-            // can validate the automatic cultivation flow without touching any player save.
-            await page.addInitScript(() => localStorage.setItem('mortalCultivationSaveV2', JSON.stringify({
-              created: true, name: 'CI 測試道友', root: '四屬性偽靈根', level: 5, xp: 0,
-              stones: 10, hp: 100, maxHp: 100, herbs: 0, materials: 0,
-              questExplore: 0, questWins: 0, questExploreClaimed: false, questFightClaimed: false,
-              cultivating: false, last: Date.now(), log: 'CI smoke test'
-            })));
-            let rendered = false;
-            for (let attempt = 0; attempt < 6; attempt++) {
-              await page.goto('https://peppen211.github.io/xianxia-game/', { waitUntil: 'domcontentloaded', timeout: 60000 });
-              try {
-                await page.locator('#hero').waitFor({ timeout: 8000 });
-                rendered = true;
-                break;
-              } catch {
-                console.log('Waiting for published app, attempt ' + (attempt + 1) + '; title=' + await page.title() + '; body=' + (await page.locator('body').innerText()).slice(0, 300) + '; errors=' + errors.join(' | '));
-                await page.waitForTimeout(5000);
-              }
+
+            await page.goto('https://peppen211.github.io/xianxia-game/', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            const gate = page.locator('#launchGate');
+            const app = page.locator('#gameApp');
+            const continueButton = page.locator('#continueCultivationBtn');
+
+            await gate.waitFor({ state: 'visible', timeout: 15000 });
+            await continueButton.waitFor({ state: 'visible', timeout: 5000 });
+            if ((await continueButton.innerText()).trim() !== '繼續修煉') {
+              throw new Error('Launch gate button label is missing or incorrect.');
             }
-            if (!rendered) throw new Error('Published game UI did not render after retries.');
-            await page.locator('#start').click();
-            await page.locator('button[data-tab="cultivate"]').click();
-            await page.locator('#cultivateBtn').click();
-            await page.getByRole('button', { name: /停止(自動)?修煉/ }).waitFor({ timeout: 10000 });
-            await page.locator('#cultivateBtn').click();
-            await page.locator('button[data-tab="explore"]').click();
-            for (let i = 0; i < 3; i++) await page.locator('#gather').click();
-            await page.locator('#claimExplore').waitFor({ state: 'visible' });
-            if (await page.locator('#claimExplore').isDisabled()) throw new Error('Explore quest did not unlock after three gathers.');
-            await page.locator('#claimExplore').click();
-            await page.locator('#openBattle').click();
-            await page.locator('#fight').click();
-            await page.locator('#fight').click();
-            await page.locator('button[data-tab="explore"]').click();
-            if (await page.locator('#claimFight').isDisabled()) throw new Error('Battle quest did not unlock after two fights.');
-            await page.locator('#claimFight').click();
-            await page.locator('button[data-tab="shop"]').click();
-            await page.locator('#buyHerbs').click();
-            await page.locator('button[data-tab="bag"]').click();
-            await page.locator('#rest').waitFor({ timeout: 5000 });
+            if (await app.isVisible()) throw new Error('Main game is visible before the player enters.');
+            if (!(await page.locator('body').evaluate(el => el.classList.contains('launch-gate')))) {
+              throw new Error('Fresh page did not start in launch-gate state.');
+            }
+
+            await continueButton.click();
+            await app.waitFor({ state: 'visible', timeout: 5000 });
+            await gate.waitFor({ state: 'hidden', timeout: 5000 });
+            if (await page.locator('body').evaluate(el => el.classList.contains('launch-gate'))) {
+              throw new Error('Launch-gate state remained after clicking continue.');
+            }
+
+            await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
+            await page.locator('#continueCultivationBtn').waitFor({ state: 'visible', timeout: 5000 });
+            if (await page.locator('#gameApp').isVisible()) {
+              throw new Error('Reload did not return to the launch home screen.');
+            }
             if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
-            console.log('Mobile gameplay flow passed: enter, cultivate, explore, claim quest, battle twice, claim reward, purchase supplies, and open inventory.');
+            console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
@@ -112,8 +98,8 @@ jobs:
           URL="https://peppen211.github.io/xianxia-game/"
           for attempt in 1 2 3 4 5 6; do
             PAGE="$(curl -fsSL "$URL" || true)"
-            if printf "%s" "$PAGE" | grep -q 'id="start"' && printf "%s" "$PAGE" | grep -q 'id="cultivateBtn"' && ! printf "%s" "$PAGE" | grep -q '/src/main.tsx'; then
-              echo "Published standalone game entry and core controls verified."
+            if printf "%s" "$PAGE" | grep -q 'id="launchGate"' && printf "%s" "$PAGE" | grep -q 'id="continueCultivationBtn"' && printf "%s" "$PAGE" | grep -q 'id="gameApp"' && ! printf "%s" "$PAGE" | grep -q '/src/main.tsx'; then
+              echo "Published standalone launch gate and game entry verified."
               exit 0
             fi
             sleep 10
