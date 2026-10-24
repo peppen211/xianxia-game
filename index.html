@@ -1879,16 +1879,16 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.79">
+<header class="top statusline" aria-label="角色狀態列 v0.80">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.79</small>
+  <small class="status-version" aria-label="遊戲版本">v0.80</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
-<div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
+<div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
 <section class="screen active" id="home">
  <div class="hero"><div class="moon"></div><div class="mountain m1"></div><div class="mountain m2"></div><div class="mist"></div><div class="energy-orb"></div><div class="hero-copy"><div class="realm" id="realmEyebrow">青雲山 · 凡人境</div><h2 id="realmName">初入仙途</h2><p id="heroDesc">天地靈氣緩緩流轉。凝神靜氣，踏出修仙第一步。</p></div><div class="cultivator" id="cultivator"><span class="immortal-silhouette">仙</span></div><div class="hero-bottom"><div class="chip">修為 <b id="levelChip">煉氣一層</b></div><div class="chip">戰力 <b id="powerChip">18</b></div><div class="chip">靈氣 <b id="qiChip">0%</b></div></div></div>
  <div class="realm-row"><div class="metric"><small><span class="mini-sigil"></span> 修為進度</small><strong id="xpText">0/100</strong><div class="progress"><span id="xpBar"></span></div></div><div class="metric"><small> 靈石</small><strong id="goldMain">100</strong><em>修煉通用</em></div><div class="metric"><small> 靈草</small><strong id="herbMain">3</strong><em>丹藥材料</em></div></div>
@@ -2093,8 +2093,9 @@ function selectMethod(i){
  if(detailWasOpen)openModal('功法詳情',methodDetailHtml(i));else toast('功法已切換：'+m.name+'，效果立即生效');
 }
 function openMethodDetails(i){openModal('功法詳情',methodDetailHtml(i))}
-function openModal(title,html){const modal=document.getElementById('uiModal');document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=html||'<div class="smallnote">目前沒有可顯示的內容。</div>';modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
-function closeModal(){const modal=document.getElementById('uiModal');if(!modal)return;modal.classList.remove('show');modal.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
+function openModal(title,html){const modal=document.getElementById('uiModal');const body=document.getElementById('modalBody');const isNovel=!!(html&&String(html).includes('class="novel-reader"'));document.getElementById('modalTitle').textContent=title;body.innerHTML=html||'<div class="smallnote">目前沒有可顯示的內容。</div>';body.scrollTop=0;modal.classList.toggle('novel-reading-mode',isNovel);const footer=document.getElementById('modalFooter');if(footer)footer.hidden=!isNovel;const closeButton=modal.querySelector('.modal-close');if(closeButton){closeButton.textContent=isNovel?'關閉':'×';closeButton.setAttribute('aria-label',isNovel?'關閉劇情閱讀並返回仙途':'關閉彈窗')}modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
+function closeModal(){const modal=document.getElementById('uiModal');if(!modal)return;modal.classList.remove('show','novel-reading-mode');modal.setAttribute('aria-hidden','true');const footer=document.getElementById('modalFooter');if(footer)footer.hidden=true;const closeButton=modal.querySelector('.modal-close');if(closeButton){closeButton.textContent='×';closeButton.setAttribute('aria-label','關閉彈窗')}document.body.classList.remove('modal-open')}
+document.addEventListener('keydown',function(event){if(event.key==='Escape'){const modal=document.getElementById('uiModal');if(modal&&modal.classList.contains('show')&&modal.classList.contains('novel-reading-mode'))closeModal()}});
 function methodDetailHtml(index=s.method){
  const i=Math.max(0,Math.min(methods.length-1,Math.floor(Number(index)||0)));
  const m=methods[i],cfg=GAME_CONFIG.methods[i]||{},owned=s.ownedMethods.includes(i),selected=s.method===i;
@@ -2477,9 +2478,12 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
   const hybridStages=document.getElementById('journalHybridStages');
   if(hybridStages && Array.isArray(chapterNodes)){
     const arcNames=['凡人起步','黃楓谷與越國','亂星海歷練','重返天南與古修遺跡','化神與凡界遠行','靈界求道','靈界終章','仙界道途'];
+    let initialOpenStage=arcNames.findIndex((name,index)=>{const stageNodes=chapterNodes.filter(n=>n.arc===index+1);const count=stageNodes.filter(nodeUnlocked).length;return count>0&&count<stageNodes.length});
+    if(initialOpenStage<0){for(let i=arcNames.length-1;i>=0;i--){if(chapterNodes.some(n=>n.arc===i+1&&nodeUnlocked(n))){initialOpenStage=i;break}}}
+    if(initialOpenStage<0)initialOpenStage=0;
     hybridStages.innerHTML=arcNames.map((arcName,arcIndex)=>{
       const nodes=chapterNodes.filter(n=>n.arc===arcIndex+1);
-      const unlocked=nodes.filter(nodeUnlocked).length,expanded=unlocked>0;
+      const unlocked=nodes.filter(nodeUnlocked).length,expanded=arcIndex===initialOpenStage;const stageStatus=unlocked===0?'待解鎖':unlocked===nodes.length?'已完成':'進行中';
       const contents=nodes.map(n=>{
         const isOpen=nodeUnlocked(n);
         return '<article class="journal-node-card '+(isOpen?'is-open':'is-locked')+'"><div class="journal-node-title"><b>'+esc(n.title)+'</b><span>'+(isOpen?'已解鎖':'未解鎖')+'</span></div>'+
@@ -2487,7 +2491,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
           '<div class="journal-node-extra" hidden><div class="journal-node-meta">地圖：'+esc(n.map)+'　·　副本：'+esc(n.dungeon)+'<br>境界：'+esc(n.realm)+'　·　條件：'+esc(n.unlock)+'</div></div>'+
           '<button type="button" class="btn secondary journal-node-toggle" aria-expanded="false">查看地圖與解鎖條件</button></article>';
       }).join('');
-      return '<section class="journal-arc-card '+(expanded?'is-expanded':'')+'"><button type="button" class="journal-arc-toggle" aria-expanded="'+expanded+'"><span class="journal-arc-label"><b>第 '+(arcIndex+1)+' 階段｜'+arcName+'</b><small>'+unlocked+' / '+nodes.length+' 節解鎖</small></span><span class="journal-arc-indicator" aria-hidden="true">'+(expanded?'−':'+')+'</span></button><div class="journal-arc-content" '+(expanded?'':'hidden')+'>'+contents+'</div></section>';
+      return '<section class="journal-arc-card '+(expanded?'is-expanded':'')+'"><button type="button" class="journal-arc-toggle" aria-expanded="'+expanded+'"><span class="journal-arc-label"><b>第 '+(arcIndex+1)+' 階段｜'+arcName+'</b><small>'+unlocked+' / '+nodes.length+' 節解鎖 · '+stageStatus+'</small></span><span class="journal-arc-indicator" aria-hidden="true">'+(expanded?'−':'+')+'</span></button><div class="journal-arc-content" '+(expanded?'':'hidden')+'>'+contents+'</div></section>';
     }).join('');
     hybridStages.querySelectorAll('.journal-arc-card').forEach((card,index)=>{
       const content=card.querySelector('.journal-arc-content');
@@ -2510,28 +2514,29 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
     if(progressTrack)progressTrack.setAttribute('aria-valuenow',String(unlockedTotal));
     if(progressFill)progressFill.style.width=progressValue+'%';
     if(progressPercent)progressPercent.textContent=progressValue+'% 已解鎖';
-    const updateToggleAll=()=>{
-      const cards=[...hybridStages.querySelectorAll('.journal-arc-card')],expanded=cards.length>0&&cards.every(card=>card.classList.contains('is-expanded'));
-      const button=document.getElementById('toggleJournalStages');
-      if(button){button.textContent=expanded?'全部收起階段':'全部展開階段';button.setAttribute('aria-expanded',String(expanded));button.dataset.state=cards.every(card=>!card.classList.contains('is-expanded'))?'collapsed':expanded?'expanded':'mixed';}
-    };
-    hybridStages.querySelectorAll('.journal-arc-toggle').forEach(button=>button.addEventListener('click',()=>{
-      const card=button.closest('.journal-arc-card'),content=card&&card.querySelector('.journal-arc-content');if(!card||!content)return;
-      const expand=!card.classList.contains('is-expanded');card.classList.toggle('is-expanded',expand);content.hidden=!expand;button.setAttribute('aria-expanded',String(expand));
-      const icon=button.querySelector('.journal-arc-indicator');if(icon)icon.textContent=expand?'−':'+';
-      updateToggleAll();
-    }));
+    const stageCards=[...hybridStages.querySelectorAll('.journal-arc-card')];
+    stageCards.forEach(card=>{
+      const button=card.querySelector('.journal-arc-toggle'),content=card.querySelector('.journal-arc-content');
+      if(!button||!content)return;
+      button.addEventListener('click',()=>{
+        const expand=!card.classList.contains('is-expanded');
+        if(expand)stageCards.forEach(other=>{
+          if(other===card)return;
+          other.classList.remove('is-expanded');
+          const otherContent=other.querySelector('.journal-arc-content'),otherButton=other.querySelector('.journal-arc-toggle');
+          if(otherContent)otherContent.hidden=true;
+          if(otherButton){otherButton.setAttribute('aria-expanded','false');const icon=otherButton.querySelector('.journal-arc-indicator');if(icon)icon.textContent='+';}
+        });
+        card.classList.toggle('is-expanded',expand);content.hidden=!expand;
+        button.setAttribute('aria-expanded',String(expand));
+        const icon=button.querySelector('.journal-arc-indicator');if(icon)icon.textContent=expand?'−':'+';
+      });
+    });
     hybridStages.querySelectorAll('.journal-node-toggle').forEach(button=>button.addEventListener('click',()=>{
       const extra=button.closest('.journal-node-card')?.querySelector('.journal-node-extra');if(!extra)return;
-      const expand=extra.hidden;extra.hidden=!expand;button.setAttribute('aria-expanded',String(expand));button.textContent=expand?'收起地圖與條件':'查看地圖與解鎖條件';
+      const expand=extra.hidden;extra.hidden=!expand;button.setAttribute('aria-expanded',String(expand));
+      button.textContent=expand?'收起地圖與條件':'查看地圖與解鎖條件';
     }));
-    const toggleAll=document.getElementById('toggleJournalStages');
-    if(toggleAll)toggleAll.addEventListener('click',()=>{
-      const cards=[...hybridStages.querySelectorAll('.journal-arc-card')],expand=cards.some(card=>!card.classList.contains('is-expanded'));
-      cards.forEach(card=>{card.classList.toggle('is-expanded',expand);const content=card.querySelector('.journal-arc-content'),button=card.querySelector('.journal-arc-toggle');if(content)content.hidden=!expand;if(button){button.setAttribute('aria-expanded',String(expand));const icon=button.querySelector('.journal-arc-indicator');if(icon)icon.textContent=expand?'−':'+';}});
-      updateToggleAll();
-    });
-    updateToggleAll();
   }
   journal.querySelectorAll(':scope > *:not(#journalV14Dock)').forEach(el=>el.style.display='none');
   const openNodeDatabase=document.getElementById('openNodeDatabase'); if(openNodeDatabase)openNodeDatabase.onclick=()=>openChronicleModal();
@@ -3169,7 +3174,7 @@ main>.screen#home.active{display:flex!important}
 #gameApp #journalHybridStages .journal-node-toggle{align-self:flex-start!important;max-width:100%!important;white-space:normal!important;line-height:1.45!important}
 #gameApp #journalV14Dock button{white-space:normal!important;line-height:1.45!important;overflow-wrap:anywhere!important}
 @media(max-width:420px){#gameApp #journal.active{padding:10px!important;gap:10px!important}#gameApp #journalV14Dock .panel,#gameApp #journalHybridStages .journal-arc-content{padding:10px!important}#gameApp #journalHybridStages .journal-node-card{padding:9px!important}}
-</style><style id="v079-novel-reader">
+</style><style id="v080-novel-reader">
 #gameApp .journal-reader-intro{padding:12px!important;margin:0!important}
 #gameApp .journal-reader-intro p{line-height:1.65!important;margin:7px 0 0!important}
 #gameApp .journal-read-story{width:100%!important;white-space:normal!important;line-height:1.5!important;margin-bottom:10px!important}
@@ -3181,21 +3186,36 @@ main>.screen#home.active{display:flex!important}
 #gameApp .novel-reader .novel-chapter-nav{display:grid;grid-template-columns:minmax(0,1fr) minmax(65px,auto) minmax(0,1fr);align-items:center;gap:8px;padding-top:12px;border-top:1px solid rgba(184,155,114,.28)}
 #gameApp .novel-reader .novel-chapter-nav .btn{min-width:0;white-space:normal;line-height:1.5;padding:9px 6px}
 #gameApp .novel-reader .novel-chapter-nav span{font-size:12px;color:var(--muted);text-align:center}
-#gameApp #modalBody:has(.novel-reader){padding:14px 16px 20px;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#gameApp #uiModal.novel-reading-mode #modalBody{padding:14px 16px 20px;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 /* Immersive reading mode: cover the game tab bar and use the full phone viewport. */
-#gameApp #uiModal:has(.novel-reader){position:fixed!important;inset:0!important;z-index:9999!important;display:flex!important;align-items:stretch!important;justify-content:stretch!important;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)!important}
-#gameApp #uiModal:has(.novel-reader) .modal-backdrop{background:rgba(4,7,12,.98)!important;backdrop-filter:blur(8px)}
-#gameApp #uiModal:has(.novel-reader) .modal-card{width:100%!important;max-width:none!important;height:100%!important;max-height:100%!important;min-height:0!important;border-radius:0!important;border-left:0!important;border-right:0!important;box-shadow:none!important}
-#gameApp #uiModal:has(.novel-reader) .modal-head{height:54px!important;padding:0 16px!important}
-#gameApp #uiModal:has(.novel-reader) #modalBody{flex:1 1 auto!important;min-height:0!important;padding:14px 20px calc(24px + env(safe-area-inset-bottom))!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
+#gameApp #uiModal.novel-reading-mode{position:fixed!important;inset:0!important;z-index:9999!important;display:flex!important;align-items:stretch!important;justify-content:stretch!important;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)!important}
+#gameApp #uiModal.novel-reading-mode .modal-backdrop{background:rgba(4,7,12,.98)!important;backdrop-filter:blur(8px)}
+#gameApp #uiModal.novel-reading-mode .modal-card{width:100%!important;max-width:none!important;height:100%!important;max-height:100%!important;min-height:0!important;border-radius:0!important;border-left:0!important;border-right:0!important;box-shadow:none!important}
+#gameApp #uiModal.novel-reading-mode .modal-head{height:54px!important;padding:0 16px!important}
+#gameApp #uiModal.novel-reading-mode #modalBody{flex:1 1 auto!important;min-height:0!important;padding:14px 20px calc(24px + env(safe-area-inset-bottom))!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
 #gameApp .novel-reader p{font-size:18px;line-height:2.05;letter-spacing:.035em;margin-bottom:1.35em}
 #gameApp .novel-reader h3{font-size:25px;margin:20px 0 26px}
 #gameApp .novel-reader .novel-chapter-nav{padding-bottom:8px}
 @media(max-width:420px){
  #gameApp .novel-reader p{font-size:17px;line-height:2;letter-spacing:.025em}
  #gameApp .novel-reader h3{font-size:22px}
- #gameApp #uiModal:has(.novel-reader) #modalBody{padding:12px 16px calc(22px + env(safe-area-inset-bottom))!important}
+ #gameApp #uiModal.novel-reading-mode #modalBody{padding:12px 16px calc(22px + env(safe-area-inset-bottom))!important}
 }
+
+/* v0.80: compact progress meter, exclusive stage accordion, and reliable close actions for mobile Safari. */
+#gameApp .journal-progress-track{height:7px;width:100%;overflow:hidden;border-radius:99px;background:rgba(190,190,190,.16);margin:10px 0 5px}
+#gameApp .journal-progress-track span{display:block;width:0;height:100%;border-radius:99px;background:linear-gradient(90deg,#6cc5a5,#efd28b);transition:width .25s ease}
+#gameApp .journal-progress-label{display:block;text-align:right;color:var(--muted);font-size:12px;line-height:1.4}
+#gameApp #uiModal.novel-reading-mode .modal-head{position:relative;z-index:2;flex:0 0 58px!important;height:58px!important;padding:0 16px!important;gap:12px}
+#gameApp #uiModal.novel-reading-mode .modal-head b{flex:1 1 auto;min-width:0;overflow-wrap:anywhere;line-height:1.4}
+#gameApp #uiModal.novel-reading-mode .modal-close{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:84px!important;min-height:44px!important;height:44px!important;padding:0 12px!important;border-radius:10px!important;font-size:15px!important;font-weight:700!important;white-space:nowrap!important;touch-action:manipulation!important;position:relative!important;z-index:3!important;pointer-events:auto!important}
+#gameApp #uiModal.novel-reading-mode #modalBody{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;padding:14px 20px 18px!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
+#gameApp #uiModal.novel-reading-mode .modal-foot{display:block!important;flex:0 0 auto!important;padding:10px 16px 12px!important;border-top:1px solid rgba(184,155,114,.35)!important;background:rgba(9,14,22,.98)!important;position:relative!important;z-index:3!important}
+#gameApp #uiModal.novel-reading-mode .modal-foot button{display:block!important;width:100%!important;min-height:48px!important;padding:11px 12px!important;white-space:normal!important;line-height:1.45!important;touch-action:manipulation!important}
+#gameApp .modal-foot[hidden]{display:none!important}
+#gameApp #uiModal.novel-reading-mode .modal-backdrop{pointer-events:auto!important}
+@media(max-width:420px){#gameApp #uiModal.novel-reading-mode .modal-head{padding:0 12px!important}#gameApp #uiModal.novel-reading-mode .modal-close{min-width:78px!important;padding:0 9px!important}#gameApp #uiModal.novel-reading-mode #modalBody{padding:12px 16px 16px!important}#gameApp #uiModal.novel-reading-mode .modal-foot{padding:9px 12px 10px!important}}
+
 </style>
 
 <script id="v061-cultivation-page-repair-script">
