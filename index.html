@@ -597,7 +597,17 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
  .bottom .nav .ico{font-size:15px!important}
 }
 
-</style></head><body><div class="app">
+</style>
+<!-- Merge restoration: keep the original classic home screen reachable from the Trial tab. -->
+<style id="classic-merge-restoration">
+/* The new compact layout hid the old home screen and its status cards. Restore them
+   only on #home so the classic overview remains playable without affecting the new tabs. */
+.screen#home.active{display:flex!important;}
+#home .hero-bottom{display:flex!important;}
+#home .realm-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;}
+#home .metric,#home .realm-row .metric{display:block!important;min-width:0!important;}
+</style>
+</head><body><div class="app">
 <header class="top statusline">
  <div class="status-realm"><small>🧘 境界</small><b id="globalRealm">練氣一層</b></div>
  <div class="status-xp"><div class="status-xp-label"><small>✨ 修為</small><b id="globalXpText">0/100</b></div><div class="progress"><span id="globalXpBar" style="width:0%"></span></div></div>
