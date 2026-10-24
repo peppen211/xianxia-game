@@ -753,7 +753,10 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 <style id="launch-gate-and-statusline-v2">
 /* Launch gate: keep the existing game and its save system intact behind a minimal start screen. */
 body.launch-gate{overflow:hidden!important;background:#0b111b!important}
-body.launch-gate .app{display:none!important}
+body.launch-gate .app{display:none!important;visibility:hidden!important;pointer-events:none!important}
+body.launch-gate #launchGate{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:2147483647!important}
+body.launch-gate #gameApp{display:none!important}
+body:not(.launch-gate) #gameApp{display:flex!important;visibility:visible!important;pointer-events:auto!important}
 .launch-gate-screen{
   position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:10px;padding:24px 20px calc(24px + env(safe-area-inset-bottom));box-sizing:border-box;text-align:center;
@@ -763,6 +766,9 @@ body.launch-gate .app{display:none!important}
 .launch-subtitle{font-size:12px;letter-spacing:.22em;color:#9daec2;margin-top:-6px}
 .launch-realm-label{margin-top:36px;font-size:12px;color:#9daec2;letter-spacing:.12em}
 .launch-realm-summary{font-size:clamp(18px,4.8vw,24px);font-weight:700;line-height:1.4;color:#f4dca5;max-width:90vw;overflow-wrap:anywhere}
+.launch-guidance{margin-top:8px;color:#aeb9c9;font-size:13px;line-height:1.6}
+.launch-last-realm{margin-top:10px;color:#b7c7d8;font-size:12px;line-height:1.4}
+.launch-last-realm[hidden]{display:none!important}
 .launch-continue{
   margin-top:26px;width:min(270px,82vw);min-height:50px;padding:12px 22px;border:1px solid #cba96c;border-radius:14px;
   color:#fff4d8;background:linear-gradient(135deg,#795b32,#4c3a26);box-shadow:0 8px 28px #0005;
@@ -827,10 +833,12 @@ body .app header.top.statusline .core-break{display:none!important}
   <div class="launch-title">九霄問道</div>
   <div class="launch-subtitle">修仙放置 RPG</div>
   <div class="launch-realm-label">目前境界</div>
-  <div id="launchRealmSummary" class="launch-realm-summary">讀取修行境界中…</div>
+  <div id="launchRealmSummary" class="launch-realm-summary">練氣一層</div>
+  <div class="launch-guidance">靜心凝神，踏入你的修行之路。</div>
   <button type="button" id="continueCultivationBtn" class="launch-continue" onclick="enterGameFromLanding()">繼續修煉</button>
+  <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
-<div class="app">
+<div class="app" id="gameApp" style="display:none" aria-hidden="true">
 <header class="top statusline">
  <div class="status-realm"><small>🧘 境界</small><b id="globalRealm">練氣一層</b></div>
  <div class="status-xp"><div class="status-xp-label"><small>✨ 修為</small><b id="globalXpText">0/100</b></div><div class="progress"><span id="globalXpBar" style="width:0%"></span></div></div>
@@ -1290,19 +1298,42 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
 </script>
 <script id="launch-gate-controller">
 (function(){
+  const body=document.body;
+  const gate=document.getElementById('launchGate');
+  const app=document.getElementById('gameApp');
   const summary=document.getElementById('launchRealmSummary');
   const realm=document.getElementById('globalRealm');
-  if(summary&&realm){
-    const syncRealm=()=>{summary.textContent=(realm.textContent||'練氣一層').trim()};
-    syncRealm();
-    if(window.MutationObserver)new MutationObserver(syncRealm).observe(realm,{childList:true,characterData:true,subtree:true});
-  }
+  const lastRealm=document.getElementById('launchLastRealm');
+
+  /* Every fresh document load starts on the launch gate, even when a save exists. */
+  body.classList.add('launch-gate');
+  if(app){app.style.display='none';app.setAttribute('aria-hidden','true')}
+  if(gate){gate.hidden=false;gate.setAttribute('aria-hidden','false')}
+
+  const syncRealm=()=>{
+    const current=(realm&&realm.textContent||'練氣一層').trim()||'練氣一層';
+    if(summary)summary.textContent=current;
+    if(lastRealm&&!lastRealm.hidden)lastRealm.textContent='上次境界：'+current;
+  };
+  syncRealm();
+  if(realm&&window.MutationObserver)new MutationObserver(syncRealm).observe(realm,{childList:true,characterData:true,subtree:true});
+
+  /* Read only: do not alter, migrate, or reset the existing save. */
+  try{
+    const raw=localStorage.getItem('nine_heavens_idle_v2');
+    if(raw){
+      const parsed=JSON.parse(raw);
+      if(parsed&&typeof parsed==='object'&&!Array.isArray(parsed)&&lastRealm){
+        lastRealm.hidden=false;
+        syncRealm();
+      }
+    }
+  }catch(e){/* Private browsing or blocked storage must not prevent entering the game. */}
+
   window.enterGameFromLanding=function(){
-    document.body.classList.remove('launch-gate');
-    const gate=document.getElementById('launchGate');
-    if(gate)gate.setAttribute('aria-hidden','true');
-    const app=document.querySelector('.app');
-    if(app)app.setAttribute('aria-hidden','false');
+    if(app){app.style.display='';app.setAttribute('aria-hidden','false')}
+    if(gate){gate.hidden=true;gate.setAttribute('aria-hidden','true')}
+    body.classList.remove('launch-gate');
   };
 })();
 </script>
