@@ -1747,6 +1747,52 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
 }
 </style>
 
+<style id="mobile-gesture-guard-v048">
+/* v0.48: prevent accidental double-tap zoom, text selection and long-press callouts in the game UI. */
+html,body,#launchGate,#gameApp,#gameApp *{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+}
+html,body,#launchGate,#gameApp{
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+}
+#gameApp button,#gameApp .btn,#gameApp .nav,#launchGate button,
+#launchGate .launch-continue{
+  touch-action:manipulation!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+}
+#gameApp input,#gameApp textarea,#gameApp select,
+#gameApp [contenteditable="true"]{
+  -webkit-user-select:text!important;
+  user-select:text!important;
+  touch-action:manipulation;
+}
+</style>
+<script id="mobile-gesture-guard-v048">
+(function(){
+ if(window.__mobileGestureGuardV048)return;
+ window.__mobileGestureGuardV048=true;
+ let lastTouchEnd=0;
+ document.addEventListener('touchend',function(e){
+   const now=Date.now();
+   if(now-lastTouchEnd<=320){
+     if(e.cancelable)e.preventDefault();
+   }
+   lastTouchEnd=now;
+ },{capture:true,passive:false});
+ document.addEventListener('dblclick',function(e){
+   if(e.cancelable)e.preventDefault();
+ },{capture:true,passive:false});
+ document.addEventListener('contextmenu',function(e){
+   if(e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+   e.preventDefault();
+ },{capture:true});
+})();
+</script>
+
 </head><body class="launch-gate">
 <div id="launchGate" class="launch-gate-screen" role="dialog" aria-label="遊戲首頁">
   <div class="launch-title" aria-label="不好意思，本座又突破了"><span>不好意思</span><span>本座又突破了</span><i aria-hidden="true">修仙</i></div>
@@ -1762,13 +1808,13 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.47">
+<header class="top statusline" aria-label="角色狀態列 v0.48">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.47</small>
+  <small class="status-version" aria-label="遊戲版本">v0.48</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
