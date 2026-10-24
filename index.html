@@ -1826,13 +1826,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.60">
+<header class="top statusline" aria-label="角色狀態列 v0.61">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.60</small>
+  <small class="status-version" aria-label="遊戲版本">v0.61</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -2811,5 +2811,330 @@ main>.screen#home.active{display:flex!important}
   #gameApp.app>header.top.statusline>.status-xp>.progress{height:5px!important;min-height:5px!important}
 }
 </style>
+
+
+<style id="v061-cultivation-page-repair">
+/* v0.61: make cultivation content readable, useful, and responsive. */
+#gameApp #cultivate>.realm-art,
+#gameApp #cultivate>.realm-desc,
+#gameApp #cultivate>.realm-row{display:none!important}
+#gameApp #cultivate>.hero{
+  position:relative!important;display:block!important;flex:0 0 auto!important;
+  width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+  padding:13px 14px!important;margin:0!important;overflow:hidden!important;
+  border:1px solid #a98d57!important;border-radius:14px!important;
+  background:linear-gradient(135deg,#202a36 0%,#17212c 62%,#202b35 100%)!important;
+  box-shadow:inset 0 0 0 1px #e8c77a0c!important;
+}
+#gameApp #cultivate>.hero:before,#gameApp #cultivate>.hero:after{display:none!important;content:none!important}
+#gameApp #cultivate>.hero .moon,
+#gameApp #cultivate>.hero .mountain,
+#gameApp #cultivate>.hero .mist,
+#gameApp #cultivate>.hero .energy-orb,
+#gameApp #cultivate>.hero .cultivator,
+#gameApp #cultivate>.hero .hero-bottom{display:none!important}
+#gameApp #cultivate>.hero .hero-copy{
+  position:relative!important;inset:auto!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;
+  width:100%!important;max-width:none!important;padding:0!important;margin:0!important;transform:none!important;z-index:1!important;
+}
+#gameApp #cultivate>.hero .hero-copy:before{
+  content:"本境修行指引";display:block;color:var(--gold);font-size:10px;font-weight:800;letter-spacing:.08em;margin-bottom:5px;
+}
+#gameApp #cultivate>.hero .hero-copy .realm{font-size:10px!important;line-height:1.5!important;color:#d9bf83!important}
+#gameApp #cultivate>.hero .hero-copy h2{font-size:17px!important;line-height:1.4!important;margin:2px 0 5px!important;color:#f5e4bf!important}
+#gameApp #cultivate>.hero .hero-copy p{
+  display:block!important;max-width:none!important;width:100%!important;margin:0!important;
+  font-size:11px!important;line-height:1.7!important;color:#c5cfdd!important;
+}
+#gameApp #cultivate #breakPanel{
+  display:block!important;visibility:visible!important;position:relative!important;
+  flex:0 0 auto!important;height:auto!important;max-height:none!important;overflow:visible!important;
+  padding:11px!important;margin:0!important;border:1px solid #a98d57!important;border-radius:13px!important;
+  background:#151e29!important;
+}
+#gameApp #cultivate #breakPanel>.secthead{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important}
+#gameApp #cultivate #breakMaterialSummary{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0;
+}
+#gameApp #cultivate .break-resource-cell{
+  min-width:0;padding:7px 6px;border:1px solid #ffffff14;border-radius:9px;background:#ffffff06;
+}
+#gameApp #cultivate .break-resource-cell>span{display:block;font-size:9px;color:var(--muted);margin-bottom:4px}
+#gameApp #cultivate .break-resource-cell>b{display:block;font-size:10px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#gameApp #cultivate .break-resource-cell .resource-ready{color:#9ce8c8}
+#gameApp #cultivate .break-resource-cell .resource-short{color:#ffc1a9}
+#gameApp #cultivate #breakPreparationNote{font-size:9px;line-height:1.55;color:var(--muted);margin:5px 0 8px}
+#gameApp #cultivate>.method-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;flex:0 0 auto!important;margin:3px 0 0!important;padding:7px 0!important;border-bottom:1px solid #8f764d66!important}
+#gameApp #cultivate>.method-heading>span{font-size:13px!important;font-weight:850!important;color:var(--gold)!important}
+#gameApp #cultivate #methodArchiveHint{display:block!important;flex:0 0 auto!important;font-size:9px!important;line-height:1.55!important;color:var(--muted)!important;margin:0!important}
+#gameApp #cultivate #methodList{
+  display:grid!important;visibility:visible!important;opacity:1!important;
+  grid-template-columns:minmax(0,1fr)!important;gap:8px!important;width:100%!important;
+  min-height:0!important;height:auto!important;max-height:none!important;overflow:visible!important;
+  flex:0 0 auto!important;margin:0!important;padding:0!important;
+}
+#gameApp #cultivate #methodList>.method-card{
+  display:grid!important;grid-template-columns:38px minmax(0,1fr)!important;grid-template-rows:auto auto auto auto auto!important;
+  align-items:start!important;gap:4px 9px!important;min-width:0!important;width:100%!important;
+  padding:10px!important;border:1px solid #a98d57!important;border-radius:12px!important;
+  background:linear-gradient(145deg,#1c2733,#151e28)!important;text-align:left!important;
+}
+#gameApp #cultivate #methodList>.method-card.chosen{border-color:#d8bd7b!important;background:linear-gradient(145deg,#24332f,#17242b)!important;box-shadow:inset 0 0 0 1px #d8bd7b22!important}
+#gameApp #cultivate #methodList>.method-card>.method-icon{grid-column:1!important;grid-row:1/4!important;display:grid!important;place-items:center!important;width:36px!important;height:36px!important;border:1px solid #b99a5d!important;border-radius:50%!important;font-size:18px!important;color:var(--gold)!important}
+#gameApp #cultivate #methodList>.method-card>b{grid-column:2!important;grid-row:1!important;display:block!important;min-height:0!important;font-size:13px!important;line-height:1.4!important;color:#f2e1bf!important}
+#gameApp #cultivate #methodList>.method-card>small{grid-column:2!important;grid-row:2!important;display:block!important;min-height:0!important;font-size:10px!important;line-height:1.5!important;color:#c3ccda!important}
+#gameApp #cultivate #methodList>.method-card>.method-tag{grid-column:2!important;grid-row:3!important;justify-self:start!important;font-size:9px!important;margin-top:1px!important}
+#gameApp #cultivate #methodList>.method-card>.method-meta{grid-column:2!important;font-size:9px!important;line-height:1.5!important;min-height:0!important;overflow-wrap:anywhere!important}
+#gameApp #cultivate #methodList>.method-card>.method-meta:nth-of-type(5){grid-row:4!important}
+#gameApp #cultivate #methodList>.method-card>.method-meta:nth-of-type(6){grid-row:5!important}
+#gameApp #cultivate #methodList .method-card-actions{grid-column:1/-1!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:7px!important;width:100%!important;margin-top:5px!important}
+#gameApp #cultivate #methodList .method-card-actions>.btn{min-width:0!important;width:100%!important;min-height:37px!important;padding:7px 5px!important;font-size:10px!important;line-height:1.35!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#gameApp #cultivate #methodList .method-details-button{border-color:#9d875d!important}
+#gameApp #cultivate>.idle-card{
+  display:grid!important;grid-template-columns:35px minmax(0,1fr)!important;align-items:center!important;gap:8px!important;
+  flex:0 0 auto!important;min-width:0!important;min-height:0!important;width:100%!important;
+  margin:0!important;padding:10px!important;border:1px solid #a98d57!important;border-radius:13px!important;
+  background:#151e29!important;
+}
+#gameApp #cultivate>.idle-card>.idle-icon{grid-column:1!important;grid-row:1!important;width:34px!important;height:34px!important}
+#gameApp #cultivate>.idle-card>.idle-text{grid-column:2!important;grid-row:1!important;min-width:0!important}
+#gameApp #cultivate>.idle-card>.idle-text>b{font-size:12px!important;line-height:1.5!important}
+#gameApp #cultivate>.idle-card>.idle-text>p{display:block!important;font-size:10px!important;line-height:1.55!important;margin:3px 0 0!important;color:#c3ccda!important}
+#gameApp #cultivate #idleProgressPanel{
+  grid-column:1/-1!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important;
+  min-width:0!important;padding:10px!important;border:1px solid #ffffff14!important;border-radius:10px!important;background:#ffffff04!important;
+}
+#gameApp #cultivate .idle-progress-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px;line-height:1.5}
+#gameApp #cultivate .idle-progress-head>span{color:#d0d7e2}
+#gameApp #cultivate .idle-progress-head>b{color:var(--gold);font-size:10px;font-variant-numeric:tabular-nums;text-align:right}
+#gameApp #cultivate .idle-progress-track{height:6px;overflow:hidden;border-radius:99px;background:#ffffff16;margin-top:5px}
+#gameApp #cultivate .idle-progress-track>span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#70c9a7,#e8c77a);transition:width .25s}
+#gameApp #cultivate .idle-runtime-note{font-size:9px;color:var(--muted);line-height:1.55}
+#gameApp #cultivate>.idle-card>.btn{grid-row:4!important;min-height:37px!important;width:100%!important;margin:0!important;padding:7px 6px!important;font-size:10px!important;white-space:normal!important;line-height:1.3!important}
+#gameApp #cultivate>.idle-card>#meditateBtn{font-weight:800!important}
+#gameApp #cultivate>.path-shortcuts{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:0!important;flex:0 0 auto!important}
+#gameApp #cultivate>.path-shortcuts .btn{min-width:0!important;min-height:36px!important;width:100%!important;font-size:10px!important;padding:6px!important}
+@media(max-width:380px){
+  #gameApp #cultivate #breakMaterialSummary{gap:4px}
+  #gameApp #cultivate .break-resource-cell{padding:6px 4px}
+  #gameApp #cultivate .break-resource-cell>span{font-size:8px}
+  #gameApp #cultivate .break-resource-cell>b{font-size:9px}
+  #gameApp #cultivate #methodList>.method-card{padding:8px!important}
+  #gameApp #cultivate #methodList .method-card-actions{gap:5px!important}
+  #gameApp #cultivate #methodList .method-card-actions>.btn{font-size:9px!important}
+}
+</style>
+<script id="v061-cultivation-page-repair-script">
+(function installCultivationPageRepair(){
+  var byId=function(id){return document.getElementById(id)};
+  var cultivate=byId('cultivate'),home=byId('home');
+  if(!cultivate||!home)return;
+
+  var methodList=byId('methodList');
+  var breakButton=byId('breakBtn');
+  var breakPanel=breakButton&&breakButton.closest('.panel');
+  var title=cultivate.querySelector(':scope > .page-title');
+  var hero=cultivate.querySelector(':scope > .hero')||home.querySelector(':scope > .hero');
+  var idleCard=cultivate.querySelector(':scope > .idle-card')||home.querySelector(':scope > .idle-card');
+  var quick=cultivate.querySelector(':scope > .path-shortcuts');
+  var methodHead=methodList&&methodList.previousElementSibling;
+  if(!methodHead||!methodHead.classList.contains('secthead')){
+    methodHead=cultivate.querySelector(':scope > .method-heading')||cultivate.querySelector(':scope > .secthead');
+  }
+  if(!quick){
+    quick=byId('cultivateQuickPaths');
+  }
+  if(!quick){
+    quick=document.createElement('div');
+    quick.id='cultivateQuickPaths';
+    quick.className='path-shortcuts';
+    quick.innerHTML='<button type="button" class="btn secondary" id="openIdleRewardsPath">放置收益詳情</button><button type="button" class="btn secondary" id="openCultivationLogPath">修煉日誌</button>';
+    cultivate.appendChild(quick);
+  }
+  var archiveHint=byId('methodArchiveHint');
+  if(!archiveHint){
+    archiveHint=document.createElement('small');
+    archiveHint.id='methodArchiveHint';
+    archiveHint.textContent='共用心法資料：卡片、效果與詳情由同一份資料驅動；後續可逐步納入小說與動畫的功法、神通、丹藥及法寶。';
+  }
+  if(methodHead&&methodHead.parentElement===cultivate){
+    methodHead.classList.add('method-heading');
+    var headingText=methodHead.querySelector('span');
+    if(headingText)headingText.textContent='修行心法';
+    var detailButton=methodHead.querySelector('button');
+    if(detailButton){detailButton.textContent='查看目前心法';detailButton.onclick=function(){openMethodDetails(Number((typeof s==='object'&&s)?s.method:0)||0)}}
+  }
+  if(methodList&&methodHead&&methodHead.parentElement===cultivate){
+    methodList.id='methodList';
+    methodList.before(archiveHint);
+  }
+  if(hero&&hero.parentElement!==cultivate)cultivate.appendChild(hero);
+  if(idleCard&&idleCard.parentElement!==cultivate)cultivate.appendChild(idleCard);
+
+  /* Put the main cultivation tasks in a deliberate order without recreating game nodes. */
+  [title,hero,breakPanel,methodHead,archiveHint,methodList,idleCard,quick].forEach(function(node){
+    if(node&&node.parentElement===cultivate)cultivate.appendChild(node);
+  });
+
+  if(hero){
+    hero.setAttribute('aria-label','目前境界與修行指引');
+    var p=hero.querySelector('#heroDesc');
+    if(p)p.textContent='本卡顯示目前境界與本層修行提示；修為進度、突破條件與放置收益請查看下方區塊。';
+  }
+  if(idleCard){
+    var idleText=idleCard.querySelector('#idleText');
+    if(idleText)idleText.textContent='放置修煉會自動累積修為與靈石；數值已即時入帳，離線收益最多計算 24 小時。';
+    var rewardButton=idleCard.querySelector('button[onclick="openOfflineModal()"]');
+    if(rewardButton){rewardButton.textContent='收益詳情';rewardButton.title='查看本次放置收益、上次結算與累積規則'}
+    var meditate=byId('meditateBtn');
+    if(meditate){meditate.textContent='吐納一周天';meditate.title='單次主動吐納：依目前心法增加修為與 3 靈石，不是開關。'}
+    var progress=byId('idleProgressPanel');
+    if(!progress){
+      progress=document.createElement('div');
+      progress.id='idleProgressPanel';
+      progress.innerHTML=
+        '<div><div class="idle-progress-head"><span>修為放置進度</span><b id="idleXpRateText">計算中</b></div><div class="idle-progress-track" role="progressbar" aria-label="下一點放置修為進度"><span id="idleXpProgressBar"></span></div></div>'+
+        '<div><div class="idle-progress-head"><span>靈石放置進度</span><b id="idleGoldRateText">計算中</b></div><div class="idle-progress-track" role="progressbar" aria-label="下一點放置靈石進度"><span id="idleGoldProgressBar"></span></div></div>'+
+        '<div id="idleRuntimeNote" class="idle-runtime-note">放置收益將持續累積。</div>';
+      var idleTextElement=idleCard.querySelector('.idle-text');
+      if(idleTextElement)idleTextElement.after(progress);
+      else idleCard.insertBefore(progress,idleCard.firstChild);
+    }
+  }
+  var materialSummary=byId('breakMaterialSummary');
+  if(breakPanel&&!materialSummary){
+    materialSummary=document.createElement('div');
+    materialSummary.id='breakMaterialSummary';
+    materialSummary.innerHTML=
+      '<div class="break-resource-cell"><span>修為進度</span><b id="breakNeedValue">0 / 100</b></div>'+
+      '<div class="break-resource-cell"><span>靈石（需求 50）</span><b id="breakGoldValue">0 / 50</b></div>'+
+      '<div class="break-resource-cell"><span>靈草（需求 1）</span><b id="breakHerbValue">0 / 1</b></div>';
+    var description=breakPanel.children.length>1?breakPanel.children[1]:null;
+    if(description)description.after(materialSummary);
+    else breakPanel.appendChild(materialSummary);
+    var note=document.createElement('div');
+    note.id='breakPreparationNote';
+    note.textContent='突破會消耗 50 靈石與 1 靈草；失敗會損失部分氣血，但不會清除存檔。';
+    materialSummary.after(note);
+  }
+  if(breakButton){
+    breakButton.disabled=false;
+    breakButton.innerHTML='<span class="mini-sigil"></span> 查看突破條件';
+  }
+
+  function renderMethodCards(){
+    if(!methodList||typeof methods==='undefined'||typeof GAME_CONFIG==='undefined'||typeof s==='undefined'||!s)return;
+    var ownedList=Array.isArray(s.ownedMethods)?s.ownedMethods:[0];
+    var frag=document.createDocumentFragment();
+    methods.forEach(function(method,index){
+      var cfg=(GAME_CONFIG.methods||[])[index]||{};
+      var owned=ownedList.indexOf(index)>=0;
+      var selected=Number(s.method)===index;
+      var card=document.createElement('article');
+      card.className='method-card'+(selected?' chosen':'');
+      var icon=document.createElement('div');icon.className='method-icon';icon.textContent=method.icon||'功';
+      var name=document.createElement('b');name.textContent=method.name;
+      var benefit=document.createElement('small');benefit.textContent=method.bonus||cfg.effect||'修行效果依心法設定';
+      var tag=document.createElement('span');tag.className='method-tag';tag.textContent=cfg.tag||'心法';
+      var condition=document.createElement('span');condition.className='method-meta';condition.textContent=owned?'已解鎖 · '+(cfg.unlock||'已取得'):(cfg.unlock||'尚未解鎖');
+      var cost=document.createElement('span');cost.className='method-meta';cost.textContent='解鎖消耗：'+(owned?'已支付':Number(method.cost||0)+' 靈石');
+      var actions=document.createElement('div');actions.className='method-card-actions';
+      var select=document.createElement('button');select.type='button';select.className='btn '+(selected?'jade':'secondary');select.disabled=selected;
+      select.textContent=selected?'正在修煉':owned?'切換心法':'解鎖並修煉';
+      select.onclick=function(){selectMethod(index)};
+      var details=document.createElement('button');details.type='button';details.className='btn secondary method-details-button';
+      details.textContent='詳細內容';details.onclick=function(){openMethodDetails(index)};
+      actions.appendChild(select);actions.appendChild(details);
+      card.append(icon,name,benefit,tag,condition,cost,actions);
+      frag.appendChild(card);
+    });
+    methodList.replaceChildren(frag);
+  }
+
+  function updateProgressUi(){
+    if(typeof s==='undefined'||!s||typeof GAME_CONFIG==='undefined')return;
+    var need=typeof xpNeed==='function'?xpNeed():100;
+    var cost=(GAME_CONFIG.breakthrough||{goldCost:50,herbCost:1,successRate:.85});
+    var cap=Number(s.major)>=4&&Number(s.layer)>=9;
+    var chance=cap?0:Number(cost.successRate||.85)+(Number(s.method)===2?.05:Number(s.method)===0?.02:0);
+    chance=Math.min(.97,chance);
+    function setValue(id,current,required){
+      var el=byId(id);if(!el)return;
+      el.textContent=Number(current||0)+' / '+Number(required||0);
+      el.classList.toggle('resource-ready',Number(current||0)>=Number(required||0));
+      el.classList.toggle('resource-short',Number(current||0)<Number(required||0));
+    }
+    setValue('breakNeedValue',Math.min(Number(s.xp||0),need),need);
+    setValue('breakGoldValue',s.gold,cost.goldCost||50);
+    setValue('breakHerbValue',s.herbs,cost.herbCost||1);
+    var breakNote=byId('breakPreparationNote');
+    if(breakNote){
+      if(cap)breakNote.textContent='已達目前版本最高開放境界，後續境界尚未開放。';
+      else breakNote.textContent='目前成功率 '+Math.round(chance*100)+'%。突破消耗 '+Number(cost.goldCost||50)+' 靈石與 '+Number(cost.herbCost||1)+' 靈草；失敗損失約 '+Math.round(Number(cost.failHpLoss||.25)*100)+'% 最大氣血，不扣除既有修為或清除存檔。';
+    }
+    var hint=byId('breakHint');
+    if(hint)hint.textContent=cap?'已達目前版本最高境界':Number(s.xp||0)>=need?'修為圓滿 · 可查看渡劫條件':'修為尚未圓滿';
+    var xpRate=Number(s.method)===0?1.2:Number(s.method)===1?1.35:1;
+    try{if(typeof gearPerks==='function')xpRate*=1+(gearPerks().bonusXp||0)}catch(_e){}
+    var goldRate=Number(s.method)===1?1.35:1;
+    var xpProgress=Math.max(0,Math.min(.999,Number(s.idleXpRemainder||0)%1));
+    var goldProgress=Math.max(0,Math.min(.999,Number(s.idleGoldRemainder||0)%1));
+    var xpText=byId('idleXpRateText'),goldText=byId('idleGoldRateText');
+    if(xpText)xpText.textContent='約 +'+xpRate.toFixed(2)+' 修為 / 12 秒';
+    if(goldText)goldText.textContent='約 +'+goldRate.toFixed(2)+' 靈石 / 90 秒';
+    var xpBar=byId('idleXpProgressBar'),goldBar=byId('idleGoldProgressBar');
+    if(xpBar)xpBar.style.width=(xpProgress*100)+'%';
+    if(goldBar)goldBar.style.width=(goldProgress*100)+'%';
+    var runtime=byId('idleRuntimeNote');
+    if(runtime){
+      var sec=Math.floor(Number(s.pendingIdleSeconds||0));
+      runtime.textContent='本次運行累積 '+(typeof formatDuration==='function'?formatDuration(sec):sec+' 秒')+'；目前放置修為 +'+Math.floor(Number(s.pendingIdleXp||0))+'、靈石 +'+Math.floor(Number(s.pendingIdleGold||0))+'（已計入資源）。';
+    }
+    var med=byId('meditateBtn');
+    if(med){med.textContent='吐納一周天';med.disabled=false}
+  }
+
+  /* The shared index remains the single source for cards, unlock costs, and the detailed modal. */
+  var priorRender=typeof window.render==='function'?window.render:(typeof render==='function'?render:null);
+  if(priorRender){
+    var wrappedRender=function(){
+      priorRender.apply(this,arguments);
+      try{renderMethodCards();updateProgressUi()}catch(error){console.error('Cultivation UI update failed:',error)}
+    };
+    window.render=wrappedRender;
+    try{render=wrappedRender}catch(_e){}
+  }
+  if(typeof window.openMethodDetails!=='function'){
+    window.openMethodDetails=function(index){openModal('心法詳情',methodDetailHtml(index))};
+  }
+  window.openOfflineModal=function(){
+    var report=s.offlineReport;
+    var currentXp=Math.floor(Number(s.pendingIdleXp||0));
+    var currentGold=Math.floor(Number(s.pendingIdleGold||0));
+    var seconds=Math.floor(Number(s.pendingIdleSeconds||0));
+    var previous=report?'上次摘要：'+formatDuration(report.seconds)+'，修為 +'+report.xp+'、靈石 +'+report.gold+'。':'尚無已整理的收益摘要。';
+    var cost=(GAME_CONFIG.breakthrough||{});
+    var xpRate=Number(s.method)===0?1.2:Number(s.method)===1?1.35:1;
+    try{if(typeof gearPerks==='function')xpRate*=1+(gearPerks().bonusXp||0)}catch(_e){}
+    var goldRate=Number(s.method)===1?1.35:1;
+    openModal('放置修煉 · 收益詳情',
+      '<div class="panel"><div class="secthead"><span>目前放置狀態</span><small>最多 24 小時</small></div>'+
+      '<p>放置收益會持續自動累積，不需要按啟動。資源在累積時就已即時加入角色數值。</p>'+
+      '<p>目前心法：'+esc(methods[Number(s.method)]?methods[Number(s.method)].name:'基礎心法')+'</p>'+
+      '<p>修為收益：約 +'+xpRate.toFixed(2)+'／12 秒；靈石收益：約 +'+goldRate.toFixed(2)+'／90 秒。</p>'+
+      '<p>本次遊玩累積：'+formatDuration(seconds)+'<br>已入帳修為：+'+currentXp+'<br>已入帳靈石：+'+currentGold+'</p></div>'+
+      '<div class="panel"><div class="secthead"><span>上次收益摘要</span></div><p>'+esc(previous)+'</p>'+
+      '<button type="button" class="btn primary" style="width:100%" onclick="if(Number(s.pendingIdleXp||0)>0||Number(s.pendingIdleGold||0)>0)claimIdle();openOfflineModal()">整理本次收益摘要</button></div>'+
+      '<div class="panel"><div class="secthead"><span>近期修煉紀錄</span></div><div class="loglist">'+((byId('logs')&&byId('logs').innerHTML)||'<p>尚無修行紀錄。</p>')+'</div></div>');
+  };
+  var originalOpenMethodDetails=window.openMethodDetails;
+  window.openMethodDetails=function(index){openModal('心法詳情',methodDetailHtml(index))};
+  if(byId('openIdleRewardsPath'))byId('openIdleRewardsPath').onclick=function(){window.openOfflineModal()};
+  if(byId('openCultivationLogPath'))byId('openCultivationLogPath').onclick=function(){var logs=byId('logs');openModal('修煉日誌','<div class="loglist">'+((logs&&logs.innerHTML)||'<p>尚無修行紀錄。</p>')+'</div>')};
+  try{if(typeof window.render==='function')window.render();else if(typeof render==='function')render()}catch(error){console.error('Initial cultivation UI render failed:',error)}
+  if(window.__cultivationProgressTimer)clearInterval(window.__cultivationProgressTimer);
+  window.__cultivationProgressTimer=setInterval(function(){try{updateProgressUi()}catch(_e){}},1000);
+})();
+</script>
 
 </body></html>
