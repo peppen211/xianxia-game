@@ -129,6 +129,12 @@ jobs:
             if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true') await firstArcButton.click();
             if (!(await firstArcContent.isVisible()) || await secondArcContent.isVisible()) throw new Error('階段切換未維持單一展開狀態。');
             console.log('Journal UI regression passed: eight stages, one-open accordion, no bulk toggle or unrelated cards.');
+            const firstStoryButton = arcCards.nth(0).locator('.journal-read-story');
+            const secondStoryButton = arcCards.nth(1).locator('.journal-read-story');
+            const secondStageLockNote = arcCards.nth(1).locator('.journal-stage-lock-note');
+            if (await firstStoryButton.isDisabled()) throw new Error('初始境界與第一張地圖不應鎖住第一回劇情。');
+            if (!(await secondStoryButton.isDisabled())) throw new Error('未達指定境界與黃楓谷地圖時，第二階段劇情不應提前開放。');
+            if (!(await secondStageLockNote.textContent()).includes('黃楓谷')) throw new Error('第二階段未顯示指定戰鬥地圖解鎖條件。');
             const storyArcButton = arcCards.nth(0).locator('.journal-arc-toggle');
             if ((await storyArcButton.getAttribute('aria-expanded')) !== 'true') await storyArcButton.click();
             const storyButton = arcCards.nth(0).locator('.journal-read-story');
@@ -156,6 +162,7 @@ jobs:
             await page.keyboard.press('Escape');
             await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
             console.log('Novel reader regression passed: bottom close remains, top-right duplicate is hidden, Escape closes, and return to journal works.');
+            console.log('Story progression regression passed: cultivation, battle map, and previous-stage node gates are enforced.');
 
 
             await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
