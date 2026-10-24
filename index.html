@@ -687,7 +687,7 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 /* v0.71 gear management */
 #bag .slotgrid{grid-template-columns:repeat(5,minmax(0,1fr))}#bag .slot{padding:6px 2px}#bag .slot b{font-size:10px}#bag .gear-unequip{margin-top:4px;padding:4px 5px;font-size:10px;border-radius:6px;background:#3a4c5d}#bag #inventory .rowitem{align-items:flex-start;flex-wrap:wrap}#bag #inventory .rowbody{min-width:42%;flex:1 1 42%}#bag #inventory .rowitem button{padding:6px 7px;font-size:10px}#bag .rarity{color:var(--gold)}
 
-/* v0.89: always-expanded story arcs and one central story-library entry */
+/* v0.90: always-expanded story arcs and one central story-library entry */
 #journalV14Dock .journal-story-library-button{display:flex;width:min(100%,360px);margin:14px auto 18px;min-height:48px;justify-content:center;font-size:16px;font-weight:800;letter-spacing:.04em}
 #journalV14Dock .journal-arc-heading{display:flex;align-items:center;gap:10px;min-height:65px;padding:12px 13px;border-bottom:1px solid #b69a6930}
 #journalV14Dock .journal-arc-number{flex:0 0 36px;width:36px;height:38px;display:grid;place-items:center;border:1px solid #806f51;border-radius:9px;background:#171e28;color:#d8bd7a;font-size:12px;font-weight:800}
@@ -1944,13 +1944,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.89">
+<header class="top statusline" aria-label="角色狀態列 v0.90">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.89</small>
+  <small class="status-version" aria-label="遊戲版本">v0.90</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2627,7 +2627,7 @@ function getNovelStageGate(index){
     }).join('');
     openModal('修仙劇情故事','<div class="panel"><p>依照主線篇章順序閱讀。各篇依修煉境界、地圖與前置節點開放。</p></div><div class="journal-library-list">'+entries+'</div>');
   });
-  /* v0.89: show all eight story arcs and every node expanded; keep one central story-library entry. */
+  /* v0.90: show all eight story arcs and every node expanded; keep one central story-library entry. */
   const hybridStages=document.getElementById('journalHybridStages');
   if(hybridStages && Array.isArray(chapterNodes)){
     const arcNames=['凡人起步','黃楓谷與越國','亂星海歷練','重返天南與古修遺跡','化神與凡界遠行','靈界求道','靈界終章','仙界道途'];
@@ -2642,7 +2642,7 @@ function getNovelStageGate(index){
         return '<article class="journal-node-card '+(isOpen?'is-open':'is-locked')+'"><div class="journal-node-title"><b>'+esc(n.title)+'</b><span>'+(isOpen?'已解鎖':'未解鎖')+'</span></div>'+
           '<p>'+esc(isOpen?n.summary:!gateState.ready?'本階段尚未開放。':'劇情尚未開放，請完成以下條件。')+'</p>'+
           '<div class="journal-node-meta">故事地點：'+esc(n.map)+'　·　場景：'+esc(n.dungeon)+'<br>對應境界：'+esc(n.realm)+'<br>解鎖條件：'+esc(conditionText)+'</div>'+
-          (isOpen?'<div class="journal-node-actions"><button type="button" class="btn primary journal-node-read" onclick="openNodeNovelChapter('+chapterNodes.indexOf(n)+')">閱讀節點全文</button></div>':'')+
+
           '</article>';
       }).join('');
       return '<section class="journal-arc-card is-expanded"><div class="journal-arc-heading"><span class="journal-arc-number">'+String(arcIndex+1).padStart(2,'0')+'</span><div class="journal-arc-label"><b>第 '+(arcIndex+1)+' 階段｜'+arcName+'</b><small>'+unlocked+' / '+nodes.length+' 節開放 · '+stageStatus+'</small></div></div>'+
@@ -2675,12 +2675,7 @@ function getNovelStageGate(index){
           if(summaryText)summaryText.textContent=isOpen?node.summary:!isStageReady?'本階段尚未開放。':'劇情尚未開放，請完成以下條件。';
           const meta=nodeCard.querySelector('.journal-node-meta');
           if(meta)meta.innerHTML='故事地點：'+esc(node.map)+'　·　場景：'+esc(node.dungeon)+'<br>對應境界：'+esc(node.realm)+'<br>解鎖條件：'+esc(!isStageReady?gateState.reasons.join('；'):node.unlock);
-          let actions=nodeCard.querySelector('.journal-node-actions');
-          if(isOpen&&!actions){
-            actions=document.createElement('div');actions.className='journal-node-actions';
-            actions.innerHTML='<button type="button" class="btn primary journal-node-read" onclick="openNodeNovelChapter('+chapterNodes.indexOf(node)+')">閱讀節點全文</button>';
-            nodeCard.appendChild(actions);
-          }else if(!isOpen&&actions){actions.remove();}
+          const actions=nodeCard.querySelector('.journal-node-actions');if(actions)actions.remove();
         });
       });
       const summary=document.getElementById('journalProgressSummary');
