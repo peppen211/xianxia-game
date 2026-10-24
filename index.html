@@ -2590,4 +2590,15 @@ main>.screen#home.active{display:flex!important}
 }
 </style>
 
+
+<style id="v054-top-middle-separation">
+/* v0.54: separate the fixed status header from the middle content without changing game logic or save data. */
+#gameApp.app>header.top.statusline{position:relative;z-index:20;flex-shrink:0}
+#gameApp.app>main{position:relative;z-index:1;border-top:1px solid #8b7652;box-sizing:border-box}
+#gameApp.app>main>.screen.active{padding-top:10px!important}
+@media(max-width:359px){
+  #gameApp.app>main>.screen.active{padding-top:8px!important}
+}
+</style>
+
 </body></html>
