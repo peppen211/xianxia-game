@@ -555,9 +555,10 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 .top.statusline .status-power b{font-size:clamp(9px,2.2vw,12px)!important;line-height:1.1!important}
 .top.statusline #spiritTop,
 .top.statusline .core-break{display:none!important;width:0!important;height:0!important;overflow:hidden!important}
+/* Only hide duplicated summary widgets on the two screens that repeat the top status row.
+   Keep metric cards on bag/forge/journal and any future screens intact. */
 #home .hero-bottom,#home .realm-row,#home .metric,
-#cultivate .hero-bottom,#cultivate .realm-row,#cultivate .metric,
-main .hero-bottom,main .realm-row,main .metric{display:none!important}
+#cultivate .hero-bottom,#cultivate .realm-row,#cultivate .metric{display:none!important}
 .bottom{
   display:grid!important;
   grid-template-columns:repeat(5,minmax(0,1fr))!important;
