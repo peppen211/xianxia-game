@@ -1676,6 +1676,17 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
 }
 </style>
 
+<style id="five-path-navigation-v046">
+/* v0.46: five-path navigation; preserve all existing screens and game state. */
+#gameApp .bottom{grid-template-columns:repeat(5,minmax(0,1fr))}
+#gameApp .bottom .nav{gap:4px;min-width:0;padding:8px 2px}
+#gameApp .bottom .nav>span:last-child{font-size:11px;white-space:nowrap;letter-spacing:.015em}
+#gameApp .bottom .nav .ico{font-size:19px;line-height:1.1}
+#gameApp .path-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+#gameApp .path-shortcuts .btn{width:100%;min-height:40px}
+@media(max-width:360px){#gameApp .bottom .nav>span:last-child{font-size:10px}#gameApp .bottom .nav{padding-left:0;padding-right:0}}
+</style>
+
 </head><body class="launch-gate">
 <div id="launchGate" class="launch-gate-screen" role="dialog" aria-label="遊戲首頁">
   <div class="launch-title" aria-label="不好意思，本座又突破了"><span>不好意思</span><span>本座又突破了</span><i aria-hidden="true">修仙</i></div>
@@ -1691,13 +1702,13 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.45">
+<header class="top statusline" aria-label="角色狀態列 v0.46">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.45</small>
+  <small class="status-version" aria-label="遊戲版本">v0.46</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -2061,11 +2072,11 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
 /* === v1.4 verified interaction layer: preserve save schema and legacy functions === */
 (function installV14(){
  const navSpec=[
-  {id:'home',label:'首頁',icon:'house'},
   {id:'cultivate',label:'修煉',icon:'sword'},
-  {id:'forge',label:'探索',icon:'mountain'},
-  {id:'bag',label:'背包',icon:'bag'},
-  {id:'journal',label:'更多',icon:'more'}
+  {id:'character',label:'道途',icon:'path'},
+  {id:'home',label:'戰鬥',icon:'battle'},
+  {id:'bag',label:'儲物袋',icon:'bag'},
+  {id:'journal',label:'仙途',icon:'journal'}
  ];
  const navRoot=document.querySelector('.bottom');
  if(navRoot){
@@ -2076,10 +2087,27 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
    switchScreen(btn.dataset.screen);
   },true);
  }
+ /* Rehome existing feature panels without recreating IDs or changing save data. */
+ const forgeScreen=document.getElementById('forge'),characterScreen=document.getElementById('character'),bagScreen=document.getElementById('bag'),cultivateScreen=document.getElementById('cultivate');
+ if(forgeScreen&&characterScreen&&bagScreen&&!document.getElementById('prayerPanelRehomed')){
+  const forgePanels=[...forgeScreen.children];
+  const prayerPanel=forgePanels.find(el=>el.classList&&el.classList.contains('panel')&&el.querySelector('#drawOne')&&el.querySelector('#drawTen'));
+  if(prayerPanel){prayerPanel.id='prayerPanelRehomed';prayerPanel.querySelector('.secthead>span')?.replaceChildren(document.createTextNode('祈寶機緣'));characterScreen.appendChild(prayerPanel);}
+  forgePanels.filter(el=>el!==prayerPanel).forEach(el=>bagScreen.appendChild(el));
+  forgeScreen.hidden=true;
+ }
+ if(cultivateScreen&&!document.getElementById('cultivateQuickPaths')){
+  const quick=document.createElement('div');quick.id='cultivateQuickPaths';quick.className='path-shortcuts';
+  quick.innerHTML='<button type="button" class="btn secondary" id="openIdleRewardsPath">離線收益</button><button type="button" class="btn secondary" id="openCultivationLogPath">修煉日誌</button>';
+  const breakPanel=cultivateScreen.querySelector('.panel');
+  if(breakPanel)breakPanel.after(quick);else cultivateScreen.appendChild(quick);
+  document.getElementById('openIdleRewardsPath').addEventListener('click',()=>{const summary=document.getElementById('offlineSummary');openModal('離線收益','<div class="panel"><p>'+((summary&&summary.textContent)||'修煉從未停止。')+'</p><p>離線收益依原有規則累積，最多 8 小時。</p><button class="btn primary" onclick="claimIdle();closeModal()">領取收益</button></div>')});
+  document.getElementById('openCultivationLogPath').addEventListener('click',()=>{const logs=document.getElementById('logs');openModal('修煉日誌','<div class="loglist">'+((logs&&logs.innerHTML)||'<p>尚無修行紀錄。</p>')+'</div>')});
+ }
  const originalSwitchScreen=window.switchScreen;
  window.switchScreen=function(id){
-  if(id==='bag-modal'){openModal('法寶與丹藥',document.getElementById('bag').innerHTML);return}
-  if(id==='journal-modal'){openChronicleModal();return}
+  if(id==='bag-modal'){id='bag'}
+  if(id==='journal-modal'){id='journal'}
   if(!navSpec.some(n=>n.id===id))id='home';
   document.querySelectorAll('main .screen').forEach(el=>el.classList.toggle('active',el.id===id));
   document.querySelectorAll('.bottom .nav').forEach(el=>{
