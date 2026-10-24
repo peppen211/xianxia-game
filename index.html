@@ -2080,7 +2080,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
  ];
  const navRoot=document.querySelector('.bottom');
  if(navRoot){
-  navRoot.innerHTML=navSpec.map((n,i)=>'<button type="button" class="nav '+(i===1?'active':'')+'" data-screen="'+n.id+'" aria-label="'+n.label+'" '+(i===1?'aria-current="page"':'')+'><span class="ico">'+n.icon+'</span><span>'+n.label+'</span></button>').join('');
+  navRoot.innerHTML=navSpec.map((n,i)=>'<button type="button" class="nav '+(i===0?'active':'')+'" data-screen="'+n.id+'" aria-label="'+n.label+'" '+(i===0?'aria-current="page"':'')+'><span class="ico">'+n.icon+'</span><span>'+n.label+'</span></button>').join('');
   navRoot.addEventListener('click',function(e){
    const btn=e.target.closest('.nav[data-screen]');if(!btn)return;
    e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
