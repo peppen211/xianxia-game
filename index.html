@@ -781,7 +781,7 @@ body .app header.top.statusline{
   box-sizing:border-box!important;display:grid!important;
   grid-template-columns:minmax(0,.82fr) minmax(0,1.12fr) minmax(0,2.75fr) minmax(0,.78fr)!important;
   align-items:center!important;justify-content:stretch!important;gap:4px!important;width:100%!important;
-  height:min(9vh,58px)!important;min-height:0!important;max-height:10vh!important;padding:4px 6px!important;margin:0!important;overflow:hidden!important;
+  height:clamp(44px,9vh,58px)!important;min-height:44px!important;max-height:58px!important;padding:4px 6px!important;margin:0!important;overflow:hidden!important;
 }
 body .app header.top.statusline>.status-realm,
 body .app header.top.statusline>.status-xp,
@@ -805,7 +805,7 @@ body .app header.top.statusline .status-xp .progress{display:block!important;wid
 body .app header.top.statusline>.currencies{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:2px!important}
 body .app header.top.statusline .resource-chip{
   display:flex!important;align-items:center!important;justify-content:center!important;gap:1px!important;min-width:0!important;
-  margin:0!important;padding:2px 1px!important;font-size:12px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important
+  margin:0!important;padding:2px 1px!important;min-height:30px!important;border-radius:7px!important;font-size:12px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;touch-action:manipulation!important
 }
 body .app header.top.statusline .resource-chip .resource-label{display:none!important}
 body .app header.top.statusline .resource-chip b{min-width:0!important;font-size:10px!important;line-height:1.1!important}
