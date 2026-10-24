@@ -1814,7 +1814,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.53</small>
+  <small class="status-version" aria-label="遊戲版本">v0.55</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button class="modal-close" onclick="closeModal()" aria-label="關閉"></button></header><div class="modal-body" id="modalBody"></div></section></div><main>
@@ -1938,7 +1938,8 @@ function buyPill(){if(s.gold<30){toast('靈石不足');return}s.gold-=30;s.pills
 function usePill(){if(!s.pills){toast('沒有聚氣丹了');return}s.pills--;let n=Math.floor(val('maxHp')*.4);s.hp=Math.min(val('maxHp'),s.hp+n);note(` 使用聚氣丹，恢復 ${n} 氣血。`,'good');render()}
 function renderLogs(){let el=document.getElementById('logs');if(el)el.innerHTML=s.logs.slice(-30).map(l=>`<div class="log ${l.type||''}"><span style="color:#8191a6;margin-right:5px">${l.time||''}</span>${esc(l.msg)}</div>`).join('')||'<div class="smallnote">你的仙途才剛剛開始。</div>'}
 function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function render(){if(!s)return;if(!s.element)s.element='金';let realm=realms[s.major]||realms[0],need=xpNeed();['goldTop','goldMain'].forEach(id=>document.getElementById(id).textContent=s.gold);document.getElementById('spiritTop').textContent=s.spirit;document.getElementById('herbsTop').textContent=s.herbs;document.getElementById('globalRealm').textContent=realmText();document.getElementById('globalXpText').textContent=s.xp+'/'+need;document.getElementById('globalPower').textContent=power();document.getElementById('hanliAgeTop').textContent=calculateHanLiAge();document.getElementById('globalXpBar').style.width=Math.min(100,s.xp/need*100)+'%';document.querySelector('.status-xp .progress[role="progressbar"]')?.setAttribute('aria-valuenow',Math.min(100,Math.floor(s.xp/need*100)));document.getElementById('globalBreakBtn').disabled=s.xp<need;document.getElementById('realmEyebrow').textContent=`${['青雲山','落霞谷','金丹洞天','元嬰古境','化神天域'][s.major]} · ${realm.major}`;document.getElementById('realmName').textContent=realmText();document.getElementById('heroDesc').textContent=realm.desc;document.getElementById('cultivator').textContent=realm.art;document.getElementById('levelChip').textContent=realmText();document.getElementById('powerChip').textContent=power();document.getElementById('qiChip').textContent=Math.floor(s.xp/need*100)+'%';document.getElementById('xpText').textContent=`${s.xp}/${need}`;document.getElementById('xpBar').style.width=Math.min(100,s.xp/need*100)+'%';document.getElementById('herbMain').textContent=s.herbs;document.getElementById('enemyName').textContent=enemy.name;document.getElementById('enemyArt').innerHTML=enemySigil(enemy.art);document.getElementById('enemyLevel').textContent=`Lv.${1+Math.floor(s.kills/4)} · ${s.kills%4===3?'精英':'普通'}`;document.getElementById('enemyHpText').textContent=`${enemy.hp}/${enemy.maxHp}`;document.getElementById('enemyBar').style.width=Math.max(0,enemy.hp/enemy.maxHp*100)+'%';document.getElementById('battleStory').textContent=enemy.desc;document.getElementById('skillBtn').disabled=!s.skill;document.getElementById('skillBtn').textContent=s.skill?' 靈氣爆發':' 靈氣蓄力中';document.getElementById('cultArt').innerHTML='<span class="realm-glyph">'+(['氣','基','丹','嬰','神'][s.major]||'道')+'</span>';document.getElementById('cultRealm').textContent=realmText()+' · '+['靈氣親和','靈台穩固','丹火初燃','神識凝實','化神入微'][s.major];document.getElementById('cultLevelDesc').textContent=layerDescs[Math.max(0,Math.min(8,(s.layer||1)-1))];document.getElementById('cultXpBar').style.width=Math.min(100,s.xp/need*100)+'%';document.getElementById('cultXpText').textContent=`修為 ${s.xp} / ${need}`;document.getElementById('breakCost').textContent=`需求 ${need}`;document.getElementById('breakBtn').disabled=s.xp<need;document.getElementById('charTitle').textContent='韓立';document.getElementById('charRealm').textContent=realmText();document.getElementById('hanliAge').textContent=calculateHanLiAge();document.getElementById('charPower').textContent=power();document.getElementById('statsGrid').innerHTML=[['<i class="stat-mark hp-mark" aria-hidden="true"></i>','氣血',`${s.hp}/${val('maxHp')}`,'生存能力'],['<i class="stat-mark sword-mark" aria-hidden="true"></i>','攻擊力',val('atk'),'決定傷害'],['<i class="stat-mark shield-mark" aria-hidden="true"></i>','防禦力',val('def'),'降低反擊傷害'],['<i class="stat-mark diamond-mark" aria-hidden="true"></i>','戰鬥力',power(),'綜合評估'],['<i class="stat-mark pill-mark" aria-hidden="true"></i>','技能傷害',Math.floor(val('atk')*2.1),'靈氣爆發'],['<i class="stat-mark scroll-mark" aria-hidden="true"></i>','修為效率',s.method===0?'120%':s.method===1?'135%':'100%','心法加成']].map(a=>`<div class="stat"><small>${a[0]} ${a[1]}</small><b>${a[2]}</b><span>${a[3]}</span></div>`).join('');
+function compactHudNumber(value){const n=Number(value);if(!Number.isFinite(n))return String(value);const abs=Math.abs(n);if(abs<10000)return String(Math.floor(n));const units=[[1e16,'京'],[1e12,'兆'],[1e8,'億'],[1e4,'萬']];for(const [base,label] of units){if(abs>=base){const amount=abs/base;const rounded=amount<10?Number(amount.toFixed(1)):Math.round(amount);return (n<0?'-':'')+String(rounded)+label}}return String(n)}
+function render(){if(!s)return;if(!s.element)s.element='金';let realm=realms[s.major]||realms[0],need=xpNeed();document.getElementById('goldMain').textContent=s.gold;const topGold=document.getElementById('goldTop');topGold.textContent=compactHudNumber(s.gold);topGold.title='靈石：'+s.gold;topGold.setAttribute('aria-label','靈石 '+s.gold);document.getElementById('spiritTop').textContent=s.spirit;document.getElementById('herbsTop').textContent=s.herbs;document.getElementById('globalRealm').textContent=realmText();document.getElementById('globalXpText').textContent=compactHudNumber(s.xp)+'/'+compactHudNumber(need);document.getElementById('globalXpText').title='修為 '+s.xp+'/'+need;document.getElementById('globalPower').textContent=compactHudNumber(power());document.getElementById('globalPower').title='戰力 '+power();document.getElementById('hanliAgeTop').textContent=calculateHanLiAge();document.getElementById('globalXpBar').style.width=Math.min(100,s.xp/need*100)+'%';document.querySelector('.status-xp .progress[role="progressbar"]')?.setAttribute('aria-valuenow',Math.min(100,Math.floor(s.xp/need*100)));document.getElementById('globalBreakBtn').disabled=s.xp<need;document.getElementById('realmEyebrow').textContent=`${['青雲山','落霞谷','金丹洞天','元嬰古境','化神天域'][s.major]} · ${realm.major}`;document.getElementById('realmName').textContent=realmText();document.getElementById('heroDesc').textContent=realm.desc;document.getElementById('cultivator').textContent=realm.art;document.getElementById('levelChip').textContent=realmText();document.getElementById('powerChip').textContent=power();document.getElementById('qiChip').textContent=Math.floor(s.xp/need*100)+'%';document.getElementById('xpText').textContent=`${s.xp}/${need}`;document.getElementById('xpBar').style.width=Math.min(100,s.xp/need*100)+'%';document.getElementById('herbMain').textContent=s.herbs;document.getElementById('enemyName').textContent=enemy.name;document.getElementById('enemyArt').innerHTML=enemySigil(enemy.art);document.getElementById('enemyLevel').textContent=`Lv.${1+Math.floor(s.kills/4)} · ${s.kills%4===3?'精英':'普通'}`;document.getElementById('enemyHpText').textContent=`${enemy.hp}/${enemy.maxHp}`;document.getElementById('enemyBar').style.width=Math.max(0,enemy.hp/enemy.maxHp*100)+'%';document.getElementById('battleStory').textContent=enemy.desc;document.getElementById('skillBtn').disabled=!s.skill;document.getElementById('skillBtn').textContent=s.skill?' 靈氣爆發':' 靈氣蓄力中';document.getElementById('cultArt').innerHTML='<span class="realm-glyph">'+(['氣','基','丹','嬰','神'][s.major]||'道')+'</span>';document.getElementById('cultRealm').textContent=realmText()+' · '+['靈氣親和','靈台穩固','丹火初燃','神識凝實','化神入微'][s.major];document.getElementById('cultLevelDesc').textContent=layerDescs[Math.max(0,Math.min(8,(s.layer||1)-1))];document.getElementById('cultXpBar').style.width=Math.min(100,s.xp/need*100)+'%';document.getElementById('cultXpText').textContent=`修為 ${s.xp} / ${need}`;document.getElementById('breakCost').textContent=`需求 ${need}`;document.getElementById('breakBtn').disabled=s.xp<need;document.getElementById('charTitle').textContent='韓立';document.getElementById('charRealm').textContent=realmText();document.getElementById('hanliAge').textContent=calculateHanLiAge();document.getElementById('charPower').textContent=power();document.getElementById('statsGrid').innerHTML=[['<i class="stat-mark hp-mark" aria-hidden="true"></i>','氣血',`${s.hp}/${val('maxHp')}`,'生存能力'],['<i class="stat-mark sword-mark" aria-hidden="true"></i>','攻擊力',val('atk'),'決定傷害'],['<i class="stat-mark shield-mark" aria-hidden="true"></i>','防禦力',val('def'),'降低反擊傷害'],['<i class="stat-mark diamond-mark" aria-hidden="true"></i>','戰鬥力',power(),'綜合評估'],['<i class="stat-mark pill-mark" aria-hidden="true"></i>','技能傷害',Math.floor(val('atk')*2.1),'靈氣爆發'],['<i class="stat-mark scroll-mark" aria-hidden="true"></i>','修為效率',s.method===0?'120%':s.method===1?'135%':'100%','心法加成']].map(a=>`<div class="stat"><small>${a[0]} ${a[1]}</small><b>${a[2]}</b><span>${a[3]}</span></div>`).join('');
 document.getElementById('upgradeList').innerHTML=[['atk','','淬鍊攻勢','攻擊 +3',35+s.layer*15],['def','','護體鍛骨','防禦 +2',30+s.layer*13],['maxHp','','洗髓淬體','氣血上限 +20',40+s.layer*18]].map(a=>`<div class="rowitem"><div class="rowicon">${a[1]}</div><div class="rowbody"><b>${a[2]}</b><small>${a[3]} · 永久提升</small></div><button onclick="upgrade('${a[0]}')" ${s.gold<a[4]?'disabled':''}>強化 ${a[4]}</button></div>`).join('');
 document.getElementById('methodList').innerHTML=methods.map((m,i)=>'<div class="method-card '+(s.method===i?'chosen':'')+'"><div class="method-icon">'+m.icon+'</div><b>'+m.name+'</b><small>'+m.bonus+'</small><button class="btn '+(s.method===i?'jade':'secondary')+'" onclick="selectMethod('+i+')" '+(s.method===i?'disabled':'')+'>'+(s.ownedMethods.includes(i)?(s.method===i?'修煉中':'切換'):'解鎖 '+m.cost+'')+'</button></div>').join('');
 document.getElementById('slots').innerHTML=['weapon','armor','charm'].map(slot=>{let it=s.inventory.find(x=>x.id===s.equipped[slot]);return `<div class="slot"><span>${it?it.icon:({weapon:'',armor:'',charm:''}[slot])}</span><small>${({weapon:'武器',armor:'護甲',charm:'飾品'}[slot])}</small><b>${it?it.name:'空欄'}</b></div>`}).join('');
@@ -2598,6 +2599,65 @@ main>.screen#home.active{display:flex!important}
 #gameApp.app>main>.screen.active{padding-top:10px!important}
 @media(max-width:359px){
   #gameApp.app>main>.screen.active{padding-top:8px!important}
+}
+</style>
+
+
+<style id="v055-hud-number-overflow">
+/* v0.55: keep the top HUD stable as cultivation, battle power, and spirit-stone values grow. */
+#gameApp.app>header.top.statusline{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.15fr) max-content minmax(48px,.9fr) max-content minmax(0,max-content)!important;
+  align-items:center!important;
+  column-gap:clamp(2px,1vw,6px)!important;
+}
+#gameApp.app>header.top.statusline>.status-name{
+  min-width:0!important;max-width:100%!important;overflow:hidden!important;
+}
+#gameApp.app>header.top.statusline>.status-name b{
+  min-width:0!important;max-width:calc(100% - 35px)!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+#gameApp.app>header.top.statusline>.status-age,
+#gameApp.app>header.top.statusline>.status-power,
+#gameApp.app>header.top.statusline>.status-resources{
+  min-width:0!important;max-width:100%!important;white-space:nowrap!important;
+}
+#gameApp.app>header.top.statusline>.status-power{gap:2px!important}
+#gameApp.app>header.top.statusline>.status-resources{overflow:hidden!important}
+#gameApp.app>header.top.statusline>.status-resources>.resource-chip{
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  gap:3px!important;width:auto!important;max-width:100%!important;min-width:0!important;
+  padding:2px 0!important;white-space:nowrap!important;overflow:hidden!important;
+}
+#gameApp.app>header.top.statusline>.status-resources>.resource-chip>.status-label,
+#gameApp.app>header.top.statusline>.status-resources>.resource-chip>b,
+#gameApp.app>header.top.statusline>.status-power,
+#gameApp.app>header.top.statusline>.status-xp>#globalXpText{
+  font-variant-numeric:tabular-nums lining-nums!important;
+  white-space:nowrap!important;
+}
+#gameApp.app>header.top.statusline>.status-resources>.resource-chip>b{
+  flex:0 1 auto!important;min-width:0!important;overflow:hidden!important;text-overflow:clip!important;
+}
+@media(max-width:359px){
+  #gameApp.app>header.top.statusline{
+    grid-template-columns:minmax(0,1fr) max-content minmax(42px,.8fr) max-content minmax(0,max-content)!important;
+    column-gap:2px!important;padding-inline:4px!important;
+  }
+  #gameApp.app>header.top.statusline>.status-name .top-avatar{
+    width:25px!important;height:25px!important;flex-basis:25px!important;
+  }
+  #gameApp.app>header.top.statusline>.status-name b{font-size:9px!important;max-width:calc(100% - 29px)!important}
+  #gameApp.app>header.top.statusline>.status-age,
+  #gameApp.app>header.top.statusline>.status-age b,
+  #gameApp.app>header.top.statusline>.status-age span,
+  #gameApp.app>header.top.statusline>.status-power,
+  #gameApp.app>header.top.statusline>.status-power .status-label,
+  #gameApp.app>header.top.statusline>.status-power b,
+  #gameApp.app>header.top.statusline>.status-resources>.resource-chip>.status-label,
+  #gameApp.app>header.top.statusline>.status-resources>.resource-chip>b,
+  #gameApp.app>header.top.statusline>.status-xp>#globalXpText{font-size:9px!important}
 }
 </style>
 
