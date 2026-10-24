@@ -488,6 +488,8 @@ main{flex:1 1 auto;min-height:0;overflow:hidden!important;position:relative}
  .nav{font-size:8px}
 }
 
+
+#journal>#journalV14Dock{display:flex!important;flex-direction:column;gap:8px;flex:1;min-height:0}
 </style></head><body><div class="app">
 <header class="top statusline">
  <div class="status-realm"><small>🧘 境界</small><b id="globalRealm">練氣一層</b></div>
@@ -688,6 +690,7 @@ function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){
   const idx=nodeIndex(),node=progressNodes[idx]||progressNodes[0],nl=document.getElementById('storyCurrentLabelQuick'),nc=document.getElementById('nodeCurrent'),nm=document.getElementById('nodeMeta'),np=document.getElementById('nodeProgressBar'),nt=document.getElementById('nodeProgressText');
   if(nl)nl.textContent='節點 '+(idx+1)+' / '+progressNodes.length;if(nc)nc.textContent=node.title;if(nm)nm.textContent='地圖：'+node.map+'｜副本：'+node.dungeon+'｜解鎖：'+node.unlock;if(np)np.style.width=Math.min(100,(s.kills%4)/4*100)+'%';if(nt)nt.textContent='試煉進度 '+(s.kills%4)+' / 4 · 下一節點：'+node.next;
  };
+ window.openChapterNode=function(i){const n=chapterNodes[Number(i)];if(!n||!nodeUnlocked(n)){toast('此紀事節點尚未解鎖');return}openModal('紀事節點：'+n.title,'<div class="panel"><h3>'+esc(n.title)+'</h3><p style="line-height:1.8;font-size:12px">'+esc(n.summary)+'</p><div class="smallnote">地圖：'+esc(n.map)+'｜副本：'+esc(n.dungeon)+'<br>境界：'+esc(n.realm)+'｜解鎖條件：'+esc(n.unlock)+'</div></div>')};
  window.openChronicleModal=function(){const idx=nodeIndex(),list=progressNodes.map((n,i)=>'<article class="chronicle-entry '+(i<idx?'done':i===idx?'current':'future')+'"><div class="chronicle-top"><b>'+esc(n.title)+'</b><span>'+(i<idx?'已解鎖':i===idx?'目前節點':'未解鎖')+'</span></div><div class="chronicle-world">動畫：'+esc(n.episode)+'<br>地點：'+esc(n.location)+'<br>地圖：'+esc(n.map)+' · 副本：'+esc(n.dungeon)+'</div><p><b>人物：</b>'+esc(n.characters)+'<br><b>關鍵事件：</b>'+esc(n.event)+'<br><b>韓立境界：</b>'+esc(n.realm)+'</p><div class="chronicle-task">系統解鎖：'+esc(n.unlock)+'<br>下一節點：'+esc(n.next)+'</div></article>').join('');openModal('主線節點資料庫','<div class="panel"><b>主線篇章索引與遊戲解鎖</b><p>此資料庫以小說／動畫主線的篇章節點、地圖、副本、角色、境界與系統解鎖建立遊戲進度索引；各節點提供原創摘要，不複製小說或動畫全文。動畫集數依平台版本可能不同，因此以篇章名稱為主。</p></div><div class="chronicle-list">'+list+'</div>')};
 })();
 function flashGain(text){let old=document.getElementById('gainFloat');if(old)old.remove();const el=document.createElement('div');el.id='gainFloat';el.className='gain-float';el.textContent=text;document.querySelector('.app')?.appendChild(el);setTimeout(()=>el.remove(),1500);const core=document.querySelector('.corebar');if(core){core.classList.remove('stat-flash');void core.offsetWidth;core.classList.add('stat-flash')}}
@@ -923,7 +926,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(s&&s.l
  window.openChronicleModal=function(){
   const nodes=chapterNodes.map((n,i)=>{
    const unlocked=nodeUnlocked(n),current=unlocked&&chapterNodes.slice(i+1).every(next=>!nodeUnlocked(next));
-   return '<article class="chronicle-node '+(unlocked?'':'locked')+'"><h3>'+(unlocked?'📖 ':'🔒 ')+(i+1)+'. '+esc(n.title)+(current?' · 當前':'')+'</h3><div class="meta">🗺 '+esc(n.map)+'｜⚔ '+esc(n.dungeon)+'｜境界：'+esc(n.realm)+'<br>🔓 條件：'+esc(n.unlock)+'｜節點 '+n.arc+'</div><p>'+(unlocked?esc(n.summary):'此節點尚未解鎖。達成條件後可閱讀遊戲原創章節摘要。')+'</p>'+(unlocked?'<button class="btn secondary" onclick="openModal(\\'紀事節點：'+esc(n.title).replace(/'/g,'&#39;')+'\\',\\'<div class=\\\\\\'panel\\\\\\'><h3>'+esc(n.title).replace(/'/g,'&#39;')+'</h3><p style=\\\\\\'line-height:1.8;font-size:12px\\\\\\'>'+esc(n.summary).replace(/'/g,'&#39;')+'</p><div class=\\\\\\'smallnote\\\\\\'>地圖：'+esc(n.map)+'｜副本：'+esc(n.dungeon)+'｜解鎖條件：'+esc(n.unlock)+'</div></div>\\')">閱讀節點全文</button>':'')+'</article>';
+   return '<article class="chronicle-node '+(unlocked?'':'locked')+'"><h3>'+(unlocked?'📖 ':'🔒 ')+(i+1)+'. '+esc(n.title)+(current?' · 當前':'')+'</h3><div class="meta">🗺 '+esc(n.map)+'｜⚔ '+esc(n.dungeon)+'｜境界：'+esc(n.realm)+'<br>🔓 條件：'+esc(n.unlock)+'｜節點 '+n.arc+'</div><p>'+(unlocked?esc(n.summary):'此節點尚未解鎖。達成條件後可閱讀遊戲原創章節摘要。')+'</p>'+(unlocked?'<button class="btn secondary" onclick="openChapterNode('+i+')">閱讀節點全文</button>':'')+'</article>';
   }).join('');
   openModal('仙途紀事｜節點資料庫','<div class="panel"><b>主線節點資料庫 · '+chapterNodes.length+' 節</b><p class="smallnote">每節包含地圖、副本、境界與解鎖條件。下列文字為遊戲原創摘要與節點資料，不包含《凡人修仙傳》小說或動畫的受版權保護全文。</p><div class="smallnote">目前解鎖 '+chapterNodes.filter(nodeUnlocked).length+' / '+chapterNodes.length+' 節</div></div>'+nodes);
  };
