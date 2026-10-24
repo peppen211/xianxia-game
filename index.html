@@ -597,6 +597,11 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
  .bottom .nav .ico{font-size:15px!important}
 }
 
+
+/* v0.23: avoid repeating the same live stats in the middle panel */
+.app>main>#home>.hero>.hero-bottom,
+.app>main>#home>.realm-row{display:none!important}
+
 </style>
 <!-- Merge restoration: keep the original classic home screen reachable from the Trial tab. -->
 <style id="classic-merge-restoration">
