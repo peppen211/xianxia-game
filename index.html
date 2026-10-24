@@ -1879,13 +1879,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.80">
+<header class="top statusline" aria-label="角色狀態列 v0.81">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.80</small>
+  <small class="status-version" aria-label="遊戲版本">v0.81</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2093,8 +2093,8 @@ function selectMethod(i){
  if(detailWasOpen)openModal('功法詳情',methodDetailHtml(i));else toast('功法已切換：'+m.name+'，效果立即生效');
 }
 function openMethodDetails(i){openModal('功法詳情',methodDetailHtml(i))}
-function openModal(title,html){const modal=document.getElementById('uiModal');const body=document.getElementById('modalBody');const isNovel=!!(html&&String(html).includes('class="novel-reader"'));document.getElementById('modalTitle').textContent=title;body.innerHTML=html||'<div class="smallnote">目前沒有可顯示的內容。</div>';body.scrollTop=0;modal.classList.toggle('novel-reading-mode',isNovel);const footer=document.getElementById('modalFooter');if(footer)footer.hidden=!isNovel;const closeButton=modal.querySelector('.modal-close');if(closeButton){closeButton.textContent=isNovel?'關閉':'×';closeButton.setAttribute('aria-label',isNovel?'關閉劇情閱讀並返回仙途':'關閉彈窗')}modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
-function closeModal(){const modal=document.getElementById('uiModal');if(!modal)return;modal.classList.remove('show','novel-reading-mode');modal.setAttribute('aria-hidden','true');const footer=document.getElementById('modalFooter');if(footer)footer.hidden=true;const closeButton=modal.querySelector('.modal-close');if(closeButton){closeButton.textContent='×';closeButton.setAttribute('aria-label','關閉彈窗')}document.body.classList.remove('modal-open')}
+function openModal(title,html){const modal=document.getElementById('uiModal');const body=document.getElementById('modalBody');const isNovel=!!(html&&String(html).includes('class="novel-reader"'));document.getElementById('modalTitle').textContent=title;body.innerHTML=html||'<div class="smallnote">目前沒有可顯示的內容。</div>';body.scrollTop=0;modal.classList.toggle('novel-reading-mode',isNovel);const footer=document.getElementById('modalFooter');if(footer)footer.hidden=!isNovel;const closeButton=modal.querySelector('.modal-close');if(closeButton){closeButton.hidden=isNovel;closeButton.textContent=isNovel?'關閉':'×';closeButton.setAttribute('aria-label',isNovel?'關閉劇情閱讀並返回仙途':'關閉彈窗')}modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
+function closeModal(){const modal=document.getElementById('uiModal');if(!modal)return;modal.classList.remove('show','novel-reading-mode');modal.setAttribute('aria-hidden','true');const footer=document.getElementById('modalFooter');if(footer)footer.hidden=true;const closeButton=modal.querySelector('.modal-close');if(closeButton){closeButton.hidden=false;closeButton.textContent='×';closeButton.setAttribute('aria-label','關閉彈窗')}document.body.classList.remove('modal-open')}
 document.addEventListener('keydown',function(event){if(event.key==='Escape'){const modal=document.getElementById('uiModal');if(modal&&modal.classList.contains('show')&&modal.classList.contains('novel-reading-mode'))closeModal()}});
 function methodDetailHtml(index=s.method){
  const i=Math.max(0,Math.min(methods.length-1,Math.floor(Number(index)||0)));
@@ -3174,7 +3174,7 @@ main>.screen#home.active{display:flex!important}
 #gameApp #journalHybridStages .journal-node-toggle{align-self:flex-start!important;max-width:100%!important;white-space:normal!important;line-height:1.45!important}
 #gameApp #journalV14Dock button{white-space:normal!important;line-height:1.45!important;overflow-wrap:anywhere!important}
 @media(max-width:420px){#gameApp #journal.active{padding:10px!important;gap:10px!important}#gameApp #journalV14Dock .panel,#gameApp #journalHybridStages .journal-arc-content{padding:10px!important}#gameApp #journalHybridStages .journal-node-card{padding:9px!important}}
-</style><style id="v080-novel-reader">
+</style><style id="v081-novel-reader">
 #gameApp .journal-reader-intro{padding:12px!important;margin:0!important}
 #gameApp .journal-reader-intro p{line-height:1.65!important;margin:7px 0 0!important}
 #gameApp .journal-read-story{width:100%!important;white-space:normal!important;line-height:1.5!important;margin-bottom:10px!important}
@@ -3216,6 +3216,9 @@ main>.screen#home.active{display:flex!important}
 #gameApp #uiModal.novel-reading-mode .modal-backdrop{pointer-events:auto!important}
 @media(max-width:420px){#gameApp #uiModal.novel-reading-mode .modal-head{padding:0 12px!important}#gameApp #uiModal.novel-reading-mode .modal-close{min-width:78px!important;padding:0 9px!important}#gameApp #uiModal.novel-reading-mode #modalBody{padding:12px 16px 16px!important}#gameApp #uiModal.novel-reading-mode .modal-foot{padding:9px 12px 10px!important}}
 
+
+/* v0.81: the bottom action is the only close button during novel reading. */
+#gameApp #uiModal.novel-reading-mode .modal-close{display:none!important}
 </style>
 
 <script id="v061-cultivation-page-repair-script">

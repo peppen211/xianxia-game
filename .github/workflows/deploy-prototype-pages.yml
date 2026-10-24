@@ -144,21 +144,18 @@ jobs:
             if (!(await novelReader.innerText()).includes('山雨入門')) throw new Error('第一回正文標題缺失。');
             if (await novelReader.locator('.novel-chapter-nav button').count() !== 2) throw new Error('小說章節導覽按鈕缺失。');
             const closeStoryFooter = page.locator('#uiModal.novel-reading-mode #modalFooter button');
-            if (!(await closeStoryFooter.isVisible()) || !(await page.locator('#uiModal .modal-close').innerText()).includes('關閉')) throw new Error('小說閱讀器缺少明確關閉操作。');
+            const topStoryClose = page.locator('#uiModal.novel-reading-mode .modal-close');
+            if (!(await closeStoryFooter.isVisible()) || await topStoryClose.isVisible()) throw new Error('劇情閱讀模式應保留下方關閉按鈕並隱藏右上角重複按鈕。');
             await closeStoryFooter.click();
             await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
             if (await page.locator('#journalHybridStages').isHidden()) throw new Error('關閉劇情後沒有返回仙途。');
             if ((await storyArcButton.getAttribute('aria-expanded')) !== 'true') await storyArcButton.click();
             await storyButton.click();
             await novelReader.waitFor({ state: 'visible', timeout: 3000 });
-            await page.locator('#uiModal .modal-close').click();
-            await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
-            if ((await storyArcButton.getAttribute('aria-expanded')) !== 'true') await storyArcButton.click();
-            await storyButton.click();
-            await novelReader.waitFor({ state: 'visible', timeout: 3000 });
+            if (await page.locator('#uiModal.novel-reading-mode .modal-close').isVisible()) throw new Error('重新開啟劇情後右上角重複關閉按鈕再次出現。');
             await page.keyboard.press('Escape');
             await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
-            console.log('Novel reader regression passed: chapter content, footer close, header close, Escape, and return to journal.');
+            console.log('Novel reader regression passed: bottom close remains, top-right duplicate is hidden, Escape closes, and return to journal works.');
 
 
             await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
