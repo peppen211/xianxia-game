@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "maxOfflineSeconds": 28800,
   "xp": {
     "base": 100,
@@ -153,8 +153,13 @@
     "successHpRestore": 1
   },
   "battle": {
-    "autoIntervalMs": 1200,
-    "fastIntervalMs": 550,
-    "damageFloatMs": 1050
+    "autoIntervalMs": 1400,
+    "fastIntervalMs": 900,
+    "damageFloatMs": 1050,
+    "speedIntervalsMs": {
+      "1": 1400,
+      "2": 900,
+      "3": 550
+    }
   }
 }
