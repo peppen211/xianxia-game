@@ -3275,6 +3275,7 @@ main>.screen#home.active{display:flex!important}
       s.mapBossWins=Math.max(Number(s.mapBossWins)||0,defeatedMap+1);
       if(defeatedMap<mapList.length-1){
         s.mapIndex=defeatedMap+1;
+        spawnEnemy();
         note(' 首領已擊敗！解鎖下一張地圖：'+currentMap().name+'。','good');
         toast('首領討伐成功！前往新地圖：'+currentMap().name);
       }else{
