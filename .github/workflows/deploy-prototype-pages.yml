@@ -289,6 +289,14 @@ jobs:
             console.log('Story progression regression passed: central story entry, gated stage metadata, full chapter reader, immersive layout, close and reopen flow.');
 
 
+            const preReloadSave = await page.evaluate(() => {
+              const saved = JSON.parse(localStorage.getItem('nine_heavens_idle_v2') || '{}');
+              const stableFields = [
+                'major', 'layer', 'gold', 'herbs', 'kills', 'inventory', 'equipped',
+                'ownedMethods', 'methodLevels', 'treasureFragments', 'ownedTreasures'
+              ];
+              return Object.fromEntries(stableFields.map(key => [key, saved[key] ?? null]));
+            });
             await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').waitFor({ state: 'visible', timeout: 5000 });
@@ -314,14 +322,6 @@ jobs:
             });
             if (!persistedSave.keyExists || !persistedSave.hasFragmentMap || !persistedSave.owned) throw new Error('重新載入後古寶碎片／收藏存檔沒有保留。');
             if (!persistedSave.hasSaveTimestamp) throw new Error('存檔時間戳遺失或無效。');
-            const preReloadSave = await page.evaluate(() => {
-              const saved = JSON.parse(localStorage.getItem('nine_heavens_idle_v2') || '{}');
-              const stableFields = [
-                'major', 'layer', 'gold', 'herbs', 'kills', 'inventory', 'equipped',
-                'ownedMethods', 'methodLevels', 'treasureFragments', 'ownedTreasures'
-              ];
-              return Object.fromEntries(stableFields.map(key => [key, saved[key] ?? null]));
-            });
             if (JSON.stringify(persistedSave.stable) !== JSON.stringify(preReloadSave)) {
               throw new Error('重新載入後核心存檔欄位與重載前不一致。');
             }
