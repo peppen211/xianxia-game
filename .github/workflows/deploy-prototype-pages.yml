@@ -153,7 +153,7 @@ jobs:
             if (!filteredByType.includes('測試法寶') || filteredByType.includes('測試批次分解防具')) throw new Error('器物種類篩選未正確篩出法寶。');
             await page.locator('#bagTypeFilter').selectOption('all');
             await bag.locator('[data-bag-main-tab="treasures"]').click();
-            if (!(await page.locator('#bagInactiveCategory').innerText()).includes('古寶類')) throw new Error('古寶類暫未開放提示缺失。');
+            if (await page.locator('#bagInactiveCategory .bag-treasure-card').count() !== 4) throw new Error('古寶頁應顯示四件可收藏古寶。');
             await bag.locator('[data-bag-main-tab="pets"]').click();
             if (!(await page.locator('#bagInactiveCategory').innerText()).includes('靈寵類')) throw new Error('靈寵類暫未開放提示缺失。');
             await bag.locator('[data-bag-main-tab="equipment"]').click();
