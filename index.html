@@ -2046,7 +2046,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v1.02</small>
+  <small class="status-version" aria-label="遊戲版本">v1.03</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -5158,98 +5158,4 @@ html body #gameApp.app>header.top.statusline>.status-name{
 </style>
 
 
-<script id="v102-artifact-system">
-(function installArtifactSystem(){
- 'use strict';
- /* v1.02 法寶系統：獨立於古寶，沿用現有存檔、戰鬥掉落與儲物袋。 */
- const ARTIFACTS=[
-  {id:'green-orb',name:'青木靈珠',icon:'珠',description:'凝聚草木靈氣，助修士穩步增長修為。',effectKey:'bonusXp',effectName:'修為收益',perLevel:0.03,fragmentsRequired:10,upgradeBase:8,maxLevel:5},
-  {id:'iron-seal',name:'玄鐵戰印',icon:'印',description:'以玄鐵煉成戰印，持有時可增強攻伐之力。',effectKey:'bonusDamage',effectName:'戰鬥傷害',perLevel:0.03,fragmentsRequired:10,upgradeBase:8,maxLevel:5},
-  {id:'gathering-vase',name:'聚靈寶瓶',icon:'瓶',description:'瓶中靈息循環不絕，能增加戰鬥所得靈石。',effectKey:'bonusGold',effectName:'戰鬥靈石',perLevel:0.05,fragmentsRequired:10,upgradeBase:8,maxLevel:5},
-  {id:'heaven-compass',name:'天機羅盤',icon:'盤',description:'羅盤指引靈機，提升戰鬥材料的收集機會。',effectKey:'bonusDrop',effectName:'材料掉落率',perLevel:0.03,fragmentsRequired:10,upgradeBase:8,maxLevel:5}
- ];
- if(typeof s!=='object'||!s)return;
- function ensureArtifactState(){
-  if(!s.artifactFragments||typeof s.artifactFragments!=='object'||Array.isArray(s.artifactFragments))s.artifactFragments={};
-  ARTIFACTS.forEach(function(a){const n=Number(s.artifactFragments[a.id]);s.artifactFragments[a.id]=Number.isFinite(n)?Math.max(0,Math.floor(n)):0;});
-  const src=Array.isArray(s.ownedArtifacts)?s.ownedArtifacts:[];
-  s.ownedArtifacts=src.map(function(entry){const id=typeof entry==='string'?entry:entry&&entry.id;const def=ARTIFACTS.find(function(a){return a.id===id});if(!def)return null;return {id:id,level:Math.max(1,Math.min(def.maxLevel,Math.floor(Number(entry.level)||1)))}}).filter(function(x,i,a){return x&&a.findIndex(function(y){return y.id===x.id})===i});
- }
- function artifactPerks(){
-  const result={bonusXp:0,bonusGold:0,bonusDamage:0,bonusDrop:0};
-  ensureArtifactState();
-  s.ownedArtifacts.forEach(function(entry){const def=ARTIFACTS.find(function(a){return a.id===entry.id});if(def)result[def.effectKey]+=def.perLevel*entry.level;});
-  return result;
- }
- function artifactEffect(def,level){return def.effectName+' +'+(def.perLevel*level*100).toFixed(1).replace(/\.0$/,'')+'%';}
- function renderArtifacts(){
-  ensureArtifactState();
-  const owned=s.ownedArtifacts.length;
-  const total=ARTIFACTS.reduce(function(n,a){return n+(s.artifactFragments[a.id]||0)},0);
-  const cards=ARTIFACTS.map(function(a){
-   const entry=s.ownedArtifacts.find(function(x){return x.id===a.id}),level=entry?entry.level:0,fragments=s.artifactFragments[a.id]||0;
-   const needed=level===0?a.fragmentsRequired:level>=a.maxLevel?0:a.upgradeBase+level;
-   const ready=needed>0&&fragments>=needed,progress=needed===0?100:Math.min(100,Math.floor(fragments/needed*100));
-   const action=level>=a.maxLevel?'已達滿級':ready?(level===0?'合成法寶':'升級法寶'):(level===0?'碎片不足':'碎片不足，無法升級');
-   return '<article class="bag-treasure-card artifact-card '+(level?'is-owned':'')+'"><div class="bag-treasure-card-head"><span class="bag-treasure-icon">'+a.icon+'</span><div class="bag-treasure-name"><b>'+a.name+'</b><small>'+(level?'已持有 · 等級 '+level:'尚未合成')+'</small></div></div><p class="bag-treasure-description">'+a.description+'</p><div class="bag-treasure-effect">'+(level?'目前效果：'+artifactEffect(a,level):'獲得後自動生效：'+artifactEffect(a,1))+'</div><div class="bag-treasure-progress"><span style="width:'+progress+'%"></span></div><small class="bag-treasure-fragments">碎片 '+fragments+(needed?' / '+needed:' · 已滿級')+'</small><button type="button" class="btn '+(ready?'primary':'secondary')+' bag-treasure-action" data-artifact-action="'+a.id+'" '+((!ready||level>=a.maxLevel)?'disabled':'')+'>'+action+'</button></article>';
-  }).join('');
-  const perks=artifactPerks();
-  const pct=function(k){return (perks[k]*100).toFixed(1).replace(/\.0$/,'')};
-  const panel=document.getElementById('bagInactiveCategory');if(!panel)return;
-  panel.classList.add('bag-treasure-view','bag-artifact-view');panel.hidden=false;
-  panel.innerHTML='<div class="bag-treasure-intro"><div class="secthead"><span>法寶收藏</span><small>'+owned+' / '+ARTIFACTS.length+' 件已持有</small></div><p>法寶不占穿戴格，合成後立即生效。不同法寶的被動效果可累加，重新整理後仍會保留。</p><div class="bag-treasure-total">法寶碎片：<b>'+total+'</b></div></div><div class="bag-treasure-drop-note">普通怪物掉落率 6%・精英 18%・首領 40%；首領有機會額外獲得碎片。</div><div class="artifact-perk-summary">目前法寶加成：修為 +'+pct('bonusXp')+'%　靈石 +'+pct('bonusGold')+'%　傷害 +'+pct('bonusDamage')+'%　材料掉落 +'+pct('bonusDrop')+'%</div><div class="bag-treasure-grid">'+cards+'</div>';
-  panel.querySelectorAll('[data-artifact-action]').forEach(function(btn){btn.addEventListener('click',function(){craftArtifact(btn.dataset.artifactAction)});});
- }
- function craftArtifact(id){
-  ensureArtifactState();const def=ARTIFACTS.find(function(a){return a.id===id});if(!def)return;
-  const owned=s.ownedArtifacts.find(function(x){return x.id===id}),level=owned?owned.level:0;
-  if(level>=def.maxLevel){toast('這件法寶已達最高等級');return}
-  const need=level===0?def.fragmentsRequired:def.upgradeBase+level,have=s.artifactFragments[id]||0;
-  if(have<need){toast('法寶碎片不足，還需要 '+(need-have)+' 片');return}
-  s.artifactFragments[id]=have-need;
-  if(owned)owned.level=level+1;else s.ownedArtifacts.push({id:id,level:1});
-  note(level===0?'合成法寶「'+def.name+'」，被動效果已生效。':'法寶「'+def.name+'」提升至 '+(level+1)+' 級，被動效果已增強。','good');
-  save();render();toast(level===0?'法寶合成成功，效果立即生效':'法寶升級成功，效果立即提升');
- }
- /* 法寶效果接入既有統一屬性計算，不直接改寫基礎數值，避免重複套用。 */
- const previousGearPerks=gearPerks;
- gearPerks=function(){const result=previousGearPerks.apply(this,arguments),extra=artifactPerks();Object.keys(extra).forEach(function(k){result[k]=(Number(result[k])||0)+extra[k]});return result};
- /* 戰鬥勝利後追加碎片掉落。保留原 win() 的全部獎勵、劇情、首領與換怪流程。 */
- const previousWin=win;
- win=function(){
-  const defeated=enemy,kind=defeated&&defeated.type;
-  previousWin.apply(this,arguments);
-  ensureArtifactState();
-  const chance=kind==='首領'?.40:kind==='精英'?.18:.06;
-  if(Math.random()<chance){
-   const def=ARTIFACTS[Math.floor(Math.random()*ARTIFACTS.length)];
-   const amount=kind==='首領'&&Math.random()<.5?2:1;
-   s.artifactFragments[def.id]=(Number(s.artifactFragments[def.id])||0)+amount;
-   note('戰鬥獲得法寶碎片：'+def.name+' ×'+amount+'。','good');
-   const story=document.getElementById('battleStory');if(story)story.textContent+=' 法寶碎片：'+def.name+' ×'+amount+'。';
-  }
-  save();
- };
- /* 加入儲物袋主分類，沿用既有古寶卡片樣式與滾動容器。 */
- const tabs=document.querySelector('.bag-main-tabs');
- if(tabs&&!tabs.querySelector('[data-bag-main-tab="artifacts"]')){
-  const button=document.createElement('button');button.type='button';button.className='bag-main-tab';button.dataset.bagMainTab='artifacts';button.setAttribute('role','tab');button.setAttribute('aria-selected','false');button.textContent='法寶類';tabs.appendChild(button);
-  button.addEventListener('click',function(){mainCategory='artifacts';batchMode=false;if(selectedBatch&&selectedBatch.clear)selectedBatch.clear();document.querySelectorAll('[data-bag-main-tab]').forEach(function(b){const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-selected',active?'true':'false')});const ev=document.getElementById('bagEquipmentView');if(ev)ev.hidden=true;renderBagUI();});
- }
- const previousRenderBagUI=renderBagUI;
- renderBagUI=function(){
-  previousRenderBagUI.apply(this,arguments);
-  const active=document.querySelector('[data-bag-main-tab="artifacts"]')?.classList.contains('active');
-  if(active){const ev=document.getElementById('bagEquipmentView');if(ev)ev.hidden=true;renderArtifacts();}
- };
- /* 原有分頁切換時，確保法寶內容不會殘留在其他分類。 */
- document.querySelectorAll('[data-bag-main-tab]').forEach(function(button){
-  if(button.dataset.bagMainTab==='artifacts')return;
-  button.addEventListener('click',function(){const panel=document.getElementById('bagInactiveCategory');if(panel){panel.classList.remove('bag-artifact-view');}});
- });
- ensureArtifactState();
- save();
- const style=document.createElement('style');style.id='v102-artifact-style';style.textContent='#gameApp #bag .bag-artifact-view{overflow-y:auto!important;overflow-x:hidden!important;min-height:0!important}#gameApp #bag .artifact-perk-summary{padding:8px;margin:7px 0;border:1px solid #8e7c4c66;border-radius:9px;background:#282a30;color:#e8d6a4;font-size:11px;line-height:1.7}#gameApp #bag .artifact-card .bag-treasure-icon{background:linear-gradient(145deg,#6a5938,#252c3c);border-color:#d9bc72}#gameApp .bag-main-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}';
- document.head.appendChild(style);
-})();
-</script>
+
