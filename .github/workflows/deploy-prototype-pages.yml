@@ -199,40 +199,36 @@ jobs:
             await secondArcButton.click();
             if (!(await firstArcContent.isVisible()) || !(await secondArcContent.isVisible())) throw new Error('再次展開第二階段後，兩個章節應可同時展開。');
             console.log('Journal UI regression passed: eight stages, independent expand/collapse, no bulk toggle or unrelated cards.');
-            const firstStoryButton = arcCards.nth(0).locator('.journal-read-story');
-            const secondStoryButton = arcCards.nth(1).locator('.journal-read-story');
+            // Current v0.96+ story flow uses one central story-library entry and renders chapter nodes as expanded cards.
+            const storyLibraryButton = page.locator('#journalStoryLibraryButton');
+            if (!(await storyLibraryButton.isVisible())) throw new Error('中央「修仙劇情故事」入口不可見。');
             const secondStageLockNote = arcCards.nth(1).locator('.journal-stage-lock-note');
-            if (await firstStoryButton.isDisabled()) throw new Error('初始境界與第一張地圖不應鎖住第一回劇情。');
-            if (!(await secondStoryButton.isDisabled())) throw new Error('未達指定境界與黃楓谷地圖時，第二階段劇情不應提前開放。');
-            if (!(await secondStageLockNote.textContent()).includes('黃楓谷')) throw new Error('第二階段未顯示指定戰鬥地圖解鎖條件。');
-            const storyArcButton = arcCards.nth(0).locator('.journal-arc-toggle');
-            if ((await storyArcButton.getAttribute('aria-expanded')) !== 'true') await storyArcButton.click();
-            const storyButton = arcCards.nth(0).locator('.journal-read-story');
-            if (!(await storyButton.isVisible()) || await storyButton.isDisabled()) throw new Error('第一階段的閱讀本篇劇情按鈕不可用。');
-            await storyButton.click();
+            if (!(await secondStageLockNote.textContent()).includes('黃楓谷')) throw new Error('第二階段未顯示境界／地圖解鎖條件。');
+
+            await storyLibraryButton.click();
             const novelReader = page.locator('#modalBody .novel-reader');
             await novelReader.waitFor({ state: 'visible', timeout: 3000 });
-            if (await novelReader.locator('p').count() < 8) throw new Error('小說式章節敘述不足，至少需八個段落。');
+            if (await novelReader.locator('p').count() < 8) throw new Error('主線節點全文不足八個段落。');
+            const readerText = await novelReader.innerText();
+            if (readerText.length < 650) throw new Error('主線節點全文篇幅不足。');
+            if (!readerText.includes('凡人起步・青牛鎮')) throw new Error('未開啟第一個可閱讀主線節點。');
+            if (await novelReader.locator('.novel-chapter-nav button').count() !== 2) throw new Error('主線全文上一節／下一節導覽缺失。');
+
             const readerMode = await page.locator('#uiModal').evaluate(el => ({ position: getComputedStyle(el).position, rect: (() => { const r=el.getBoundingClientRect(); return { x:r.x, y:r.y, width:r.width, height:r.height }; })() }));
             const viewport = page.viewportSize();
             if (readerMode.position !== 'fixed' || readerMode.rect.width < viewport.width - 2 || readerMode.rect.height < viewport.height - 2) throw new Error('小說閱讀器沒有覆蓋整個手機畫面。');
-            if ((await novelReader.innerText()).length < 650) throw new Error('第一回正文篇幅仍像摘要，內容長度不足。');
-            if (!(await novelReader.innerText()).includes('山雨入門')) throw new Error('第一回正文標題缺失。');
-            if (await novelReader.locator('.novel-chapter-nav button').count() !== 2) throw new Error('小說章節導覽按鈕缺失。');
             const closeStoryFooter = page.locator('#uiModal.novel-reading-mode #modalFooter button');
             const topStoryClose = page.locator('#uiModal.novel-reading-mode .modal-close');
             if (!(await closeStoryFooter.isVisible()) || await topStoryClose.isVisible()) throw new Error('劇情閱讀模式應保留下方關閉按鈕並隱藏右上角重複按鈕。');
             await closeStoryFooter.click();
             await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
             if (await page.locator('#journalHybridStages').isHidden()) throw new Error('關閉劇情後沒有返回仙途。');
-            if ((await storyArcButton.getAttribute('aria-expanded')) !== 'true') await storyArcButton.click();
-            await storyButton.click();
+            await storyLibraryButton.click();
             await novelReader.waitFor({ state: 'visible', timeout: 3000 });
             if (await page.locator('#uiModal.novel-reading-mode .modal-close').isVisible()) throw new Error('重新開啟劇情後右上角重複關閉按鈕再次出現。');
             await page.keyboard.press('Escape');
             await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
-            console.log('Novel reader regression passed: bottom close remains, top-right duplicate is hidden, Escape closes, and return to journal works.');
-            console.log('Story progression regression passed: cultivation, battle map, and previous-stage node gates are enforced.');
+            console.log('Story progression regression passed: central story entry, gated stage metadata, full chapter reader, immersive layout, close and reopen flow.');
 
 
             await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
