@@ -123,6 +123,8 @@ jobs:
               s.gearProtection = {qualityEnabled:true,minQuality:3,starEnabled:true,minStars:4};
               render();
             });
+            const scrollModel = await bag.evaluate(el => ({ screenOverflowY: getComputedStyle(el).overflowY, itemOverflowY: getComputedStyle(el.querySelector('#inventory')).overflowY }));
+            if (scrollModel.screenOverflowY !== 'hidden' || scrollModel.itemOverflowY !== 'auto') throw new Error('儲物袋應固定外框，只有物品格清單可捲動：' + JSON.stringify(scrollModel));
             const gridColumns = await bag.locator('#inventory').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
             if (gridColumns !== 4) throw new Error('裝備清單不是四欄物品格。');
             await bag.getByRole('button', {name:/比較：測試靈品法器/}).click();
