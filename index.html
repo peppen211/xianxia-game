@@ -927,7 +927,7 @@ body:not(.launch-gate) #gameApp{display:flex!important;visibility:visible!import
 .launch-gate-screen{
   position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:10px;padding:24px 20px calc(24px + env(safe-area-inset-bottom));box-sizing:border-box;text-align:center;
-  color:#f4ead5;background-color:#0b111b;background-image:url("./%E9%A6%96%E9%A0%81.PNG?v=0.69");background-size:cover;background-position:center center;background-repeat:no-repeat;
+  color:#f4ead5;background-color:#0b111b;background-image:url("./%E9%A6%96%E9%A0%81.PNG?v=0.70");background-size:cover;background-position:center center;background-repeat:no-repeat;
 }
 .launch-title{font-size:clamp(27px,6vw,38px);font-weight:800;letter-spacing:.14em}
 .launch-subtitle{font-size:12px;letter-spacing:.22em;color:#9daec2;margin-top:-6px}
@@ -1430,7 +1430,7 @@ body .app>header.top.statusline .status-resources b{color:#e4c98f!important}
     radial-gradient(ellipse at 50% 27%,rgba(224,183,104,.10),transparent 34%),
     radial-gradient(ellipse at 50% 42%,rgba(41,72,112,.24),transparent 50%),
     linear-gradient(180deg,rgba(7,16,29,.38) 0%,rgba(16,28,44,.22) 46%,rgba(7,13,23,.55) 100%),
-    url("./%E9%A6%96%E9%A0%81.PNG?v=0.69")!important;
+    url("./%E9%A6%96%E9%A0%81.PNG?v=0.70")!important;
   background-color:#0b111b!important;
   background-position:center center!important;
   background-size:auto 100%!important;
@@ -2039,7 +2039,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.69</small>
+  <small class="status-version" aria-label="遊戲版本">v0.70</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -4483,11 +4483,62 @@ function renderBagUI(){
 <style id="v069-launch-background-fit-and-brightness">
 /* v0.69: fix launch-screen side gaps and remove the dark tint over the background only. */
 #launchGate.launch-gate-screen{
-  background-image:url("./%E9%A6%96%E9%A0%81.PNG?v=0.69")!important;
+  background-image:url("./%E9%A6%96%E9%A0%81.PNG?v=0.70")!important;
   background-size:cover!important;
   background-position:center center!important;
   background-repeat:no-repeat!important;
   background-color:#0b111b!important;
+}
+</style>
+
+
+<style id="v070-launch-refinement-and-order">
+/* v0.70: refine launch-screen contrast and spacing, and place character info above the main action. */
+#launchGate.launch-gate-screen{
+  box-sizing:border-box!important;
+  width:100vw!important;
+  min-height:100vh!important;
+  min-height:100dvh!important;
+  overflow-x:hidden!important;
+  gap:clamp(7px,1.25vh,13px)!important;
+  padding:clamp(14px,2.2vh,24px) 18px calc(16px + env(safe-area-inset-bottom))!important;
+  background-color:#0b111b!important;
+  background-image:url("./%E9%A6%96%E9%A0%81.PNG?v=0.70")!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+}
+/* Keep a clear visual hierarchy without changing the established gold-and-ink style. */
+#launchGate .launch-title{order:1!important;filter:drop-shadow(0 2px 0 #4b2c13) drop-shadow(0 4px 3px rgba(12,10,9,.95)) drop-shadow(0 0 13px rgba(255,194,92,.55))!important}
+#launchGate .launch-subtitle{order:2!important;margin-top:0!important;text-shadow:0 2px 7px rgba(15,20,28,.95),0 0 10px rgba(238,194,117,.45)!important}
+#launchGate .launch-realm-label{order:3!important;margin-top:clamp(7px,1.4vh,16px)!important;color:#f0dfbd!important;text-shadow:0 2px 6px rgba(8,12,18,.95)!important}
+#launchGate .launch-realm-summary{order:4!important;color:#ffe3a1!important;text-shadow:0 2px 7px rgba(8,12,18,.95),0 0 14px rgba(255,204,112,.32)!important}
+#launchGate .launch-guidance{order:5!important;margin-top:0!important;color:#f0e6d4!important;text-shadow:0 2px 6px rgba(8,12,18,.95)!important}
+/* Requested order: character details first, start-cultivation button beneath. */
+#launchGate .launch-character-intro{order:6!important;width:min(420px,90vw)!important;box-sizing:border-box!important;margin:clamp(5px,1vh,10px) auto 0!important;padding:12px 16px!important;border-color:rgba(231,199,139,.52)!important;background:linear-gradient(145deg,rgba(16,25,38,.78),rgba(8,15,26,.76))!important;box-shadow:inset 0 1px 0 rgba(255,239,204,.10),0 8px 22px rgba(0,0,0,.2)!important;backdrop-filter:blur(2px)}
+#launchGate .launch-character-intro h2{margin:0 0 7px!important;color:#f5dba6!important;font-size:15px!important;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+#launchGate .launch-character-intro p{color:#f0e6d8!important;font-size:clamp(12px,3.1vw,14px)!important;line-height:1.8!important;text-shadow:0 1px 3px rgba(0,0,0,.65)}
+#launchGate .launch-character-intro strong{color:#f3d59a!important}
+#launchGate .launch-continue{order:7!important;flex:0 0 auto!important;margin:clamp(5px,1vh,10px) auto 0!important;width:min(420px,90vw)!important;min-height:58px!important;box-shadow:inset 0 0 0 2px rgba(248,217,153,.2),inset 0 0 22px rgba(238,181,78,.2),0 7px 24px rgba(0,0,0,.36),0 0 20px rgba(225,169,76,.22)!important;transition:transform .15s ease,filter .15s ease,box-shadow .15s ease!important}
+#launchGate .launch-continue:active{transform:scale(.985)!important;filter:brightness(1.12)!important}
+#launchGate #launchLastRealm{order:8!important}
+@media(max-height:740px){
+  #launchGate.launch-gate-screen{gap:5px!important;padding-top:10px!important;padding-bottom:calc(10px + env(safe-area-inset-bottom))!important}
+  #launchGate .launch-title{font-size:clamp(32px,8.2vw,56px)!important;padding-top:2px!important}
+  #launchGate .launch-realm-label{margin-top:4px!important}
+  #launchGate .launch-character-intro{margin-top:3px!important;padding:8px 12px!important}
+  #launchGate .launch-character-intro h2{font-size:13px!important;margin-bottom:3px!important}
+  #launchGate .launch-character-intro p{font-size:11.5px!important;line-height:1.55!important}
+  #launchGate .launch-continue{margin-top:3px!important;min-height:49px!important}
+}
+@media(max-width:380px){
+  #launchGate.launch-gate-screen{padding-left:12px!important;padding-right:12px!important}
+  #launchGate .launch-title{font-size:clamp(30px,8.2vw,42px)!important}
+  #launchGate .launch-character-intro{width:92vw!important}
+  #launchGate .launch-continue{width:92vw!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #launchGate .launch-continue{transition:none!important}
 }
 </style>
 
