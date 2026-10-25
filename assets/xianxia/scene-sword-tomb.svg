@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 680" width="1920" height="680" role="img" aria-label="月照劍塚與古劍殘峰">
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#091326"/><stop offset=".45" stop-color="#26364c"/><stop offset="1" stop-color="#7b7e83"/></linearGradient><radialGradient id="moon"><stop stop-color="#e8d9b5"/><stop offset="1" stop-color="#9ca4a2"/></radialGradient><radialGradient id="glow"><stop stop-color="#a9d5d6" stop-opacity=".28"/><stop offset="1" stop-color="#86becb" stop-opacity="0"/></radialGradient><linearGradient id="fog" x2="0" y2="1"><stop stop-color="#b6c5c6" stop-opacity="0"/><stop offset=".5" stop-color="#c4d0cb" stop-opacity=".52"/><stop offset="1" stop-color="#c4d0cb" stop-opacity="0"/></linearGradient></defs>
+<rect width="1920" height="680" fill="url(#sky)"/><circle cx="1370" cy="145" r="230" fill="url(#glow)"/><circle cx="1370" cy="145" r="62" fill="url(#moon)"/>
+<g fill="#cad7d4" opacity=".5"><circle cx="210" cy="112" r="2"/><circle cx="426" cy="80" r="1.5"/><circle cx="630" cy="165" r="1.7"/><circle cx="930" cy="90" r="2"/><circle cx="1150" cy="70" r="1.5"/><circle cx="1590" cy="90" r="2"/><circle cx="1800" cy="165" r="1.4"/></g>
+<path d="M0 420L155 310 250 376 387 248 485 362 624 245 735 380 870 270 970 365 1093 250 1202 376 1350 260 1460 364 1584 244 1710 355 1840 272 1920 338V680H0Z" fill="#26384a"/>
+<path d="M0 490L150 400 278 444 422 330 538 446 668 352 780 465 920 341 1050 467 1190 350 1302 462 1450 336 1560 470 1694 352 1800 452 1920 387V680H0Z" fill="#19293a"/>
+<path d="M0 535L170 486 305 514 455 466 580 524 740 474 850 525 1040 475 1175 520 1320 452 1450 514 1590 459 1715 510 1840 472 1920 498V680H0Z" fill="#111e2d"/>
+<g fill="#0d1724" stroke="#6a8b9a" stroke-opacity=".45" stroke-width="3">
+ <path d="M180 553L198 385 212 350 226 386 242 553Z"/><path d="M198 385L212 350 226 386 213 405Z" fill="#9bbabc" fill-opacity=".45"/>
+ <path d="M395 532L425 312 443 264 460 315 488 532Z"/><path d="M425 312L443 264 460 315 443 337Z" fill="#9bbabc" fill-opacity=".45"/>
+ <path d="M680 546L697 423 714 389 731 425 748 546Z"/><path d="M697 423L714 389 731 425 714 441Z" fill="#9bbabc" fill-opacity=".45"/>
+ <path d="M952 524L975 275 995 222 1014 279 1037 524Z"/><path d="M975 275L995 222 1014 279 995 300Z" fill="#c4d8d3" fill-opacity=".52"/>
+ <path d="M1190 537L1210 404 1224 376 1240 409 1258 537Z"/><path d="M1210 404L1224 376 1240 409 1224 425Z" fill="#9bbabc" fill-opacity=".4"/>
+ <path d="M1480 542L1504 354 1524 305 1543 355 1564 542Z"/><path d="M1504 354L1524 305 1543 355 1524 375Z" fill="#9bbabc" fill-opacity=".46"/>
+ <path d="M1730 535L1748 427 1763 394 1779 428 1797 535Z"/>
+</g>
+<g stroke="#86b6c0" stroke-width="4" stroke-linecap="round" opacity=".75"><path d="M212 406L204 455"/><path d="M443 340L435 390"/><path d="M995 305L986 376"/><path d="M1524 376L1514 430"/></g>
+<path d="M-60 518Q150 480 340 514T735 508T1130 500T1530 508T1980 496V597Q1750 570 1515 590T1110 572T705 588T310 578T-60 590Z" fill="url(#fog)"/>
+<path d="M0 625Q220 571 430 606T850 600T1290 608T1720 594T1940 615V680H0Z" fill="#0a1522"/>
+<g fill="#101b29"><path d="M0 680V575L-22 613 9 538 38 606 20 594 52 651 27 636 39 680Z"/><path d="M1850 680V565L1825 607 1858 526 1886 590 1870 580 1905 641 1880 627 1890 680Z"/></g>
+</svg>

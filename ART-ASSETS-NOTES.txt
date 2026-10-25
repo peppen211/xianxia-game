@@ -1,0 +1,14 @@
+不好意思，本座又突破了｜美術素材整合 A0.56
+
+本版自製場景 SVG（可離線隨遊戲載入，不依賴第三方 CDN）：
+- assets/xianxia/scene-immortal-mountain.svg：修煉首頁霧海仙山、月色與宗門剪影。
+- assets/xianxia/scene-sword-tomb.svg：戰鬥區的劍塚與古劍殘峰。
+- assets/xianxia/scene-herb-valley.svg：靈藥谷，作為後續場景素材備用。
+- assets/xianxia/scene-thunder-tribulation.svg：天劫雷雲與法陣，作為後續場景素材備用。
+
+美術方向參考來源（不是本版內嵌圖片）：
+Xuanhuan Mood Art — 24 Eastern Fantasy Illustrations
+https://willyee.itch.io/xuanhuan-mood-art
+該頁標示 CC0，可商用及修改，並揭露為 AI 協助繪製。因本次執行環境無法取得該下載包的二進位檔，未將其 24 張原圖納入本提交；目前正式整合的是本專案自製 SVG 場景，不宣稱為該素材包原圖。
+
+保護事項：本次不修改遊戲狀態資料結構、存檔鍵 nine_heavens_idle_v2、修煉／戰鬥／背包等功能邏輯。首頁版本標示改為 v0.56。
