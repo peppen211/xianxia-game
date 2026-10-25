@@ -61,7 +61,7 @@ jobs:
             page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
             page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
 
-            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.09', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.10', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
             const app = page.locator('#gameApp');
             const continueButton = page.locator('#continueCultivationBtn');
@@ -84,7 +84,7 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v1.09') throw new Error('遊戲右上角版本標示應為 v1.09，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v1.10') throw new Error('遊戲右上角版本標示應為 v1.10，實際為：' + publishedVersionLabel);
             const characterHeadingDisplay = await page.locator('#character > .page-title').evaluate(el => getComputedStyle(el).display);
             if (characterHeadingDisplay !== 'none') throw new Error('角色分頁的「修士面板」標題列應已移除。');
             const cultivationHeadingDisplay = await page.locator('#cultivate > .page-title').evaluate(el => getComputedStyle(el).display);
@@ -177,7 +177,8 @@ jobs:
             await bag.locator('[data-bag-main-tab="treasures"]').click();
             if (await page.locator('#bagInactiveCategory .bag-treasure-card').count() !== 4) throw new Error('古寶頁應顯示四件可收藏古寶。');
             await bag.locator('[data-bag-main-tab="pets"]').click();
-            if (!(await page.locator('#bagInactiveCategory').innerText()).includes('靈寵類')) throw new Error('靈寵類暫未開放提示缺失。');
+            const petIntroText = await page.locator('#bagInactiveCategory').innerText();
+            if (!petIntroText.includes('靈寵收藏') || !petIntroText.includes('召靈一次') || await page.locator('#bagInactiveCategory .bag-pet-card').count() !== 7) throw new Error('靈寵收藏頁、召靈操作或七種靈寵圖鑑未顯示。');
             await bag.locator('[data-bag-main-tab="equipment"]').click();
             await page.locator('#bagBatchToggle').click();
             const armorCheckbox = page.locator('#inventory .bag-select-check[aria-label="選取 測試批次分解防具"]');
