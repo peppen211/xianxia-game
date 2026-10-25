@@ -126,8 +126,9 @@ jobs:
             const scrollModel = await bag.evaluate(el => ({ screenOverflowY: getComputedStyle(el).overflowY, itemOverflowY: getComputedStyle(el.querySelector('#inventory')).overflowY }));
             if (scrollModel.screenOverflowY !== 'hidden' || scrollModel.itemOverflowY !== 'auto') throw new Error('儲物袋應固定外框，只有物品格清單可捲動：' + JSON.stringify(scrollModel));
             const bagGeometry = await bag.evaluate(el => { const rect=n=>{const r=n.getBoundingClientRect();const c=getComputedStyle(n);return {id:n.id||'',cls:typeof n.className==='string'?n.className:'',x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height),display:c.display,overflowY:c.overflowY,flex:c.flex,gridRows:c.gridTemplateRows,gridCols:c.gridTemplateColumns};};return {screen:rect(el),equipment:rect(el.querySelector('#bagEquipmentView')),gear:rect(el.querySelector('.bag-gear-layout')),slots:rect(el.querySelector('.bag-slots-panel')),listPanel:rect(el.querySelector('.bag-list-panel')),inventory:rect(el.querySelector('#inventory')),tile:rect(el.querySelector('.bag-item-tile[aria-label="比較：測試靈品法器"]')),footer:rect(el.querySelector('.bag-footer-actions')),pill:rect(el.querySelector('.bag-pill-bar'))};});
-            console.log('BAG_GEOMETRY='+JSON.stringify(bagGeometry));
-            if (bagGeometry.inventory.h < 80) throw new Error('物品清單實際高度不足 80px：' + JSON.stringify(bagGeometry));
+            if (bagGeometry.equipment.h < 250 || bagGeometry.listPanel.h < 100 || bagGeometry.inventory.h < 80) {
+              throw new Error('儲物袋版面尺寸不正確：' + JSON.stringify(bagGeometry));
+            }
             const gridColumns = await bag.locator('#inventory').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
             if (gridColumns !== 4) throw new Error('裝備清單不是四欄物品格。');
             await bag.getByRole('button', {name:/比較：測試靈品法器/}).click({timeout:5000});
@@ -181,10 +182,11 @@ jobs:
             if ((await firstArcButton.getAttribute('aria-expanded')) !== 'false' || await firstArcContent.isVisible()) throw new Error('單一主線階段收合按鈕未生效。');
             await firstArcButton.click();
             if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true' || !(await firstArcContent.isVisible())) throw new Error('單一主線階段展開按鈕未生效。');
-            const nodeToggle = page.locator('#journalHybridStages .journal-node-toggle').first();
-            const nodeExtra = page.locator('#journalHybridStages .journal-node-extra').first();
-            await nodeToggle.click();
-            if ((await nodeToggle.getAttribute('aria-expanded')) !== 'true' || !(await nodeExtra.isVisible())) throw new Error('節點地圖與解鎖條件按鈕未生效。');
+            // v0.96 renders node details expanded by default; verify the current node card and its unlock/map metadata instead of the removed legacy toggle.
+            const nodeCard = page.locator('#journalHybridStages .journal-node-card').first();
+            await nodeCard.waitFor({state:'visible', timeout:3000});
+            const nodeCardText = await nodeCard.innerText();
+            if (!nodeCardText.includes('故事地點：') || !nodeCardText.includes('解鎖條件：')) throw new Error('主線節點未顯示故事地點與解鎖條件。');
             if (await page.locator('#toggleJournalStages').count()) throw new Error('進度總覽仍有全部展開／收起按鈕。');
             const secondArcButton = arcCards.nth(1).locator('.journal-arc-toggle');
             const secondArcContent = arcCards.nth(1).locator('.journal-arc-content');
