@@ -927,7 +927,7 @@ body:not(.launch-gate) #gameApp{display:flex!important;visibility:visible!import
 .launch-gate-screen{
   position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:10px;padding:24px 20px calc(24px + env(safe-area-inset-bottom));box-sizing:border-box;text-align:center;
-  color:#f4ead5;background:radial-gradient(ellipse at 50% 38%,rgba(72,102,139,.28),transparent 42%),linear-gradient(180deg,#111b2a 0%,#0b111b 75%,#090e16 100%);
+  color:#f4ead5;background-color:#0b111b;background-image:url("./IMG_5091.jpg");background-size:cover;background-position:center center;background-repeat:no-repeat;
 }
 .launch-title{font-size:clamp(27px,6vw,38px);font-weight:800;letter-spacing:.14em}
 .launch-subtitle{font-size:12px;letter-spacing:.22em;color:#9daec2;margin-top:-6px}
@@ -2034,7 +2034,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.60</small>
+  <small class="status-version" aria-label="遊戲版本">v0.61</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
