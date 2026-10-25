@@ -61,7 +61,7 @@ jobs:
             page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
             page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
 
-            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.12', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.15', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
             const app = page.locator('#gameApp');
             const continueButton = page.locator('#continueCultivationBtn');
@@ -84,7 +84,7 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v1.12') throw new Error('遊戲右上角版本標示應為 v1.12，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v1.15') throw new Error('遊戲右上角版本標示應為 v1.15，實際為：' + publishedVersionLabel);
             const characterHeadingDisplay = await page.locator('#character > .page-title').evaluate(el => getComputedStyle(el).display);
             if (characterHeadingDisplay !== 'none') throw new Error('角色分頁的「修士面板」標題列應已移除。');
             const cultivationHeadingDisplay = await page.locator('#cultivate > .page-title').evaluate(el => getComputedStyle(el).display);
@@ -314,6 +314,64 @@ jobs:
              if (!magicCombatAudit.thunderSneak.log.includes('引雷珠觸發') || magicCombatAudit.thunderSneak.dealt <= 0) throw new Error('偷襲未觸發引雷珠重擊：' + JSON.stringify(magicCombatAudit.thunderSneak));
              if (!magicCombatAudit.bellSneak.log.includes('鎮靈鈴觸發') || !magicCombatAudit.bellSneak.log.includes('減少')) throw new Error('偷襲反擊未觸發鎮靈鈴減傷：' + JSON.stringify(magicCombatAudit.bellSneak));
              console.log('Magic combat regression passed: existing normal attack proc plus jade-flame, thunder-orb and spirit-bell effects during sneak combat.');
+             const secondMagicSlotAudit = await page.evaluate(() => {
+               const snapshot = JSON.parse(JSON.stringify(s));
+               const previousEnemy = enemy;
+               const originalRandom = Math.random;
+               const result = {};
+               try {
+                 s.major = 0;
+                 s.magicTreasures = [{id:'jade-flame',level:1},{id:'thunder-orb',level:1}];
+                 s.activeMagicTreasure = 'jade-flame';
+                 s.activeMagicTreasure2 = null;
+                 render();
+                 result.locked = {
+                   text: document.getElementById('bagInactiveCategory').innerText,
+                   secondButtons: document.querySelectorAll('#bagInactiveCategory [data-magic-slot="2"]').length
+                 };
+                 s.major = 3;
+                 render();
+                 const secondButton = document.querySelector('#bagInactiveCategory [data-magic-equip="thunder-orb"][data-magic-slot="2"]');
+                 result.secondButtonVisible = !!secondButton;
+                 if (secondButton) secondButton.click();
+                 result.equipped = {
+                   first: s.activeMagicTreasure,
+                   second: s.activeMagicTreasure2,
+                   stateCount: getActiveMagicStates().length
+                 };
+                 s.atk = 100;
+                 s.def = 0;
+                 s.hp = 500;
+                 s.maxHp = 500;
+                 s.logs = [];
+                 enemy = {name:'雙法寶測試木樁',type:'普通',hp:100000,maxHp:100000,atk:10,def:0,gold:0,xp:0};
+                 Math.random = () => 0;
+                 sneakAttack();
+                 result.sneakCombat = {
+                   log: s.logs.map(entry => entry.msg).join(' '),
+                   dealt: 100000 - enemy.hp
+                 };
+                 return result;
+               } finally {
+                 Math.random = originalRandom;
+                 Object.keys(s).forEach(key => delete s[key]);
+                 Object.assign(s, snapshot);
+                 enemy = previousEnemy;
+                 save();
+                 render();
+               }
+             });
+             if (!secondMagicSlotAudit.locked.text.includes('元嬰期解鎖') || secondMagicSlotAudit.locked.secondButtons !== 0) {
+               throw new Error('未達元嬰期時第二法寶欄應維持鎖定：' + JSON.stringify(secondMagicSlotAudit.locked));
+             }
+             if (!secondMagicSlotAudit.secondButtonVisible || secondMagicSlotAudit.equipped.first !== 'jade-flame' || secondMagicSlotAudit.equipped.second !== 'thunder-orb' || secondMagicSlotAudit.equipped.stateCount !== 2) {
+               throw new Error('元嬰期解鎖第二法寶欄或雙欄裝備狀態不正確：' + JSON.stringify(secondMagicSlotAudit));
+             }
+             if (!secondMagicSlotAudit.sneakCombat.log.includes('青焰玉印觸發') || !secondMagicSlotAudit.sneakCombat.log.includes('引雷珠觸發') || secondMagicSlotAudit.sneakCombat.dealt <= 0) {
+               throw new Error('兩件已啟用法寶沒有同時在偷襲中觸發：' + JSON.stringify(secondMagicSlotAudit.sneakCombat));
+             }
+             console.log('Second magic slot regression passed: locked before Nascent Soul, unlocks at Nascent Soul, holds two distinct treasures, and both effects trigger during sneak combat.');
+
              await bag.locator('[data-bag-main-tab="pets"]').click();
              const petCards = bag.locator('#bagInactiveCategory .bag-pet-card');
              if (await petCards.count() !== 7) throw new Error('靈寵收藏應顯示原有七個圖鑑條目。');
