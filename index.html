@@ -2046,7 +2046,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v1.08</small>
+  <small class="status-version" aria-label="遊戲版本">v1.09</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2165,13 +2165,13 @@ const treasureClassCatalog = [
  {name:'玄天之寶',desc:'特殊的玄天級至寶，與一般可穿戴裝備分開管理。'}
 ];
 const petCatalog = [
- {name:'噬金蟲',kind:'靈蟲',desc:'以吞噬與培育進化為特色的靈蟲。'},
- {name:'啼魂獸',kind:'靈獸',desc:'對魂魄、鬼物等具有特殊能力的靈獸。'},
- {name:'六翼霜蚣',kind:'靈蟲',desc:'具有冰寒特性的靈蟲。'},
- {name:'血玉蜘蛛',kind:'靈獸',desc:'蜘蛛類妖獸的圖鑑候選。'},
- {name:'土甲龍',kind:'靈獸',desc:'具土系與尋寶特色的妖獸候選。'},
- {name:'雲翅鳥',kind:'靈獸',desc:'飛禽類生靈，可作偵查或飛行方向的圖鑑條目。'},
- {name:'銀月',kind:'特殊生靈',desc:'特殊智慧生靈，單獨標記，不視為普通野獸。'}
+ {id:'gold-eater',name:'噬金蟲',kind:'靈蟲',rarity:'珍品',weight:12,icon:'金',desc:'以吞噬與培育進化為特色的靈蟲。',effectKey:'bonusGold',effectLabel:'戰鬥靈石收益',perLevel:0.02},
+ {id:'soul-howler',name:'啼魂獸',kind:'靈獸',rarity:'珍品',weight:6,icon:'魂',desc:'對魂魄、鬼物等具有特殊能力的靈獸。',effectKey:'crit',effectLabel:'暴擊率',perLevel:0.015},
+ {id:'frost-centipede',name:'六翼霜蚣',kind:'靈蟲',rarity:'珍品',weight:10,icon:'霜',desc:'具有冰寒特性的靈蟲。',effectKey:'bonusDamage',effectLabel:'戰鬥傷害',perLevel:0.015},
+ {id:'blood-jade-spider',name:'血玉蜘蛛',kind:'靈獸',rarity:'靈品',weight:18,icon:'血',desc:'蜘蛛類妖獸的圖鑑候選。',effectKey:'bonusDrop',effectLabel:'材料掉落率',perLevel:0.02},
+ {id:'earth-armor-dragon',name:'土甲龍',kind:'靈獸',rarity:'凡品',weight:25,icon:'土',desc:'具土系與尋寶特色的妖獸候選。',effectKey:'damageCut',effectLabel:'受到傷害降低',perLevel:0.01},
+ {id:'cloudwing-bird',name:'雲翅鳥',kind:'靈獸',rarity:'凡品',weight:27,icon:'雲',desc:'飛禽類生靈，可作偵查或飛行方向的圖鑑條目。',effectKey:'bonusXp',effectLabel:'修為收益',perLevel:0.015},
+ {id:'silver-moon',name:'銀月',kind:'特殊生靈',rarity:'仙品',weight:2,icon:'月',desc:'特殊智慧生靈，單獨標記，不視為普通野獸。',effectKey:'bonusXp',effectLabel:'修為收益',perLevel:0.025}
 ];
 
 const ANCIENT_TREASURES = [
@@ -2248,7 +2248,7 @@ function upgradeMethodTier(index){
 
 const methodsId='methods';
 let s,enemy;
-function base(){return {methodLevels:[1,1,1],major:0,layer:1,xp:0,gold:GAME_CONFIG.initial.gold,spirit:GAME_CONFIG.initial.spirit,herbs:GAME_CONFIG.initial.herbs,pills:GAME_CONFIG.initial.pills,kills:0,atk:GAME_CONFIG.initial.atk,def:GAME_CONFIG.initial.def,hp:GAME_CONFIG.initial.hp,maxHp:GAME_CONFIG.initial.maxHp,method:0,ownedMethods:[0],inventory:[],equipped:{weapon:null,armor:null,charm:null},logs:[],last:Date.now(),lastOfflineClaim:Date.now(),offlineReport:null,skill:true,skillWait:0,wood:GAME_CONFIG.initial.wood,crystal:GAME_CONFIG.initial.crystal,offlineSec:0,treasureFragments:{},ownedTreasures:[],magicTreasures:[],activeMagicTreasure:null};}
+function base(){return {methodLevels:[1,1,1],major:0,layer:1,xp:0,gold:GAME_CONFIG.initial.gold,spirit:GAME_CONFIG.initial.spirit,herbs:GAME_CONFIG.initial.herbs,pills:GAME_CONFIG.initial.pills,kills:0,atk:GAME_CONFIG.initial.atk,def:GAME_CONFIG.initial.def,hp:GAME_CONFIG.initial.hp,maxHp:GAME_CONFIG.initial.maxHp,method:0,ownedMethods:[0],inventory:[],equipped:{weapon:null,armor:null,charm:null},logs:[],last:Date.now(),lastOfflineClaim:Date.now(),offlineReport:null,skill:true,skillWait:0,wood:GAME_CONFIG.initial.wood,crystal:GAME_CONFIG.initial.crystal,offlineSec:0,treasureFragments:{},ownedTreasures:[],magicTreasures:[],activeMagicTreasure:null,ownedPets:[]};}
 function xpNeed(){return Math.floor(GAME_CONFIG.xp.base*Math.pow(GAME_CONFIG.xp.majorGrowth,s.major)*Math.pow(GAME_CONFIG.xp.layerGrowth,s.layer-1))}
 function calculateHanLiAge(){
  const major=Math.max(0,Math.floor(Number(s.major)||0));
@@ -2294,7 +2294,70 @@ const MAGIC_TREASURES=[
 ];
 function ensureMagicState(){if(!Array.isArray(s.magicTreasures))s.magicTreasures=[];if(!Object.prototype.hasOwnProperty.call(s,'activeMagicTreasure'))s.activeMagicTreasure=null;s.magicTreasures=s.magicTreasures.filter(function(e){return e&&MAGIC_TREASURES.some(function(t){return t.id===e.id})}).map(function(e){return {id:e.id,level:Math.max(1,Math.min(10,Math.floor(Number(e.level)||1)))}});if(s.activeMagicTreasure&&!s.magicTreasures.some(function(e){return e.id===s.activeMagicTreasure}))s.activeMagicTreasure=null;}
 function renderMagicCollection(){ensureMagicState();const active=MAGIC_TREASURES.find(function(t){return t.id===s.activeMagicTreasure}),owned=s.magicTreasures;return '<div class="bag-treasure-intro"><div class="secthead"><span>法寶收藏</span><small>'+owned.length+' / '+MAGIC_TREASURES.length+' 件</small></div><p>法寶啟用後會在戰鬥中自動觸發效果。首領與精英妖獸有較高機率掉落。</p></div><div class="bag-treasure-total">啟用欄位：<b>'+(active?esc(active.name):'尚未啟用法寶')+'</b>　（目前 1 格）</div><div class="bag-treasure-grid">'+MAGIC_TREASURES.map(function(t){const e=owned.find(function(x){return x.id===t.id}),level=e?e.level:0;return '<article class="bag-treasure-card"><div class="bag-treasure-card-head"><span class="bag-treasure-icon">'+t.icon+'</span><div><b>'+t.name+'</b><small>'+t.rarity+(level?' · 等級 '+level:' · 尚未獲得')+'</small></div></div><p>'+t.effect+'。</p>'+(e?'<button type="button" class="btn '+(s.activeMagicTreasure===t.id?'jade':'secondary')+'" data-magic-equip="'+t.id+'">'+(s.activeMagicTreasure===t.id?'已啟用':'啟用法寶')+'</button><button type="button" class="btn secondary" data-magic-upgrade="'+t.id+'" '+(level>=10?'disabled':'')+'>升級 · 靈木 '+(t.upgradeWood*level)+' / 靈晶 '+(t.upgradeCrystal*level)+'</button>':'<small>擊敗妖獸取得</small>')+'</article>'}).join('')+'</div><div class="bag-treasure-drop-note">法寶不會佔用裝備欄。升級消耗靈木、靈晶；不會消耗古寶碎片。</div>';}
-function treasurePerks(){const result={bonusXp:0,bonusGold:0,bonusDamage:0,bonusDrop:0};if(!s||!Array.isArray(s.ownedTreasures))return result;s.ownedTreasures.forEach(function(entry){const item=ANCIENT_TREASURES.find(function(t){return t.id===entry.id;});if(!item)return;const level=Math.max(1,Math.min(item.maxLevel,Math.floor(Number(entry.level)||1)));result[item.effectKey]+=item.perLevel*level;});return result} function gearPerks(){let w=rarityRank(equippedGear('weapon')),a=rarityRank(equippedGear('armor')),b=rarityRank(equippedGear('boots')),c=rarityRank(equippedGear('charm')),treasure=treasurePerks();return {crit:Math.max(0,w-1)*.035,critPower:Math.max(0,w-1)*.12,damageCut:(a+b)*.02,bonusXp:c*.04+treasure.bonusXp,bonusDrop:c*.035+treasure.bonusDrop,bonusGold:treasure.bonusGold,bonusDamage:treasure.bonusDamage}}
+function ensurePetState(){
+ if(!s||typeof s!=='object')return;
+ const source=Array.isArray(s.ownedPets)?s.ownedPets:[];
+ const normalized=[];
+ source.forEach(function(entry){
+  const id=typeof entry==='string'?entry:entry&&entry.id;
+  const item=petCatalog.find(function(p){return p.id===id});
+  if(!item||normalized.some(function(p){return p.id===id}))return;
+  const rawLevel=typeof entry==='string'?1:Number(entry.level)||1;
+  normalized.push({id:id,level:Math.max(1,Math.min(5,Math.floor(rawLevel)))});
+ });
+ s.ownedPets=normalized;
+}
+function petPerks(){
+ const result={crit:0,damageCut:0,bonusXp:0,bonusDrop:0,bonusGold:0,bonusDamage:0};
+ if(!s)return result;
+ ensurePetState();
+ s.ownedPets.forEach(function(entry){
+  const item=petCatalog.find(function(p){return p.id===entry.id});
+  if(item&&Object.prototype.hasOwnProperty.call(result,item.effectKey))result[item.effectKey]+=item.perLevel*entry.level;
+ });
+ return result;
+}
+function petEffectText(item,level){
+ const pct=(item.perLevel*Math.max(0,Number(level)||0)*100).toFixed(1).replace(/\.0$/,'');
+ return item.effectLabel+' +'+pct+'%';
+}
+function renderPetCollection(){
+ ensurePetState();
+ const owned=s.ownedPets;
+ const cards=petCatalog.map(function(item){
+  const entry=owned.find(function(p){return p.id===item.id}),level=entry?entry.level:0;
+  const perLevel=(item.perLevel*100).toFixed(1).replace(/\.0$/,'');
+  const effectText=level>0?'目前效果：'+petEffectText(item,level):'持有後生效：'+item.effectLabel+' +'+perLevel+'%／級';
+  return '<article class="bag-treasure-card bag-pet-card '+(level?'is-owned':'')+'" data-pet-id="'+item.id+'"><div class="bag-treasure-card-head"><span class="bag-treasure-icon">'+esc(item.icon)+'</span><div class="bag-treasure-name"><b>'+esc(item.name)+'</b><small>'+esc(item.rarity)+' · '+(level?'已持有 · 等級 '+level:'尚未召得')+'</small></div></div><p class="bag-treasure-description">'+esc(item.desc)+'</p><div class="bag-treasure-effect">'+esc(effectText)+'</div><small class="bag-pet-odds">召靈機率：'+item.weight+'%</small></article>';
+ }).join('');
+ return '<div class="bag-treasure-intro"><div class="secthead"><span>靈寵收藏</span><small>'+owned.length+' / '+petCatalog.length+' 種已持有</small></div><p>消耗 50 靈石召靈一次。重複獲得會自動培育升級，最高 5 級；所有已持有靈寵的被動效果會累加，不需另外上陣。</p></div><div class="bag-pet-drawbar"><button type="button" id="petDrawButton" class="btn primary bag-pet-draw" data-pet-draw>召靈一次 · 50 靈石</button></div><div class="bag-treasure-total">已持有 '+owned.length+' 種靈寵 · 被動效果即時生效</div><div class="bag-treasure-grid">'+cards+'</div><div class="bag-treasure-drop-note">召靈機率會顯示在每隻靈寵卡片上。已滿 5 級的重複靈寵會返還 12 靈石。靈寵不占裝備欄，也不會改動古寶碎片或法寶收藏。</div>';
+}
+window.drawSpiritPet=function(){
+ ensurePetState();
+ const cost=50;
+ if((Number(s.gold)||0)<cost){toast('靈石不足，召靈需要 50 靈石');return;}
+ const roll=Math.random()*petCatalog.reduce(function(sum,item){return sum+item.weight;},0);
+ let cursor=0,item=petCatalog[petCatalog.length-1];
+ for(let i=0;i<petCatalog.length;i++){cursor+=petCatalog[i].weight;if(roll<cursor){item=petCatalog[i];break;}}
+ s.gold-=cost;
+ let entry=s.ownedPets.find(function(p){return p.id===item.id});
+ if(!entry){
+  s.ownedPets.push({id:item.id,level:1});
+  note('召靈成功，獲得靈寵「'+item.name+'」；持有後被動效果立即生效。','good');
+  toast('召得靈寵：'+item.name);
+ }else if(entry.level<5){
+  entry.level++;
+  note('重複召得「'+item.name+'」，培育升至 '+entry.level+' 級；被動效果已提升。','good');
+  toast(item.name+'培育升至 '+entry.level+' 級');
+ }else{
+  const refund=12;
+  s.gold+=refund;
+  note('「'+item.name+'」已達 5 級，重複召靈返還 '+refund+' 靈石。','good');
+  toast('靈寵已滿級，返還 '+refund+' 靈石');
+ }
+ save();render();renderBagUI();
+};
+function treasurePerks(){const result={bonusXp:0,bonusGold:0,bonusDamage:0,bonusDrop:0};if(!s||!Array.isArray(s.ownedTreasures))return result;s.ownedTreasures.forEach(function(entry){const item=ANCIENT_TREASURES.find(function(t){return t.id===entry.id;});if(!item)return;const level=Math.max(1,Math.min(item.maxLevel,Math.floor(Number(entry.level)||1)));result[item.effectKey]+=item.perLevel*level;});return result} function gearPerks(){let w=rarityRank(equippedGear('weapon')),a=rarityRank(equippedGear('armor')),b=rarityRank(equippedGear('boots')),c=rarityRank(equippedGear('charm')),treasure=treasurePerks(),pets=petPerks();return {crit:Math.max(0,w-1)*.035+pets.crit,critPower:Math.max(0,w-1)*.12,damageCut:(a+b)*.02+pets.damageCut,bonusXp:c*.04+treasure.bonusXp+pets.bonusXp,bonusDrop:c*.035+treasure.bonusDrop+pets.bonusDrop,bonusGold:treasure.bonusGold+pets.bonusGold,bonusDamage:treasure.bonusDamage+pets.bonusDamage}}
 function gearTrait(it){let r=rarityRank(it);if(it.slot==='weapon')return `特性：暴擊率 +${Math.max(0,r-1)*3.5}%、暴擊傷害提升`;if(it.slot==='armor'||it.slot==='boots')return `特性：受到傷害降低 ${r*2}%、防禦更穩`;if(it.slot==='ring')return `特性：攻擊與氣血加成`;return `特性：修為收益 +${r*4}%、額外掉落率 +${r*3.5}%`}
 function val(k){return s[k]+gearStat(k)}
 function power(){return val('atk')+val('def')*2+Math.floor(val('maxHp')/10)}
@@ -4188,7 +4251,7 @@ window.bagCraftTreasure=function(id){
 function renderBagUI(){
    ensureData();
    const gold=byId('bagGold');if(gold)gold.textContent=Number(s.gold||0).toLocaleString('zh-TW');
-   ensureTreasureState();ensureMagicState();const count=byId('bagCount');if(count)count.textContent=mainCategory==='treasures'?s.ownedTreasures.length+' 件古寶':mainCategory==='magic'?s.magicTreasures.length+' 件法寶':s.inventory.length+' 件裝備';
+   ensureTreasureState();ensureMagicState();ensurePetState();const count=byId('bagCount');if(count)count.textContent=mainCategory==='treasures'?s.ownedTreasures.length+' 件古寶':mainCategory==='magic'?s.magicTreasures.length+' 件法寶':mainCategory==='pets'?s.ownedPets.length+' 件靈寵':s.inventory.length+' 件裝備';
    document.querySelectorAll('[data-bag-main-tab]').forEach(function(btn){const active=btn.dataset.bagMainTab===mainCategory;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',active?'true':'false')});
    document.querySelectorAll('[data-bag-category]').forEach(function(btn){const active=btn.dataset.bagCategory===category;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',active?'true':'false')});
    const equipmentView=byId('bagEquipmentView');if(equipmentView)equipmentView.hidden=mainCategory!=='equipment';
@@ -4205,8 +4268,9 @@ function renderBagUI(){
      placeholder.querySelectorAll('[data-magic-equip]').forEach(function(btn){btn.addEventListener('click',function(){window.activateMagicTreasure(btn.dataset.magicEquip);});});
      placeholder.querySelectorAll('[data-magic-upgrade]').forEach(function(btn){btn.addEventListener('click',function(){window.upgradeMagicTreasure(btn.dataset.magicUpgrade);});});
     }else if(mainCategory==='pets'){
-     placeholder.classList.remove('bag-treasure-view');
-     placeholder.innerHTML='<h3>靈寵類</h3><p>靈寵系統尚待製作；目前不會消耗靈石。</p>';
+     placeholder.classList.add('bag-treasure-view');
+     placeholder.innerHTML=renderPetCollection();
+     placeholder.querySelectorAll('[data-pet-draw]').forEach(function(btn){btn.addEventListener('click',function(){window.drawSpiritPet();});});
     }else{
      placeholder.classList.remove('bag-treasure-view');
     }
@@ -5153,6 +5217,14 @@ html body #gameApp.app>header.top.statusline>.status-name{
 }
 </style>
 <!-- v1.00: expose equip, enhance, lock, and dismantle actions directly in the equipment comparison modal. -->
+<style id="v109-spirit-pet-collection">
+/* v1.09: functional spirit-pet collection, summon action and odds. */
+#gameApp #bag .bag-pet-drawbar{display:flex;flex:0 0 auto;flex-direction:column;gap:6px}
+#gameApp #bag .bag-pet-draw{width:100%;min-height:36px;font-weight:800}
+#gameApp #bag .bag-pet-card{min-height:0}
+#gameApp #bag .bag-pet-card .bag-treasure-description{min-height:34px}
+#gameApp #bag .bag-pet-odds{display:block;padding-top:2px;color:#c9b98f;font-size:9.5px;font-variant-numeric:tabular-nums}
+</style>
 </body></html>
 
 <style id="v101-bag-slot-height-balance">

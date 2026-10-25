@@ -61,7 +61,7 @@ jobs:
             page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
             page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
 
-            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.08', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.09', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
             const app = page.locator('#gameApp');
             const continueButton = page.locator('#continueCultivationBtn');
@@ -84,7 +84,7 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v1.08') throw new Error('遊戲右上角版本標示應為 v1.08，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v1.09') throw new Error('遊戲右上角版本標示應為 v1.09，實際為：' + publishedVersionLabel);
             const characterHeadingDisplay = await page.locator('#character > .page-title').evaluate(el => getComputedStyle(el).display);
             if (characterHeadingDisplay !== 'none') throw new Error('角色分頁的「修士面板」標題列應已移除。');
             const cultivationHeadingDisplay = await page.locator('#cultivate > .page-title').evaluate(el => getComputedStyle(el).display);
@@ -313,6 +313,38 @@ jobs:
              if (!magicCombatAudit.thunderSneak.log.includes('引雷珠觸發') || magicCombatAudit.thunderSneak.dealt <= 0) throw new Error('偷襲未觸發引雷珠重擊：' + JSON.stringify(magicCombatAudit.thunderSneak));
              if (!magicCombatAudit.bellSneak.log.includes('鎮靈鈴觸發') || !magicCombatAudit.bellSneak.log.includes('減少')) throw new Error('偷襲反擊未觸發鎮靈鈴減傷：' + JSON.stringify(magicCombatAudit.bellSneak));
              console.log('Magic combat regression passed: existing normal attack proc plus jade-flame, thunder-orb and spirit-bell effects during sneak combat.');
+             await bag.locator('[data-bag-main-tab="pets"]').click();
+             const petCards = bag.locator('#bagInactiveCategory .bag-pet-card');
+             if (await petCards.count() !== 7) throw new Error('靈寵收藏應顯示原有七個圖鑑條目。');
+             const petBefore = await page.evaluate(() => {
+               s.ownedPets = [];
+               s.gold = 1000;
+               save();
+               render();
+               return {gold:Number(s.gold),bonusGold:gearPerks().bonusGold,owned:s.ownedPets.length};
+             });
+             await page.evaluate(() => { window.__petTestRandomBackup = Math.random; Math.random = () => 0; });
+             await bag.locator('#petDrawButton').click();
+             const petAfterFirst = await page.evaluate(() => {
+               const pet = s.ownedPets.find(item => item.id === 'gold-eater');
+               const result = {gold:Number(s.gold),owned:s.ownedPets.length,level:pet&&pet.level,bonusGold:gearPerks().bonusGold};
+               Math.random = window.__petTestRandomBackup;
+               delete window.__petTestRandomBackup;
+               return result;
+             });
+             if (petAfterFirst.gold !== petBefore.gold - 50 || petAfterFirst.owned !== 1 || petAfterFirst.level !== 1 || petAfterFirst.bonusGold <= petBefore.bonusGold) {
+               throw new Error('首次召靈沒有正確扣除 50 靈石、收藏靈寵並生效被動：' + JSON.stringify(petAfterFirst));
+             }
+             await page.evaluate(() => { window.__petTestRandomBackup = Math.random; Math.random = () => 0; window.drawSpiritPet(); Math.random = window.__petTestRandomBackup; delete window.__petTestRandomBackup; });
+             const petAfterDuplicate = await page.evaluate(() => {
+               const pet = s.ownedPets.find(item => item.id === 'gold-eater');
+               return {gold:Number(s.gold),owned:s.ownedPets.length,level:pet&&pet.level,bonusGold:gearPerks().bonusGold,cardText:document.querySelector('#bagInactiveCategory [data-pet-id="gold-eater"]')?.innerText||''};
+             });
+             if (petAfterDuplicate.gold !== petBefore.gold - 100 || petAfterDuplicate.owned !== 1 || petAfterDuplicate.level !== 2 || petAfterDuplicate.bonusGold <= petAfterFirst.bonusGold || !petAfterDuplicate.cardText.includes('等級 2')) {
+               throw new Error('重複召靈沒有升級靈寵、再次扣款並提升被動效果：' + JSON.stringify(petAfterDuplicate));
+             }
+             console.log('Spirit-pet regression passed: seven catalog entries, 50-stone summon, duplicate level-up, passive modifier and live card updates.');
+
              console.log('Magic treasure regression passed: four bag categories, type-consistent regular/elite/boss labels, escalating encounter stats, and type-specific drops.');
              await bag.locator('[data-bag-main-tab="equipment"]').click();
 
@@ -390,7 +422,7 @@ jobs:
               const saved = JSON.parse(localStorage.getItem('nine_heavens_idle_v2') || '{}');
               const stableFields = [
                 'major', 'layer', 'gold', 'herbs', 'kills', 'inventory', 'equipped',
-                'ownedMethods', 'methodLevels', 'treasureFragments', 'ownedTreasures'
+                'ownedMethods', 'methodLevels', 'treasureFragments', 'ownedTreasures', 'ownedPets'
               ];
               return Object.fromEntries(stableFields.map(key => [key, saved[key] ?? null]));
             });
@@ -413,16 +445,17 @@ jobs:
                 keyExists: true,
                 stable,
                 hasFragmentMap: !!saved.treasureFragments && typeof saved.treasureFragments === 'object',
+                 hasPet: Array.isArray(saved.ownedPets) && saved.ownedPets.some(item => item.id === 'gold-eater' && item.level === 2),
                 owned: Array.isArray(saved.ownedTreasures) && saved.ownedTreasures.some(item => item.id === 'guiding-jade' && item.level === 1),
                 hasSaveTimestamp: Number.isFinite(Number(saved.last)) && Number(saved.last) > 0
               };
             });
-            if (!persistedSave.keyExists || !persistedSave.hasFragmentMap || !persistedSave.owned) throw new Error('重新載入後古寶碎片／收藏存檔沒有保留。');
+            if (!persistedSave.keyExists || !persistedSave.hasFragmentMap || !persistedSave.owned || !persistedSave.hasPet) throw new Error('重新載入後古寶碎片／收藏或靈寵存檔沒有保留。');
             if (!persistedSave.hasSaveTimestamp) throw new Error('存檔時間戳遺失或無效。');
             if (JSON.stringify(persistedSave.stable) !== JSON.stringify(preReloadSave)) {
               throw new Error('重新載入後核心存檔欄位與重載前不一致。');
             }
-            console.log('Save persistence regression passed: realm, resources, inventory, equipment, methods, treasure fragments and owned treasures survive reload.');
+            console.log('Save persistence regression passed: realm, resources, inventory, equipment, methods, treasure fragments, owned treasures and owned pets survive reload.');
             if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
             console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
             await browser.close();
