@@ -26,6 +26,7 @@ jobs:
           npm run build
           cp index.html dist/index.html
           cp latest.html dist/latest.html
+          cp '首頁.PNG' 'dist/首頁.PNG'
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
