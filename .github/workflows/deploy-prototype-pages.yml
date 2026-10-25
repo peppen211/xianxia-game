@@ -103,6 +103,66 @@ jobs:
             await page.locator('#uiModal .modal-close').click();
             await modal.waitFor({ state: 'hidden', timeout: 3000 });
 
+            // Regression checks for v0.97 equipment inventory. Fixtures exist only in this isolated CI browser profile.
+            await page.locator('#gameApp .bottom .nav[data-screen="bag"]').click();
+            const bag = page.locator('#bag');
+            const mainTabs = bag.locator('[data-bag-main-tab]');
+            const equipTabs = bag.locator('[data-bag-category]');
+            if (await mainTabs.count() !== 3) throw new Error('儲物袋應有裝備類、古寶類、靈寵類三個主分類。');
+            if (await equipTabs.count() !== 4) throw new Error('裝備分類應有全部、武器、防具、飾品四個子分類。');
+            await page.evaluate(() => {
+              const fixtures = [
+                {id:9901001,name:'測試已穿戴法器',slot:'weapon',rarity:'凡品',stars:1,enhanceLevel:0,atk:2,def:1,hp:1,value:15,icon:'劍',catalogType:'法器',catalogClass:'裝備類'},
+                {id:9901002,name:'測試靈品法器',slot:'weapon',rarity:'靈品',stars:2,enhanceLevel:0,atk:8,def:2,hp:4,value:50,icon:'劍',catalogType:'法器',catalogClass:'裝備類'},
+                {id:9901003,name:'測試批次分解防具',slot:'armor',rarity:'凡品',stars:1,enhanceLevel:0,atk:0,def:3,hp:8,value:15,icon:'甲',catalogType:'法器',catalogClass:'裝備類'},
+                {id:9901004,name:'測試法寶',slot:'ring',rarity:'珍品',stars:2,enhanceLevel:0,atk:4,def:1,hp:3,value:80,icon:'環',catalogType:'法寶',catalogClass:'裝備類'}
+              ];
+              s.inventory = s.inventory.filter(item => !fixtures.some(testItem => testItem.id === item.id));
+              s.inventory.push(...fixtures);
+              s.equipped.weapon = 9901001;
+              s.gearProtection = {qualityEnabled:true,minQuality:3,starEnabled:true,minStars:4};
+              render();
+            });
+            const gridColumns = await bag.locator('#inventory').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\\s+/).length);
+            if (gridColumns !== 4) throw new Error('裝備清單不是四欄物品格。');
+            await bag.getByRole('button', {name:/比較：測試靈品法器/}).click();
+            const equipmentModal = page.locator('#uiModal');
+            await equipmentModal.waitFor({state:'visible',timeout:3000});
+            const comparisonText = await page.locator('#modalBody').innerText();
+            if (!comparisonText.includes('測試已穿戴法器') || !comparisonText.includes('測試靈品法器') || !comparisonText.includes('差值')) {
+              throw new Error('裝備比較未顯示目前裝備、候選裝備及屬性差值。');
+            }
+            if (await page.locator('#modalBody .bag-compare-actions button').count() !== 2) {
+              throw new Error('裝備比較彈窗應只保留確認穿戴與返回背包兩個按鈕。');
+            }
+            await page.locator('#bagEquipConfirm').click();
+            await equipmentModal.waitFor({state:'hidden',timeout:3000});
+            if (!(await page.evaluate(() => s.equipped.weapon === 9901002))) throw new Error('比較彈窗確認穿戴沒有更新目前武器。');
+            await page.locator('#bagSlotsToggle').click();
+            if (!(await page.locator('#slots').evaluate(el => el.hidden))) throw new Error('目前穿戴欄無法收合。');
+            await page.locator('#bagSlotsToggle').click();
+            if (await page.locator('#slots').evaluate(el => el.hidden)) throw new Error('目前穿戴欄無法重新展開。');
+            await page.locator('#bagTypeFilter').selectOption('法寶');
+            const filteredByType = await page.locator('#inventory').innerText();
+            if (!filteredByType.includes('測試法寶') || filteredByType.includes('測試批次分解防具')) throw new Error('器物種類篩選未正確篩出法寶。');
+            await page.locator('#bagTypeFilter').selectOption('all');
+            await bag.locator('[data-bag-main-tab="treasures"]').click();
+            if (!(await page.locator('#bagInactiveCategory').innerText()).includes('古寶類')) throw new Error('古寶類暫未開放提示缺失。');
+            await bag.locator('[data-bag-main-tab="pets"]').click();
+            if (!(await page.locator('#bagInactiveCategory').innerText()).includes('靈寵類')) throw new Error('靈寵類暫未開放提示缺失。');
+            await bag.locator('[data-bag-main-tab="equipment"]').click();
+            await page.locator('#bagBatchToggle').click();
+            const armorCheckbox = page.locator('#inventory .bag-select-check[aria-label="選取 測試批次分解防具"]');
+            await armorCheckbox.waitFor({state:'visible',timeout:3000});
+            await armorCheckbox.check();
+            await page.locator('#bagBatchReview').click();
+            await equipmentModal.waitFor({state:'visible',timeout:3000});
+            if (!(await page.locator('#modalBody').innerText()).includes('測試批次分解防具')) throw new Error('批次分解確認清單未列出所選裝備。');
+            await page.locator('#bagConfirmBatch').click();
+            await equipmentModal.waitFor({state:'hidden',timeout:3000});
+            if (await page.evaluate(() => s.inventory.some(item => item.id === 9901003))) throw new Error('確認批次分解後，所選測試防具仍在背包。');
+            console.log('Equipment inventory v0.97 regression passed: four-column grid, compare/equip modal, slot collapse, type filter, placeholders, and batch dismantle.');
+           
             // Regression checks for the fifth tab: no duplicate database action or unrelated save/reward cards.
             await page.locator('#gameApp .bottom .nav[data-screen="journal"]').click();
             const arcCards = page.locator('#journalHybridStages .journal-arc-card');
