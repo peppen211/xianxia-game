@@ -1,0 +1,5 @@
+首頁背景圖 v0.59
+- 圖片格式：WebP，400×225，約 9.4 KB。
+- 實際圖片以 data:image/webp;base64 直接嵌入 index.html，避免 GitHub Pages 靜態檔案路徑或外部 CDN 問題。
+- 圖像為專案原創 AI 生成仙山插畫，不是《凡人修仙傳》官方素材。
+- 已知存檔鍵 nine_heavens_idle_v2 未修改。
