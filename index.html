@@ -3612,8 +3612,7 @@ main>.screen#home.active{display:flex!important}
       '<p>本層修為：'+Math.floor(xpNow)+' / '+need+(xpNow>=need?'（圓滿，等待突破）':'')+'</p>'+
       '<p>本次運行累積：'+formatDuration(seconds)+'<br>本次自動修為：+'+Math.floor(currentXp)+'</p>'+
       '<p>靈石、靈草、靈木與靈晶請透過戰鬥、掉落或原有玩法取得，不再由放置修行產生。</p></div>'+
-      '<div class="panel"><div class="secthead"><span>上次修行摘要</span></div><p>'+esc(previous)+'</p></div>'+
-      );
+      '<div class="panel"><div class="secthead"><span>上次修行摘要</span></div><p>'+esc(previous)+'</p></div>');
   };
   var originalOpenMethodDetails=window.openMethodDetails;
   window.openMethodDetails=function(index){openModal('功法詳情',methodDetailHtml(index))};
