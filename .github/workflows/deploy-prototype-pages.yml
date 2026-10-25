@@ -61,7 +61,7 @@ jobs:
             page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
             page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
 
-            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.15', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.16', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
             const app = page.locator('#gameApp');
             const continueButton = page.locator('#continueCultivationBtn');
@@ -84,7 +84,7 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v1.15') throw new Error('遊戲右上角版本標示應為 v1.15，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v1.16') throw new Error('遊戲右上角版本標示應為 v1.16，實際為：' + publishedVersionLabel);
             const characterHeadingDisplay = await page.locator('#character > .page-title').evaluate(el => getComputedStyle(el).display);
             if (characterHeadingDisplay !== 'none') throw new Error('角色分頁的「修士面板」標題列應已移除。');
             const cultivationHeadingDisplay = await page.locator('#cultivate > .page-title').evaluate(el => getComputedStyle(el).display);
@@ -112,7 +112,59 @@ jobs:
             await page.locator('#uiModal .modal-close').click();
             await modal.waitFor({ state: 'hidden', timeout: 3000 });
 
-            // Regression checks for v0.97 equipment inventory. Fixtures exist only in this isolated CI browser profile.
+            // Regression tests for the shop use only this isolated browser save.
+            await page.locator('#gameApp .bottom .nav[data-screen="shop"]').click();
+            if (!(await page.locator('#shop').isVisible())) throw new Error('無法開啟仙市頁面。');
+            await page.evaluate(() => {
+              window.__shopSaveSnapshot = JSON.parse(JSON.stringify(s));
+              s.gold = 500;
+              s.pills = 0;
+              s.wood = 0;
+              s.crystal = 0;
+              save();
+              render();
+            });
+            try {
+              await page.locator('#buyPill').click();
+              await page.locator('#buyPill5').click();
+              await page.locator('#buyWood5').click();
+              await page.locator('#buyCrystal1').click();
+              const purchased = await page.evaluate(() => ({
+                gold:Number(s.gold),pills:Number(s.pills),wood:Number(s.wood),crystal:Number(s.crystal),
+                shownGold:document.querySelector('#shopGold')?.textContent.trim(),
+                shownPills:document.querySelector('#shopPillCount')?.textContent.trim(),
+                shownWood:document.querySelector('#shopWoodCount')?.textContent.trim(),
+                shownCrystal:document.querySelector('#shopCrystalCount')?.textContent.trim()
+              }));
+              if (purchased.gold !== 215 || purchased.pills !== 6 || purchased.wood !== 5 || purchased.crystal !== 1 ||
+                  purchased.shownGold !== '215' || purchased.shownPills !== '6' || purchased.shownWood !== '5' || purchased.shownCrystal !== '1') {
+                throw new Error('仙市購買扣款或庫存入帳不正確：' + JSON.stringify(purchased));
+              }
+              await page.evaluate(() => { s.gold = 0; save(); render(); });
+              if (!(await page.locator('#buyCrystal5').isDisabled()) || !(await page.locator('#buyPill').isDisabled())) {
+                throw new Error('靈石不足時，仙市購買按鈕應自動禁用。');
+              }
+              const beforeInsufficient = await page.evaluate(() => ({gold:Number(s.gold),pills:Number(s.pills),wood:Number(s.wood),crystal:Number(s.crystal)}));
+              await page.evaluate(() => { buyPill(); window.buyShopBundle('crystal',5,30,'靈晶'); });
+              const afterInsufficient = await page.evaluate(() => ({gold:Number(s.gold),pills:Number(s.pills),wood:Number(s.wood),crystal:Number(s.crystal)}));
+              if (JSON.stringify(afterInsufficient) !== JSON.stringify(beforeInsufficient)) {
+                throw new Error('靈石不足時的交易不應改動任何資源：' + JSON.stringify({before:beforeInsufficient,after:afterInsufficient}));
+              }
+              console.log('Shop purchase regression passed: single and bundle purchases, exact costs, live inventory totals, disabled unaffordable buttons and no-funds transaction safety.');
+            } finally {
+              await page.evaluate(() => {
+                const snapshot = window.__shopSaveSnapshot;
+                if (snapshot) {
+                  Object.keys(s).forEach(key => delete s[key]);
+                  Object.assign(s,snapshot);
+                  delete window.__shopSaveSnapshot;
+                  save();
+                  render();
+                }
+              });
+            }
+
+            // Regression checks for v0.97 equipment inventory. Fixtures exist only in this isolated browser profile.
             await page.locator('#gameApp .bottom .nav[data-screen="bag"]').click();
             const bag = page.locator('#bag');
             const mainTabs = bag.locator('[data-bag-main-tab]');
