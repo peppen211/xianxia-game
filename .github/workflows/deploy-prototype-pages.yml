@@ -61,7 +61,7 @@ jobs:
             page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
             page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
 
-            await page.goto('https://peppen211.github.io/xianxia-game/?v=0.54', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.05', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
             const app = page.locator('#gameApp');
             const continueButton = page.locator('#continueCultivationBtn');
@@ -83,6 +83,8 @@ jobs:
             if (await page.locator('body').evaluate(el => el.classList.contains('launch-gate'))) {
               throw new Error('Launch-gate state remained after clicking continue.');
             }
+            const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
+            if (publishedVersionLabel !== 'v1.05') throw new Error('遊戲右上角版本標示應為 v1.05，實際為：' + publishedVersionLabel);
             const characterHeadingDisplay = await page.locator('#character > .page-title').evaluate(el => getComputedStyle(el).display);
             if (characterHeadingDisplay !== 'none') throw new Error('角色分頁的「修士面板」標題列應已移除。');
             const cultivationHeadingDisplay = await page.locator('#cultivate > .page-title').evaluate(el => getComputedStyle(el).display);
@@ -115,7 +117,7 @@ jobs:
             const bag = page.locator('#bag');
             const mainTabs = bag.locator('[data-bag-main-tab]');
             const equipTabs = bag.locator('[data-bag-category]');
-            if (await mainTabs.count() !== 3) throw new Error('儲物袋應有裝備類、古寶類、靈寵類三個主分類。');
+            if (await mainTabs.count() !== 4) throw new Error('儲物袋應有裝備類、古寶類、靈寵類、法寶類四個主分類。');
             if (await equipTabs.count() !== 4) throw new Error('裝備分類應有全部、武器、防具、飾品四個子分類。');
             await page.evaluate(() => {
               const fixtures = [
@@ -219,6 +221,56 @@ jobs:
             if (treasureStateAfterCraft.fragments !== fragmentsBeforeCraft - 3) throw new Error('合成古寶未正確扣除所需碎片。');
             if (treasureStateAfterCraft.bonusXp < bonusXpBeforeTreasure + 0.014) throw new Error('持有引靈古玉後，修為被動效果沒有生效。');
             console.log('Ancient treasure regression passed: boss fragment drops, synthesis cost, owned collection state, passive XP bonus, and automatic save.');
+             // Magic treasure categories and encounter rarity use the same live enemy type.
+             await bag.locator('[data-bag-main-tab="magic"]').click();
+             const magicCards = bag.locator('#bagInactiveCategory .bag-treasure-card');
+             if (await magicCards.count() !== 3) throw new Error('法寶類應顯示三件可收藏法寶。');
+             const encounterAudit = await page.evaluate(() => {
+               const snapshot = JSON.parse(JSON.stringify(s));
+               const previousEnemy = enemy;
+               const originalRandom = Math.random;
+               const result = {};
+               const cases = [
+                 {key:'ordinary', kills:0, expected:'普通'},
+                 {key:'elite', kills:3, expected:'精英'},
+                 {key:'boss', kills:19, expected:'首領'}
+               ];
+               try {
+                 for (const item of cases) {
+                   s.kills = item.kills;
+                   s.magicTreasures = [];
+                   s.activeMagicTreasure = null;
+                   spawnEnemy();
+                   render();
+                   const type = enemy.type;
+                   const label = document.getElementById('enemyLevel').textContent.trim();
+                   const maxHp = enemy.maxHp;
+                   Math.random = () => 0.1;
+                   win();
+                   result[item.key] = {expected:item.expected, type, label, maxHp, magicDrops:(s.magicTreasures || []).length};
+                 }
+                 return result;
+               } finally {
+                 Math.random = originalRandom;
+                 Object.keys(s).forEach(key => delete s[key]);
+                 Object.assign(s, snapshot);
+                 enemy = previousEnemy;
+                 save();
+                 render();
+               }
+             });
+             if (encounterAudit.ordinary.type !== '普通' || !encounterAudit.ordinary.label.includes('普通') || encounterAudit.ordinary.magicDrops !== 0) {
+               throw new Error('普通妖獸的類型標示或基礎法寶掉落率不正確：' + JSON.stringify(encounterAudit.ordinary));
+             }
+             if (encounterAudit.elite.type !== '精英' || !encounterAudit.elite.label.includes('精英') || encounterAudit.elite.maxHp <= encounterAudit.ordinary.maxHp || encounterAudit.elite.magicDrops < 1) {
+               throw new Error('精英妖獸類型、強度或提高後的法寶掉落率不正確：' + JSON.stringify(encounterAudit.elite));
+             }
+             if (encounterAudit.boss.type !== '首領' || !encounterAudit.boss.label.includes('首領') || encounterAudit.boss.maxHp <= encounterAudit.elite.maxHp || encounterAudit.boss.magicDrops < 1) {
+               throw new Error('首領妖獸類型、強度或提高後的法寶掉落率不正確：' + JSON.stringify(encounterAudit.boss));
+             }
+             console.log('Magic treasure regression passed: four bag categories, type-consistent regular/elite/boss labels, escalating encounter stats, and type-specific drops.');
+             await bag.locator('[data-bag-main-tab="equipment"]').click();
+
 
 
            
