@@ -764,64 +764,6 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 }
 
 
-
-/* v0.57: ensure deployed local scene-art paths; game mechanics and save data unchanged */
-#home .hero{
- background:#152338 url("./assets/xianxia/scene-immortal-mountain.svg?v=0.58") center center/cover no-repeat!important;
- border-color:#9eafaaa6!important;
- isolation:isolate;
- box-shadow:inset 0 0 0 1px #e4d9bc22,inset 0 -36px 60px #070c17c9,0 5px 18px #0005;
-}
-#home .hero::before{
- content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
- background:linear-gradient(90deg,rgba(8,16,29,.88) 0%,rgba(8,16,29,.70) 31%,rgba(8,16,29,.25) 58%,rgba(8,16,29,.05) 100%),linear-gradient(0deg,rgba(7,12,22,.70) 0%,rgba(7,12,22,.10) 58%,transparent 100%);
-}
-#home .hero .moon,#home .hero .mountain,#home .hero .mist,#home .hero .cultivator{display:none!important}
-#home .hero .hero-copy{left:14px;top:13px;max-width:64%;z-index:2}
-#home .hero .realm{color:#e8d9b5;text-shadow:0 1px 8px #07101c}
-#home .hero h2{color:#f5ecd6;text-shadow:0 2px 12px #030911;font-size:25px;letter-spacing:.5px}
-#home .hero p{color:#e0e5dc;text-shadow:0 1px 7px #07101c;max-width:190px}
-#home .hero .energy-orb{z-index:1;right:23%;bottom:32%;width:10px;height:10px;background:#c0e8cf;box-shadow:0 0 22px 9px #91dcb55c;opacity:.8}
-#home .hero .hero-bottom{z-index:3}
-#home .hero .chip{backdrop-filter:blur(5px);background:linear-gradient(135deg,rgba(9,16,28,.88),rgba(29,43,55,.76));border:1px solid rgba(221,198,139,.3);color:#f3e7cc;box-shadow:0 2px 9px rgba(0,0,0,.2)}
-.enemy-scene{
- background-color:#0f1828!important;
- background-image:linear-gradient(90deg,rgba(7,13,25,.52),rgba(7,13,25,.08) 58%,rgba(7,13,25,.18)),linear-gradient(0deg,rgba(6,11,21,.78),transparent 70%),url("./assets/xianxia/scene-sword-tomb.svg?v=0.58")!important;
- background-position:center,center,center 54%!important;
- background-size:cover,cover,cover!important;
- background-repeat:no-repeat,no-repeat,no-repeat!important;
- border-color:#9cabb766!important;
- box-shadow:inset 0 0 0 1px #e8deb318,inset 0 0 42px #080d1d99;
-}
-.enemy-scene .enemy-art{z-index:1;filter:drop-shadow(0 0 10px #cadfe1aa) drop-shadow(0 8px 5px #000b)}
-.enemy-scene .enemy-label,.enemy-scene .enemy-level,.enemy-scene .enemy-bottom{z-index:2;text-shadow:0 1px 5px #000}
-@media(max-width:380px){
- #home .hero .hero-copy{max-width:68%;left:11px;top:11px}
- #home .hero h2{font-size:23px}
- #home .hero p{font-size:11px;max-width:175px}
-}
-
-
-/* v0.59: actual WebP illustration on the real launch home screen; not CSS-drawn art */
-.launch-gate-screen{
- background-color:#081321!important;
- background-image:
-  linear-gradient(180deg,rgba(4,11,22,.33) 0%,rgba(5,12,24,.38) 30%,rgba(4,9,18,.80) 72%,rgba(4,8,15,.96) 100%),
-  url("data:image/webp;base64,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")!important;
- background-size:cover,cover!important;
- background-position:center center,64% center!important;
- background-repeat:no-repeat,no-repeat!important;
-}
-.launch-title,.launch-subtitle,.launch-realm-label,.launch-realm-summary,.launch-guidance,.launch-last-realm{
- text-shadow:0 2px 12px rgba(0,0,0,.9);
-}
-.launch-character-intro{
- background:rgba(8,16,28,.72)!important;
- border-color:rgba(222,195,133,.35)!important;
- box-shadow:0 8px 30px rgba(0,0,0,.23)!important;
- backdrop-filter:blur(5px);
-}
-
 </style>
 <!-- Merge restoration: keep the original classic home screen reachable from the Trial tab. -->
 <style id="classic-merge-restoration">
@@ -2092,7 +2034,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.59</small>
+  <small class="status-version" aria-label="遊戲版本">v0.60</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -4532,69 +4474,4 @@ function renderBagUI(){
 }
 </style>
 
-
-<!-- v0.58 scene-art cascade fix: intentionally placed after all legacy style blocks. -->
-<style id="v058SceneArtOverride">
-/* Visible first tab: an actual scene banner, not the hidden legacy home hero. */
-#gameApp main > #cultivate.screen.active::before{
- content:"青雲山 · 凡人境\A 雲海之上，靈氣沿山霧流轉";
- display:flex!important;
- align-items:flex-end!important;
- white-space:pre-line!important;
- flex:0 0 116px!important;
- min-height:116px!important;
- width:100%!important;
- box-sizing:border-box!important;
- padding:12px 14px!important;
- margin:0 0 1px!important;
- overflow:hidden!important;
- border:1px solid rgba(213,196,151,.68)!important;
- border-radius:14px!important;
- color:#f4ead2!important;
- font-size:15px!important;
- font-weight:800!important;
- line-height:1.65!important;
- letter-spacing:.045em!important;
- text-shadow:0 2px 9px rgba(4,9,18,.98),0 1px 2px #000!important;
- background-color:#17263a!important;
- background-image:linear-gradient(90deg,rgba(7,16,30,.82) 0%,rgba(7,16,30,.5) 48%,rgba(7,16,30,.12) 100%),linear-gradient(0deg,rgba(7,13,24,.58),transparent 70%),url("./assets/xianxia/scene-immortal-mountain.svg?v=0.58")!important;
- background-position:center,center,center 43%!important;
- background-size:cover,cover,cover!important;
- background-repeat:no-repeat,no-repeat,no-repeat!important;
- box-shadow:inset 0 0 0 1px rgba(246,225,181,.13),inset 0 -20px 28px rgba(3,8,17,.32),0 4px 16px rgba(0,0,0,.28)!important;
-}
-
-/* Battle screen: override legacy !important background shorthands. */
-#gameApp main > #home.screen.active .enemy-scene{
- background-color:#101a2a!important;
- background-image:linear-gradient(90deg,rgba(6,13,25,.34),rgba(6,13,25,.05) 62%,rgba(6,13,25,.2)),linear-gradient(0deg,rgba(4,9,18,.72),transparent 70%),url("./assets/xianxia/scene-sword-tomb.svg?v=0.58")!important;
- background-position:center,center,center 54%!important;
- background-size:cover,cover,cover!important;
- background-repeat:no-repeat,no-repeat,no-repeat!important;
- border:1px solid rgba(156,181,191,.66)!important;
- box-shadow:inset 0 0 0 1px rgba(232,222,179,.14),inset 0 0 36px rgba(4,9,21,.6)!important;
-}
-#gameApp main > #home.screen.active .enemy-scene::before,
-#gameApp main > #home.screen.active .enemy-scene::after{
- display:none!important;
- content:none!important;
-}
-#gameApp main > #home.screen.active .enemy-scene .enemy-art{
- position:relative!important;
- z-index:2!important;
- filter:drop-shadow(0 0 9px rgba(195,227,231,.7)) drop-shadow(0 8px 5px #000b)!important;
-}
-#gameApp main > #home.screen.active .enemy-scene .enemy-label,
-#gameApp main > #home.screen.active .enemy-scene .enemy-level,
-#gameApp main > #home.screen.active .enemy-scene .enemy-bottom{
- z-index:3!important;
- text-shadow:0 1px 6px #000!important;
-}
-@media(max-width:380px){
- #gameApp main > #cultivate.screen.active::before{
-  flex-basis:104px!important;min-height:104px!important;
-  font-size:13.5px!important;padding:10px 11px!important;
- }
-}
-</style>
 </body></html>
