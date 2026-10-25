@@ -2034,7 +2034,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v1.6</small>
+  <small class="status-version" aria-label="遊戲版本">v1.7</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2073,11 +2073,33 @@ html,body,#launchGate,#gameApp{
   </div>
   <div class="bag-footer-actions"><button type="button" class="btn secondary" id="bagBatchToggle">批次分解</button><button type="button" class="btn secondary" id="bagHistoryOpen">操作紀錄</button><button type="button" class="btn secondary" id="bagProtectionOpen">保護設定</button><button type="button" class="btn secondary" id="bagForgeToolsOpen">祈寶煉器</button></div>
   <div class="panel bag-batch-panel" id="bagBatchPanel" hidden><div class="secthead"><span>批次分解</span><small id="bagBatchCount">已選 0 件</small></div><p>僅能選擇未穿戴、未鎖定且未受自動保護的裝備。分解前會再次預覽清單與靈石總收益。</p><div class="bag-batch-summary" id="bagBatchSummary">尚未選取裝備。</div><button type="button" class="btn danger" id="bagBatchReview">預覽並確認</button></div>
-  <div class="bag-pill-bar"><span>聚氣丹 <b>× <span id="pillCount">2</span></b></span><small>戰鬥中恢復 40% 氣血</small><button type="button" class="btn secondary" id="buyPill">購買 30</button></div>
+  <div class="bag-pill-bar"><span>聚氣丹 <b>× <span id="pillCount">2</span></b></span><small>戰鬥中恢復 40% 氣血</small><button type="button" class="btn secondary" id="goShopFromBag" onclick="switchScreen('shop')">前往仙市</button></div>
   <div class="panel bag-detail-panel" id="bagDetail" hidden><div class="bag-empty-detail">選擇一件裝備，查看屬性與操作。</div></div>
  </div>
  <div class="panel bag-placeholder" id="bagInactiveCategory" hidden aria-live="polite"></div>
 </section>
+
+<section class="screen" id="shop" aria-label="仙市">
+ <div class="page-title"><h2>仙市</h2><span>坊市交易 · 明碼標價</span></div>
+ <div class="shop-wallet panel"><div><small>可用靈石</small><b id="shopGold">100</b></div><span>購買成功後立即入帳</span></div>
+ <div class="panel shop-intro"><div class="secthead"><span>坊市規矩</span><small>補足所需，不替代歷練</small></div><p>丹藥助你戰鬥，靈木與靈晶可補足煉器材料。古寶碎片仍只能透過戰鬥掉落取得。</p></div>
+ <div class="secthead"><span>丹藥鋪</span><small>戰鬥補給</small></div>
+ <article class="panel shop-item-card">
+  <div class="shop-item-main"><div class="shop-item-icon">丹</div><div class="shop-item-info"><b>聚氣丹</b><small>戰鬥中恢復 40% 氣血</small><small>目前持有 × <b id="shopPillCount">2</b></small></div></div>
+  <div class="shop-buy-actions"><button type="button" class="btn secondary" id="buyPill">購買 1 顆 · 30 靈石</button><button type="button" class="btn secondary" id="buyPill5" onclick="buyShopBundle('pills',5,30,'聚氣丹')">購買 5 顆 · 150 靈石</button></div>
+ </article>
+ <div class="secthead"><span>煉器材料鋪</span><small>材料不足時補購</small></div>
+ <article class="panel shop-item-card">
+  <div class="shop-item-main"><div class="shop-item-icon">木</div><div class="shop-item-info"><b>靈木</b><small>用於青竹法杖、雲紋道袍等煉器配方</small><small>目前持有 × <b id="shopWoodCount">2</b></small></div></div>
+  <div class="shop-buy-actions"><button type="button" class="btn secondary" id="buyWood1" onclick="buyShopBundle('wood',1,15,'靈木')">購買 1 個 · 15 靈石</button><button type="button" class="btn secondary" id="buyWood5" onclick="buyShopBundle('wood',5,15,'靈木')">購買 5 個 · 75 靈石</button></div>
+ </article>
+ <article class="panel shop-item-card">
+  <div class="shop-item-main"><div class="shop-item-icon">晶</div><div class="shop-item-info"><b>靈晶</b><small>煉器常用材料，較靈木稀有</small><small>目前持有 × <b id="shopCrystalCount">1</b></small></div></div>
+  <div class="shop-buy-actions"><button type="button" class="btn secondary" id="buyCrystal1" onclick="buyShopBundle('crystal',1,30,'靈晶')">購買 1 個 · 30 靈石</button><button type="button" class="btn secondary" id="buyCrystal5" onclick="buyShopBundle('crystal',5,30,'靈晶')">購買 5 個 · 150 靈石</button></div>
+ </article>
+ <div class="shop-footnote">商品可隨時購買；靈石不足時無法交易。材料也可透過既有戰鬥與祈寶途徑取得。</div>
+</section>
+
 <section class="screen" id="forge"><div class="page-title"><h2> 祈寶與煉器</h2><span>不再打怪掉裝備</span></div><div class="panel"><div class="secthead"><span>天機祈寶</span><small>保底計數：<b id="pity">0</b>/10</small></div><div class="realm-art" style="height:75px;background:linear-gradient(130deg,#34304f,#263b50,#4d3b55)"><span>玉</span><div class="realm-info">靈光匯聚 · 機緣自來</div></div><div style="font-size:11.3px;color:var(--muted);line-height:1.5;margin:7px 0">祈寶獲得裝備或材料。每 10 抽至少獲得一件珍品以上法寶。重複法寶會轉化為煉器材料。</div><div class="action-grid"><button class="btn primary" id="drawOne">祈寶一次 · 30 靈石</button><button class="btn jade" id="drawTen">祈寶十次 · 270 靈石</button></div><div id="drawResult" style="font-size:12.5px;line-height:1.5;color:var(--gold);margin-top:7px;min-height:14px">機緣尚未開啟。</div></div>
  <div class="panel compact-summary"><div><b>五行煉器</b><small>三種配方 · 靈木 <span id="woodMini">0</span> · 靈晶 <span id="crystalMini">0</span></small></div><button class="btn secondary" onclick="openModal('煉器配方',recipeDetailHtml())">查看配方</button></div><div class="action-grid forge-actions"><button class="btn secondary" id="craftStaff"> 合成青竹法杖</button><button class="btn secondary" id="craftRobe"> 合成雲紋道袍</button><button class="btn secondary" id="craftCharm"> 合成聚靈玉佩</button></div>
  <div class="panel" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13.8px">煉器材料</b><div style="font-size:11.3px;color:var(--muted);margin-top:4px"> 靈木 <b id="woodCount">0</b>　 靈晶 <b id="crystalCount">0</b></div></div><button class="btn secondary" id="convertDup">材料交換</button></div>
@@ -3017,8 +3039,8 @@ main>.screen#home.active{display:flex!important}
 </style>
 <script id="navigation-page-switch-v049">
 (function(){
- const ids=['cultivate','character','home','bag','journal'];
- const labels={cultivate:'修煉',character:'道途',home:'戰鬥',bag:'儲物袋',journal:'仙途'};
+ const ids=['cultivate','character','home','shop','bag','journal'];
+ const labels={cultivate:'修煉',character:'道途',home:'戰鬥',shop:'仙市',bag:'儲物袋',journal:'仙途'};
  function activate(id){
   if(!ids.includes(id))id='cultivate';
   document.querySelectorAll('main>.screen').forEach(function(page){
@@ -3076,8 +3098,8 @@ main>.screen#home.active{display:flex!important}
 </style>
 <script id="navigation-page-move-v050">
 (function(){
- const ids=['cultivate','character','home','bag','journal'];
- const labels={cultivate:'修煉',character:'道途',home:'戰鬥',bag:'儲物袋',journal:'仙途'};
+ const ids=['cultivate','character','home','shop','bag','journal'];
+ const labels={cultivate:'修煉',character:'道途',home:'戰鬥',shop:'仙市',bag:'儲物袋',journal:'仙途'};
  function moveExistingBlocks(){
   const home=document.getElementById('home');
   const cultivate=document.getElementById('cultivate');
@@ -4274,4 +4296,73 @@ function renderBagUI(){
   transform:rotate(35deg)!important;box-shadow:none!important;opacity:.95!important;
 }
 </style>
+
+<style id="v170-shop-screen-and-six-tab-layout">
+/* v1.7: add an independent shop tab and compact layout for six navigation buttons. */
+#gameApp .bottom{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:2px!important}
+#gameApp .bottom .nav{min-width:0!important;padding:7px 1px!important;font-size:clamp(8px,2.35vw,11px)!important;letter-spacing:0!important;overflow:hidden}
+#gameApp #shop{gap:8px!important}
+#gameApp #shop .shop-wallet{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px!important;border-color:#9a805066;background:linear-gradient(120deg,#302b25,#1b2029)}
+#gameApp #shop .shop-wallet>div{display:flex;align-items:baseline;gap:9px}
+#gameApp #shop .shop-wallet small{font-size:12px;color:var(--muted)}
+#gameApp #shop .shop-wallet b{font-size:23px;color:var(--gold);font-variant-numeric:tabular-nums}
+#gameApp #shop .shop-wallet>span{font-size:11px;color:#b9ad98}
+#gameApp #shop .shop-intro{padding:10px!important}
+#gameApp #shop .shop-intro p{margin:6px 0 0;font-size:12px;line-height:1.65;color:#c3cbd5}
+#gameApp #shop>.secthead{flex:0 0 auto}
+#gameApp #shop .shop-item-card{display:flex;flex-direction:column;gap:10px;padding:10px!important;border-color:#a28b5b44;background:linear-gradient(145deg,#252830,#191f28)}
+#gameApp #shop .shop-item-main{display:flex;align-items:center;gap:10px;min-width:0}
+#gameApp #shop .shop-item-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border:1px solid #ad925f99;border-radius:10px;background:linear-gradient(145deg,#3b3429,#222832);color:#efd59b;font-size:21px;font-weight:900}
+#gameApp #shop .shop-item-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+#gameApp #shop .shop-item-info>b{font-size:14px;color:#f0dfba}
+#gameApp #shop .shop-item-info>small{font-size:11px;line-height:1.4;color:var(--muted)}
+#gameApp #shop .shop-item-info>small b{color:#e6c987;font-variant-numeric:tabular-nums}
+#gameApp #shop .shop-buy-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#gameApp #shop .shop-buy-actions .btn{min-width:0;min-height:36px;padding:6px 5px!important;font-size:11px!important;white-space:normal;line-height:1.35}
+#gameApp #shop .shop-buy-actions .btn:disabled{opacity:.42;cursor:not-allowed}
+#gameApp #shop .shop-footnote{padding:4px 2px;color:var(--muted);font-size:10px;line-height:1.55}
+@media(max-width:380px){
+ #gameApp .bottom .nav{font-size:clamp(8px,2.3vw,10px)!important}
+ #gameApp #shop .shop-wallet b{font-size:21px}
+ #gameApp #shop .shop-buy-actions{gap:5px}
+ #gameApp #shop .shop-buy-actions .btn{font-size:10px!important;padding:5px 3px!important}
+}
+</style>
+
+
+<script id="v170-shop-purchase-logic">
+(function installShopUiV170(){
+ if(window.__shopUiV170Installed)return;
+ window.__shopUiV170Installed=true;
+ function refreshShopUi(){
+  if(typeof s!=='object'||!s)return;
+  const update=function(id,value){const el=document.getElementById(id);if(el)el.textContent=Number(value||0).toLocaleString('zh-TW');};
+  update('shopGold',s.gold);
+  update('shopPillCount',s.pills);
+  update('shopWoodCount',s.wood);
+  update('shopCrystalCount',s.crystal);
+  const gold=Number(s.gold)||0;
+  [['buyPill',30],['buyPill5',150],['buyWood1',15],['buyWood5',75],['buyCrystal1',30],['buyCrystal5',150]].forEach(function(pair){
+   const el=document.getElementById(pair[0]);if(el)el.disabled=gold<pair[1];
+  });
+ }
+ window.buyShopBundle=function(item,quantity,unitPrice,label){
+  if(typeof s!=='object'||!s||!['pills','wood','crystal'].includes(item)){toast('商品資料有誤，交易未執行。');return;}
+  const qty=Math.max(1,Math.floor(Number(quantity)||1));
+  const price=Math.max(0,Math.floor(Number(unitPrice)||0));
+  const cost=qty*price;
+  if((Number(s.gold)||0)<cost){toast('靈石不足，需要 '+cost+' 靈石。');return;}
+  s.gold-=cost;
+  s[item]=(Number(s[item])||0)+qty;
+  note('仙市購入 '+label+' ×'+qty+'，花費 '+cost+' 靈石。','good');
+  window.render();
+ };
+ const oldRender=window.render;
+ if(typeof oldRender==='function'){
+  window.render=function(){oldRender.apply(this,arguments);refreshShopUi();};
+ }
+ refreshShopUi();
+})();
+</script>
+
 </body></html>
