@@ -152,10 +152,10 @@ jobs:
               throw new Error('裝備比較未顯示目前裝備、候選裝備及屬性差值。');
             }
             const comparisonActions = page.locator('#modalBody .bag-compare-actions button');
-            if (await comparisonActions.count() !== 4) {
-              throw new Error('裝備比較彈窗應保留確認穿戴、強化、分解與返回背包四項操作。');
+            if (await comparisonActions.count() !== 5) {
+              throw new Error('裝備比較彈窗應保留確認穿戴、強化、鎖定、分解與返回背包五項操作。實際按鈕數：' + await comparisonActions.count());
             }
-            for (const actionId of ['bagEquipConfirm', 'bagEnhanceConfirm', 'bagDismantleConfirm', 'bagEquipBack']) {
+            for (const actionId of ['bagEquipConfirm', 'bagEnhanceConfirm', 'bagLockConfirm', 'bagDismantleConfirm', 'bagEquipBack']) {
               if (await page.locator('#modalBody #' + actionId).count() !== 1) {
                 throw new Error('裝備比較彈窗缺少必要操作：' + actionId);
               }
