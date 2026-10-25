@@ -254,7 +254,12 @@ jobs:
             if (!readerText.includes('凡人起步・青牛鎮')) throw new Error('未開啟第一個可閱讀主線節點。');
             if (await novelReader.locator('.novel-chapter-nav button').count() !== 2) throw new Error('主線全文上一節／下一節導覽缺失。');
 
-            const readerMode = await page.locator('#uiModal').evaluate(el => ({ position: getComputedStyle(el).position, rect: (() => { const r=el.getBoundingClientRect(); return { x:r.x, y:r.y, width:r.width, height:r.height }; })() }));
+            const readerMode = await novelReader.evaluate(reader => {
+              const el = reader.closest('.ui-modal');
+              if (!el) throw new Error('小說閱讀器找不到所屬彈窗 .ui-modal。');
+              const r = el.getBoundingClientRect();
+              return { position: getComputedStyle(el).position, rect: { x:r.x, y:r.y, width:r.width, height:r.height } };
+            });
             const viewport = page.viewportSize();
             if (readerMode.position !== 'fixed' || readerMode.rect.width < viewport.width - 2 || readerMode.rect.height < viewport.height - 2) throw new Error('小說閱讀器沒有覆蓋整個手機畫面。');
             const closeStoryFooter = page.locator('#uiModal.novel-reading-mode #modalFooter button');
