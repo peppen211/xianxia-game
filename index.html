@@ -2039,7 +2039,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.76</small>
+  <small class="status-version" aria-label="遊戲版本">v0.77</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -3555,7 +3555,7 @@ main>.screen#home.active{display:flex!important}
   white-space:normal!important;line-height:1.35!important;overflow-wrap:anywhere!important;
 }
 
-/* v0.76: retain v0.75 typography scale; repair only journal layout and cards. */
+/* v0.77: retain v0.75 typography scale; repair only journal layout and cards. */
 </style>
 <style id="v078-journal-hybrid-layout">
 /* v0.77: one source of chapter content, working stage controls, no unrelated feature cards. */
@@ -4655,7 +4655,7 @@ function renderBagUI(){
 
 
 <style id="v074-fix-launch-background-layer">
-/* v0.76: restore the full-screen background on the launch container; avoid a negative-z pseudo-element clipping/covering it. */
+/* v0.77: restore the full-screen background on the launch container; avoid a negative-z pseudo-element clipping/covering it. */
 #launchGate.launch-gate-screen{
   background-color:#0b111b!important;
   background-image:linear-gradient(rgba(255,255,255,.035),rgba(255,255,255,.035)),url("./%E9%A6%96%E9%A0%81.PNG")!important;
@@ -4676,6 +4676,59 @@ function renderBagUI(){
 #launchGate #launchLastRealm{
   position:relative!important;
   z-index:2!important;
+}
+</style>
+
+
+<style id="v077-title-scale-and-character-card">
+/* v0.77: enlarge the landing title to about 85% of the viewport width and compact only the character info card. */
+#launchGate .launch-title{
+  box-sizing:border-box!important;
+  width:100%!important;
+  font-size:clamp(38px,12.8vw,58px)!important;
+  line-height:1.02!important;
+  padding-top:clamp(3px,.8vh,9px)!important;
+  padding-bottom:2px!important;
+  letter-spacing:.025em!important;
+}
+#launchGate .launch-title span:first-child{
+  font-size:.76em!important;
+  letter-spacing:.09em!important;
+}
+#launchGate .launch-title span:nth-child(2){
+  font-size:1em!important;
+  letter-spacing:0!important;
+}
+#launchGate .launch-title i{
+  right:clamp(3px,2vw,12px)!important;
+  top:49%!important;
+}
+#launchGate .launch-title:before{
+  width:min(84vw,460px)!important;
+}
+#launchGate .launch-character-intro{
+  width:min(330px,82vw)!important;
+  padding:8px 12px!important;
+  margin-top:auto!important;
+  border-radius:18px!important;
+}
+#launchGate .launch-character-intro h2{
+  margin-bottom:4px!important;
+  font-size:13.5px!important;
+  line-height:1.35!important;
+}
+#launchGate .launch-character-intro p{
+  margin:0!important;
+  font-size:clamp(11px,2.8vw,13px)!important;
+  line-height:1.55!important;
+}
+@media(max-height:740px){
+  #launchGate .launch-title{font-size:clamp(36px,11.5vw,52px)!important}
+  #launchGate .launch-character-intro{padding:7px 10px!important}
+}
+@media(max-width:360px){
+  #launchGate .launch-title{font-size:clamp(35px,12.4vw,45px)!important}
+  #launchGate .launch-character-intro{width:84vw!important}
 }
 </style>
 
