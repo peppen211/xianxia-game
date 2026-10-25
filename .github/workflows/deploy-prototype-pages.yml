@@ -26,6 +26,13 @@ jobs:
           npm run build
           cp index.html dist/index.html
           cp latest.html dist/latest.html
+          # The standalone entry overwrites Vite's transformed HTML, so copy the original SVG paths too.
+          mkdir -p dist/assets/xianxia
+          cp -R assets/xianxia/. dist/assets/xianxia/
+          for scene in scene-immortal-mountain.svg scene-sword-tomb.svg scene-herb-valley.svg scene-thunder-tribulation.svg; do
+            test -s "dist/assets/xianxia/$scene"
+          done
+          echo "All four xianxia SVG scene assets are present in the published dist path."
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
