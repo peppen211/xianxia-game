@@ -2039,7 +2039,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.84</small>
+  <small class="status-version" aria-label="遊戲版本">v0.85</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2240,7 +2240,7 @@ function upgradeMethodTier(index){
 
 const methodsId='methods';
 let s,enemy;
-function base(){return {methodLevels:[1,1,1],major:0,layer:1,xp:0,gold:GAME_CONFIG.initial.gold,spirit:GAME_CONFIG.initial.spirit,herbs:GAME_CONFIG.initial.herbs,pills:GAME_CONFIG.initial.pills,kills:0,atk:GAME_CONFIG.initial.atk,def:GAME_CONFIG.initial.def,hp:GAME_CONFIG.initial.hp,maxHp:GAME_CONFIG.initial.maxHp,method:0,ownedMethods:[0],inventory:[],equipped:{weapon:null,armor:null,charm:null},logs:[],last:Date.now(),lastOfflineClaim:Date.now(),offlineReport:null,skill:true,skillWait:0,wood:GAME_CONFIG.initial.wood,crystal:GAME_CONFIG.initial.crystal,,pity:0,draws:0,dupes:0,offlineSec:0,treasureFragments:{},ownedTreasures:[]};}
+function base(){return {methodLevels:[1,1,1],major:0,layer:1,xp:0,gold:GAME_CONFIG.initial.gold,spirit:GAME_CONFIG.initial.spirit,herbs:GAME_CONFIG.initial.herbs,pills:GAME_CONFIG.initial.pills,kills:0,atk:GAME_CONFIG.initial.atk,def:GAME_CONFIG.initial.def,hp:GAME_CONFIG.initial.hp,maxHp:GAME_CONFIG.initial.maxHp,method:0,ownedMethods:[0],inventory:[],equipped:{weapon:null,armor:null,charm:null},logs:[],last:Date.now(),lastOfflineClaim:Date.now(),offlineReport:null,skill:true,skillWait:0,wood:GAME_CONFIG.initial.wood,crystal:GAME_CONFIG.initial.crystal,pity:0,draws:0,dupes:0,offlineSec:0,treasureFragments:{},ownedTreasures:[]};}
 function xpNeed(){return Math.floor(GAME_CONFIG.xp.base*Math.pow(GAME_CONFIG.xp.majorGrowth,s.major)*Math.pow(GAME_CONFIG.xp.layerGrowth,s.layer-1))}
 function calculateHanLiAge(){
  const major=Math.max(0,Math.floor(Number(s.major)||0));
