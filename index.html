@@ -2039,7 +2039,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.86</small>
+  <small class="status-version" aria-label="遊戲版本">v0.87</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -4840,4 +4840,131 @@ html body #gameApp.app>header.top.statusline>.status-name{
   border-radius:inherit!important;
 }
 </style>
-<style id="v084-main-portrait-image-fix">#gameApp .portrait-seal.hanli-portrait-image img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center top!important}</style></body></html>
+<style id="v084-main-portrait-image-fix">#gameApp .portrait-seal.hanli-portrait-image img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center top!important}</style>
+<style id="v087-unified-inner-page-spacing-frames-typography">
+/* v0.87: normalize the six tab pages with a small consistent top inset.
+   CSS-only patch: preserve existing DOM, event handlers, timers and saved data. */
+#gameApp.app>main>.screen#cultivate.active,
+#gameApp.app>main>.screen#character.active,
+#gameApp.app>main>.screen#home.active,
+#gameApp.app>main>.screen#shop.active,
+#gameApp.app>main>.screen#bag.active,
+#gameApp.app>main>.screen#journal.active{
+  box-sizing:border-box!important;
+  padding:3px 8px 5px!important;
+  gap:6px!important;
+}
+
+/* Keep the six page surfaces visually consistent without flattening their layout. */
+#gameApp.app>main>.screen#cultivate.active .panel,
+#gameApp.app>main>.screen#character.active .panel,
+#gameApp.app>main>.screen#home.active .panel,
+#gameApp.app>main>.screen#shop.active .panel,
+#gameApp.app>main>.screen#bag.active .panel,
+#gameApp.app>main>.screen#journal.active .panel,
+#gameApp.app>main>.screen#cultivate.active .profile-grid>div,
+#gameApp.app>main>.screen#character.active .profile-grid>div,
+#gameApp.app>main>.screen#home.active .profile-grid>div,
+#gameApp.app>main>.screen#shop.active .profile-grid>div,
+#gameApp.app>main>.screen#bag.active .profile-grid>div,
+#gameApp.app>main>.screen#journal.active .profile-grid>div,
+#gameApp.app>main>.screen#cultivate.active .stat,
+#gameApp.app>main>.screen#character.active .stat,
+#gameApp.app>main>.screen#home.active .stat,
+#gameApp.app>main>.screen#shop.active .stat,
+#gameApp.app>main>.screen#bag.active .stat,
+#gameApp.app>main>.screen#journal.active .stat,
+#gameApp.app>main>.screen#cultivate.active .method-card,
+#gameApp.app>main>.screen#character.active .method-card,
+#gameApp.app>main>.screen#home.active .method-card,
+#gameApp.app>main>.screen#shop.active .method-card,
+#gameApp.app>main>.screen#bag.active .method-card,
+#gameApp.app>main>.screen#journal.active .method-card,
+#gameApp.app>main>.screen#cultivate.active .shop-item-card,
+#gameApp.app>main>.screen#character.active .shop-item-card,
+#gameApp.app>main>.screen#home.active .shop-item-card,
+#gameApp.app>main>.screen#shop.active .shop-item-card,
+#gameApp.app>main>.screen#bag.active .shop-item-card,
+#gameApp.app>main>.screen#journal.active .shop-item-card,
+#gameApp.app>main>.screen#bag.active .bag-list-panel,
+#gameApp.app>main>.screen#bag.active .bag-detail-panel,
+#gameApp.app>main>.screen#bag.active .bag-slots-panel,
+#gameApp.app>main>.screen#journal.active .journal-hybrid-intro,
+#gameApp.app>main>.screen#journal.active .journal-stage-card,
+#gameApp.app>main>.screen#journal.active .journal-stage-lock-note,
+#gameApp.app>main>.screen#journal.active .journal-section-heading{
+  box-sizing:border-box!important;
+  border-width:1px!important;
+}
+
+/* Shared heading scale and alignment; keep value/CTA sizes specific to each feature. */
+#gameApp.app>main>.screen#cultivate.active .secthead,
+#gameApp.app>main>.screen#character.active .secthead,
+#gameApp.app>main>.screen#home.active .secthead,
+#gameApp.app>main>.screen#shop.active .secthead,
+#gameApp.app>main>.screen#bag.active .secthead,
+#gameApp.app>main>.screen#journal.active .secthead,
+#gameApp.app>main>.screen#cultivate.active .journal-section-heading,
+#gameApp.app>main>.screen#character.active .journal-section-heading,
+#gameApp.app>main>.screen#home.active .journal-section-heading,
+#gameApp.app>main>.screen#shop.active .journal-section-heading,
+#gameApp.app>main>.screen#bag.active .journal-section-heading,
+#gameApp.app>main>.screen#journal.active .journal-section-heading{
+  line-height:1.35!important;
+  min-width:0!important;
+}
+#gameApp.app>main>.screen#cultivate.active .secthead small,
+#gameApp.app>main>.screen#character.active .secthead small,
+#gameApp.app>main>.screen#home.active .secthead small,
+#gameApp.app>main>.screen#shop.active .secthead small,
+#gameApp.app>main>.screen#bag.active .secthead small,
+#gameApp.app>main>.screen#journal.active .secthead small{
+  font-size:clamp(11px,2.9vw,12px)!important;
+  line-height:1.35!important;
+}
+#gameApp.app>main>.screen#cultivate.active .page-title,
+#gameApp.app>main>.screen#character.active .page-title,
+#gameApp.app>main>.screen#home.active .page-title,
+#gameApp.app>main>.screen#shop.active .page-title,
+#gameApp.app>main>.screen#bag.active .page-title,
+#gameApp.app>main>.screen#journal.active .page-title{
+  margin-top:0!important;
+  padding-top:0!important;
+  min-width:0!important;
+}
+#gameApp.app>main>.screen#cultivate.active .page-title h2,
+#gameApp.app>main>.screen#character.active .page-title h2,
+#gameApp.app>main>.screen#home.active .page-title h2,
+#gameApp.app>main>.screen#shop.active .page-title h2,
+#gameApp.app>main>.screen#bag.active .page-title h2,
+#gameApp.app>main>.screen#journal.active .page-title h2{
+  line-height:1.3!important;
+  overflow-wrap:anywhere!important;
+}
+#gameApp.app>main>.screen#cultivate.active p,
+#gameApp.app>main>.screen#character.active p,
+#gameApp.app>main>.screen#home.active p,
+#gameApp.app>main>.screen#shop.active p,
+#gameApp.app>main>.screen#bag.active p,
+#gameApp.app>main>.screen#journal.active p,
+#gameApp.app>main>.screen#cultivate.active .smallnote,
+#gameApp.app>main>.screen#character.active .smallnote,
+#gameApp.app>main>.screen#home.active .smallnote,
+#gameApp.app>main>.screen#shop.active .smallnote,
+#gameApp.app>main>.screen#bag.active .smallnote,
+#gameApp.app>main>.screen#journal.active .smallnote{
+  line-height:1.45!important;
+  overflow-wrap:anywhere;
+}
+
+/* Preserve the Storage Bag's fixed grid rows and scrollable item list. */
+#gameApp.app>main>.screen#bag.active{
+  grid-template-rows:auto auto auto minmax(0,1fr)!important;
+  align-content:stretch!important;
+  align-items:stretch!important;
+}
+#gameApp.app>main>.screen#journal.active>#journalV14Dock{
+  gap:8px!important;
+}
+</style>
+</body></html>
