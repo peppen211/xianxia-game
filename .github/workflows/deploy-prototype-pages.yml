@@ -58,7 +58,7 @@ jobs:
             page.on('pageerror', error => { errors.push(error.message); console.log('BROWSER PAGE ERROR: ' + error.stack); });
             page.on('console', message => { if (message.type() === 'error') { errors.push(message.text()); console.log('BROWSER CONSOLE ERROR: ' + message.text()); } });
 
-            await page.goto('https://peppen211.github.io/xianxia-game/', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=0.53', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
             const app = page.locator('#gameApp');
             const continueButton = page.locator('#continueCultivationBtn');
@@ -129,6 +129,15 @@ jobs:
             if (bagGeometry.equipment.h < 250 || bagGeometry.listPanel.h < 100 || bagGeometry.inventory.h < 80) {
               throw new Error('儲物袋版面尺寸不正確：' + JSON.stringify(bagGeometry));
             }
+            if (bagGeometry.listPanel.h < bagGeometry.slots.h * 1.5) {
+              throw new Error('全部裝備清單未充分延伸：' + JSON.stringify(bagGeometry));
+            }
+            if (bagGeometry.listPanel.y + bagGeometry.listPanel.h > bagGeometry.footer.y + 2) {
+              throw new Error('全部裝備區塊侵入底部操作列：' + JSON.stringify(bagGeometry));
+            }
+            if (bagGeometry.footer.y + bagGeometry.footer.h > bagGeometry.screen.y + bagGeometry.screen.h + 2) {
+              throw new Error('底部操作列超出儲物袋外框：' + JSON.stringify(bagGeometry));
+            }
             const gridColumns = await bag.locator('#inventory').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
             if (gridColumns !== 4) throw new Error('裝備清單不是四欄物品格。');
             await bag.getByRole('button', {name:/比較：測試靈品法器/}).click({timeout:5000});
@@ -144,10 +153,8 @@ jobs:
             await page.locator('#bagEquipConfirm').click();
             await equipmentModal.waitFor({state:'hidden',timeout:3000});
             if (!(await page.evaluate(() => s.equipped.weapon === 9901002))) throw new Error('比較彈窗確認穿戴沒有更新目前武器。');
-            await page.locator('#bagSlotsToggle').click();
-            if (!(await page.locator('#slots').evaluate(el => el.hidden))) throw new Error('目前穿戴欄無法收合。');
-            await page.locator('#bagSlotsToggle').click();
-            if (await page.locator('#slots').evaluate(el => el.hidden)) throw new Error('目前穿戴欄無法重新展開。');
+            if (await page.locator('#bagSlotsToggle').count() !== 0) throw new Error('目前穿戴區不應再顯示收起控制。');
+            if (await page.locator('#slots').evaluate(el => el.hidden)) throw new Error('目前穿戴欄應維持顯示。');
             await page.locator('#bagTypeFilter').selectOption('法寶');
             const filteredByType = await page.locator('#inventory').innerText();
             if (!filteredByType.includes('測試法寶') || filteredByType.includes('測試批次分解防具')) throw new Error('器物種類篩選未正確篩出法寶。');
