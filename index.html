@@ -1962,7 +1962,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.95</small>
+  <small class="status-version" aria-label="遊戲版本">v0.96</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -1979,7 +1979,7 @@ html,body,#launchGate,#gameApp{
 </section>
 <section class="screen" id="character"><div class="page-title"><h2> 修士面板</h2><span id="charTitle">韓立</span></div><div class="panel" style="display:flex;align-items:center;gap:11px"><div class="portrait-seal" style="font-size:35px">立</div><div style="flex:1"><b style="font-size:16.3px">韓立</b><div id="charRealm" style="font-size:12.5px;color:var(--gold);margin:4px 0">煉氣一層</div><div style="font-size:11.3px;color:var(--muted)">出身平凡，行事謹慎，重視自保、準備與機緣。</div></div><div style="text-align:right"><small style="font-size:10px;color:var(--muted)">總戰力</small><div id="charPower" style="font-size:25px;font-weight:900;color:var(--gold)">18</div></div></div><div class="panel hanli-profile" aria-label="韓立原著角色資料"><div class="secthead"><span> 角色資料</span><small>凡人修仙傳</small></div><div class="profile-grid"><div><small>出身</small><b>天南越國鏡州青牛鎮五里溝</b><span>貧苦農家</span></div><div><small>年齡</small><b><span id="hanliAge">10</span> 歲</b><span>隨修煉進度增長</span></div><div><small>外貌</small><b>皮膚黝黑、相貌普通</b><span>外號「二愣子」</span></div><div><small>靈根</small><b>四屬性偽靈根</b><span>木、水、火、土，五行缺金；資質平庸</span></div></div></div><div class="five-elements" aria-label="五行：金木水火土"><span class="el-metal" title="金"></span><span class="el-wood" title="木"></span><span class="el-water" title="水"></span><span class="el-fire" title="火"></span><span class="el-earth" title="土"></span><small>五行</small></div><div class="two-col" id="statsGrid"></div><div class="scrolllist hidden-content" id="upgradeList" aria-hidden="true" hidden></div></section>
 <section class="screen" id="bag">
- <div class="page-title"><h2>儲物袋</h2><span id="bagCount">0 件裝備</span></div>
+ <div class="page-title"><h2>儲物袋</h2><button type="button" class="btn secondary" style="padding:6px 8px;font-size:11px" onclick="openClassificationCatalog()">分類圖鑑</button><span id="bagCount">0 件裝備</span></div>
  <div class="bag-resource panel"><div><small>靈石</small><b id="bagGold">0</b></div><span>納天地珍藏，助本座修行</span></div>
  <div class="bag-tabs" role="tablist" aria-label="儲物袋分類">
   <button type="button" class="bag-tab active" data-bag-category="all">全部</button><button type="button" class="bag-tab" data-bag-category="equipment">裝備</button><button type="button" class="bag-tab" data-bag-category="skills">功法</button><button type="button" class="bag-tab" data-bag-category="materials">材料</button><button type="button" class="bag-tab" data-bag-category="consumables">消耗品</button>
@@ -2030,6 +2030,36 @@ const layerNames=['一','二','三','四','五','六','七','八','九']; const 
 const foes=[{name:'山野靈兔',art:'rabbit',hp:35,atk:4,xp:12,gold:12,desc:'靈兔警覺地豎起耳朵，牠身上似乎有微弱的靈氣。'},{name:'青紋蛇妖',art:'serpent',hp:54,atk:7,xp:17,gold:18,desc:'蛇妖吐著信子，鱗片間流轉著淡青色妖氣。'},{name:'迷霧山魈',art:'mountain-spirit',hp:82,atk:10,xp:25,gold:25,desc:'山魈從霧中踏出，石地隨著牠的腳步微微震動。'},{name:'赤焰妖狼',art:'spirit-wolf',hp:120,atk:14,xp:36,gold:36,desc:'赤焰沿著狼牙竄動，牠已將你視為獵物。'},{name:'古洞守將',art:'stone-guardian',hp:185,atk:18,xp:55,gold:52,desc:'古老石像緩緩甦醒，守護著洞府深處的機緣。'}];
 const methods=[{name:'吐納養氣訣',icon:'氣',desc:'基礎功法，修為累積 +20%。',bonus:'修為 +20%',cost:GAME_CONFIG.methods[0].cost,rate:GAME_CONFIG.methods[0].rate},{name:'青木長生篇',icon:'木',desc:'木靈滋養，放置收益提升。',bonus:'自動修為 +35%',cost:GAME_CONFIG.methods[1].cost,rate:GAME_CONFIG.methods[1].rate},{name:'烈陽鍛體法',icon:'陽',desc:'以靈火淬體，戰鬥攻擊提升。',bonus:'攻擊 +20%',cost:GAME_CONFIG.methods[2].cost,rate:GAME_CONFIG.methods[2].rate}];
 const gears=[{name:'桃木劍',icon:'',slot:'weapon',rarity:'凡品',atk:3,def:0,hp:0,value:18,desc:'桃木削成的短劍，能斬低階妖物。'},{name:'青竹法杖',icon:'',slot:'weapon',rarity:'靈品',atk:7,def:1,hp:0,value:45,desc:'竹節內藏著淡淡靈光。'},{name:'玄鐵劍',icon:'',slot:'weapon',rarity:'珍品',atk:13,def:2,hp:0,value:90,desc:'玄鐵百煉，劍鋒沉穩而銳利。'},{name:'雲紋道袍',icon:'',slot:'armor',rarity:'靈品',atk:1,def:6,hp:20,value:52,desc:'袍上雲紋可引動護體靈氣。'},{name:'玄龜護心鏡',icon:'',slot:'armor',rarity:'珍品',atk:0,def:10,hp:35,value:100,desc:'鏡背刻有玄龜古紋。'},{name:'聚靈玉佩',icon:'',slot:'charm',rarity:'靈品',atk:4,def:2,hp:12,value:58,desc:'能聚攏四周游離靈氣。'},{name:'九曜仙環',icon:'',slot:'charm',rarity:'仙品',atk:10,def:6,hp:45,value:180,desc:'環身浮現九顆星曜，氣息古老。'},{name:'赤紋戒',icon:'',slot:'ring',rarity:'靈品',atk:3,def:0,hp:8,value:42,desc:'赤紋映照指節，凝聚鋒銳靈氣。'},{name:'星河戒',icon:'',slot:'ring',rarity:'珍品',atk:8,def:2,hp:18,value:95,desc:'戒面似有星河流轉，靈力循環不息。'},{name:'踏雲靴',icon:'',slot:'boots',rarity:'凡品',atk:0,def:2,hp:8,value:24,desc:'輕便布靴，適合長途跋涉。'},{name:'追風靈靴',icon:'',slot:'boots',rarity:'仙品',atk:2,def:8,hp:38,value:165,desc:'靴底刻有追風陣紋，步履間靈光流轉。'}];
+
+/* 版本 0.96：法寶與生靈分類資料。現有裝備是遊戲內物品，不宣稱每件都是原著原物。 */
+const equipmentTypeByName = {
+ '桃木劍':'法器','青竹法杖':'法器','玄鐵劍':'法器','雲紋道袍':'法器',
+ '玄龜護心鏡':'法寶','聚靈玉佩':'法器','九曜仙環':'法寶','赤紋戒':'法器',
+ '星河戒':'法寶','踏雲靴':'法器','追風靈靴':'法寶'
+};
+gears.forEach(function(g){g.catalogClass='裝備類';g.catalogType=equipmentTypeByName[g.name]||'法器';});
+const treasureClassCatalog = [
+ {name:'本命法寶',desc:'與修士長期祭煉、關係密切的專屬法寶。'},
+ {name:'古寶',desc:'具有古代傳承或來歷的寶物，獨立歸入古寶收藏。'},
+ {name:'通天靈寶',desc:'高階靈寶類別，依世界觀與境界設定取得。'},
+ {name:'玄天之寶',desc:'特殊的玄天級至寶，與一般可穿戴裝備分開管理。'}
+];
+const petCatalog = [
+ {name:'噬金蟲',kind:'靈蟲',desc:'以吞噬與培育進化為特色的靈蟲。'},
+ {name:'啼魂獸',kind:'靈獸',desc:'對魂魄、鬼物等具有特殊能力的靈獸。'},
+ {name:'六翼霜蚣',kind:'靈蟲',desc:'具有冰寒特性的靈蟲。'},
+ {name:'血玉蜘蛛',kind:'靈獸',desc:'蜘蛛類妖獸的圖鑑候選。'},
+ {name:'土甲龍',kind:'靈獸',desc:'具土系與尋寶特色的妖獸候選。'},
+ {name:'雲翅鳥',kind:'靈獸',desc:'飛禽類生靈，可作偵查或飛行方向的圖鑑條目。'},
+ {name:'銀月',kind:'特殊生靈',desc:'特殊智慧生靈，單獨標記，不視為普通野獸。'}
+];
+function openClassificationCatalog(){
+ const equipRows=['法器','法寶','符寶','仿製靈寶'].map(function(name){return '<div class="rowitem"><div class="rowicon">器</div><div class="rowbody"><b>'+name+'</b><small>歸入「裝備類」，用於裝備／使用欄與煉製流程。</small></div></div>';}).join('');
+ const treasureRows=treasureClassCatalog.map(function(item){return '<div class="rowitem"><div class="rowicon">寶</div><div class="rowbody"><b>'+item.name+'</b><small>'+item.desc+'</small></div></div>';}).join('');
+ const enemyRows=foes.map(function(item){const kind=/兔|蛇|狼/.test(item.name)?'靈獸':'特殊生靈';return '<div class="rowitem"><div class="rowicon">敵</div><div class="rowbody"><b>'+item.name+'</b><small>敵怪類 · '+kind+' · '+item.desc+'</small></div></div>';}).join('');
+ const petRows=petCatalog.map(function(item){return '<div class="rowitem"><div class="rowicon">靈</div><div class="rowbody"><b>'+item.name+'</b><small>靈寵類 · '+item.kind+' · '+item.desc+'</small></div></div>';}).join('');
+ openModal('法寶與生靈分類','<div class="panel"><div class="secthead"><span>裝備類</span><small>4 種</small></div><p class="smallnote">一般可裝備或使用的物品；現有遊戲裝備會標註為裝備類。</p><div class="scrolllist">'+equipRows+'</div></div><div class="panel" style="margin-top:8px"><div class="secthead"><span>古寶類</span><small>4 種</small></div><p class="smallnote">與一般穿戴裝備分開收藏，不混用同一個分類。</p><div class="scrolllist">'+treasureRows+'</div></div><div class="panel" style="margin-top:8px"><div class="secthead"><span>敵怪類</span><small>'+foes.length+' 種</small></div><p class="smallnote">目前試煉中的敵怪名錄；靈獸／特殊生靈依敵對用途歸類。</p><div class="scrolllist">'+enemyRows+'</div></div><div class="panel" style="margin-top:8px"><div class="secthead"><span>靈寵類</span><small>'+petCatalog.length+' 個候選條目</small></div><p class="smallnote">依靈獸、靈蟲與特殊生靈整理的名錄候選。此處先建立分類與圖鑑，不代表已實裝收服、培育或出戰功能。</p><div class="scrolllist">'+petRows+'</div></div>');
+}
 
 /* 功法修煉階級資料：三套現有功法各有 1～10 階，升階會實際消耗資源並提升效果。 */
 const methodTierBlueprints=[
