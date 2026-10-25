@@ -123,7 +123,7 @@ jobs:
               s.gearProtection = {qualityEnabled:true,minQuality:3,starEnabled:true,minStars:4};
               render();
             });
-            const gridColumns = await bag.locator('#inventory').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\\s+/).length);
+            const gridColumns = await bag.locator('#inventory').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
             if (gridColumns !== 4) throw new Error('裝備清單不是四欄物品格。');
             await bag.getByRole('button', {name:/比較：測試靈品法器/}).click();
             const equipmentModal = page.locator('#uiModal');
