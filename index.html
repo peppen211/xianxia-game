@@ -2028,13 +2028,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v1.0">
+<header class="top statusline" aria-label="角色狀態列 v1.1">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v1.0</small>
+  <small class="status-version" aria-label="遊戲版本">v1.1</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -4080,15 +4080,19 @@ main>.screen#home.active{display:flex!important}
 #gameApp #bag #inventory.bag-item-list{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;flex:1 1 0%!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important}
 </style>
 
-<style id="v100-bag-flex-layout-fix">
-/* v1.0: give the equipment view a zero flex basis so it fills the remaining screen; keep the header, filters and footer fixed while the grid gets real scroll height. */
-#gameApp.app>main>.screen#bag{display:flex!important;flex-direction:column!important;align-items:stretch!important;min-height:0!important}
-#gameApp.app>main>.screen#bag>.bag-equipment-view{display:flex!important;flex:1 1 0%!important;flex-basis:0!important;height:0!important;min-height:0!important;width:100%!important;overflow:hidden!important}
-#gameApp #bag .bag-tabs,#gameApp #bag .bag-tools,#gameApp #bag .bag-footer-actions,#gameApp #bag .bag-pill-bar{flex:0 0 auto!important}
-#gameApp #bag .bag-gear-layout{display:flex!important;flex:1 1 0%!important;flex-basis:0!important;height:0!important;min-height:0!important;overflow:hidden!important}
-#gameApp #bag .bag-list-panel{display:flex!important;flex:1 1 0%!important;flex-basis:0!important;height:0!important;min-height:0!important;overflow:hidden!important}
-#gameApp #bag #inventory.bag-item-list{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;flex:1 1 0%!important;flex-basis:0!important;height:0!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;align-content:start!important}
-#gameApp #bag .bag-slots-panel{flex:0 0 auto!important}
+<style id="v11-bag-grid-layout-fix">
+/* v1.1: explicitly allocate the mobile bag screen into fixed header rows and one shrinking scroll-list row. */
+#gameApp.app>main>.screen#bag.active{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto auto auto minmax(0,1fr)!important;align-content:stretch!important;align-items:stretch!important;min-height:0!important;height:100%!important;overflow:hidden!important;overflow-y:hidden!important;overflow-x:hidden!important;gap:5px!important}
+#gameApp.app>main>.screen#bag.active>.page-title,#gameApp.app>main>.screen#bag.active>.bag-resource,#gameApp.app>main>.screen#bag.active>.bag-main-tabs{min-width:0!important}
+#gameApp.app>main>.screen#bag.active>.bag-equipment-view{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto auto minmax(0,1fr) auto auto auto auto!important;align-content:stretch!important;align-items:stretch!important;min-width:0!important;min-height:0!important;width:100%!important;height:100%!important;max-height:100%!important;flex:none!important;overflow:hidden!important;gap:5px!important}
+#gameApp #bag .bag-tabs,#gameApp #bag .bag-tools,#gameApp #bag .bag-footer-actions,#gameApp #bag .bag-pill-bar{min-height:0!important;flex:none!important}
+#gameApp #bag .bag-gear-layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr)!important;align-content:stretch!important;align-items:stretch!important;min-width:0!important;min-height:0!important;width:100%!important;height:100%!important;max-height:100%!important;flex:none!important;overflow:hidden!important;gap:5px!important}
+#gameApp #bag .bag-slots-panel{min-height:0!important;overflow:visible!important}
+#gameApp #bag .bag-list-panel{display:flex!important;flex-direction:column!important;min-height:0!important;min-width:0!important;width:100%!important;height:100%!important;max-height:100%!important;flex:none!important;overflow:hidden!important}
+#gameApp #bag #inventory.bag-item-list{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-auto-rows:minmax(68px,auto)!important;align-content:start!important;flex:1 1 0%!important;min-height:0!important;min-width:0!important;width:100%!important;height:auto!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;position:relative!important;z-index:1!important}
+#gameApp #bag .bag-item-tile{position:relative!important;z-index:2!important;pointer-events:auto!important;touch-action:manipulation!important}
+#gameApp #bag .bag-footer-actions,#gameApp #bag .bag-pill-bar,#gameApp #bag .bag-slots-panel,#gameApp #bag .bag-list-panel>.secthead{position:relative!important;z-index:2!important}
 #gameApp #bag #bagInactiveCategory[hidden],#gameApp #bag #bagDetail[hidden],#gameApp #bag #bagBatchPanel[hidden]{display:none!important}
+@media(max-height:700px){#gameApp.app>main>.screen#bag.active{gap:4px!important}#gameApp.app>main>.screen#bag.active>.bag-equipment-view{gap:4px!important}#gameApp #bag .bag-gear-layout{gap:4px!important}#gameApp #bag #inventory.bag-item-list{grid-auto-rows:minmax(60px,auto)!important}}
 </style>
 </body></html>

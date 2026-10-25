@@ -125,6 +125,9 @@ jobs:
             });
             const scrollModel = await bag.evaluate(el => ({ screenOverflowY: getComputedStyle(el).overflowY, itemOverflowY: getComputedStyle(el.querySelector('#inventory')).overflowY }));
             if (scrollModel.screenOverflowY !== 'hidden' || scrollModel.itemOverflowY !== 'auto') throw new Error('儲物袋應固定外框，只有物品格清單可捲動：' + JSON.stringify(scrollModel));
+            const bagGeometry = await bag.evaluate(el => { const rect=n=>{const r=n.getBoundingClientRect();const c=getComputedStyle(n);return {id:n.id||'',cls:typeof n.className==='string'?n.className:'',x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height),display:c.display,overflowY:c.overflowY,flex:c.flex,gridRows:c.gridTemplateRows,gridCols:c.gridTemplateColumns};};return {screen:rect(el),equipment:rect(el.querySelector('#bagEquipmentView')),gear:rect(el.querySelector('.bag-gear-layout')),slots:rect(el.querySelector('.bag-slots-panel')),listPanel:rect(el.querySelector('.bag-list-panel')),inventory:rect(el.querySelector('#inventory')),tile:rect(el.querySelector('.bag-item-tile[aria-label="比較：測試靈品法器"]')),footer:rect(el.querySelector('.bag-footer-actions')),pill:rect(el.querySelector('.bag-pill-bar'))};});
+            console.log('BAG_GEOMETRY='+JSON.stringify(bagGeometry));
+            if (bagGeometry.inventory.h < 80) throw new Error('物品清單實際高度不足 80px：' + JSON.stringify(bagGeometry));
             const gridColumns = await bag.locator('#inventory').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
             if (gridColumns !== 4) throw new Error('裝備清單不是四欄物品格。');
             await bag.getByRole('button', {name:/比較：測試靈品法器/}).click({timeout:5000});
