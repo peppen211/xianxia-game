@@ -2039,7 +2039,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.74</small>
+  <small class="status-version" aria-label="遊戲版本">v0.75</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -4676,6 +4676,107 @@ function renderBagUI(){
 #launchGate #launchLastRealm{
   position:relative!important;
   z-index:2!important;
+}
+</style>
+
+
+<style id="v075-calligraphy-title-preview">
+/* v0.75: style the real HTML title like the reference artwork; keep the red 修仙 seal as a separate live element. */
+#launchGate .launch-title{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  isolation:isolate!important;
+  width:min(96vw,620px)!important;
+  padding:clamp(8px,2vh,18px) 0 clamp(6px,1.5vh,12px)!important;
+  margin:0 auto!important;
+  font-family:"DFKai-SB","BiauKai","STKaiti","Kaiti TC","KaiTi","Noto Serif TC",serif!important;
+  font-size:clamp(35px,9.1vw,62px)!important;
+  font-weight:900!important;
+  letter-spacing:.015em!important;
+  line-height:1.02!important;
+  text-align:center!important;
+  background:none!important;
+  -webkit-background-clip:border-box!important;
+  background-clip:border-box!important;
+  -webkit-text-fill-color:initial!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+#launchGate .launch-title:before{
+  content:none!important;
+  display:none!important;
+}
+#launchGate .launch-title:after{
+  content:""!important;
+  position:absolute!important;
+  z-index:-1!important;
+  left:4%!important;
+  right:4%!important;
+  top:19%!important;
+  bottom:10%!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(ellipse at 48% 48%,rgba(9,18,31,.96) 0%,rgba(12,23,38,.91) 54%,rgba(12,23,38,0) 77%),
+    linear-gradient(174deg,rgba(8,17,30,0) 0%,rgba(8,17,30,.88) 20%,rgba(8,17,30,.92) 76%,rgba(8,17,30,0) 100%)!important;
+  clip-path:polygon(2% 27%,10% 22%,17% 12%,29% 18%,38% 8%,50% 18%,64% 9%,73% 19%,89% 14%,98% 26%,94% 42%,100% 58%,88% 70%,80% 86%,66% 78%,53% 94%,41% 82%,27% 91%,16% 77%,4% 80%,8% 60%,0 45%)!important;
+  filter:drop-shadow(0 5px 5px rgba(0,0,0,.34))!important;
+}
+#launchGate .launch-title span{
+  position:relative!important;
+  z-index:1!important;
+  display:block!important;
+  max-width:100%!important;
+  white-space:nowrap!important;
+  -webkit-text-fill-color:initial!important;
+  background:none!important;
+  filter:none!important;
+  text-shadow:0 2px 0 rgba(42,24,10,.9),0 4px 5px rgba(0,0,0,.85)!important;
+}
+#launchGate .launch-title span:first-child{
+  font-size:.68em!important;
+  font-weight:800!important;
+  letter-spacing:.09em!important;
+  color:#fff8e9!important;
+  margin-bottom:-.01em!important;
+  text-shadow:0 1px 0 #7d6b59,0 3px 4px rgba(0,0,0,.9),0 0 9px rgba(255,247,226,.18)!important;
+}
+#launchGate .launch-title span:nth-child(2){
+  font-size:1.12em!important;
+  font-weight:900!important;
+  letter-spacing:-.015em!important;
+  color:#f4d18a!important;
+  background:linear-gradient(180deg,#fff6d8 0%,#f6dfaa 20%,#dba74f 48%,#fff0b2 62%,#b7752d 82%,#f9dfa0 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  filter:drop-shadow(0 1px 0 #fff0bf) drop-shadow(0 3px 0 #71451e) drop-shadow(0 5px 3px rgba(0,0,0,.95))!important;
+}
+#launchGate .launch-title i{
+  z-index:3!important;
+  right:clamp(2px,4vw,25px)!important;
+  top:49%!important;
+  padding:7px 4px!important;
+  border:1px solid rgba(255,225,164,.82)!important;
+  border-radius:2px!important;
+  background:linear-gradient(180deg,#d64e42,#8f1e22)!important;
+  color:#fff0cf!important;
+  -webkit-text-fill-color:#fff0cf!important;
+  font-family:"DFKai-SB","BiauKai","STKaiti","Kaiti TC",serif!important;
+  font-size:clamp(11px,2.5vw,16px)!important;
+  font-weight:800!important;
+  letter-spacing:.12em!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.48),inset 0 0 0 1px rgba(255,225,160,.35)!important;
+}
+@media(max-width:380px){
+  #launchGate .launch-title{font-size:clamp(32px,8.7vw,39px)!important}
+  #launchGate .launch-title i{right:clamp(1px,2vw,9px)!important}
+}
+@media(max-height:740px){
+  #launchGate .launch-title{font-size:clamp(31px,8.1vw,49px)!important;padding-top:3px!important;padding-bottom:4px!important}
 }
 </style>
 
