@@ -763,6 +763,78 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
  #journalV14Dock .journal-node-card{padding:10px}
 }
 
+
+/* v0.97 裝備類儲物袋：分類固定，物品格獨立捲動 */
+#bag{gap:5px!important;padding:7px 8px 8px!important;overflow:hidden!important}
+#bag>.page-title{min-height:27px;gap:6px}#bag>.page-title h2{font-size:18px;white-space:nowrap}
+#bag .bag-catalog-button{padding:5px 7px;font-size:10px;white-space:nowrap;min-height:28px}#bag #bagCount{font-size:10px;white-space:nowrap}
+#bag .bag-resource{min-height:39px;padding:5px 9px!important}#bag .bag-resource b{font-size:18px!important}#bag .bag-resource>span{font-size:10px!important}
+#bag .bag-main-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;flex:0 0 auto}
+#bag .bag-main-tab{min-height:34px;padding:6px 4px;border:1px solid #78664666;border-radius:9px;background:#211f24;color:#b9ad98;font-size:12px;font-weight:800}
+#bag .bag-main-tab.active{color:#f4dfae;border-color:#d5b777;background:linear-gradient(145deg,#665237,#332c28);box-shadow:inset 0 0 0 1px #e8c78620}
+#bag .bag-equipment-view{display:flex!important;flex:1 1 auto;flex-direction:column;gap:5px;min-height:0;overflow:hidden}
+#bag .bag-equipment-view[hidden],#bag .bag-placeholder[hidden]{display:none!important}
+#bag .bag-tabs{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;flex:0 0 auto}
+#bag .bag-tab{min-height:32px;padding:5px 2px;border:1px solid #74634455;border-radius:8px;background:#211f24;color:#b9ad98;font-size:11.3px;white-space:nowrap}
+#bag .bag-tab.active{background:linear-gradient(145deg,#665237,#332c28);border-color:#d5b777;color:#f4dfae}
+#bag .bag-tools{padding:5px 6px!important;gap:0!important;flex:0 0 auto}
+#bag .bag-filter-row-compact{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;align-items:end}
+#bag .bag-filter-row label{min-width:0;gap:3px;font-size:9.5px!important;white-space:nowrap}
+#bag .bag-filter-row select{width:100%;min-width:0;min-height:30px;padding:5px 3px!important;font-size:10px!important;border-radius:7px}
+#bag .bag-gear-layout{display:flex!important;flex:1 1 auto;flex-direction:column;gap:5px;min-height:0;overflow:hidden}
+#bag .bag-slots-panel{flex:0 0 auto;padding:6px 7px!important}#bag .bag-slots-panel .secthead{font-size:12px;min-height:23px}
+#bag .bag-slot-toggle{padding:3px 7px;border:1px solid #766647;border-radius:7px;background:#2a2626;color:#e8d4a2;font-size:10px}
+#bag .bag-slots-panel .slotgrid{margin-top:5px;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+#bag .bag-slots-panel .slot{min-width:0;padding:5px 2px!important;border:1px solid #7b684744;border-radius:8px;background:#1c2026}
+#bag .bag-slots-panel .slot span{font-size:14px;line-height:1.2}#bag .bag-slots-panel .slot small{font-size:9px;margin-top:2px}
+#bag .bag-slots-panel .slot b{font-size:9px!important;margin-top:2px;line-height:1.3}
+#bag .bag-slots-panel .gear-unequip{margin-top:3px;padding:3px 4px;font-size:9px;border-radius:5px;background:#382d2a;color:#d9c39c;border:1px solid #8c6d47}
+#bag .bag-list-panel{display:flex;flex:1 1 0;flex-direction:column;gap:0;min-height:0;padding:6px!important;overflow:hidden}
+#bag .bag-list-panel>.secthead{flex:0 0 auto;font-size:12px;min-height:22px}#bag .bag-list-panel>.secthead small{font-size:9px}
+#bag #inventory.bag-item-list{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(76px,auto);align-content:start;gap:5px;margin-top:5px;padding:1px 2px 5px 1px;min-height:0;flex:1 1 auto;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#786344 transparent}
+#bag #inventory.bag-item-list::-webkit-scrollbar{width:3px}#bag #inventory.bag-item-list::-webkit-scrollbar-thumb{background:#786344;border-radius:4px}
+#bag .bag-item-card{position:relative;display:block;min-width:0;min-height:0;padding:2px;border:1px solid #746b5b66;border-radius:9px;background:linear-gradient(150deg,#27252a,#1b2027);overflow:hidden}
+#bag .bag-item-card.rarity-r1{border-color:#82796888}#bag .bag-item-card.rarity-r2{border-color:#71a88b}
+#bag .bag-item-card.rarity-r3{border-color:#799cc8;box-shadow:inset 0 0 0 1px #799cc822}
+#bag .bag-item-card.rarity-r4{border-color:#d6b56e;box-shadow:inset 0 0 0 1px #d6b56e33}
+#bag .bag-item-card.protected{background:linear-gradient(150deg,#2c2928,#1b2027)}
+#bag .bag-item-tile{display:flex;width:100%;height:100%;min-height:72px;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding:9px 2px 4px;border:0;border-radius:6px;background:transparent;color:inherit;text-align:center}
+#bag .bag-item-tile:active{background:#e8c78612}
+#bag .bag-item-icon{display:grid;place-items:center;width:25px;height:25px;flex:0 0 25px;border:1px solid #8f794c55;border-radius:7px;background:#3b352d;color:#e8c786;font-size:14px}
+#bag .bag-item-name{display:-webkit-box;max-width:100%;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:10px;font-weight:800;line-height:1.25;overflow-wrap:anywhere;color:#f0e3c6}
+#bag .bag-item-meta{display:block;max-width:100%;overflow:hidden;font-size:8.8px;line-height:1.2;color:#c5b99e;white-space:nowrap;text-overflow:ellipsis}
+#bag .bag-item-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;margin-top:0}
+#bag .bag-item-badges .bag-badge{padding:1px 3px;font-size:8px;line-height:1.25}
+#bag .bag-select-check{position:absolute;z-index:2;top:3px;right:3px;width:13px;height:13px;margin:0;accent-color:#d6b56e}
+#bag #inventory .bag-empty{grid-column:1/-1;align-self:start;padding:16px 8px;font-size:11px}
+#bag .bag-footer-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;flex:0 0 auto}
+#bag .bag-footer-actions .btn{min-height:30px;padding:5px 2px;font-size:10px;white-space:nowrap}
+#bag .bag-batch-panel{flex:0 0 auto;padding:7px!important}#bag .bag-batch-panel .secthead{font-size:12px}
+#bag .bag-batch-panel p{font-size:10px;line-height:1.4;margin:4px 0}#bag .bag-batch-summary{padding:5px;margin-bottom:5px;font-size:10px}
+#bag #bagBatchReview{width:100%;min-height:30px;padding:5px;font-size:10px}
+#bag .bag-pill-bar{display:flex;align-items:center;gap:6px;min-height:31px;padding:4px 7px;border:1px solid #8d78463b;border-radius:9px;background:#201f23;flex:0 0 auto}
+#bag .bag-pill-bar>span{font-size:10px;white-space:nowrap;color:#e4d3ae}#bag .bag-pill-bar>span b{font-weight:700}
+#bag .bag-pill-bar>small{flex:1;min-width:0;font-size:9px;color:var(--muted);line-height:1.25}
+#bag .bag-pill-bar .btn{min-height:25px;padding:3px 7px;font-size:9px;white-space:nowrap}
+#bag .bag-detail-panel[hidden]{display:none!important}
+#bag .bag-placeholder{flex:1;min-height:0;padding:14px!important;overflow:auto}
+#bag .bag-placeholder h3{margin:0 0 7px;color:var(--gold);font-size:16px}
+#bag .bag-placeholder p{margin:0;color:var(--muted);font-size:12px;line-height:1.7}
+.bag-compare-intro{margin:0 0 9px;color:#d7deea;font-size:12px;line-height:1.55}
+.bag-compare-sides{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:10px}
+.bag-compare-side{min-width:0;padding:9px;border:1px solid #ffffff14;border-radius:10px;background:#171d25}
+.bag-compare-side small{display:block;font-size:10px;color:var(--muted);margin-bottom:5px}
+.bag-compare-side b{display:block;font-size:12px;line-height:1.4;overflow-wrap:anywhere;color:#f0dfba}
+.bag-compare-side span{display:block;margin-top:4px;font-size:10px;color:#d0c5ab}
+.bag-compare-table{display:flex;flex-direction:column;gap:3px;margin:0 0 11px}
+.bag-compare-row{display:grid;grid-template-columns:.75fr 1fr 1fr .8fr;gap:4px;align-items:center;padding:7px 5px;border-radius:6px;background:#ffffff05;font-size:10px}
+.bag-compare-row.header{color:var(--muted);background:#ffffff0a;font-size:9px}
+.bag-compare-row span:not(:first-child){text-align:center;font-variant-numeric:tabular-nums}
+.bag-compare-row .bag-diff-positive{color:#9fdbb4;font-weight:800}.bag-compare-row .bag-diff-negative{color:#f0a298;font-weight:800}
+.bag-compare-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.bag-compare-actions .btn{min-height:38px;padding:8px 5px;font-size:12px}
+@media(max-height:700px){#bag{gap:4px!important;padding:5px 7px 6px!important}#bag .bag-resource{min-height:34px;padding:3px 8px!important}#bag .bag-resource b{font-size:16px!important}#bag .bag-main-tab{min-height:30px;padding:4px 2px;font-size:11px}#bag .bag-tab{min-height:28px;padding:3px 2px;font-size:10px}#bag .bag-filter-row select{min-height:27px;padding:3px 2px!important}#bag .bag-slots-panel{padding:4px 5px!important}#bag .bag-slots-panel .slot{padding:3px 1px!important}#bag .bag-item-tile{min-height:66px;gap:2px;padding-top:8px}#bag #inventory.bag-item-list{grid-auto-rows:minmax(68px,auto)}#bag .bag-footer-actions .btn{min-height:27px}#bag .bag-pill-bar{min-height:27px;padding:3px 6px}}
+@media(max-width:380px){#bag>.page-title{gap:4px}#bag>.page-title h2{font-size:17px}#bag .bag-catalog-button{font-size:9px;padding:4px 5px}#bag #bagCount{font-size:9px}#bag .bag-filter-row label{font-size:9px!important}#bag .bag-filter-row select{font-size:9px!important}#bag .bag-compare-row{grid-template-columns:.7fr 1fr 1fr .8fr;gap:2px;padding:6px 3px;font-size:9px}}
 </style>
 <!-- Merge restoration: keep the original classic home screen reachable from the Trial tab. -->
 <style id="classic-merge-restoration">
@@ -1956,13 +2028,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v0.96">
+<header class="top statusline" aria-label="角色狀態列 v0.97">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.96</small>
+  <small class="status-version" aria-label="遊戲版本">v0.97</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -1979,23 +2051,32 @@ html,body,#launchGate,#gameApp{
 </section>
 <section class="screen" id="character"><div class="page-title"><h2> 修士面板</h2><span id="charTitle">韓立</span></div><div class="panel" style="display:flex;align-items:center;gap:11px"><div class="portrait-seal" style="font-size:35px">立</div><div style="flex:1"><b style="font-size:16.3px">韓立</b><div id="charRealm" style="font-size:12.5px;color:var(--gold);margin:4px 0">煉氣一層</div><div style="font-size:11.3px;color:var(--muted)">出身平凡，行事謹慎，重視自保、準備與機緣。</div></div><div style="text-align:right"><small style="font-size:10px;color:var(--muted)">總戰力</small><div id="charPower" style="font-size:25px;font-weight:900;color:var(--gold)">18</div></div></div><div class="panel hanli-profile" aria-label="韓立原著角色資料"><div class="secthead"><span> 角色資料</span><small>凡人修仙傳</small></div><div class="profile-grid"><div><small>出身</small><b>天南越國鏡州青牛鎮五里溝</b><span>貧苦農家</span></div><div><small>年齡</small><b><span id="hanliAge">10</span> 歲</b><span>隨修煉進度增長</span></div><div><small>外貌</small><b>皮膚黝黑、相貌普通</b><span>外號「二愣子」</span></div><div><small>靈根</small><b>四屬性偽靈根</b><span>木、水、火、土，五行缺金；資質平庸</span></div></div></div><div class="five-elements" aria-label="五行：金木水火土"><span class="el-metal" title="金"></span><span class="el-wood" title="木"></span><span class="el-water" title="水"></span><span class="el-fire" title="火"></span><span class="el-earth" title="土"></span><small>五行</small></div><div class="two-col" id="statsGrid"></div><div class="scrolllist hidden-content" id="upgradeList" aria-hidden="true" hidden></div></section>
 <section class="screen" id="bag">
- <div class="page-title"><h2>儲物袋</h2><button type="button" class="btn secondary" style="padding:6px 8px;font-size:11px" onclick="openClassificationCatalog()">分類圖鑑</button><span id="bagCount">0 件裝備</span></div>
+ <div class="page-title"><h2>儲物袋</h2><button type="button" class="btn secondary bag-catalog-button" onclick="openClassificationCatalog()">分類圖鑑</button><span id="bagCount">0 件裝備</span></div>
  <div class="bag-resource panel"><div><small>靈石</small><b id="bagGold">0</b></div><span>納天地珍藏，助本座修行</span></div>
- <div class="bag-tabs" role="tablist" aria-label="儲物袋分類">
-  <button type="button" class="bag-tab active" data-bag-category="all">全部</button><button type="button" class="bag-tab" data-bag-category="equipment">裝備</button><button type="button" class="bag-tab" data-bag-category="skills">功法</button><button type="button" class="bag-tab" data-bag-category="materials">材料</button><button type="button" class="bag-tab" data-bag-category="consumables">消耗品</button>
+ <div class="bag-main-tabs" role="tablist" aria-label="儲物袋主分類">
+  <button type="button" class="bag-main-tab active" data-bag-main-tab="equipment" role="tab" aria-selected="true">裝備類</button>
+  <button type="button" class="bag-main-tab" data-bag-main-tab="treasures" role="tab" aria-selected="false">古寶類</button>
+  <button type="button" class="bag-main-tab" data-bag-main-tab="pets" role="tab" aria-selected="false">靈寵類</button>
  </div>
- <div class="bag-tools panel"><div class="bag-filter-row"><label>部位<select id="bagSlotFilter"><option value="all">全部部位</option><option value="weapon">武器</option><option value="armor">身體</option><option value="ring">飾品・戒指</option><option value="charm">飾品・玉佩</option><option value="boots">腳部</option></select></label><label>品質<select id="bagQualityFilter"><option value="all">全部品質</option><option value="1">凡品</option><option value="2">靈品</option><option value="3">珍品</option><option value="4">仙品</option></select></label></div>
-  <div class="bag-filter-row"><label>排序<select id="bagSort"><option value="newest">最新取得</option><option value="quality">品質由高至低</option><option value="star">星級由高至低</option><option value="enhance">強化等級由高至低</option><option value="power">估算戰力由高至低</option><option value="unequipped">未穿戴優先</option></select></label><button type="button" class="btn secondary bag-filter-toggle" id="bagMoreFilters">更多篩選</button></div>
-  <div class="bag-filter-row bag-extra-filters" id="bagExtraFilters" hidden><label>星級<select id="bagStarFilter"><option value="all">全部星級</option><option value="1">★1</option><option value="2">★2</option><option value="3">★3</option><option value="4">★4</option><option value="5">★5</option></select></label><label>狀態<select id="bagStateFilter"><option value="all">全部狀態</option><option value="equipped">已穿戴</option><option value="unequipped">未穿戴</option><option value="locked">已鎖定</option></select></label></div>
+ <div class="bag-equipment-view" id="bagEquipmentView">
+  <div class="bag-tabs" role="tablist" aria-label="裝備部位分類">
+   <button type="button" class="bag-tab active" data-bag-category="all" role="tab" aria-selected="true">全部</button><button type="button" class="bag-tab" data-bag-category="weapon" role="tab" aria-selected="false">武器</button><button type="button" class="bag-tab" data-bag-category="armor" role="tab" aria-selected="false">防具</button><button type="button" class="bag-tab" data-bag-category="accessory" role="tab" aria-selected="false">飾品</button>
+  </div>
+  <div class="bag-tools panel"><div class="bag-filter-row bag-filter-row-compact">
+   <label>器物種類<select id="bagTypeFilter"><option value="all">全部種類</option><option value="法器">法器</option><option value="法寶">法寶</option><option value="符寶">符寶</option><option value="仿製靈寶">仿製靈寶</option></select></label>
+   <label>品質<select id="bagQualityFilter"><option value="all">全部品質</option><option value="1">凡品</option><option value="2">靈品</option><option value="3">珍品</option><option value="4">仙品</option></select></label>
+   <label>排序<select id="bagSort"><option value="newest">最新取得</option><option value="quality">品質高至低</option><option value="power">戰力高至低</option><option value="enhance">強化等級高至低</option></select></label>
+  </div></div>
+  <div class="bag-gear-layout">
+   <div class="panel bag-slots-panel" id="bagSlotsPanel"><div class="secthead"><span>目前穿戴</span><button type="button" class="bag-slot-toggle" id="bagSlotsToggle" aria-expanded="true">收起</button></div><div class="slotgrid" id="slots"></div></div>
+   <div class="panel bag-list-panel"><div class="secthead"><span id="bagListTitle">全部裝備</span><small>點選物品比較屬性</small></div><div class="scrolllist bag-item-list" id="inventory" aria-label="裝備物品清單"></div></div>
+  </div>
+  <div class="bag-footer-actions"><button type="button" class="btn secondary" id="bagBatchToggle">批次分解</button><button type="button" class="btn secondary" id="bagHistoryOpen">操作紀錄</button><button type="button" class="btn secondary" id="bagProtectionOpen">保護設定</button></div>
+  <div class="panel bag-batch-panel" id="bagBatchPanel" hidden><div class="secthead"><span>批次分解</span><small id="bagBatchCount">已選 0 件</small></div><p>僅能選擇未穿戴、未鎖定且未受自動保護的裝備。分解前會再次預覽清單與靈石總收益。</p><div class="bag-batch-summary" id="bagBatchSummary">尚未選取裝備。</div><button type="button" class="btn danger" id="bagBatchReview">預覽並確認</button></div>
+  <div class="bag-pill-bar"><span>聚氣丹 <b>× <span id="pillCount">2</span></b></span><small>戰鬥中恢復 40% 氣血</small><button type="button" class="btn secondary" id="buyPill">購買 30</button></div>
+  <div class="panel bag-detail-panel" id="bagDetail" hidden><div class="bag-empty-detail">選擇一件裝備，查看屬性與操作。</div></div>
  </div>
- <div class="bag-gear-layout">
-  <div class="panel bag-slots-panel"><div class="secthead"><span>目前裝備</span><small>屬性自動計入角色</small></div><div class="slotgrid" id="slots"></div></div>
-  <div class="panel bag-list-panel"><div class="secthead"><span id="bagListTitle">裝備收藏</span><small>點選查看詳情</small></div><div class="scrolllist bag-item-list" id="inventory"></div></div>
- </div>
- <div class="panel bag-detail-panel" id="bagDetail"><div class="bag-empty-detail">選擇一件裝備，查看屬性與操作。</div></div>
- <div class="bag-footer-actions"><button type="button" class="btn secondary" id="bagBatchToggle">批次分解</button><button type="button" class="btn secondary" id="bagHistoryOpen">操作紀錄</button><button type="button" class="btn secondary" id="bagProtectionOpen">保護設定</button></div>
- <div class="panel bag-batch-panel" id="bagBatchPanel" hidden><div class="secthead"><span>批次分解</span><small id="bagBatchCount">已選 0 件</small></div><p>僅能選擇未穿戴且未受保護的裝備。分解前會再次預覽清單與靈石總收益。</p><div class="bag-batch-summary" id="bagBatchSummary">尚未選取裝備。</div><button type="button" class="btn danger" id="bagBatchReview">預覽並確認</button></div>
- <div class="panel idle-card bag-pill-card"><div class="idle-icon pill-symbol" aria-hidden="true"></div><div class="idle-text"><b>聚氣丹 × <span id="pillCount">2</span></b><p>戰鬥中恢復 40% 氣血。</p></div><button class="btn secondary" id="buyPill">購買 30</button></div>
+ <div class="panel bag-placeholder" id="bagInactiveCategory" hidden aria-live="polite"></div>
 </section>
 <section class="screen" id="forge"><div class="page-title"><h2> 祈寶與煉器</h2><span>不再打怪掉裝備</span></div><div class="panel"><div class="secthead"><span>天機祈寶</span><small>保底計數：<b id="pity">0</b>/10</small></div><div class="realm-art" style="height:75px;background:linear-gradient(130deg,#34304f,#263b50,#4d3b55)"><span>玉</span><div class="realm-info">靈光匯聚 · 機緣自來</div></div><div style="font-size:11.3px;color:var(--muted);line-height:1.5;margin:7px 0">祈寶獲得裝備或材料。每 10 抽至少獲得一件珍品以上法寶。重複法寶會轉化為煉器材料。</div><div class="action-grid"><button class="btn primary" id="drawOne">祈寶一次 · 30 靈石</button><button class="btn jade" id="drawTen">祈寶十次 · 270 靈石</button></div><div id="drawResult" style="font-size:12.5px;line-height:1.5;color:var(--gold);margin-top:7px;min-height:14px">機緣尚未開啟。</div></div>
  <div class="panel compact-summary"><div><b>五行煉器</b><small>三種配方 · 靈木 <span id="woodMini">0</span> · 靈晶 <span id="crystalMini">0</span></small></div><button class="btn secondary" onclick="openModal('煉器配方',recipeDetailHtml())">查看配方</button></div><div class="action-grid forge-actions"><button class="btn secondary" id="craftStaff"> 合成青竹法杖</button><button class="btn secondary" id="craftRobe"> 合成雲紋道袍</button><button class="btn secondary" id="craftCharm"> 合成聚靈玉佩</button></div>
@@ -3876,28 +3957,24 @@ main>.screen#home.active{display:flex!important}
   return false;
  };
  const estimate=function(it){return (Number(it.atk)||0)+(Number(it.def)||0)*2+Math.floor((Number(it.hp)||0)/10)};
- let selectedId=null,category='all',batchMode=false,selectedBatch=new Set();
+ let selectedId=null,category='all',mainCategory='equipment',batchMode=false,selectedBatch=new Set();
  const originalRender=render;
- function visibleItems(){
-  let items=s.inventory.slice();
-  if(category==='skills'||category==='materials'||category==='consumables')return [];
-  const slot=byId('bagSlotFilter')?.value||'all',quality=byId('bagQualityFilter')?.value||'all',stars=byId('bagStarFilter')?.value||'all',state=byId('bagStateFilter')?.value||'all',sort=byId('bagSort')?.value||'newest';
-  if(slot!=='all')items=items.filter(function(it){return it.slot===slot});
-  if(quality!=='all')items=items.filter(function(it){return rank(it)===Number(quality)});
-  if(stars!=='all')items=items.filter(function(it){return starCount(it)===Number(stars)});
-  if(state==='equipped')items=items.filter(isEquipped);
-  if(state==='unequipped')items=items.filter(function(it){return !isEquipped(it)});
-  if(state==='locked')items=items.filter(function(it){return it.locked===true});
-  items.sort(function(a,b){
-   if(sort==='quality')return rank(b)-rank(a)||starCount(b)-starCount(a);
-   if(sort==='star')return starCount(b)-starCount(a)||rank(b)-rank(a);
-   if(sort==='enhance')return (Number(b.enhanceLevel)||0)-(Number(a.enhanceLevel)||0);
-   if(sort==='power')return estimate(b)-estimate(a);
-   if(sort==='unequipped')return Number(isEquipped(a))-Number(isEquipped(b));
-   return Number(b.id||0)-Number(a.id||0);
-  });
-  return items;
- }
+  function visibleItems(){
+   let items=s.inventory.slice();
+   const type=byId('bagTypeFilter')?.value||'all',quality=byId('bagQualityFilter')?.value||'all',sort=byId('bagSort')?.value||'newest';
+   if(category==='weapon')items=items.filter(function(it){return it.slot==='weapon'});
+   else if(category==='armor')items=items.filter(function(it){return it.slot==='armor'});
+   else if(category==='accessory')items=items.filter(function(it){return ['ring','charm','boots'].includes(it.slot)});
+   if(type!=='all')items=items.filter(function(it){return (it.catalogType||'法器')===type});
+   if(quality!=='all')items=items.filter(function(it){return rank(it)===Number(quality)});
+   items.sort(function(a,b){
+    if(sort==='quality')return rank(b)-rank(a)||starCount(b)-starCount(a);
+    if(sort==='enhance')return (Number(b.enhanceLevel)||0)-(Number(a.enhanceLevel)||0);
+    if(sort==='power')return estimate(b)-estimate(a);
+    return Number(b.id||0)-Number(a.id||0);
+   });
+   return items;
+  }
  function compareText(it){
   const current=equippedGear(it.slot);
   if(!current||current.id===it.id)return current?'目前已穿戴此裝備':'此部位目前沒有裝備';
@@ -3915,31 +3992,52 @@ main>.screen#home.active{display:flex!important}
    '<div class="bag-action-grid"><button type="button" class="btn primary" onclick="window.bagEquipSelected('+it.id+')" '+(on?'disabled':'')+'>'+(on?'已穿戴':'穿戴')+'</button><button type="button" class="btn jade" onclick="window.bagEnhanceSelected('+it.id+')" '+((Number(it.enhanceLevel)||0)>=5?'disabled':'')+'>強化</button><button type="button" class="btn secondary" onclick="window.bagToggleLock('+it.id+')">'+(it.locked?'解除鎖定':'鎖定')+'</button><button type="button" class="btn danger" onclick="window.bagReviewDismantle('+it.id+')" '+(protectedItem?'disabled':'')+'>分解</button></div>'+
    '<div class="smallnote" style="margin-top:7px">'+(protectedItem?'此裝備目前受到保護，分解操作已停用。':'分解會永久移除此裝備，確認前會再次顯示收益。')+'</div>';
  }
- function renderBagUI(){
-  ensureData();
-  const gold=byId('bagGold');if(gold)gold.textContent=Number(s.gold||0).toLocaleString('zh-TW');
-  const count=byId('bagCount');if(count)count.textContent=s.inventory.length+' 件裝備';
-  document.querySelectorAll('[data-bag-category]').forEach(function(btn){btn.classList.toggle('active',btn.dataset.bagCategory===category)});
-  const title=byId('bagListTitle');if(title)title.textContent=category==='all'?'全部物品':category==='equipment'?'裝備收藏':category==='skills'?'功法':category==='materials'?'材料':'消耗品';
-  const items=visibleItems(),list=byId('inventory');
-  if(list){
-   list.innerHTML=items.length?items.map(function(it){
-    const on=isEquipped(it),protect=isProtected(it),chosen=selectedId===it.id;
-    return '<div class="bag-item-card '+(chosen?'selected ':'')+(protect?'protected':'')+'">'+(batchMode?'<input class="bag-select-check" type="checkbox" aria-label="選取 '+escapeHtml(it.name)+'" '+(selectedBatch.has(it.id)?'checked ':'')+(protect?'disabled ':'')+'onchange="window.bagBatchSelect('+it.id+',this.checked)">':'')+
-     '<div class="bag-item-icon" onclick="window.bagSelectItem('+it.id+')" role="button" tabindex="0">'+escapeHtml(it.icon||'器')+'</div><div class="bag-item-main" onclick="window.bagSelectItem('+it.id+')"><b>'+escapeHtml(it.name)+'</b><small>'+escapeHtml(qualityName(it))+'　'+'★'.repeat(starCount(it))+'　+'+(Number(it.enhanceLevel)||0)+'<br>攻擊 +'+(Number(it.atk)||0)+' · 防禦 +'+(Number(it.def)||0)+' · 氣血 +'+(Number(it.hp)||0)+'</small><div class="bag-item-badges"><span class="bag-badge">'+escapeHtml(it.catalogClass||'裝備類')+'</span><span class="bag-badge">'+escapeHtml(it.catalogType||'法器')+'</span>'+(on?'<span class="bag-badge">已穿戴</span>':'')+(it.locked?'<span class="bag-badge">已鎖定</span>':'')+(protect?'<span class="bag-badge">受保護</span>':'')+'</div></div></div>';
-   }).join(''):'<div class="bag-empty">'+(category==='skills'?'功法仍由角色與功法系統管理。':category==='materials'?'靈木、靈晶等材料可在祈寶與煉器頁查看。':category==='consumables'?'聚氣丹等消耗品顯示於下方消耗品區。':'目前沒有符合條件的裝備。')+'</div>';
+  function renderBagUI(){
+   ensureData();
+   const gold=byId('bagGold');if(gold)gold.textContent=Number(s.gold||0).toLocaleString('zh-TW');
+   const count=byId('bagCount');if(count)count.textContent=s.inventory.length+' 件裝備';
+   document.querySelectorAll('[data-bag-main-tab]').forEach(function(btn){const active=btn.dataset.bagMainTab===mainCategory;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',active?'true':'false')});
+   document.querySelectorAll('[data-bag-category]').forEach(function(btn){const active=btn.dataset.bagCategory===category;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',active?'true':'false')});
+   const equipmentView=byId('bagEquipmentView');if(equipmentView)equipmentView.hidden=mainCategory!=='equipment';
+   const placeholder=byId('bagInactiveCategory');
+   if(placeholder){
+    placeholder.hidden=mainCategory==='equipment';
+    if(mainCategory==='treasures')placeholder.innerHTML='<h3>古寶類</h3><p>此分類將在裝備類完成並通過測試後製作，目前尚未開放。這裡暫不提供取得、收藏或效果功能。</p>';
+    else if(mainCategory==='pets')placeholder.innerHTML='<h3>靈寵類</h3><p>此分類將在裝備類完成並通過測試後製作，目前尚未開放。這裡暫不提供抽取、收藏或效果功能。</p>';
+   }
+   const title=byId('bagListTitle');if(title)title.textContent=category==='all'?'全部裝備':category==='weapon'?'武器':category==='armor'?'防具':'飾品';
+   const items=visibleItems(),list=byId('inventory');
+   if(list){
+    list.innerHTML=items.length?items.map(function(it){
+     const on=isEquipped(it),protect=isProtected(it),quality=qualityName(it),rarityClass='rarity-r'+Math.max(1,Math.min(4,rank(it)));
+     const badges=(on?'<span class="bag-badge">已穿戴</span>':'')+(it.locked?'<span class="bag-badge">已鎖定</span>':'')+(protect&&!on&&!it.locked?'<span class="bag-badge">受保護</span>':'');
+     return '<div class="bag-item-card '+rarityClass+(selectedId===it.id?' selected':'')+(protect?' protected':'')+'">'+(batchMode?'<input class="bag-select-check" type="checkbox" aria-label="選取 '+escapeHtml(it.name)+'" '+(selectedBatch.has(it.id)?'checked ':'')+(protect?'disabled ':'')+'onchange="window.bagBatchSelect('+JSON.stringify(it.id)+',this.checked)">':'')+
+      '<button type="button" class="bag-item-tile" aria-label="比較：'+escapeHtml(it.name)+'" onclick="window.bagSelectItem('+JSON.stringify(it.id)+')"><span class="bag-item-icon">'+escapeHtml(it.icon||'器')+'</span><span class="bag-item-name">'+escapeHtml(it.name)+'</span><span class="bag-item-meta">'+escapeHtml(quality)+(Number(it.enhanceLevel)>0?' +'+(Number(it.enhanceLevel)||0):'')+'</span><span class="bag-item-meta">'+escapeHtml(gearSlotLabel(it.slot))+'</span><span class="bag-item-badges">'+badges+'</span></button></div>';
+    }).join(''):'<div class="bag-empty">目前沒有符合條件的裝備。</div>';
+   }
+   const slots=byId('slots');
+   if(slots)slots.innerHTML=['weapon','armor','ring','charm','boots'].map(function(slot){const it=equippedGear(slot);return '<div class="slot"><span>'+(it?escapeHtml(it.icon||'器'):({weapon:'劍',armor:'甲',ring:'戒',charm:'玉',boots:'靴'}[slot]))+'</span><small>'+gearSlotLabel(slot)+'</small><b>'+escapeHtml(it?it.name:'空欄')+'</b>'+(it?'<button type="button" class="gear-unequip" onclick="unequip(\''+slot+'\')">卸下</button>':'')+'</div>'}).join('');
+   const detail=byId('bagDetail');if(detail){detail.hidden=true;detail.innerHTML=detailHtml(s.inventory.find(function(x){return x.id===selectedId})||null)}
+   const batch=byId('bagBatchPanel');if(batch)batch.hidden=!batchMode||mainCategory!=='equipment';
+   const batchCount=byId('bagBatchCount');if(batchCount)batchCount.textContent='已選 '+selectedBatch.size+' 件';
+   const batchSummary=byId('bagBatchSummary');if(batchSummary){const chosen=s.inventory.filter(function(it){return selectedBatch.has(it.id)&&!isProtected(it)});const total=chosen.reduce(function(sum,it){return sum+Math.max(5,Math.floor((Number(it.value)||10)*0.6)+rank(it)*5+starCount(it)*3)},0);batchSummary.textContent=chosen.length?'可分解 '+chosen.length+' 件，預估獲得 '+total+' 靈石。':'尚未選取可分解裝備。'}
+   const batchToggle=byId('bagBatchToggle');if(batchToggle)batchToggle.textContent=batchMode?'取消批次分解':'批次分解';
+   const pillCount=byId('pillCount');if(pillCount)pillCount.textContent=Number(s.pills)||0;
   }
-  const slots=byId('slots');
-  if(slots)slots.innerHTML=['weapon','armor','ring','charm','boots'].map(function(slot){const it=equippedGear(slot);return '<div class="slot"><span>'+(it?escapeHtml(it.icon||'器'):({weapon:'劍',armor:'甲',ring:'戒',charm:'玉',boots:'靴'}[slot]))+'</span><small>'+gearSlotLabel(slot)+'</small><b>'+escapeHtml(it?it.name:'空欄')+'</b>'+(it?'<button type="button" class="gear-unequip" onclick="unequip(\''+slot+'\')">卸下</button>':'')+'</div>'}).join('');
-  const detail=byId('bagDetail');if(detail){const it=s.inventory.find(function(x){return x.id===selectedId});detail.innerHTML=detailHtml(it||null)}
-  const batch=byId('bagBatchPanel');if(batch)batch.hidden=!batchMode;
-  const batchCount=byId('bagBatchCount');if(batchCount)batchCount.textContent='已選 '+selectedBatch.size+' 件';
-  const batchSummary=byId('bagBatchSummary');if(batchSummary){const chosen=s.inventory.filter(function(it){return selectedBatch.has(it.id)&&!isProtected(it)});const total=chosen.reduce(function(sum,it){return sum+Math.max(5,Math.floor((Number(it.value)||10)*0.6)+rank(it)*5+starCount(it)*3)},0);batchSummary.textContent=chosen.length?'可分解 '+chosen.length+' 件，預估獲得 '+total+' 靈石。':'尚未選取可分解裝備。'}
-  const batchToggle=byId('bagBatchToggle');if(batchToggle)batchToggle.textContent=batchMode?'取消批次分解':'批次分解';
- }
- window.bagSelectItem=function(id){selectedId=id;renderBagUI()};
+  window.bagSelectItem=function(id){
+   const it=s.inventory.find(function(x){return String(x.id)===String(id)});if(!it)return;
+   selectedId=it.id;
+   const current=equippedGear(it.slot),sign=function(n){return (n>0?'+':'')+n};
+   const stats=[['攻擊',Number(current&&current.atk)||0,Number(it.atk)||0],['防禦',Number(current&&current.def)||0,Number(it.def)||0],['氣血',Number(current&&current.hp)||0,Number(it.hp)||0],['估算戰力',current?estimate(current):0,estimate(it)]];
+   const statRows=stats.map(function(row){const delta=row[2]-row[1],diffClass=delta>0?'bag-diff-positive':delta<0?'bag-diff-negative':'';return '<div class="bag-compare-row"><span>'+row[0]+'</span><span>'+(row[1]>0?'+':'')+row[1]+'</span><span>'+(row[2]>0?'+':'')+row[2]+'</span><span class="'+diffClass+'">'+sign(delta)+'</span></div>'}).join('');
+   const html='<p class="bag-compare-intro">比較同一部位的目前裝備與候選裝備。差值以候選裝備減去目前裝備計算。</p>'+
+    '<div class="bag-compare-sides"><div class="bag-compare-side"><small>目前裝備</small><b>'+escapeHtml(current?current.name:'尚未穿戴')+'</b><span>'+(current?escapeHtml(qualityName(current)):'此部位空置')+'</span></div><div class="bag-compare-side"><small>候選裝備</small><b>'+escapeHtml(it.name)+'</b><span>'+escapeHtml(qualityName(it))+' · '+escapeHtml(gearSlotLabel(it.slot))+'</span></div></div>'+
+    '<div class="bag-compare-table"><div class="bag-compare-row header"><span>屬性</span><span>目前</span><span>候選</span><span>差值</span></div>'+statRows+'</div>'+
+    '<div class="bag-compare-actions"><button type="button" class="btn primary" id="bagEquipConfirm" onclick="window.bagEquipSelected('+JSON.stringify(it.id)+')" '+(isEquipped(it)?'disabled':'')+'>'+(isEquipped(it)?'已穿戴':'確認穿戴')+'</button><button type="button" class="btn secondary" id="bagEquipBack" onclick="closeModal()">返回背包</button></div>';
+   openModal('裝備比較',html);
+  };
  window.bagBatchSelect=function(id,checked){if(checked){const it=s.inventory.find(function(x){return x.id===id});if(it&&!isProtected(it))selectedBatch.add(id)}else selectedBatch.delete(id);renderBagUI()};
- window.bagEquipSelected=function(id){const it=s.inventory.find(function(x){return x.id===id});if(!it)return;equip(id);renderBagUI()};
+  window.bagEquipSelected=function(id){const it=s.inventory.find(function(x){return String(x.id)===String(id)});if(!it)return;equip(it.id);if(isEquipped(it))closeModal();renderBagUI()};
  window.bagEnhanceSelected=function(id){const it=s.inventory.find(function(x){return x.id===id});if(!it)return;if((Number(it.enhanceLevel)||0)>=5){toast('裝備最高強化等級為 +5');return}enhanceGear(id);selectedId=id;renderBagUI()};
  window.bagToggleLock=function(id){const it=s.inventory.find(function(x){return x.id===id});if(!it)return;it.locked=!it.locked;record(it.locked?'鎖定':'解除鎖定',it,it.locked?'手動鎖定裝備':'解除手動鎖定');toast(it.locked?'已鎖定裝備':'已解除鎖定');renderBagUI();save()};
  window.bagReviewDismantle=function(id){const it=s.inventory.find(function(x){return x.id===id});if(!it)return;if(isProtected(it)){toast('此裝備受到保護，不能分解');return}const reward=Math.max(5,Math.floor((Number(it.value)||10)*0.6)+rank(it)*5+starCount(it)*3);openModal('確認分解','<div class="panel"><b>'+escapeHtml(it.name)+'</b><p>品質：'+qualityName(it)+'　星級：'+'★'.repeat(starCount(it))+'</p><p>預估獲得：<b style="color:var(--gold)">'+reward+' 靈石</b></p><p class="smallnote">分解後無法復原，裝備將永久移除。</p><button type="button" class="btn danger" style="width:100%" id="bagConfirmSingleDismantle">確認分解</button></div>');setTimeout(function(){const b=byId('bagConfirmSingleDismantle');if(b)b.onclick=function(){const idx=s.inventory.findIndex(function(x){return x.id===id});if(idx<0||isProtected(s.inventory[idx])){toast('裝備狀態已改變，未執行分解');closeModal();return}const removed=s.inventory.splice(idx,1)[0];const gain=Math.max(5,Math.floor((Number(removed.value)||10)*0.6)+rank(removed)*5+starCount(removed)*3);s.gold=(Number(s.gold)||0)+gain;record('分解',removed,'獲得 '+gain+' 靈石');if(selectedId===id)selectedId=null;selectedBatch.delete(id);note('分解 '+removed.name+'，獲得靈石 ×'+gain+'。','good');closeModal();save();render();renderBagUI()};},0)};
@@ -3953,9 +4051,11 @@ main>.screen#home.active{display:flex!important}
  dismantleGear=function(id){window.bagReviewDismantle(id)};
  const oldRenderRef=render;
  render=function(){oldRenderRef.apply(this,arguments);try{const known=new Set(s.gearSeenIds||[]);s.inventory.forEach(function(it){if(!known.has(it.id)){record('取得',it,'取得裝備');known.add(it.id)}});s.gearSeenIds=Array.from(known);renderBagUI()}catch(error){console.error('Bag UI update failed:',error)}};
+ document.querySelectorAll('[data-bag-main-tab]').forEach(function(btn){btn.addEventListener('click',function(){mainCategory=btn.dataset.bagMainTab||'equipment';if(mainCategory!=='equipment'){batchMode=false;selectedBatch.clear()}renderBagUI()})});
  document.querySelectorAll('[data-bag-category]').forEach(function(btn){btn.addEventListener('click',function(){category=btn.dataset.bagCategory;batchMode=false;selectedBatch.clear();renderBagUI();const panel=byId('bagBatchPanel');if(panel)panel.hidden=true})});
- ['bagSlotFilter','bagQualityFilter','bagStarFilter','bagStateFilter','bagSort'].forEach(function(id){byId(id)?.addEventListener('change',renderBagUI)});
+ ['bagTypeFilter','bagQualityFilter','bagSort'].forEach(function(id){byId(id)?.addEventListener('change',renderBagUI)});
  byId('bagMoreFilters')?.addEventListener('click',function(){const box=byId('bagExtraFilters');box.hidden=!box.hidden;this.textContent=box.hidden?'更多篩選':'收起篩選'});
+ byId('bagSlotsToggle')?.addEventListener('click',function(){const grid=byId('slots');if(!grid)return;grid.hidden=!grid.hidden;this.textContent=grid.hidden?'展開':'收起';this.setAttribute('aria-expanded',grid.hidden?'false':'true')});
  byId('bagBatchToggle')?.addEventListener('click',function(){batchMode=!batchMode;if(!batchMode)selectedBatch.clear();renderBagUI()});
  byId('bagBatchReview')?.addEventListener('click',batchReview);
  byId('bagHistoryOpen')?.addEventListener('click',historyModal);
