@@ -1,30 +1,26 @@
-# 凡人修仙・自由放置 RPG
+# 不好意思，本座又突破了
 
-**正式遊玩入口：** https://peppen211.github.io/xianxia-game/
+**目前正式遊戲版本：** v1.20  
+**正式遊玩入口：** https://peppen211.github.io/xianxia-game/?v=1.20  
+**最新版本頁：** https://peppen211.github.io/xianxia-game/latest.html
 
-**目前開發測試輪次：** 開發測試 0.1（進行中，尚未驗收）。輪次編號每輪增加 0.1，並不代表測試通過或已部署。
+根目錄的 `index.html` 是正式遊戲入口，`latest.html` 顯示目前正式版並連到相同版本。遊戲畫面版號、最新版本頁、GitHub Actions 瀏覽器驗收與部署檢查必須保持一致。
 
-> 注意：根目錄 `index.html` 是目前公開網站的實際入口；`package.json` 的版本號是程式套件版本，與開發測試輪次分開記錄。
+## 目前自動驗收範圍
 
-## v0.8.0
+- 手機版進入流程、主要導覽、裝備背包、古寶收藏與戰鬥掉落。
+- 法寶一般攻擊／偷襲觸發，以及元嬰期解鎖第二法寶欄。
+- 七種靈寵圖鑑、靈石召靈、重複培育與持有被動。
+- 仙市單買／批次購買、精確扣款、靈石不足保護。
+- 經濟關鍵數值、存檔重載與舊入口轉址。
 
-本專案已開始遷移至獨立的 React/Vite 遊戲版本，目標是讓遊戲原始碼、測試與 GitHub Pages 正式網站共用同一份程式碼，不再依賴 Lovable 的 AI 建置額度。
+## 版本、歷史檔案與存檔
 
-目前整合的玩法包含：
-- 修煉、境界突破、破境丹與靈石
-- 角色召喚與收藏
-- 古寶、靈寵收集
-- 每日任務、永久成就、雲山探索
-- 瀏覽器本機存檔與重置
+- `package.json` 的 `0.9.0` 是 React/Vite 套件版本，不是正式遊戲畫面版號。
+- 正式遊戲存檔鍵固定為 `nine_heavens_idle_v2`。不得以版本更新為理由清除或重設玩家存檔。
+- 舊入口 `classic.html`、`mortal-cultivation-rpg.html`、`mortal-cultivation-rpg-3.3.html` 與 `prototype/index.html` 會轉往正式版 v1.20。原始內容保存在 `_legacy_archive/*.html.txt`，不再執行舊存檔邏輯，避免舊版程式碰觸正式存檔。
+- 歷史版號與過往測試狀態保留於 Git 提交紀錄，不代表目前正式版號。
 
-## 開發與自動化
+## 自動化測試與部署
 
-- `npm install`：安裝依賴
-- `npm test`：執行遊戲規則與任務測試
-- `npm run build`：建置正式網站
-
-GitHub Actions 會在推送到 `main` 後執行測試與建置，通過後發布到 GitHub Pages。公開 GitHub 儲存庫與 Pages 可免費使用，但仍受 GitHub 的服務條款與流量／建置限制約束。
-
-## 版本紀錄
-
-- **v0.8.0**：將完整遊戲介面與每日任務／成就系統遷移到獨立 Vite/React 專案，改用獨立 CI 建置與部署。
+GitHub Actions 會執行 `npm test`、`npm run build`、手機尺寸瀏覽器流程、正式遊戲版號／最新版本頁核對、法寶／靈寵／商店／經濟及存檔回歸，並確認舊入口轉址至正式版。請以最新的 [GitHub Actions 執行紀錄](https://github.com/peppen211/xianxia-game/actions) 作為驗收依據。
