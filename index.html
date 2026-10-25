@@ -767,7 +767,7 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 
 /* v0.57: ensure deployed local scene-art paths; game mechanics and save data unchanged */
 #home .hero{
- background:#152338 url("./assets/xianxia/scene-immortal-mountain.svg?v=0.57") center center/cover no-repeat!important;
+ background:#152338 url("./assets/xianxia/scene-immortal-mountain.svg?v=0.58") center center/cover no-repeat!important;
  border-color:#9eafaaa6!important;
  isolation:isolate;
  box-shadow:inset 0 0 0 1px #e4d9bc22,inset 0 -36px 60px #070c17c9,0 5px 18px #0005;
@@ -786,7 +786,7 @@ main .screen{overflow:hidden!important;overscroll-behavior:none}
 #home .hero .chip{backdrop-filter:blur(5px);background:linear-gradient(135deg,rgba(9,16,28,.88),rgba(29,43,55,.76));border:1px solid rgba(221,198,139,.3);color:#f3e7cc;box-shadow:0 2px 9px rgba(0,0,0,.2)}
 .enemy-scene{
  background-color:#0f1828!important;
- background-image:linear-gradient(90deg,rgba(7,13,25,.52),rgba(7,13,25,.08) 58%,rgba(7,13,25,.18)),linear-gradient(0deg,rgba(6,11,21,.78),transparent 70%),url("./assets/xianxia/scene-sword-tomb.svg?v=0.57")!important;
+ background-image:linear-gradient(90deg,rgba(7,13,25,.52),rgba(7,13,25,.08) 58%,rgba(7,13,25,.18)),linear-gradient(0deg,rgba(6,11,21,.78),transparent 70%),url("./assets/xianxia/scene-sword-tomb.svg?v=0.58")!important;
  background-position:center,center,center 54%!important;
  background-size:cover,cover,cover!important;
  background-repeat:no-repeat,no-repeat,no-repeat!important;
@@ -2071,7 +2071,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.57</small>
+  <small class="status-version" aria-label="遊戲版本">v0.58</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -4511,4 +4511,69 @@ function renderBagUI(){
 }
 </style>
 
+
+<!-- v0.58 scene-art cascade fix: intentionally placed after all legacy style blocks. -->
+<style id="v058SceneArtOverride">
+/* Visible first tab: an actual scene banner, not the hidden legacy home hero. */
+#gameApp main > #cultivate.screen.active::before{
+ content:"青雲山 · 凡人境\A 雲海之上，靈氣沿山霧流轉";
+ display:flex!important;
+ align-items:flex-end!important;
+ white-space:pre-line!important;
+ flex:0 0 116px!important;
+ min-height:116px!important;
+ width:100%!important;
+ box-sizing:border-box!important;
+ padding:12px 14px!important;
+ margin:0 0 1px!important;
+ overflow:hidden!important;
+ border:1px solid rgba(213,196,151,.68)!important;
+ border-radius:14px!important;
+ color:#f4ead2!important;
+ font-size:15px!important;
+ font-weight:800!important;
+ line-height:1.65!important;
+ letter-spacing:.045em!important;
+ text-shadow:0 2px 9px rgba(4,9,18,.98),0 1px 2px #000!important;
+ background-color:#17263a!important;
+ background-image:linear-gradient(90deg,rgba(7,16,30,.82) 0%,rgba(7,16,30,.5) 48%,rgba(7,16,30,.12) 100%),linear-gradient(0deg,rgba(7,13,24,.58),transparent 70%),url("./assets/xianxia/scene-immortal-mountain.svg?v=0.58")!important;
+ background-position:center,center,center 43%!important;
+ background-size:cover,cover,cover!important;
+ background-repeat:no-repeat,no-repeat,no-repeat!important;
+ box-shadow:inset 0 0 0 1px rgba(246,225,181,.13),inset 0 -20px 28px rgba(3,8,17,.32),0 4px 16px rgba(0,0,0,.28)!important;
+}
+
+/* Battle screen: override legacy !important background shorthands. */
+#gameApp main > #home.screen.active .enemy-scene{
+ background-color:#101a2a!important;
+ background-image:linear-gradient(90deg,rgba(6,13,25,.34),rgba(6,13,25,.05) 62%,rgba(6,13,25,.2)),linear-gradient(0deg,rgba(4,9,18,.72),transparent 70%),url("./assets/xianxia/scene-sword-tomb.svg?v=0.58")!important;
+ background-position:center,center,center 54%!important;
+ background-size:cover,cover,cover!important;
+ background-repeat:no-repeat,no-repeat,no-repeat!important;
+ border:1px solid rgba(156,181,191,.66)!important;
+ box-shadow:inset 0 0 0 1px rgba(232,222,179,.14),inset 0 0 36px rgba(4,9,21,.6)!important;
+}
+#gameApp main > #home.screen.active .enemy-scene::before,
+#gameApp main > #home.screen.active .enemy-scene::after{
+ display:none!important;
+ content:none!important;
+}
+#gameApp main > #home.screen.active .enemy-scene .enemy-art{
+ position:relative!important;
+ z-index:2!important;
+ filter:drop-shadow(0 0 9px rgba(195,227,231,.7)) drop-shadow(0 8px 5px #000b)!important;
+}
+#gameApp main > #home.screen.active .enemy-scene .enemy-label,
+#gameApp main > #home.screen.active .enemy-scene .enemy-level,
+#gameApp main > #home.screen.active .enemy-scene .enemy-bottom{
+ z-index:3!important;
+ text-shadow:0 1px 6px #000!important;
+}
+@media(max-width:380px){
+ #gameApp main > #cultivate.screen.active::before{
+  flex-basis:104px!important;min-height:104px!important;
+  font-size:13.5px!important;padding:10px 11px!important;
+ }
+}
+</style>
 </body></html>
