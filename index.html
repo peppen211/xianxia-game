@@ -2039,7 +2039,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.90</small>
+  <small class="status-version" aria-label="遊戲版本">v0.91</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -3798,7 +3798,26 @@ main>.screen#home.active{display:flex!important}
     var xpBar=byId('idleXpProgressBar');
     if(xpBar){xpBar.style.width=(xpProgress*100)+'%';xpBar.parentElement.setAttribute('aria-valuemin','0');xpBar.parentElement.setAttribute('aria-valuemax',String(needForProgress));xpBar.parentElement.setAttribute('aria-valuenow',String(Math.floor(xpNow)))}
     var runtime=byId('idleRuntimeNote');
-    if(runtime){var sec=Math.floor(Number(s.pendingIdleSeconds||0));runtime.textContent='自動修行已即時入帳。'+(xpNow>=needForProgress?'本層修為已圓滿，進度維持滿格，請手動突破。':'持續累積至本層圓滿。')+' 累積運行 '+(typeof formatDuration==='function'?formatDuration(sec):sec+' 秒')+'；本次自動修為 +'+Math.floor(Number(s.pendingIdleXp||0))+'。'}
+    if(runtime){
+      var sec=Math.floor(Number(s.pendingIdleSeconds||0));
+      var pendingTotal=Math.floor(Number(s.pendingIdleXp||0));
+      var lastReported=Number(window.__idleXpLastReported||0);
+      var newlyAdded=Math.max(0,pendingTotal-lastReported);
+      if(newlyAdded>0){window.__idleXpLastReported=pendingTotal;window.__idleXpLastAdded=newlyAdded;}
+      if(xpNow>=needForProgress){
+        runtime.textContent='本層已圓滿，自動修行已暫停，請手動突破。';
+      }else{
+        var rate=(s.method===0?methodXpMultiplier():s.method===1?methodIdleMultiplier():1)*(1+(gearPerks().bonusXp||0));
+        var interval=Math.max(0.001,Number((GAME_CONFIG.idle&&GAME_CONFIG.idle.xpIntervalSeconds)||12));
+        var fractional=Math.max(0,Number(s.idleXpRemainder||0));
+        var remainingXp=Math.max(0,needForProgress-Number(s.xp||0)-fractional);
+        var secondsLeft=rate>0?Math.ceil(remainingXp*interval/rate):0;
+        var mins=Math.floor(secondsLeft/60),secs=secondsLeft%60;
+        var eta=mins>0?mins+' 分 '+secs+' 秒':secs+' 秒';
+        var added=Math.max(0,Number(window.__idleXpLastAdded||0));
+        runtime.textContent=newlyAdded>0?'本次 +'+newlyAdded+'，距離圓滿還需 '+eta+'。':'修為累積中，距離圓滿還需 '+eta+'。';
+      }
+    }
     s.pendingIdleGold=0;s.idleGoldRemainder=0;
     var med=byId('meditateBtn');if(med)med.remove();
   }
@@ -5046,3 +5065,7 @@ html body #gameApp.app>header.top.statusline>.status-name{
 }
 </style>
 </body></html>
+<style id="v091-idle-cultivation-feedback">
+/* v0.91: clearer idle cultivation status; presentation only, XP formulas unchanged. */
+#gameApp #idleRuntimeNote{line-height:1.5!important;overflow-wrap:anywhere!important;color:#e8c786!important}
+</style>
