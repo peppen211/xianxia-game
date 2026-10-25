@@ -2034,12 +2034,12 @@ html,body,#launchGate,#gameApp{
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
 <header class="top statusline" aria-label="角色狀態列 v1.4">
-  <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
+  <div class="status-name" aria-label="角色名稱"><img class="top-avatar" src="./大頭照.PNG" alt="" aria-hidden="true"><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.79</small>
+  <small class="status-version" aria-label="遊戲版本">v0.80</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -4774,4 +4774,15 @@ function renderBagUI(){
 }
 </style>
 
+
+<style id="v080-use-uploaded-avatar">
+/* v0.80: use the uploaded portrait in the existing top status avatar; preserve status layout. */
+.top-avatar{
+ display:inline-block!important;flex:0 0 30px!important;width:30px!important;height:30px!important;
+ box-sizing:border-box!important;border:1px solid #b89b72!important;border-radius:50%!important;
+ overflow:hidden!important;object-fit:cover!important;object-position:center 35%!important;
+ background:#172127!important;box-shadow:0 0 0 2px rgba(184,155,114,.12),inset 0 0 9px #0009!important;
+}
+.top-avatar:before,.top-avatar:after,.top-avatar i{content:none!important;display:none!important}
+</style>
 </body></html>
