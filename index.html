@@ -2034,7 +2034,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v1.5</small>
+  <small class="status-version" aria-label="遊戲版本">v1.6</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -4262,5 +4262,16 @@ function renderBagUI(){
 <style id="v150-remove-bag-resource-banner">
 /* v1.5: hide the redundant spirit-stone banner on the Storage Bag screen; saved currency data is unchanged. */
 #gameApp #bag>.bag-resource{display:none!important}
+</style>
+
+<style id="v160-pill-purchase-icon">
+/* v1.6: draw a clear capsule seam for the pill purchase control instead of a prohibition-like mark. */
+#gameApp #buyPill:before{
+  content:""!important;
+  width:8px!important;height:13px!important;flex:0 0 8px!important;
+  border:1px solid #c7ad75!important;border-radius:5px!important;
+  background:linear-gradient(180deg,transparent 46%,#c7ad75 47%,#c7ad75 53%,transparent 54%)!important;
+  transform:rotate(35deg)!important;box-shadow:none!important;opacity:.95!important;
+}
 </style>
 </body></html>
