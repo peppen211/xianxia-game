@@ -61,7 +61,7 @@ jobs:
             page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
             page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
 
-            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.05', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=1.06', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
             const app = page.locator('#gameApp');
             const continueButton = page.locator('#continueCultivationBtn');
@@ -84,7 +84,7 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v1.05') throw new Error('遊戲右上角版本標示應為 v1.05，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v1.06') throw new Error('遊戲右上角版本標示應為 v1.06，實際為：' + publishedVersionLabel);
             const characterHeadingDisplay = await page.locator('#character > .page-title').evaluate(el => getComputedStyle(el).display);
             if (characterHeadingDisplay !== 'none') throw new Error('角色分頁的「修士面板」標題列應已移除。');
             const cultivationHeadingDisplay = await page.locator('#cultivate > .page-title').evaluate(el => getComputedStyle(el).display);
@@ -268,6 +268,47 @@ jobs:
              if (encounterAudit.boss.type !== '首領' || !encounterAudit.boss.label.includes('首領') || encounterAudit.boss.maxHp <= encounterAudit.elite.maxHp || encounterAudit.boss.magicDrops < 1) {
                throw new Error('首領妖獸類型、強度或提高後的法寶掉落率不正確：' + JSON.stringify(encounterAudit.boss));
              }
+             const magicCombatAudit = await page.evaluate(() => {
+               const snapshot = JSON.parse(JSON.stringify(s));
+               const previousEnemy = enemy;
+               const originalRandom = Math.random;
+               const runCombat = (id, move) => {
+                 Object.keys(s).forEach(key => delete s[key]);
+                 Object.assign(s, JSON.parse(JSON.stringify(snapshot)));
+                 s.magicTreasures = [{id, level:1}];
+                 s.activeMagicTreasure = id;
+                 s.atk = 20;
+                 s.def = 0;
+                 s.hp = 500;
+                 s.maxHp = 500;
+                 s.logs = [];
+                 enemy = {name:'法寶測試木樁', type:'普通', hp:100000, maxHp:100000, atk:50, def:0, gold:0, xp:0};
+                 Math.random = () => 0;
+                 if (move === 'attack') attack();
+                 else sneakAttack();
+                 return {log:s.logs.map(entry => entry.msg).join(' '), dealt:100000-enemy.hp};
+               };
+               try {
+                 return {
+                   normalAttack:runCombat('jade-flame','attack'),
+                   jadeSneak:runCombat('jade-flame','sneak'),
+                   bellSneak:runCombat('spirit-bell','sneak'),
+                   thunderSneak:runCombat('thunder-orb','sneak')
+                 };
+               } finally {
+                 Math.random = originalRandom;
+                 Object.keys(s).forEach(key => delete s[key]);
+                 Object.assign(s, snapshot);
+                 enemy = previousEnemy;
+                 save();
+                 render();
+               }
+             });
+             if (!magicCombatAudit.normalAttack.log.includes('青焰玉印觸發')) throw new Error('一般攻擊未觸發青焰玉印：' + JSON.stringify(magicCombatAudit.normalAttack));
+             if (!magicCombatAudit.jadeSneak.log.includes('青焰玉印觸發') || magicCombatAudit.jadeSneak.dealt <= 0) throw new Error('偷襲未觸發青焰玉印追加傷害：' + JSON.stringify(magicCombatAudit.jadeSneak));
+             if (!magicCombatAudit.thunderSneak.log.includes('引雷珠觸發') || magicCombatAudit.thunderSneak.dealt <= 0) throw new Error('偷襲未觸發引雷珠重擊：' + JSON.stringify(magicCombatAudit.thunderSneak));
+             if (!magicCombatAudit.bellSneak.log.includes('鎮靈鈴觸發') || !magicCombatAudit.bellSneak.log.includes('減少')) throw new Error('偷襲反擊未觸發鎮靈鈴減傷：' + JSON.stringify(magicCombatAudit.bellSneak));
+             console.log('Magic combat regression passed: existing normal attack proc plus jade-flame, thunder-orb and spirit-bell effects during sneak combat.');
              console.log('Magic treasure regression passed: four bag categories, type-consistent regular/elite/boss labels, escalating encounter stats, and type-specific drops.');
              await bag.locator('[data-bag-main-tab="equipment"]').click();
 

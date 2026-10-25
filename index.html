@@ -2046,7 +2046,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v1.05</small>
+  <small class="status-version" aria-label="遊戲版本">v1.06</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2351,7 +2351,11 @@ function showBreakthrough(info){
  window.__breakthroughTimers=[setTimeout(()=>{if(box.classList.contains('show'))phase.textContent=major?'氣海震盪 · 天地共鳴':'靈氣沖脈 · 根基重塑'},1100),setTimeout(()=>{if(box.classList.contains('show')){phase.textContent=special?'天象降臨 · 仙途再開':major?'金光破境 · 大道初成':'金光一閃 · 境界已成'}},2400),setTimeout(()=>finishBreakthroughAnimation(box),4000)];
 }
 function gainXp(n){s.xp+=Math.floor(n*(s.method===0?methodXpMultiplier():1));checkLevel()}
-function attack(skill=false){if(skill&&!s.skill){toast('靈氣爆發正在蓄力');return}ensureMagicState();let perks=gearPerks(),crit=Math.random()<(.12+perks.crit),atk=val('atk')*(s.method===2?methodAttackMultiplier():1),dmg=Math.max(1,Math.floor(atk-enemy.def+Math.random()*5)+(crit?Math.floor(atk*(.7+perks.critPower)):0));const elementResult=elementMultiplier();dmg=Math.max(1,Math.floor(dmg*(1+(perks.bonusDamage||0))*elementResult.multiplier));const activeMagic=MAGIC_TREASURES.find(function(t){return t.id===s.activeMagicTreasure}),activeEntry=activeMagic&&s.magicTreasures.find(function(e){return e.id===activeMagic.id});if(activeMagic&&activeEntry&&activeMagic.id!=='spirit-bell'&&Math.random()<Math.min(.6,activeMagic.chance+(activeEntry.level-1)*.015)){const extra=Math.max(1,Math.floor(atk*activeMagic.damage*(1+(activeEntry.level-1)*.12)));dmg+=extra;note(activeMagic.name+'觸發，追加 '+extra+' 點傷害！','good');}if(skill){dmg=Math.floor(dmg*GAME_CONFIG.skillDamageMultiplier);s.skill=false;s.skillWait=0;note(` 靈氣爆發，造成 ${dmg} 點傷害！`,'good')}else note(`${crit?' 法器共鳴·暴擊！':''} 你施展攻勢，對${enemy.name}造成 ${dmg} 點傷害。`);enemy.hp=Math.max(0,enemy.hp-dmg);if(!skill&&!s.skill&&++s.skillWait>=GAME_CONFIG.skillCooldownHits){s.skill=true;s.skillWait=0;note(' 靈氣爆發已重新蓄滿。','good')}if(enemy.hp<=0){win();render();return}let rawTaken=Math.max(1,enemy.atk-val('def')+Math.floor(Math.random()*3)),magicReduction=0;if(activeMagic&&activeEntry&&activeMagic.id==='spirit-bell'&&Math.random()<Math.min(.6,activeMagic.chance+(activeEntry.level-1)*.015)){magicReduction=Math.min(.5,activeMagic.damage+(activeEntry.level-1)*.04);note(activeMagic.name+'觸發，減少 '+Math.floor(rawTaken*magicReduction)+' 點傷害！','good');}let taken=Math.max(1,Math.floor(rawTaken*(1-perks.damageCut)*(1-magicReduction)));s.hp-=taken;note(` ${enemy.name}反擊，造成 ${taken} 點傷害${perks.damageCut?`（護甲減傷 ${Math.round(perks.damageCut*100)}%）`:''}。`,'bad');if(s.hp<=0){let lost=Math.min(s.gold,Math.floor(s.gold*.06));s.gold-=lost;s.hp=Math.floor(s.maxHp*.55);note(` 你退回安全處調息，恢復至 ${s.hp} 氣血，損失 ${lost} 靈石。`,'bad')}render()}
+/* v1.06: share magic treasure triggers across direct attacks and sneak attacks. */
+function getActiveMagicState(){ensureMagicState();const item=MAGIC_TREASURES.find(function(t){return t.id===s.activeMagicTreasure}),entry=item&&s.magicTreasures.find(function(e){return e.id===item.id});return item&&entry?{item,entry}:null}
+function applyMagicAttackBonus(atk,damage,state){if(!state||state.item.id==='spirit-bell')return damage;const item=state.item,entry=state.entry;if(Math.random()>=Math.min(.6,item.chance+(entry.level-1)*.015))return damage;const extra=Math.max(1,Math.floor(atk*item.damage*(1+(entry.level-1)*.12)));note(item.name+'觸發，追加 '+extra+' 點傷害！','good');return damage+extra}
+function getMagicDefenseReduction(rawTaken,state){if(!state||state.item.id!=='spirit-bell')return 0;const item=state.item,entry=state.entry;if(Math.random()>=Math.min(.6,item.chance+(entry.level-1)*.015))return 0;const reduction=Math.min(.5,item.damage+(entry.level-1)*.04);note(item.name+'觸發，減少 '+Math.floor(rawTaken*reduction)+' 點傷害！','good');return reduction}
+function attack(skill=false){if(skill&&!s.skill){toast('靈氣爆發正在蓄力');return}ensureMagicState();let perks=gearPerks(),crit=Math.random()<(.12+perks.crit),atk=val('atk')*(s.method===2?methodAttackMultiplier():1),dmg=Math.max(1,Math.floor(atk-enemy.def+Math.random()*5)+(crit?Math.floor(atk*(.7+perks.critPower)):0));const elementResult=elementMultiplier();dmg=Math.max(1,Math.floor(dmg*(1+(perks.bonusDamage||0))*elementResult.multiplier));const activeMagicState=getActiveMagicState();dmg=applyMagicAttackBonus(atk,dmg,activeMagicState);if(skill){dmg=Math.floor(dmg*GAME_CONFIG.skillDamageMultiplier);s.skill=false;s.skillWait=0;note(` 靈氣爆發，造成 ${dmg} 點傷害！`,'good')}else note(`${crit?' 法器共鳴·暴擊！':''} 你施展攻勢，對${enemy.name}造成 ${dmg} 點傷害。`);enemy.hp=Math.max(0,enemy.hp-dmg);if(!skill&&!s.skill&&++s.skillWait>=GAME_CONFIG.skillCooldownHits){s.skill=true;s.skillWait=0;note(' 靈氣爆發已重新蓄滿。','good')}if(enemy.hp<=0){win();render();return}let rawTaken=Math.max(1,enemy.atk-val('def')+Math.floor(Math.random()*3)),magicReduction=getMagicDefenseReduction(rawTaken,activeMagicState);let taken=Math.max(1,Math.floor(rawTaken*(1-perks.damageCut)*(1-magicReduction)));s.hp-=taken;note(` ${enemy.name}反擊，造成 ${taken} 點傷害${perks.damageCut?`（護甲減傷 ${Math.round(perks.damageCut*100)}%）`:''}。`,'bad');if(s.hp<=0){let lost=Math.min(s.gold,Math.floor(s.gold*.06));s.gold-=lost;s.hp=Math.floor(s.maxHp*.55);note(` 你退回安全處調息，恢復至 ${s.hp} 氣血，損失 ${lost} 靈石。`,'bad')}render()}
 
 /* Wrap combat after the legacy math so the HP bar and damage numbers reflect the same hit. */
 const __combatAttack=attack;
@@ -2505,7 +2509,26 @@ const __oldUpgrade=upgrade;upgrade=function(k){const before=s.gold;__oldUpgrade(
 const __oldMeditate=meditate;meditate=function(){const xp=s.xp,gold=s.gold;__oldMeditate();flashGain('修為成長 · 靈石 +'+Math.max(0,s.gold-gold))};
 const __oldCheckLevel=checkLevel;checkLevel=function(){const layer=s.layer,major=s.major;__oldCheckLevel();if(s.layer!==layer||s.major!==major)flashGain('突破成功 · '+realmText())};
 function escapeBattle(){if(Math.random()<.78){note(' 你判斷形勢不利，成功脫離戰鬥。','good');spawnEnemy();render();toast('成功逃離，沒有損失資源')}else{const dmg=Math.max(1,Math.floor(enemy.atk*.7-val('def')*.25));s.hp=Math.max(1,s.hp-dmg);note(' 逃跑未果，撤退時受到 '+dmg+' 點傷害。','bad');render();toast('逃跑失敗，受到 '+dmg+' 點傷害')}}
-function sneakAttack(){if(!enemy||enemy.hp<=0)return;const success=Math.random()<.68;if(success){const elemental=elementMultiplier(),dmg=Math.max(1,Math.floor(val('atk')*(s.method===2?methodAttackMultiplier():1)*GAME_CONFIG.sneakAttackMultiplier*elemental.multiplier));enemy.hp=Math.max(0,enemy.hp-dmg);note(' 偷襲成功，造成 '+dmg+' 點先手傷害。','good');flashGain('偷襲 +'+dmg+' 傷害');if(enemy.hp<=0){win();render();return}}else note(' 偷襲被察覺！妖獸搶先反擊。','bad');const taken=Math.max(1,Math.floor((enemy.atk-val('def')+2)*(success?.65:1.2)));s.hp-=taken;if(s.hp<=0){const lost=Math.min(s.gold,Math.floor(s.gold*.06));s.gold-=lost;s.hp=Math.floor(s.maxHp*.55);note(' 你退回安全處調息，損失 '+lost+' 靈石。','bad')}if(!s.skill&&++s.skillWait>=GAME_CONFIG.skillCooldownHits){s.skill=true;note(' 靈氣爆發已重新蓄滿。','good')}render()}
+function sneakAttack(){
+ if(!enemy||enemy.hp<=0)return;
+ const activeMagicState=getActiveMagicState(),success=Math.random()<.68;
+ if(success){
+  const elemental=elementMultiplier(),atk=val('atk')*(s.method===2?methodAttackMultiplier():1);
+  let dmg=Math.max(1,Math.floor(atk*GAME_CONFIG.sneakAttackMultiplier*elemental.multiplier));
+  dmg=applyMagicAttackBonus(atk,dmg,activeMagicState);
+  enemy.hp=Math.max(0,enemy.hp-dmg);
+  note('偷襲成功，造成 '+dmg+' 點先手傷害。','good');
+  flashGain('偷襲 +'+dmg+' 傷害');
+  if(enemy.hp<=0){win();render();return}
+ }else note('偷襲被察覺！妖獸搶先反擊。','bad');
+ const rawTaken=Math.max(1,Math.floor((enemy.atk-val('def')+2)*(success?0.65:1.2)));
+ const magicReduction=getMagicDefenseReduction(rawTaken,activeMagicState);
+ const taken=Math.max(1,Math.floor(rawTaken*(1-magicReduction)));
+ s.hp-=taken;
+ if(s.hp<=0){const lost=Math.min(s.gold,Math.floor(s.gold*.06));s.gold-=lost;s.hp=Math.floor(s.maxHp*.55);note('你退回安全處調息，損失 '+lost+' 靈石。','bad')}
+ if(!s.skill&&++s.skillWait>=GAME_CONFIG.skillCooldownHits){s.skill=true;note('靈氣爆發已重新蓄滿。','good')}
+ render()
+}
 
 
 /* === UX patch v1.2: module navigation, battle feedback, manual breakthrough === */
