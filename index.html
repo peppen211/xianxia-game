@@ -2039,7 +2039,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.77</small>
+  <small class="status-version" aria-label="遊戲版本">v0.78</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -3555,10 +3555,10 @@ main>.screen#home.active{display:flex!important}
   white-space:normal!important;line-height:1.35!important;overflow-wrap:anywhere!important;
 }
 
-/* v0.77: retain v0.75 typography scale; repair only journal layout and cards. */
+/* v0.78: retain v0.75 typography scale; repair only journal layout and cards. */
 </style>
 <style id="v078-journal-hybrid-layout">
-/* v0.77: one source of chapter content, working stage controls, no unrelated feature cards. */
+/* v0.78: one source of chapter content, working stage controls, no unrelated feature cards. */
 #gameApp #journal.active{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important;box-sizing:border-box!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;padding:14px!important}
 #gameApp #journal.active>*:not(#journalV14Dock){display:none!important}
 #gameApp #journal.active>#journalV14Dock{display:flex!important;flex:1 0 auto!important;flex-direction:column!important;align-items:stretch!important;gap:12px!important;width:100%!important;min-width:0!important;min-height:0!important;box-sizing:border-box!important}
@@ -4655,7 +4655,7 @@ function renderBagUI(){
 
 
 <style id="v074-fix-launch-background-layer">
-/* v0.77: restore the full-screen background on the launch container; avoid a negative-z pseudo-element clipping/covering it. */
+/* v0.78: restore the full-screen background on the launch container; avoid a negative-z pseudo-element clipping/covering it. */
 #launchGate.launch-gate-screen{
   background-color:#0b111b!important;
   background-image:linear-gradient(rgba(255,255,255,.035),rgba(255,255,255,.035)),url("./%E9%A6%96%E9%A0%81.PNG")!important;
@@ -4681,7 +4681,7 @@ function renderBagUI(){
 
 
 <style id="v077-title-scale-and-character-card">
-/* v0.77: enlarge the landing title to about 85% of the viewport width and compact only the character info card. */
+/* v0.78: enlarge the landing title to about 85% of the viewport width and compact only the character info card. */
 #launchGate .launch-title{
   box-sizing:border-box!important;
   width:100%!important;
@@ -4729,6 +4729,27 @@ function renderBagUI(){
 @media(max-width:360px){
   #launchGate .launch-title{font-size:clamp(35px,12.4vw,45px)!important}
   #launchGate .launch-character-intro{width:84vw!important}
+}
+</style>
+
+
+<style id="v078-card-and-button-width">
+/* v0.78: set the character information card to about 60% viewport width and the start button to about 75%. */
+#launchGate .launch-character-intro{
+  box-sizing:border-box!important;
+  width:60vw!important;
+  max-width:420px!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+#launchGate .launch-continue{
+  box-sizing:border-box!important;
+  width:75vw!important;
+  max-width:420px!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
 }
 </style>
 
