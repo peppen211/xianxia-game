@@ -57,6 +57,8 @@ jobs:
             const errors = [];
             page.on('pageerror', error => { errors.push(error.message); console.log('BROWSER PAGE ERROR: ' + error.stack); });
             page.on('console', message => { if (message.type() === 'error') { errors.push(message.text()); console.log('BROWSER CONSOLE ERROR: ' + message.text()); } });
+            page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
+            page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
 
             await page.goto('https://peppen211.github.io/xianxia-game/?v=0.54', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
@@ -312,7 +314,7 @@ jobs:
           URL="https://peppen211.github.io/xianxia-game/"
           for attempt in 1 2 3 4 5 6; do
             PAGE="$(curl -fsSL "$URL" || true)"
-            if printf "%s" "$PAGE" | grep -q 'id="launchGate"' && printf "%s" "$PAGE" | grep -q 'id="continueCultivationBtn"' && printf "%s" "$PAGE" | grep -q 'id="gameApp"' && ! printf "%s" "$PAGE" | grep -q '/src/main.tsx'; then
+            if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE"; then
               echo "Published standalone launch gate and game entry verified."
               exit 0
             fi
