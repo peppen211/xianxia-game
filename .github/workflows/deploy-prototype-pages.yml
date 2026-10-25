@@ -182,7 +182,7 @@ jobs:
                   enemy = { type: '首領', name: '測試古寶首領', gold: 10, xp: 2, def: 0 };
                   win();
                 }
-                renderBagUI();
+                render();
               } finally { Math.random = oldRandom; }
             });
             const fragmentsAfterDrop = await page.evaluate(() => Number(s.treasureFragments['guiding-jade'] || 0));
