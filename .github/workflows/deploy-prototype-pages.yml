@@ -127,7 +127,15 @@ jobs:
             if (scrollModel.screenOverflowY !== 'hidden' || scrollModel.itemOverflowY !== 'auto') throw new Error('儲物袋應固定外框，只有物品格清單可捲動：' + JSON.stringify(scrollModel));
             const gridColumns = await bag.locator('#inventory').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
             if (gridColumns !== 4) throw new Error('裝備清單不是四欄物品格。');
-            await bag.getByRole('button', {name:/比較：測試靈品法器/}).click();
+            const tileDiagnostic = await bag.locator('#inventory .bag-item-tile[aria-label="比較：測試靈品法器"]').evaluate(el => {
+              const rect = node => { const r = node.getBoundingClientRect(); const c = getComputedStyle(node); return {tag:node.tagName,id:node.id,cls:typeof node.className==='string'?node.className:'',x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height),bottom:Math.round(r.bottom),display:c.display,position:c.position,overflow:c.overflow,flex:c.flex,zIndex:c.zIndex,pointerEvents:c.pointerEvents}; };
+              const r=el.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;
+              const hit=document.elementFromPoint(x,y);
+              const ancestors=[]; for(let n=el;n&&ancestors.length<8;n=n.parentElement)ancestors.push(rect(n));
+              return {viewport:{w:innerWidth,h:innerHeight},tile:rect(el),hit:hit?rect(hit):null,hitHtml:hit?hit.outerHTML.slice(0,240):'',ancestors,regions:['#bag','#bagEquipmentView','.bag-tabs','.bag-tools','.bag-gear-layout','.bag-slots-panel','.bag-list-panel','#inventory','.bag-footer-actions','.bag-pill-bar'].map(sel=>{const n=document.querySelector(sel);return n?{sel,...rect(n)}:null})};
+            });
+            console.log('BAG_TILE_DIAGNOSTIC='+JSON.stringify(tileDiagnostic));
+            await bag.getByRole('button', {name:/比較：測試靈品法器/}).click({timeout:5000});
             const equipmentModal = page.locator('#uiModal');
             await equipmentModal.waitFor({state:'visible',timeout:3000});
             const comparisonText = await page.locator('#modalBody').innerText();
