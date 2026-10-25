@@ -1954,7 +1954,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v0.97</small>
+  <small class="status-version" aria-label="遊戲版本">v0.98</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2316,9 +2316,8 @@ const __legacyCheckLevel=checkLevel;
 checkLevel=function(){
  const need=xpNeed();
  if(s.xp>=need){
-   const excess=s.xp-need;
-   s.pendingXp=(s.pendingXp||0)+excess;
    s.xp=need;
+   s.pendingXp=0;
  }
  const hint=document.getElementById('breakHint');
  if(hint)hint.textContent=s.major>=realms.length-1&&s.layer>=9?'已達目前版本最高境界':s.xp>=need?'靈脈圓滿 · 可嘗試渡劫':'累積修為以突破';
@@ -2343,7 +2342,7 @@ function attemptBreakthrough(){
    s.xp=0;s.layer++;s.atk+=2;s.def++;s.maxHp+=10;s.hp=s.maxHp;
    let majorBreak=false;
    if(s.layer>9){s.layer=1;const oldMajor=s.major;s.major=Math.min(realms.length-1,s.major+1);if(s.major>oldMajor){majorBreak=true;s.atk+=8;s.def+=4;s.maxHp+=40;s.hp=s.maxHp}}
-   const carry=s.pendingXp||0;s.pendingXp=0;s.xp=Math.min(carry,Math.max(0,xpNeed()-1));
+   s.pendingXp=0;s.xp=0;
    note(' 渡劫成功！由 '+oldRealm+' 踏入 '+realmText()+'，攻擊、防禦與氣血上限提升。','good');
    closeModal();render();flashGain('突破成功 · '+realmText());showBreakthrough({from:oldRealm,to:realmText(),major:majorBreak});updateBattleFeedback('渡劫成功 · 境界提升');return;
  }
