@@ -4554,4 +4554,43 @@ function renderBagUI(){
 }
 </style>
 
+
+<style id="v072-launch-title-card-realm">
+/* v0.72: calligraphic embossed-gold title, lighter character panel, remove duplicated center realm display. */
+#launchGate .launch-title{
+  font-family:"Kaiti TC","STKaiti","BiauKai","Noto Serif TC","Songti TC",serif!important;
+  font-weight:900!important;
+  letter-spacing:.055em!important;
+  line-height:1.08!important;
+  color:#f8d982!important;
+  -webkit-text-fill-color:transparent!important;
+  background:linear-gradient(180deg,#fff3bd 0%,#f7d779 22%,#d69b36 48%,#fff0a8 62%,#a96920 82%,#f8d985 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  filter:drop-shadow(0 1px 0 #fff0b5) drop-shadow(0 3px 0 #714318) drop-shadow(0 5px 3px rgba(12,8,3,.95)) drop-shadow(0 0 12px rgba(255,196,85,.42))!important;
+}
+#launchGate .launch-title span{display:block!important}
+#launchGate .launch-title i{
+  font-family:"Kaiti TC","STKaiti","BiauKai","Noto Serif TC",serif!important;
+  -webkit-text-fill-color:#fff0cf!important;
+  background:linear-gradient(180deg,#c94d42,#8f211f)!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,225,160,.6)!important;
+}
+#launchGate .launch-realm-label,#launchGate .launch-realm-summary{display:none!important}
+#launchGate .launch-guidance{margin-top:clamp(7px,1.4vh,15px)!important}
+#launchGate .launch-character-intro{
+  background:linear-gradient(145deg,rgba(47,58,72,.67),rgba(26,34,46,.58))!important;
+  border-color:rgba(245,211,151,.48)!important;
+  box-shadow:inset 0 1px 0 rgba(255,241,205,.13),0 8px 22px rgba(0,0,0,.16)!important;
+  backdrop-filter:blur(5px)!important;
+  -webkit-backdrop-filter:blur(5px)!important;
+}
+#launchGate .launch-character-intro h2{color:#ffe1a5!important;text-shadow:0 1px 4px rgba(0,0,0,.5)!important}
+#launchGate .launch-character-intro p{color:#f2eadb!important;text-shadow:0 1px 3px rgba(0,0,0,.4)!important}
+#launchGate .launch-character-intro strong{color:#ffdfa0!important}
+#launchGate .launch-character-intro{order:6!important}
+#launchGate .launch-continue{order:7!important}
+@media(prefers-reduced-motion:reduce){#launchGate .launch-title{filter:drop-shadow(0 2px 0 #714318)!important}}
+</style>
+
 </body></html>
