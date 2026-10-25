@@ -2028,13 +2028,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v1.1">
+<header class="top statusline" aria-label="角色狀態列 v1.2">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v1.1</small>
+  <small class="status-version" aria-label="遊戲版本">v1.2</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2071,7 +2071,7 @@ html,body,#launchGate,#gameApp{
    <div class="panel bag-slots-panel" id="bagSlotsPanel"><div class="secthead"><span>目前穿戴</span><button type="button" class="bag-slot-toggle" id="bagSlotsToggle" aria-expanded="true">收起</button></div><div class="slotgrid" id="slots"></div></div>
    <div class="panel bag-list-panel"><div class="secthead"><span id="bagListTitle">全部裝備</span><small>點選物品比較屬性</small></div><div class="scrolllist bag-item-list" id="inventory" aria-label="裝備物品清單"></div></div>
   </div>
-  <div class="bag-footer-actions"><button type="button" class="btn secondary" id="bagBatchToggle">批次分解</button><button type="button" class="btn secondary" id="bagHistoryOpen">操作紀錄</button><button type="button" class="btn secondary" id="bagProtectionOpen">保護設定</button></div>
+  <div class="bag-footer-actions"><button type="button" class="btn secondary" id="bagBatchToggle">批次分解</button><button type="button" class="btn secondary" id="bagHistoryOpen">操作紀錄</button><button type="button" class="btn secondary" id="bagProtectionOpen">保護設定</button><button type="button" class="btn secondary" id="bagForgeToolsOpen">祈寶煉器</button></div>
   <div class="panel bag-batch-panel" id="bagBatchPanel" hidden><div class="secthead"><span>批次分解</span><small id="bagBatchCount">已選 0 件</small></div><p>僅能選擇未穿戴、未鎖定且未受自動保護的裝備。分解前會再次預覽清單與靈石總收益。</p><div class="bag-batch-summary" id="bagBatchSummary">尚未選取裝備。</div><button type="button" class="btn danger" id="bagBatchReview">預覽並確認</button></div>
   <div class="bag-pill-bar"><span>聚氣丹 <b>× <span id="pillCount">2</span></b></span><small>戰鬥中恢復 40% 氣血</small><button type="button" class="btn secondary" id="buyPill">購買 30</button></div>
   <div class="panel bag-detail-panel" id="bagDetail" hidden><div class="bag-empty-detail">選擇一件裝備，查看屬性與操作。</div></div>
@@ -4095,4 +4095,56 @@ main>.screen#home.active{display:flex!important}
 #gameApp #bag #bagInactiveCategory[hidden],#gameApp #bag #bagDetail[hidden],#gameApp #bag #bagBatchPanel[hidden]{display:none!important}
 @media(max-height:700px){#gameApp.app>main>.screen#bag.active{gap:4px!important}#gameApp.app>main>.screen#bag.active>.bag-equipment-view{gap:4px!important}#gameApp #bag .bag-gear-layout{gap:4px!important}#gameApp #bag #inventory.bag-item-list{grid-auto-rows:minmax(60px,auto)!important}}
 </style>
+
+<style id="v12-bag-legacy-forge-modal">
+#gameApp.app>main>.screen#bag.active>.bag-footer-actions{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+#gameApp #bag .bag-footer-actions .btn{min-width:0!important;padding:5px 1px!important;font-size:9.2px!important;white-space:nowrap!important}
+#gameApp #bag .bagForgeDock{display:none!important}
+.bag-forge-modal-content{display:flex!important;flex-direction:column!important;gap:8px!important;min-width:0!important}
+.bag-forge-modal-content>.page-title{display:none!important}
+.bag-forge-modal-content>.panel{flex:0 0 auto!important;width:100%!important;min-width:0!important;margin:0!important}
+.bag-forge-modal-content .btn{min-width:0!important}
+</style>
+<script id="bag-forge-preservation-v12">
+(function preserveLegacyForgeTools(){
+ const bag=document.getElementById('bag');
+ if(!bag||bag.dataset.forgeToolsDocked==='1')return;
+ const keepSelectors=[':scope > .page-title',':scope > .bag-resource',':scope > .bag-main-tabs',':scope > #bagEquipmentView',':scope > #bagInactiveCategory'];
+ const keep=new Set(keepSelectors.map(sel=>bag.querySelector(sel)).filter(Boolean));
+ const legacy=Array.from(bag.children).filter(node=>!keep.has(node));
+ const dock=document.createElement('div');
+ dock.id='bagForgeDock';dock.className='bagForgeDock';dock.hidden=true;dock.setAttribute('aria-hidden','true');
+ bag.appendChild(dock);
+ legacy.forEach(node=>dock.appendChild(node));
+ bag.dataset.forgeToolsDocked='1';
+ const openButton=document.getElementById('bagForgeToolsOpen');
+ const modal=document.getElementById('uiModal');
+ const originalOpen=window.openModal;
+ const originalClose=window.closeModal;
+ let dockInModal=false;
+ function restoreDock(){
+  const host=document.getElementById('bagForgeModalDock');
+  if(host)Array.from(host.children).forEach(node=>dock.appendChild(node));
+  dockInModal=false;
+  if(modal)delete modal.dataset.bagForgeOpen;
+ }
+ window.openModal=function(){
+  if(dockInModal)restoreDock();
+  return originalOpen.apply(this,arguments);
+ };
+ window.closeModal=function(){
+  if(dockInModal)restoreDock();
+  return originalClose.apply(this,arguments);
+ };
+ if(openButton)openButton.addEventListener('click',function(){
+  if(!dock.children.length){openModal('祈寶與煉器','<div class="smallnote">目前沒有可用的祈寶或煉器項目。</div>');return}
+  openModal('祈寶與煉器','<div id="bagForgeModalDock" class="bag-forge-modal-content"></div>');
+  const host=document.getElementById('bagForgeModalDock');
+  if(!host)return;
+  Array.from(dock.children).filter(node=>!node.classList.contains('page-title')).forEach(node=>host.appendChild(node));
+  dockInModal=true;
+  if(modal)modal.dataset.bagForgeOpen='1';
+ });
+})();
+</script>
 </body></html>
