@@ -2028,13 +2028,13 @@ html,body,#launchGate,#gameApp{
 <div id="launchLastRealm" class="launch-last-realm" hidden></div>
 </div>
 <div class="app" id="gameApp" style="display:none" aria-hidden="true">
-<header class="top statusline" aria-label="角色狀態列 v1.3">
+<header class="top statusline" aria-label="角色狀態列 v1.4">
   <div class="status-name" aria-label="角色名稱"><span class="top-avatar" aria-hidden="true"><i></i></span><b id="statusCharacterName">韓立</b></div>
   <div class="status-age" aria-label="角色年齡"><b id="hanliAgeTop">10</b><span>歲</span></div>
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v1.3</small>
+  <small class="status-version" aria-label="遊戲版本">v1.4</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2134,6 +2134,29 @@ const petCatalog = [
  {name:'雲翅鳥',kind:'靈獸',desc:'飛禽類生靈，可作偵查或飛行方向的圖鑑條目。'},
  {name:'銀月',kind:'特殊生靈',desc:'特殊智慧生靈，單獨標記，不視為普通野獸。'}
 ];
+
+const ANCIENT_TREASURES = [
+ {id:'guiding-jade',name:'引靈古玉',icon:'玉',description:'古玉蘊含引靈紋路，長久持有能提高修為累積效率。',effectKey:'bonusXp',effectName:'修為收益',perLevel:0.015,effectPerLevelText:'修為收益 +1.5%／級',fragmentsRequired:3,upgradeBase:3,maxLevel:5},
+ {id:'fortune-coin',name:'聚財古錢',icon:'錢',description:'銅錢內藏聚氣古紋，能讓戰鬥所得靈石更加豐厚。',effectKey:'bonusGold',effectName:'戰鬥靈石',perLevel:0.02,effectPerLevelText:'戰鬥靈石 +2%／級',fragmentsRequired:3,upgradeBase:3,maxLevel:5},
+ {id:'demon-mirror',name:'伏妖古鏡',icon:'鏡',description:'鏡面留有鎮伏妖氣的殘紋，持有時可穩定提升對敵傷害。',effectKey:'bonusDamage',effectName:'戰鬥傷害',perLevel:0.01,effectPerLevelText:'戰鬥傷害 +1%／級',fragmentsRequired:3,upgradeBase:3,maxLevel:5},
+ {id:'gathering-lamp',name:'聚靈古燈',icon:'燈',description:'古燈收攝游離靈氣，使戰鬥後取得材料的機會略微增加。',effectKey:'bonusDrop',effectName:'材料掉落率',perLevel:0.02,effectPerLevelText:'材料掉落率 +2%／級',fragmentsRequired:3,upgradeBase:3,maxLevel:5}
+];
+function ensureTreasureState(){
+ if(!s||typeof s!=='object')return;
+ if(!s.treasureFragments||typeof s.treasureFragments!=='object'||Array.isArray(s.treasureFragments))s.treasureFragments={};
+ else s.treasureFragments=Object.assign({},s.treasureFragments);
+ ANCIENT_TREASURES.forEach(function(item){const n=Number(s.treasureFragments[item.id]);s.treasureFragments[item.id]=Number.isFinite(n)?Math.max(0,Math.floor(n)):0;});
+ const source=Array.isArray(s.ownedTreasures)?s.ownedTreasures:[];
+ const normalized=[];
+ source.forEach(function(entry){
+  const id=typeof entry==='string'?entry:entry&&entry.id;
+  const def=ANCIENT_TREASURES.find(function(item){return item.id===id;});
+  if(!def||normalized.some(function(item){return item.id===id;}))return;
+  const rawLevel=typeof entry==='string'?1:Number(entry.level)||1;
+  normalized.push({id:id,level:Math.max(1,Math.min(def.maxLevel,Math.floor(rawLevel)))});
+ });
+ s.ownedTreasures=normalized;
+}
 function openClassificationCatalog(){
  const equipRows=['法器','法寶','符寶','仿製靈寶'].map(function(name){return '<div class="rowitem"><div class="rowicon">器</div><div class="rowbody"><b>'+name+'</b><small>歸入「裝備類」，用於裝備／使用欄與煉製流程。</small></div></div>';}).join('');
  const treasureRows=treasureClassCatalog.map(function(item){return '<div class="rowitem"><div class="rowicon">寶</div><div class="rowbody"><b>'+item.name+'</b><small>'+item.desc+'</small></div></div>';}).join('');
@@ -2186,7 +2209,7 @@ function upgradeMethodTier(index){
 
 const methodsId='methods';
 let s,enemy;
-function base(){return {methodLevels:[1,1,1],major:0,layer:1,xp:0,gold:GAME_CONFIG.initial.gold,spirit:GAME_CONFIG.initial.spirit,herbs:GAME_CONFIG.initial.herbs,pills:GAME_CONFIG.initial.pills,kills:0,atk:GAME_CONFIG.initial.atk,def:GAME_CONFIG.initial.def,hp:GAME_CONFIG.initial.hp,maxHp:GAME_CONFIG.initial.maxHp,method:0,ownedMethods:[0],inventory:[],equipped:{weapon:null,armor:null,charm:null},logs:[],last:Date.now(),lastOfflineClaim:Date.now(),offlineReport:null,skill:true,skillWait:0,wood:GAME_CONFIG.initial.wood,crystal:GAME_CONFIG.initial.crystal,element:'金',pity:0,draws:0,dupes:0,offlineSec:0};}
+function base(){return {methodLevels:[1,1,1],major:0,layer:1,xp:0,gold:GAME_CONFIG.initial.gold,spirit:GAME_CONFIG.initial.spirit,herbs:GAME_CONFIG.initial.herbs,pills:GAME_CONFIG.initial.pills,kills:0,atk:GAME_CONFIG.initial.atk,def:GAME_CONFIG.initial.def,hp:GAME_CONFIG.initial.hp,maxHp:GAME_CONFIG.initial.maxHp,method:0,ownedMethods:[0],inventory:[],equipped:{weapon:null,armor:null,charm:null},logs:[],last:Date.now(),lastOfflineClaim:Date.now(),offlineReport:null,skill:true,skillWait:0,wood:GAME_CONFIG.initial.wood,crystal:GAME_CONFIG.initial.crystal,element:'金',pity:0,draws:0,dupes:0,offlineSec:0,treasureFragments:{},ownedTreasures:[]};}
 function xpNeed(){return Math.floor(GAME_CONFIG.xp.base*Math.pow(GAME_CONFIG.xp.majorGrowth,s.major)*Math.pow(GAME_CONFIG.xp.layerGrowth,s.layer-1))}
 function calculateHanLiAge(){
  const major=Math.max(0,Math.floor(Number(s.major)||0));
@@ -2226,7 +2249,7 @@ function gearSlotLabel(slot){return ({weapon:'武器',armor:'防具',ring:'戒�
 function gearEnhanceCost(it){return 20+rarityRank(it)*20+Math.max(0,Number(it.enhanceLevel)||0)*25}
 function enhanceGear(id){const it=s.inventory.find(x=>x.id===id);if(!it)return;it.enhanceLevel=Math.max(0,Math.floor(Number(it.enhanceLevel)||0));const cost=gearEnhanceCost(it);if(Number(s.gold||0)<cost){toast('靈石不足，強化需要 '+cost+' 靈石');return}s.gold-=cost;it.enhanceLevel++;it.atk=(Number(it.atk)||0)+(it.slot==='weapon'||it.slot==='ring'?2:it.slot==='charm'?1:0);it.def=(Number(it.def)||0)+(it.slot==='armor'||it.slot==='boots'?2:it.slot==='ring'||it.slot==='charm'?1:0);it.hp=(Number(it.hp)||0)+(it.slot==='charm'||it.slot==='boots'?8:it.slot==='armor'||it.slot==='ring'?5:0);note('靈石強化成功：'+it.name+' +'+it.enhanceLevel+'，消耗靈石 '+cost+'。','good');render()}
 function dismantleGear(id){if(Object.values(s.equipped).includes(id)){toast('請先卸下裝備再分解');return}const i=s.inventory.findIndex(x=>x.id===id);if(i<0)return;const it=s.inventory[i];const reward=Math.max(5,Math.floor((Number(it.value)||10)*0.6)+rarityRank(it)*5+(Number(it.enhanceLevel)||0)*3);s.inventory.splice(i,1);s.gold=(Number(s.gold)||0)+reward;note('分解 '+it.name+'，獲得靈石 ×'+reward+'。','good');render()}
-function gearPerks(){let w=rarityRank(equippedGear('weapon')),a=rarityRank(equippedGear('armor')),c=rarityRank(equippedGear('charm'));return {crit:Math.max(0,w-1)*.035,critPower:Math.max(0,w-1)*.12,damageCut:a*.035,bonusXp:c*.04,bonusDrop:c*.035}}
+function treasurePerks(){const result={bonusXp:0,bonusGold:0,bonusDamage:0,bonusDrop:0};if(!s||!Array.isArray(s.ownedTreasures))return result;s.ownedTreasures.forEach(function(entry){const item=ANCIENT_TREASURES.find(function(t){return t.id===entry.id;});if(!item)return;const level=Math.max(1,Math.min(item.maxLevel,Math.floor(Number(entry.level)||1)));result[item.effectKey]+=item.perLevel*level;});return result} function gearPerks(){let w=rarityRank(equippedGear('weapon')),a=rarityRank(equippedGear('armor')),c=rarityRank(equippedGear('charm')),treasure=treasurePerks();return {crit:Math.max(0,w-1)*.035,critPower:Math.max(0,w-1)*.12,damageCut:a*.035,bonusXp:c*.04+treasure.bonusXp,bonusDrop:c*.035+treasure.bonusDrop,bonusGold:treasure.bonusGold,bonusDamage:treasure.bonusDamage}}
 function gearTrait(it){let r=rarityRank(it);if(it.slot==='weapon')return `特性：暴擊率 +${Math.max(0,r-1)*3.5}%、暴擊傷害提升`;if(it.slot==='armor'||it.slot==='boots')return `特性：受到傷害降低 ${r*2}%、防禦更穩`;if(it.slot==='ring')return `特性：攻擊與氣血加成`;return `特性：修為收益 +${r*4}%、額外掉落率 +${r*3.5}%`}
 function val(k){return s[k]+gearStat(k)}
 function power(){return val('atk')+val('def')*2+Math.floor(val('maxHp')/10)}
@@ -2283,7 +2306,7 @@ function showBreakthrough(info){
  window.__breakthroughTimers=[setTimeout(()=>{if(box.classList.contains('show'))phase.textContent=major?'氣海震盪 · 天地共鳴':'靈氣沖脈 · 根基重塑'},1100),setTimeout(()=>{if(box.classList.contains('show')){phase.textContent=special?'天象降臨 · 仙途再開':major?'金光破境 · 大道初成':'金光一閃 · 境界已成'}},2400),setTimeout(()=>finishBreakthroughAnimation(box),4000)];
 }
 function gainXp(n){s.xp+=Math.floor(n*(s.method===0?methodXpMultiplier():1));checkLevel()}
-function attack(skill=false){if(skill&&!s.skill){toast('靈氣爆發正在蓄力');return}let perks=gearPerks(),crit=Math.random()<(.12+perks.crit),atk=val('atk')*(s.method===2?methodAttackMultiplier():1),dmg=Math.max(1,Math.floor(atk-enemy.def+Math.random()*5)+(crit?Math.floor(atk*(.7+perks.critPower)):0));const elementResult=elementMultiplier();dmg=Math.max(1,Math.floor(dmg*elementResult.multiplier));if(skill){dmg=Math.floor(dmg*GAME_CONFIG.skillDamageMultiplier);s.skill=false;s.skillWait=0;note(` 靈氣爆發，${elementResult.result}，造成 ${dmg} 點傷害！`,'good')}else note(`${crit?' 法器共鳴·暴擊！':''} 你施展攻勢，${elementResult.result}，對${enemy.name}造成 ${dmg} 點傷害。`);enemy.hp=Math.max(0,enemy.hp-dmg);if(enemy.hp<=0){win();render();return}let rawTaken=Math.max(1,enemy.atk-val('def')+Math.floor(Math.random()*3)),taken=Math.max(1,Math.floor(rawTaken*(1-perks.damageCut)));s.hp-=taken;note(` ${enemy.name}反擊，造成 ${taken} 點傷害${perks.damageCut?`（護甲減傷 ${Math.round(perks.damageCut*100)}%）`:''}。`,'bad');if(s.hp<=0){let lost=Math.min(s.gold,Math.floor(s.gold*.06));s.gold-=lost;s.hp=Math.floor(s.maxHp*.55);note(` 你退回安全處調息，恢復至 ${s.hp} 氣血，損失 ${lost} 靈石。`,'bad')}if(!s.skill&&++s.skillWait>=GAME_CONFIG.skillCooldownHits){s.skill=true;note(' 靈氣爆發已重新蓄滿。','good')}render()}
+function attack(skill=false){if(skill&&!s.skill){toast('靈氣爆發正在蓄力');return}let perks=gearPerks(),crit=Math.random()<(.12+perks.crit),atk=val('atk')*(s.method===2?methodAttackMultiplier():1),dmg=Math.max(1,Math.floor(atk-enemy.def+Math.random()*5)+(crit?Math.floor(atk*(.7+perks.critPower)):0));const elementResult=elementMultiplier();dmg=Math.max(1,Math.floor(dmg*(1+(perks.bonusDamage||0))*elementResult.multiplier));if(skill){dmg=Math.floor(dmg*GAME_CONFIG.skillDamageMultiplier);s.skill=false;s.skillWait=0;note(` 靈氣爆發，${elementResult.result}，造成 ${dmg} 點傷害！`,'good')}else note(`${crit?' 法器共鳴·暴擊！':''} 你施展攻勢，${elementResult.result}，對${enemy.name}造成 ${dmg} 點傷害。`);enemy.hp=Math.max(0,enemy.hp-dmg);if(enemy.hp<=0){win();render();return}let rawTaken=Math.max(1,enemy.atk-val('def')+Math.floor(Math.random()*3)),taken=Math.max(1,Math.floor(rawTaken*(1-perks.damageCut)));s.hp-=taken;note(` ${enemy.name}反擊，造成 ${taken} 點傷害${perks.damageCut?`（護甲減傷 ${Math.round(perks.damageCut*100)}%）`:''}。`,'bad');if(s.hp<=0){let lost=Math.min(s.gold,Math.floor(s.gold*.06));s.gold-=lost;s.hp=Math.floor(s.maxHp*.55);note(` 你退回安全處調息，恢復至 ${s.hp} 氣血，損失 ${lost} 靈石。`,'bad')}if(!s.skill&&++s.skillWait>=GAME_CONFIG.skillCooldownHits){s.skill=true;note(' 靈氣爆發已重新蓄滿。','good')}render()}
 
 /* Wrap combat after the legacy math so the HP bar and damage numbers reflect the same hit. */
 const __combatAttack=attack;
@@ -2294,7 +2317,7 @@ attack=function(skill=false){
  if(dealt>0)showDamageFloat(dealt,dealt>Math.max(1,val('atk')*1.5));
  if(target&&target.hp<=0)showDropFloat(' 妖獸擊敗 · 戰利品已入袋');
 };
-function win(){s.kills++;let perks=gearPerks(),gold=enemy.gold,xp=Math.floor(enemy.xp*(1+perks.bonusXp)*(s.method===0?methodXpMultiplier():1));s.gold+=gold;s.spirit++;let drops=[` 靈石 ×${gold}`,` 修為 ×${xp}`];if(Math.random()<.82+perks.bonusDrop){let wood=1+(Math.random()<.22?1:0);s.wood+=wood;drops.push(` 靈木 ×${wood}`)}if(Math.random()<.28+perks.bonusDrop){s.crystal++;drops.push(' 靈晶 ×1')}if(Math.random()<.20){s.herbs++;drops.push(' 靈草 ×1')}if(Math.random()<.10){s.pills++;drops.push(' 聚氣丹 ×1')}const isBoss=enemy&&enemy.type==='首領',isElite=enemy&&enemy.type==='精英';const gearChance=isBoss?1:isElite?0.30:0.08;if(Math.random()<gearChance){let pool=gears.filter(g=>!isBoss?rarityRank(g)<=(isElite?3:2):rarityRank(g)>=2);if(!pool.length)pool=gears;let g=pool[Math.floor(Math.random()*pool.length)];if(!s.inventory.some(it=>it.name===g.name)){s.inventory.push({...g,id:Date.now()+Math.floor(Math.random()*99999),enhanceLevel:0});drops.push(' 裝備掉落：'+g.name+'（'+gearQuality(g)+'）')}else{const duplicateReward=Math.max(5,Math.floor((Number(g.value)||10)*0.35));s.gold+=duplicateReward;drops.push(' 重複裝備轉化：靈石 ×'+duplicateReward)}}s.hp=Math.min(val('maxHp'),s.hp+Math.floor(val('maxHp')*.08));s.xp+=xp;checkLevel();note(` 擊敗${enemy.name}！戰利品：${drops.join('、')}。`,'good');let story=document.getElementById('battleStory');if(story)story.textContent=`斬妖成功！本次獲得：${drops.join('、')}。`;spawnEnemy()}
+function win(){s.kills++;ensureTreasureState();let perks=gearPerks(),gold=Math.floor(enemy.gold*(1+(perks.bonusGold||0))),xp=Math.floor(enemy.xp*(1+perks.bonusXp)*(s.method===0?methodXpMultiplier():1));s.gold+=gold;s.spirit++;let drops=[` 靈石 ×${gold}`,` 修為 ×${xp}`];if(Math.random()<.82+perks.bonusDrop){let wood=1+(Math.random()<.22?1:0);s.wood+=wood;drops.push(` 靈木 ×${wood}`)}if(Math.random()<.28+perks.bonusDrop){s.crystal++;drops.push(' 靈晶 ×1')}if(Math.random()<.20){s.herbs++;drops.push(' 靈草 ×1')}if(Math.random()<.10){s.pills++;drops.push(' 聚氣丹 ×1')}const isBoss=enemy&&enemy.type==='首領',isElite=enemy&&enemy.type==='精英';const treasureChance=isBoss?0.50:isElite?0.22:0.08;if(Math.random()<treasureChance){const treasure=ANCIENT_TREASURES[Math.floor(Math.random()*ANCIENT_TREASURES.length)];const fragmentCount=isBoss&&Math.random()<0.5?2:1;s.treasureFragments[treasure.id]=(Number(s.treasureFragments[treasure.id])||0)+fragmentCount;drops.push('古寶碎片：'+treasure.name+' ×'+fragmentCount)}const gearChance=isBoss?1:isElite?0.30:0.08;if(Math.random()<gearChance){let pool=gears.filter(g=>!isBoss?rarityRank(g)<=(isElite?3:2):rarityRank(g)>=2);if(!pool.length)pool=gears;let g=pool[Math.floor(Math.random()*pool.length)];if(!s.inventory.some(it=>it.name===g.name)){s.inventory.push({...g,id:Date.now()+Math.floor(Math.random()*99999),enhanceLevel:0});drops.push(' 裝備掉落：'+g.name+'（'+gearQuality(g)+'）')}else{const duplicateReward=Math.max(5,Math.floor((Number(g.value)||10)*0.35));s.gold+=duplicateReward;drops.push(' 重複裝備轉化：靈石 ×'+duplicateReward)}}s.hp=Math.min(val('maxHp'),s.hp+Math.floor(val('maxHp')*.08));s.xp+=xp;checkLevel();note(` 擊敗${enemy.name}！戰利品：${drops.join('、')}。`,'good');let story=document.getElementById('battleStory');if(story)story.textContent=`斬妖成功！本次獲得：${drops.join('、')}。`;spawnEnemy()}
 function meditate(){toast('自動修行持續運轉，無需手動吐納；修為圓滿後再手動突破。')}
 function upgrade(k){let cost={atk:35+s.layer*15,def:30+s.layer*13,maxHp:40+s.layer*18}[k];if(s.gold<cost){toast('靈石不足，先去試煉吧');return}s.gold-=cost;s[k]+=k==='atk'?3:k==='def'?2:20;if(k==='maxHp')s.hp+=20;note(` 強化成功，${{atk:'攻擊 +3',def:'防禦 +2',maxHp:'氣血上限 +20'}[k]}。`,'good');render()}
 function equip(id){let it=s.inventory.find(x=>x.id===id);if(!it)return;if(!['weapon','armor','ring','charm','boots'].includes(it.slot)){toast('這件物品不能穿戴');return}s.equipped[it.slot]=id;note('你裝備了'+it.name+'，氣息更為穩固。','good');render()}
@@ -2364,7 +2387,7 @@ function renderChronicle(){
  list.innerHTML=hanliStages.map((st,i)=>{const status=i<idx?'已走過':i===idx?'目前篇章':'後續方向';const cls=i<idx?'done':i===idx?'current':'future';const node=GAME_CONFIG.chapters[Math.min(i,GAME_CONFIG.chapters.length-1)]||{};return '<article class="chronicle-entry '+cls+'"><div class="chronicle-top"><b>'+esc(st.title)+'</b><span>'+status+'</span></div><div class="chronicle-world">'+esc(st.world)+'</div><p>'+esc(st.event)+'</p><div class="chronicle-task">'+esc(st.task)+'</div><div class="node-meta"> 地圖：'+esc(node.map||node.location||'探索區域')+'　｜　 副本：'+esc(node.dungeon||'未解鎖')+'</div><div class="node-meta"> 解鎖：'+esc(node.unlock||'依主線進度開放')+'　｜　境界：'+esc(node.realm||'依進度提升')+'</div><div class="node-meta"> '+esc(node.episode||'主線篇章節點')+'</div></article>'}).join('');
 }
 document.getElementById('attackBtn').onclick=()=>attack(false);document.getElementById('skillBtn').onclick=()=>attack(true);document.getElementById('breakBtn').onclick=()=>{if(s.xp<xpNeed()){toast('修為尚未圓滿，繼續放置修行或挑戰妖獸吧');return}openBreakthroughModal()};document.getElementById('drawOne').onclick=()=>draw(1);document.getElementById('drawTen').onclick=()=>draw(10);document.getElementById('craftStaff').onclick=()=>craft('staff');document.getElementById('craftRobe').onclick=()=>craft('robe');document.getElementById('craftCharm').onclick=()=>craft('charm');document.getElementById('convertDup').onclick=convertDup;document.getElementById('claimIdle').onclick=openOfflineModal;document.getElementById('saveBtn').onclick=()=>{save();toast('進度已儲存')};document.getElementById('resetBtn').onclick=()=>{if(!confirm('確定完整重置角色、背包、裝備、戰鬥與劇情進度？此操作無法復原。'))return;try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k===KEY||k.startsWith(KEY+'_backup_')||k.startsWith(KEY+'_'))localStorage.removeItem(k)}storageBlocked=false}catch(resetError){storageBlocked=true;toast('瀏覽器不允許清除存檔，重置未完成，請檢查網站儲存空間權限。');return}s=base();s.logs=[];spawnEnemy();s.last=Date.now();s.lastOfflineClaim=Date.now();s.offlineSec=0;s.pendingIdleXp=0;s.pendingIdleGold=0;s.idleGoldRemainder=0;s.offlineReport=null;save();render();switchScreen('cultivate');toast('已完整重置，新的仙途正式開始。')};document.getElementById('buyPill').onclick=buyPill;
-function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){storageBlocked=true;s=base()}try{const parsed=JSON.parse(raw||'{}');if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('invalid save shape');s=Object.assign(base(),parsed)}catch(e){s=base();if(raw!==null){try{localStorage.setItem(KEY+'_backup_'+Date.now(),raw)}catch(backupError){storageBlocked=true}if(!storageBlocked)toast('偵測到異常存檔，已先保留備份並以新進度啟動；原始備份未刪除。')}}if(Array.isArray(s.inventory))s.inventory.forEach(function(it){if(!it.catalogClass)it.catalogClass='裝備類';if(!it.catalogType){const template=gears.find(function(g){return g.name===it.name});it.catalogType=template?template.catalogType:'法器'}});if(!s.ownedMethods)s.ownedMethods=[0];if(!Array.isArray(s.methodLevels))s.methodLevels=[1,1,1];s.methodLevels=Array.from({length:3},(_,i)=>Math.max(1,Math.min(10,Math.floor(Number(s.methodLevels[i])||1))));if(!s.equipped)s.equipped={weapon:null,armor:null,charm:null};s.equipped=Object.assign({weapon:null,armor:null,ring:null,charm:null,boots:null},s.equipped);if(!s.logs)s.logs=[];if(!s.lastOfflineClaim)s.lastOfflineClaim=Date.now();if(!('offlineReport' in s))s.offlineReport=null;let elapsed=Math.min(GAME_CONFIG.maxOfflineSeconds,Math.max(0,(Date.now()-(s.last||Date.now()))/1000));if(elapsed>30){let rate=s.method===1?methodIdleMultiplier():1,rawXp=Math.floor(elapsed/((GAME_CONFIG.idle&&GAME_CONFIG.idle.xpIntervalSeconds)||18)*rate*(s.method===0?methodXpMultiplier():1)*(1+gearPerks().bonusXp)),xp=Math.min(rawXp,Math.max(0,xpNeed()-s.xp));s.xp+=xp;s.pendingIdleXp=(s.pendingIdleXp||0)+xp;s.pendingIdleGold=0;s.idleGoldRemainder=0;s.offlineSec+=elapsed;s.offlineReport={seconds:Math.floor(elapsed),xp,gold:0,at:Date.now(),source:'離線自動修行'};checkLevel();note(` 離線自動修行 ${formatDuration(elapsed)}，修為 +${xp}；靈石與材料由戰鬥取得。`,'good')}s.lastOfflineClaim=Date.now();spawnEnemy();if(storageBlocked)toast('存檔不可安全讀寫，已暫停自動寫入以保護原始資料。');else save()}
+function load(){let raw=null;try{raw=localStorage.getItem(KEY)}catch(readError){storageBlocked=true;s=base()}try{const parsed=JSON.parse(raw||'{}');if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('invalid save shape');s=Object.assign(base(),parsed)}catch(e){s=base();if(raw!==null){try{localStorage.setItem(KEY+'_backup_'+Date.now(),raw)}catch(backupError){storageBlocked=true}if(!storageBlocked)toast('偵測到異常存檔，已先保留備份並以新進度啟動；原始備份未刪除。')}}if(Array.isArray(s.inventory))s.inventory.forEach(function(it){if(!it.catalogClass)it.catalogClass='裝備類';if(!it.catalogType){const template=gears.find(function(g){return g.name===it.name});it.catalogType=template?template.catalogType:'法器'}});if(!s.ownedMethods)s.ownedMethods=[0];if(!Array.isArray(s.methodLevels))s.methodLevels=[1,1,1];s.methodLevels=Array.from({length:3},(_,i)=>Math.max(1,Math.min(10,Math.floor(Number(s.methodLevels[i])||1))));if(!s.equipped)s.equipped={weapon:null,armor:null,charm:null};s.equipped=Object.assign({weapon:null,armor:null,ring:null,charm:null,boots:null},s.equipped);ensureTreasureState();if(!s.logs)s.logs=[];if(!s.lastOfflineClaim)s.lastOfflineClaim=Date.now();if(!('offlineReport' in s))s.offlineReport=null;let elapsed=Math.min(GAME_CONFIG.maxOfflineSeconds,Math.max(0,(Date.now()-(s.last||Date.now()))/1000));if(elapsed>30){let rate=s.method===1?methodIdleMultiplier():1,rawXp=Math.floor(elapsed/((GAME_CONFIG.idle&&GAME_CONFIG.idle.xpIntervalSeconds)||18)*rate*(s.method===0?methodXpMultiplier():1)*(1+gearPerks().bonusXp)),xp=Math.min(rawXp,Math.max(0,xpNeed()-s.xp));s.xp+=xp;s.pendingIdleXp=(s.pendingIdleXp||0)+xp;s.pendingIdleGold=0;s.idleGoldRemainder=0;s.offlineSec+=elapsed;s.offlineReport={seconds:Math.floor(elapsed),xp,gold:0,at:Date.now(),source:'離線自動修行'};checkLevel();note(` 離線自動修行 ${formatDuration(elapsed)}，修為 +${xp}；靈石與材料由戰鬥取得。`,'good')}s.lastOfflineClaim=Date.now();spawnEnemy();if(storageBlocked)toast('存檔不可安全讀寫，已暫停自動寫入以保護原始資料。');else save()}
 
 /* Keep the existing game systems and save schema; only reorganize the visible panels. */
 (function prepareCompactTabs(){
@@ -3992,18 +4015,70 @@ main>.screen#home.active{display:flex!important}
    '<div class="bag-action-grid"><button type="button" class="btn primary" onclick="window.bagEquipSelected('+it.id+')" '+(on?'disabled':'')+'>'+(on?'已穿戴':'穿戴')+'</button><button type="button" class="btn jade" onclick="window.bagEnhanceSelected('+it.id+')" '+((Number(it.enhanceLevel)||0)>=5?'disabled':'')+'>強化</button><button type="button" class="btn secondary" onclick="window.bagToggleLock('+it.id+')">'+(it.locked?'解除鎖定':'鎖定')+'</button><button type="button" class="btn danger" onclick="window.bagReviewDismantle('+it.id+')" '+(protectedItem?'disabled':'')+'>分解</button></div>'+
    '<div class="smallnote" style="margin-top:7px">'+(protectedItem?'此裝備目前受到保護，分解操作已停用。':'分解會永久移除此裝備，確認前會再次顯示收益。')+'</div>';
  }
-  function renderBagUI(){
+  
+function treasureEffectText(item,level){const pct=(item.perLevel*Math.max(0,level)*100).toFixed(1).replace(/\.0$/,'');return item.effectName+' +'+pct+'%';}
+function renderTreasureCollection(){
+ ensureTreasureState();
+ const ownedCount=s.ownedTreasures.length;
+ const cards=ANCIENT_TREASURES.map(function(item){
+  const owned=s.ownedTreasures.find(function(entry){return entry.id===item.id;});
+  const level=owned?owned.level:0;
+  const fragments=Number(s.treasureFragments[item.id])||0;
+  const needed=level===0?item.fragmentsRequired:level>=item.maxLevel?0:item.upgradeBase+level;
+  const progress=needed===0?100:Math.min(100,Math.floor(fragments/needed*100));
+  const ready=needed>0&&fragments>=needed;
+  const actionText=level>=item.maxLevel?'已達滿級':ready?(level===0?'消耗碎片合成':'消耗碎片升級'):(level===0?'碎片不足，等待合成':'碎片不足，等待升級');
+  const effectText=level>0?'目前效果：'+treasureEffectText(item,level):'獲得後自動生效：'+item.effectPerLevelText;
+  return '<article class="bag-treasure-card '+(level>0?'is-owned':'')+'" data-treasure-id="'+item.id+'">'+
+   '<div class="bag-treasure-card-head"><span class="bag-treasure-icon">'+escapeHtml(item.icon)+'</span><div class="bag-treasure-name"><b>'+escapeHtml(item.name)+'</b><small>'+(level>0?'已持有 · 等級 '+level:'尚未合成')+'</small></div></div>'+
+   '<p class="bag-treasure-description">'+escapeHtml(item.description)+'</p>'+
+   '<div class="bag-treasure-effect">'+escapeHtml(effectText)+'</div>'+
+   '<div class="bag-treasure-progress"><span style="width:'+progress+'%"></span></div>'+
+   '<small class="bag-treasure-fragments">碎片 '+fragments+(needed>0?' / '+needed:' · 已滿級')+'</small>'+
+   '<button type="button" class="btn '+(ready?'primary':'secondary')+' bag-treasure-action" data-treasure-action="'+item.id+'" '+((!ready||level>=item.maxLevel)?'disabled':'')+'>'+actionText+'</button>'+
+  '</article>';
+ }).join('');
+ const totalFragments=ANCIENT_TREASURES.reduce(function(sum,item){return sum+(Number(s.treasureFragments[item.id])||0);},0);
+ return '<div class="bag-treasure-intro"><div class="secthead"><span>古寶收藏</span><small>'+ownedCount+' / '+ANCIENT_TREASURES.length+' 件已持有</small></div><p>古寶不占穿戴格。合成後即自動生效，所有已持有古寶的被動效果會累加。</p><div class="bag-treasure-total">現有古寶碎片：<b>'+totalFragments+'</b></div></div>'+
+  '<div class="bag-treasure-drop-note">戰鬥碎片機率：普通怪物 8%・精英 22%・首領 50%；首領掉落時可能獲得 2 片。</div>'+
+  '<div class="bag-treasure-grid">'+cards+'</div>';
+}
+window.bagCraftTreasure=function(id){
+ ensureTreasureState();
+ const item=ANCIENT_TREASURES.find(function(entry){return entry.id===id;});
+ if(!item){toast('找不到這件古寶');return;}
+ const owned=s.ownedTreasures.find(function(entry){return entry.id===id;});
+ const level=owned?owned.level:0;
+ if(level>=item.maxLevel){toast('這件古寶已達最高等級');return;}
+ const needed=level===0?item.fragmentsRequired:item.upgradeBase+level;
+ const fragments=Number(s.treasureFragments[id])||0;
+ if(fragments<needed){toast('古寶碎片不足，還需要 '+(needed-fragments)+' 片');return;}
+ s.treasureFragments[id]=fragments-needed;
+ if(owned)owned.level=level+1;else s.ownedTreasures.push({id:id,level:1});
+ note(level===0?'合成古寶「'+item.name+'」，持有後的被動效果已生效。':'古寶「'+item.name+'」提升至 '+(level+1)+' 級，被動效果已增強。','good');
+ render();
+ toast(level===0?'古寶合成成功，效果立即生效':'古寶升級成功，效果立即提升');
+};
+function renderBagUI(){
    ensureData();
    const gold=byId('bagGold');if(gold)gold.textContent=Number(s.gold||0).toLocaleString('zh-TW');
-   const count=byId('bagCount');if(count)count.textContent=s.inventory.length+' 件裝備';
+   ensureTreasureState();const count=byId('bagCount');if(count)count.textContent=mainCategory==='treasures'?s.ownedTreasures.length+' 件古寶':s.inventory.length+' 件裝備';
    document.querySelectorAll('[data-bag-main-tab]').forEach(function(btn){const active=btn.dataset.bagMainTab===mainCategory;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',active?'true':'false')});
    document.querySelectorAll('[data-bag-category]').forEach(function(btn){const active=btn.dataset.bagCategory===category;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',active?'true':'false')});
    const equipmentView=byId('bagEquipmentView');if(equipmentView)equipmentView.hidden=mainCategory!=='equipment';
    const placeholder=byId('bagInactiveCategory');
    if(placeholder){
     placeholder.hidden=mainCategory==='equipment';
-    if(mainCategory==='treasures')placeholder.innerHTML='<h3>古寶類</h3><p>此分類將在裝備類完成並通過測試後製作，目前尚未開放。這裡暫不提供取得、收藏或效果功能。</p>';
-    else if(mainCategory==='pets')placeholder.innerHTML='<h3>靈寵類</h3><p>此分類將在裝備類完成並通過測試後製作，目前尚未開放。這裡暫不提供抽取、收藏或效果功能。</p>';
+    if(mainCategory==='treasures'){
+     placeholder.classList.add('bag-treasure-view');
+     placeholder.innerHTML=renderTreasureCollection();
+     placeholder.querySelectorAll('[data-treasure-action]').forEach(function(btn){btn.addEventListener('click',function(){window.bagCraftTreasure(btn.dataset.treasureAction);});});
+    }else if(mainCategory==='pets'){
+     placeholder.classList.remove('bag-treasure-view');
+     placeholder.innerHTML='<h3>靈寵類</h3><p>靈寵系統尚待古寶類完成並通過測試後製作。預計以靈石抽取、持有即提供被動效果；目前不會消耗靈石。</p>';
+    }else{
+     placeholder.classList.remove('bag-treasure-view');
+    }
    }
    const title=byId('bagListTitle');if(title)title.textContent=category==='all'?'全部裝備':category==='weapon'?'武器':category==='armor'?'防具':'飾品';
    const items=visibleItems(),list=byId('inventory');
@@ -4154,5 +4229,33 @@ main>.screen#home.active{display:flex!important}
 #gameApp.app>main>.screen#bag.active #bagEquipmentView>.bag-footer-actions .btn{min-width:0!important;padding:5px 1px!important;font-size:9px!important;white-space:nowrap!important}
 #gameApp #bag #inventory .bag-select-check{position:absolute!important;top:3px!important;right:3px!important;z-index:5!important;pointer-events:auto!important;touch-action:manipulation!important}
 #gameApp #bag #inventory .bag-item-tile{z-index:2!important}
+</style>
+
+<style id="v14-ancient-treasure-collection">
+/* v1.4: battle fragments, synthesis, upgrades and automatic passive effects for ancient treasures. */
+#gameApp #bag .bag-placeholder.bag-treasure-view{display:flex!important;flex-direction:column!important;gap:8px!important;min-height:0!important;height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;padding:9px!important}
+#gameApp #bag .bag-treasure-intro{display:flex;flex-direction:column;gap:5px;flex:0 0 auto}
+#gameApp #bag .bag-treasure-intro .secthead{margin:0;font-size:13px}
+#gameApp #bag .bag-treasure-intro p{margin:0;color:#c7cfda;font-size:11px;line-height:1.55}
+#gameApp #bag .bag-treasure-total{padding:6px 8px;border:1px solid #8d78463b;border-radius:8px;background:#201f23;color:#c5b99e;font-size:11px}
+#gameApp #bag .bag-treasure-total b{color:#e8c786;font-variant-numeric:tabular-nums}
+#gameApp #bag .bag-treasure-drop-note{flex:0 0 auto;padding:7px 8px;border:1px solid #8d784650;border-radius:8px;background:#2b2622;color:#d7c49a;font-size:10px;line-height:1.5}
+#gameApp #bag .bag-treasure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:7px;min-height:0}
+#gameApp #bag .bag-treasure-card{display:flex;flex-direction:column;gap:5px;min-width:0;padding:8px;border:1px solid #6d654f88;border-radius:11px;background:linear-gradient(150deg,#27262a,#171d25);box-shadow:inset 0 0 0 1px #ffffff04}
+#gameApp #bag .bag-treasure-card.is-owned{border-color:#b69a69;background:linear-gradient(150deg,#302b24,#171d25)}
+#gameApp #bag .bag-treasure-card-head{display:flex;align-items:center;gap:7px;min-width:0}
+#gameApp #bag .bag-treasure-icon{display:grid;place-items:center;flex:0 0 33px;width:33px;height:33px;border:1px solid #aa905b88;border-radius:9px;background:#332e27;color:#e9d19a;font-size:16px;font-weight:800}
+#gameApp #bag .bag-treasure-name{display:flex;flex-direction:column;gap:3px;min-width:0}
+#gameApp #bag .bag-treasure-name b{font-size:11px;line-height:1.35;color:#f0dfba;overflow-wrap:anywhere}
+#gameApp #bag .bag-treasure-name small{font-size:9px;line-height:1.3;color:#aeb7c4}
+#gameApp #bag .bag-treasure-description{margin:0;min-height:40px;color:#bfc8d4;font-size:10px;line-height:1.45}
+#gameApp #bag .bag-treasure-effect{min-height:29px;padding:5px;border-radius:7px;background:#0f171f;color:#cce0c7;font-size:9.5px;line-height:1.4}
+#gameApp #bag .bag-treasure-progress{height:4px;border-radius:99px;background:#4b453b;overflow:hidden}
+#gameApp #bag .bag-treasure-progress span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#9b8455,#e7cb83)}
+#gameApp #bag .bag-treasure-fragments{font-size:9.5px;color:#c9b98f;font-variant-numeric:tabular-nums}
+#gameApp #bag .bag-treasure-action{width:100%;min-height:29px;margin-top:auto;padding:5px 3px;font-size:9.5px;line-height:1.25;white-space:normal}
+#gameApp #bag .bag-treasure-action:disabled{opacity:.6;cursor:not-allowed}
+#gameApp #bag .bag-placeholder.bag-treasure-view[hidden]{display:none!important}
+@media(max-width:360px){#gameApp #bag .bag-treasure-grid{grid-template-columns:minmax(0,1fr)}#gameApp #bag .bag-treasure-description{min-height:0}#gameApp #bag .bag-treasure-effect{min-height:0}}
 </style>
 </body></html>

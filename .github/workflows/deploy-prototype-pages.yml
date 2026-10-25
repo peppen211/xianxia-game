@@ -168,6 +168,39 @@ jobs:
             await equipmentModal.waitFor({state:'hidden',timeout:3000});
             if (await page.evaluate(() => s.inventory.some(item => item.id === 9901003))) throw new Error('確認批次分解後，所選測試防具仍在背包。');
             console.log('Equipment inventory v0.97 regression passed: four-column grid, compare/equip modal, slot collapse, type filter, placeholders, and batch dismantle.');
+
+            // Ancient treasure regression: fragments drop only from battle, crafting spends fragments, and owned effects activate without equipment slots.
+            await bag.locator('[data-bag-main-tab="treasures"]').click();
+            const treasureCards = bag.locator('#bagInactiveCategory .bag-treasure-card');
+            if (await treasureCards.count() !== 4) throw new Error('古寶類應顯示四件可收藏古寶。');
+            const fragmentsBefore = await page.evaluate(() => Number(s.treasureFragments['guiding-jade'] || 0));
+            await page.evaluate(() => {
+              const oldRandom = Math.random;
+              try {
+                Math.random = () => 0;
+                for (let i = 0; i < 2; i++) {
+                  enemy = { type: '首領', name: '測試古寶首領', gold: 10, xp: 2, def: 0 };
+                  win();
+                }
+                renderBagUI();
+              } finally { Math.random = oldRandom; }
+            });
+            const fragmentsAfterDrop = await page.evaluate(() => Number(s.treasureFragments['guiding-jade'] || 0));
+            if (fragmentsAfterDrop < fragmentsBefore + 3) throw new Error('首領戰鬥沒有可靠地增加古寶碎片。');
+            const bonusXpBeforeTreasure = await page.evaluate(() => gearPerks().bonusXp);
+            const fragmentsBeforeCraft = fragmentsAfterDrop;
+            await bag.locator('[data-treasure-action="guiding-jade"]').click({timeout:5000});
+            const treasureStateAfterCraft = await page.evaluate(() => ({
+              owned: (s.ownedTreasures || []).find(item => item.id === 'guiding-jade'),
+              fragments: Number(s.treasureFragments['guiding-jade'] || 0),
+              bonusXp: gearPerks().bonusXp
+            }));
+            if (!treasureStateAfterCraft.owned || treasureStateAfterCraft.owned.level !== 1) throw new Error('古寶碎片合成未新增持有紀錄。');
+            if (treasureStateAfterCraft.fragments !== fragmentsBeforeCraft - 3) throw new Error('合成古寶未正確扣除所需碎片。');
+            if (treasureStateAfterCraft.bonusXp < bonusXpBeforeTreasure + 0.014) throw new Error('持有引靈古玉後，修為被動效果沒有生效。');
+            console.log('Ancient treasure regression passed: boss fragment drops, synthesis cost, owned collection state, passive XP bonus, and automatic save.');
+
+
            
             // Regression checks for the fifth tab: no duplicate database action or unrelated save/reward cards.
             await page.locator('#gameApp .bottom .nav[data-screen="journal"]').click();
@@ -237,6 +270,14 @@ jobs:
             if (await page.locator('#gameApp').isVisible()) {
               throw new Error('Reload did not return to the launch home screen.');
             }
+            const persistedTreasure = await page.evaluate(() => {
+              const saved = JSON.parse(localStorage.getItem('nine_heavens_idle_v2') || '{}');
+              return {
+                hasFragmentMap: !!saved.treasureFragments && typeof saved.treasureFragments === 'object',
+                owned: Array.isArray(saved.ownedTreasures) && saved.ownedTreasures.some(item => item.id === 'guiding-jade' && item.level === 1)
+              };
+            });
+            if (!persistedTreasure.hasFragmentMap || !persistedTreasure.owned) throw new Error('重新載入後古寶碎片／收藏存檔沒有保留。');
             if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
             console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
             await browser.close();
