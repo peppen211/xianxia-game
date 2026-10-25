@@ -7,9 +7,9 @@
 ## 目前已核實的基準
 
 - GitHub 預設分支：`main`
-- 最新已核對的 `index.html` blob SHA：`3275ce1ffb6ed8097c125de2e9ebf49b51c69785`
-- 最新已核對的程式提交：`bcccc43d3b9331ace0975a995d1539032ceaaa99`
-- `index.html` 內的畫面版本標籤：`v0.92`
+- 最新已核對的 `index.html` blob SHA：`b6367fd471e42f64c2dd095aedad78d41bb282ad`
+- 最新已核對的程式提交：`e5a4945d4a20f55702402702efe80113c5e20a82`
+- `index.html` 內的畫面版本標籤：`v0.93`
 - 上述資料證明 GitHub `main` 目前的檔案內容與標籤；**不單獨證明 GitHub Pages 已完成部署，也不單獨證明使用者瀏覽器目前載入的內容**。
 - 線上部署版本：尚未在此紀錄中完成獨立驗證。
 
@@ -40,3 +40,13 @@
 - 內容：修正 `index.html` 中被當成可見文字的字面 `\\n` 換行序列，並將畫面版本標籤從 `v0.91` 更新為 `v0.92`。
 - 已做讀回檢查：該錯誤序列不再存在，版本標籤為 `v0.92`，HTML 結尾完整。
 - GitHub Pages 部署與瀏覽器實際載入狀態：此處尚未獨立驗證。
+
+
+## 2026-10-25 第 5 階段檢查更新
+
+- 程式提交：`e5a4945d4a20f55702402702efe80113c5e20a82`
+- 畫面版本標籤：`v0.93`
+- 修正：將樣式標籤 ID 從 `launch-character-intro-v039` 改為 `launch-character-intro-style-v039`，避免與角色介紹區塊重複。
+- 讀回檢查：HTML 主標記區的重複 ID 數量為 0；11 個 script 區塊的 JavaScript 語法／JSON 解析檢查均通過；核心操作所需的主要元素 ID 存在；存檔鍵 `nine_heavens_idle_v2` 仍存在。
+- 未執行任何重置或清除存檔操作。
+- GitHub Pages 部署與瀏覽器實際互動：尚未獨立驗證。
