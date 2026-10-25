@@ -151,8 +151,14 @@ jobs:
             if (!comparisonText.includes('測試已穿戴法器') || !comparisonText.includes('測試靈品法器') || !comparisonText.includes('差值')) {
               throw new Error('裝備比較未顯示目前裝備、候選裝備及屬性差值。');
             }
-            if (await page.locator('#modalBody .bag-compare-actions button').count() !== 2) {
-              throw new Error('裝備比較彈窗應只保留確認穿戴與返回背包兩個按鈕。');
+            const comparisonActions = page.locator('#modalBody .bag-compare-actions button');
+            if (await comparisonActions.count() !== 4) {
+              throw new Error('裝備比較彈窗應保留確認穿戴、強化、分解與返回背包四項操作。');
+            }
+            for (const actionId of ['bagEquipConfirm', 'bagEnhanceConfirm', 'bagDismantleConfirm', 'bagEquipBack']) {
+              if (await page.locator('#modalBody #' + actionId).count() !== 1) {
+                throw new Error('裝備比較彈窗缺少必要操作：' + actionId);
+              }
             }
             await page.locator('#bagEquipConfirm').click();
             await equipmentModal.waitFor({state:'hidden',timeout:3000});
