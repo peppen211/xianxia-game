@@ -305,6 +305,9 @@ jobs:
                 const templateIdsUnique = new Set(templateIds).size === 20 && templateIds.every(Boolean);
                 s.craftingMaterials = {iron:0,cloth:0,beastHide:0,beastBone:0,talismanPaper:0};
                 s.wood = 0; s.crystal = 0; s.herbs = 0;
+                // Normalize the material map before taking the no-cost baseline.
+                // craftQiGear also normalizes legacy saves; that compatibility step must not be mistaken for a resource deduction.
+                ensureCraftingMaterials();
                 const beforeInsufficient = JSON.stringify({inventory:s.inventory,materials:s.craftingMaterials,wood:s.wood,crystal:s.crystal,herbs:s.herbs});
                 const denied = craftQiGear('護身軟甲');
                 const afterInsufficient = JSON.stringify({inventory:s.inventory,materials:s.craftingMaterials,wood:s.wood,crystal:s.crystal,herbs:s.herbs});
