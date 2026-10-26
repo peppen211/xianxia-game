@@ -860,14 +860,14 @@ jobs:
             console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v3.0.');
             const legacyEntryPaths = ['classic.html','mortal-cultivation-rpg.html','mortal-cultivation-rpg-3.3.html','prototype/index.html'];
             for (const legacyPath of legacyEntryPaths) {
-              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath);
+              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v3.0');
               if (!legacyResponse.ok()) throw new Error('舊入口沒有回應可用的轉址頁：' + legacyPath + ' (' + legacyResponse.status() + ')');
               const legacyHtml = await legacyResponse.text();
               if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=3.0") || !legacyHtml.includes('location.replace')) {
                 throw new Error('舊入口仍未指向 v3.0 正式版：' + legacyPath);
               }
             }
-            await page.goto('https://peppen211.github.io/xianxia-game/classic.html', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v3.0', { waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=3.0', null, { timeout: 15000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
