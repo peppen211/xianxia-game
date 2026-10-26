@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v6.56: place XianShi at the far right and synchronize release verification links. -->
+<!-- v6.57: place XianShi at the far right and synchronize release verification links. -->
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -2049,7 +2049,7 @@ html,body,#launchGate,#gameApp{
 
 
 <style id="v652-interface-polish">
-/* v6.56: focused mobile readability and touch-target improvements. */
+/* v6.57: focused mobile readability and touch-target improvements. */
 #gameApp .screen{padding:12px 12px calc(18px + env(safe-area-inset-bottom))!important;gap:10px!important}
 #gameApp .screen .page-title{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:2px 1px 5px}
 #gameApp .screen .page-title h2{font-size:clamp(20px,5.2vw,25px);line-height:1.25;letter-spacing:.02em}
@@ -2103,7 +2103,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.56</small>
+  <small class="status-version" aria-label="遊戲版本">v6.57</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2115,11 +2115,6 @@ html,body,#launchGate,#gameApp{
 
 </section>
 <section class="screen" id="cultivate">
- <div class="panel cultivate-catalog-entry">
-  <div class="secthead"><span>典藏圖鑑</span><small>古寶・法寶・靈寵</small></div>
-  <p class="smallnote">原著典藏與生靈名錄集中於此，與儲物袋持有物分開管理。</p>
-  <button type="button" class="btn secondary" id="openCultivateCatalog">開啟分類圖鑑</button>
- </div>
 </section>
 <section class="screen" id="character"><div class="page-title"><h2> 修士面板</h2><span id="charTitle">韓立</span></div><div class="panel" style="display:flex;align-items:center;gap:11px"><div class="portrait-seal hanli-portrait-image"><img src="https://raw.githubusercontent.com/peppen211/xianxia-game/main/%E4%B8%BB%E8%A7%92%E5%9C%96.PNG?v=0.90" alt="韓立主角立繪"></div><div style="flex:1"><b style="font-size:16.3px">韓立</b><div id="charRealm" style="font-size:12.5px;color:var(--gold);margin:4px 0">煉氣一層</div><div style="font-size:11.3px;color:var(--muted)">出身平凡，行事謹慎，重視自保、準備與機緣。</div></div><div style="text-align:right"><small style="font-size:10px;color:var(--muted)">總戰力</small><div id="charPower" style="font-size:25px;font-weight:900;color:var(--gold)">18</div></div></div><div class="panel hanli-profile" aria-label="韓立原著角色資料"><div class="secthead"><span> 角色資料</span><small>凡人修仙傳</small></div><div class="profile-grid"><div><small>出身</small><b>天南越國鏡州青牛鎮五里溝</b><span>貧苦農家</span></div><div><small>年齡</small><b><span id="hanliAge">10</span> 歲</b><span>隨修煉進度增長</span></div><div><small>外貌</small><b>皮膚黝黑、相貌普通</b><span>外號「二愣子」</span></div><div><small>靈根</small><b>偽靈根</b><span>修行資質平庸，修煉之路更需耐心與機緣。</span></div></div></div><!-- v0.84: removed five-element strip --><div class="two-col" id="statsGrid"></div><div class="scrolllist hidden-content" id="upgradeList" aria-hidden="true" hidden></div><div class="panel" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13.8px">離線放置收益</b><div id="offlineSummary" style="font-size:11.3px;color:var(--muted);margin-top:4px">修煉從未停止。</div></div><button class="btn secondary" id="claimIdle">收益詳情</button></div><div class="secthead"><span>修仙日誌</span><small>最新事件在底部</small></div><div class="loglist" id="logs"></div><div class="action-grid"><button class="btn secondary" id="saveBtn"> 儲存進度</button><button class="btn danger" id="resetBtn">重新開始</button></div><div class="smallnote">本機儲存；離線收益最多累積 24 小時。主線紀事為精簡世界觀導覽，不改動既有存檔結構。</div></section>
 <section class="screen" id="bag">
@@ -6238,7 +6233,7 @@ label{color:#d6dce4}
  test('分類初始化避免全頁 DOM 觀察',!document.getElementById('v639-catalog-location-script')?.textContent.includes('new MutationObserver'),'分類入口只初始化一次，避免 DOM 變更連鎖');
  test('存檔鍵未變更',typeof KEY==='string'&&KEY==='nine_heavens_idle_v2','只讀檢查存檔鍵，禁止重置或覆寫');
 
-       test('版本標記',!!document.querySelector('.status-version')&&/v6\.52/.test(document.querySelector('.status-version').textContent) ,'應顯示 v6.56');
+       test('版本標記',!!document.querySelector('.status-version')&&/v6\.52/.test(document.querySelector('.status-version').textContent) ,'應顯示 v6.57');
  test('五大分類齊全',document.querySelectorAll('#bag [data-bag-main-tab]').length===5,'裝備、古寶、靈寵、法寶、材料');
  test('五個穿戴部位',document.querySelectorAll('#bag #slots .slot').length===5,'武器、防具、戒指、玉佩、靴子');
  test('裝備清單存在',!!byId('inventory'),'可供篩選與選取');
@@ -6276,13 +6271,13 @@ label{color:#d6dce4}
 
 
 <style id="v653-bag-lower-grid-five-columns">
-/* v6.56：儲物袋下層物品格固定為每列五格，覆蓋前段舊版四欄規則；不改動物品資料或存檔。 */
+/* v6.57：儲物袋下層物品格固定為每列五格，覆蓋前段舊版四欄規則；不改動物品資料或存檔。 */
 #gameApp #bag #inventory.bag-item-list{grid-template-columns:repeat(5,minmax(0,1fr))!important}
 </style>
 
 
 <style id="v654-five-nav-and-cultivation-page-restore">
-/* v6.56：底部導覽固定五欄；恢復修煉主頁原有內容區，避免只剩圖鑑與快捷按鈕、下方大片空白。 */
+/* v6.57：底部導覽固定五欄；恢復修煉主頁原有內容區，避免只剩圖鑑與快捷按鈕、下方大片空白。 */
 #gameApp.app>nav.bottom{
   display:grid!important;
   grid-template-columns:repeat(5,minmax(0,1fr))!important;
@@ -6404,7 +6399,7 @@ label{color:#d6dce4}
 
 
 <style id="v656-remove-duplicate-cultivation-catalog">
-/* v6.56：移除修煉頁重複的典藏圖鑑卡片；分類圖鑑只保留儲物袋入口。 */
+/* v6.57：移除修煉頁重複的典藏圖鑑卡片；分類圖鑑只保留儲物袋入口。 */
 #gameApp #cultivate #openCultivateCatalog,
 #gameApp #cultivate .panel:has(#openCultivateCatalog){display:none!important}
 </style>
@@ -6416,5 +6411,21 @@ label{color:#d6dce4}
  };
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',removeDuplicate,{once:true});
  else removeDuplicate();
+})();
+</script>
+
+
+<script id="v657-remove-catalog-panel-on-legacy-load">
+(function(){
+ function removeDuplicateCatalog(){
+  const cultivate=document.getElementById('cultivate');
+  if(!cultivate)return;
+  cultivate.querySelectorAll('.cultivate-catalog-entry,#openCultivateCatalog').forEach(function(node){
+   if(node.classList&&node.classList.contains('cultivate-catalog-entry'))node.remove();
+   else if(node.isConnected){const panel=node.closest('.panel');if(panel)panel.remove();else node.remove();}
+  });
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',removeDuplicateCatalog,{once:true});
+ else removeDuplicateCatalog();
 })();
 </script>
