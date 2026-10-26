@@ -27,7 +27,7 @@ jobs:
           cp index.html dist/index.html
           cp latest.html dist/latest.html
           cp '首頁.PNG' 'dist/首頁.PNG'
-          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=3.1"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=3.1");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v3.1。</p><a href="https://peppen211.github.io/xianxia-game/?v=3.1">開啟目前正式版 v3.1</a></body></html>'
+          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=3.1"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=3.1");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v3.2。</p><a href="https://peppen211.github.io/xianxia-game/?v=3.1">開啟目前正式版 v3.2</a></body></html>'
           for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html; do
             printf '%s\n' "$LEGACY_REDIRECT_HTML" > "dist/$LEGACY_PATH"
           done
@@ -90,7 +90,7 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v3.1') throw new Error('遊戲右上角版本標示應為 v3.1，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v3.2') throw new Error('遊戲右上角版本標示應為 v3.2，實際為：' + publishedVersionLabel);
             const characterHeadingDisplay = await page.locator('#character > .page-title').evaluate(el => getComputedStyle(el).display);
             if (characterHeadingDisplay !== 'none') throw new Error('角色分頁的「修士面板」標題列應已移除。');
             const cultivationHeadingDisplay = await page.locator('#cultivate > .page-title').evaluate(el => getComputedStyle(el).display);
@@ -210,7 +210,7 @@ jobs:
             if (mainTabColumns !== 5) throw new Error('儲物袋五大分類按鈕應在同一列呈現五欄，實際欄數：' + mainTabColumns);
             if (await equipTabs.count() !== 4) throw new Error('裝備分類應有全部、武器、防具、飾品四個子分類。');
 
-            // v3.1 regression: material stack counts, inventory view and non-destructive save migration.
+            // v3.2 regression: material stack counts, inventory view and non-destructive save migration.
             await bag.locator('[data-bag-main-tab="materials"]').click();
             const materialCards = bag.locator('.bag-material-card');
             if (await materialCards.count() !== 8) throw new Error('材料袋應顯示 8 種煉氣期基礎材料。');
@@ -229,7 +229,7 @@ jobs:
             await bag.locator('[data-bag-main-tab="equipment"]').click();
             console.log('Qi Refining materials regression passed: eight stacked material types, legacy resources reused without reset, and material inventory view.');
 
-            // v3.1 regression: all twelve Qi Refining recipes render, insufficient materials never consume resources, and successful crafting deducts the exact recipe and adds gear.
+            // v3.2 regression: all twelve Qi Refining recipes render, insufficient materials never consume resources, and successful crafting deducts the exact recipe and adds gear.
             const forgeRecipeAudit = await page.evaluate(() => {
               const snapshot = JSON.parse(JSON.stringify(s));
               try {
@@ -242,6 +242,22 @@ jobs:
                 const firstBatchComplete = firstBatchNames.every(name => {
                   const item = starterTemplates.find(candidate => candidate && candidate.name === name);
                   return !!item && item.starterBatch === 1 && QI_GEAR_RECIPES.some(recipe => recipe.name === name);
+                });
+                const expectedFirstBatchMaterials = {
+                  '青竹劍':'wood',
+                  '粗布護衣':'cloth',
+                  '獸皮護腕':'beastHide',
+                  '獸骨短刀':'beastBone',
+                  '凝氣玉佩':'crystal',
+                  '藤編護腿':'wood',
+                  '磨石短劍':'iron',
+                  '獸牙項鍊':'beastBone',
+                  '靈木法杖':'wood',
+                  '聚氣符囊':'talismanPaper'
+                };
+                const firstBatchMaterialMap = firstBatchNames.every(name => {
+                  const item = starterTemplates.find(candidate => candidate && candidate.name === name);
+                  return !!item && item.enhanceMaterialKey === expectedFirstBatchMaterials[name];
                 });
                 const metadataComplete = starterTemplates.length === 20 && starterTemplates.every(item =>
                   item && item.templateId && Number(item.gearLevel) >= 1 && item.realmRequirement === '煉氣期' &&
@@ -266,6 +282,7 @@ jobs:
                   templateIdsUnique,
                   firstBatchCount,
                   firstBatchComplete,
+                  firstBatchMaterialMap,
                   insufficientDenied: denied === false,
                   insufficientNoCost: beforeInsufficient === afterInsufficient,
                   crafted,
@@ -280,13 +297,14 @@ jobs:
             });
             if (forgeRecipeAudit.rendered !== 20 || !forgeRecipeAudit.metadataComplete || !forgeRecipeAudit.templateIdsUnique ||
                 forgeRecipeAudit.firstBatchCount !== 10 || !forgeRecipeAudit.firstBatchComplete ||
+                !forgeRecipeAudit.firstBatchMaterialMap ||
                 !forgeRecipeAudit.insufficientDenied || !forgeRecipeAudit.insufficientNoCost ||
                 !forgeRecipeAudit.crafted || !forgeRecipeAudit.addedExactlyOne || !forgeRecipeAudit.ironConsumedExactly || !forgeRecipeAudit.boneConsumedExactly) {
               throw new Error('煉器配方製作回歸測試失敗：' + JSON.stringify(forgeRecipeAudit));
             }
             console.log('Qi Refining forge regression passed: twenty recipes, insufficient-material protection, exact resource costs and crafted gear entering inventory.');
 
-            // v3.1 regression: enhancement requires both spirit stones and the matching material, and consumes them only on success.
+            // v3.2 regression: enhancement requires both spirit stones and the matching material, and consumes them only on success.
             const enhancementMaterialAudit = await page.evaluate(() => {
               const snapshot = JSON.parse(JSON.stringify(s));
               try {
@@ -323,7 +341,7 @@ jobs:
             }
             console.log('Equipment enhancement material regression passed: missing-material protection, exact spirit-stone and iron costs, and expected stat growth.');
 
-            // v3.1 regression: the real single-item dismantle confirmation returns material and keeps the spirit-stone reward.
+            // v3.2 regression: the real single-item dismantle confirmation returns material and keeps the spirit-stone reward.
             const dismantleMaterialAudit = await page.evaluate(async () => {
               const snapshot = JSON.parse(JSON.stringify(s));
               try {
@@ -358,7 +376,7 @@ jobs:
 
 
 
-            // v3.1 regression: validate the 20 Qi Refining starter items and prevent duplicate drops.
+            // v3.2 regression: validate the 20 Qi Refining starter items and prevent duplicate drops.
             const starterGearAudit = await page.evaluate(() => {
               const expected = [
                 ['精鐵劍','weapon'],['青竹劍','weapon'],['烏木法杖','weapon'],
@@ -411,7 +429,7 @@ jobs:
             }
             console.log('Qi Refining starter gear regression passed: all 20 items, first-batch 10 stable IDs/realm/material/acquisition/drop metadata, valid slots and stats, original-content labels, and duplicate-drop prevention.');
 
-            // v3.1 canon archive regression: four source-grounded entries live in the existing catalog.
+            // v3.2 canon archive regression: four source-grounded entries live in the existing catalog.
             await bag.locator('.bag-catalog-button').click();
             const catalogModal = page.locator('#uiModal');
             await catalogModal.waitFor({ state: 'visible', timeout: 3000 });
@@ -420,7 +438,7 @@ jobs:
               throw new Error('既有分類圖鑑沒有顯示第一篇原著典藏與首項條目。');
             }
             const loreSummary = page.locator('#modalBody details summary');
-            if (await loreSummary.count() !== 4) throw new Error('v3.1 原著典藏應有四個可展開條目。');
+            if (await loreSummary.count() !== 4) throw new Error('v3.2 原著典藏應有四個可展開條目。');
             const loreChecks = [
               { index: 0, name: '金蚨子母刃', required: ['母刃一把、子刃八把', '持有者／取得', '小說與動畫差異', '遊戲處理'] },
               { index: 1, name: '玄鐵飛天盾', required: ['防禦型法器', '自動飛行防禦', '第 163 章', '遊戲處理'] },
@@ -867,7 +885,7 @@ jobs:
             console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
             await page.goto('https://peppen211.github.io/xianxia-game/latest.html', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const latestPageVersion = (await page.locator('.version').innerText()).trim();
-            if (latestPageVersion !== 'v3.1') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
+            if (latestPageVersion !== 'v3.2') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
             const latestPageLink = await page.locator('a.launch').getAttribute('href');
             if (latestPageLink !== './?v=3.1') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
             await page.locator('a.launch').click();
@@ -875,25 +893,25 @@ jobs:
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const latestLinkTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (latestLinkTargetVersion !== 'v3.1') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
-            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v3.1.');
+            if (latestLinkTargetVersion !== 'v3.2') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
+            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v3.2.');
             const legacyEntryPaths = ['classic.html','mortal-cultivation-rpg.html','mortal-cultivation-rpg-3.3.html','prototype/index.html'];
             for (const legacyPath of legacyEntryPaths) {
-              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v3.1');
+              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v3.2');
               if (!legacyResponse.ok()) throw new Error('舊入口沒有回應可用的轉址頁：' + legacyPath + ' (' + legacyResponse.status() + ')');
               const legacyHtml = await legacyResponse.text();
               if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=3.1") || !legacyHtml.includes('location.replace')) {
-                throw new Error('舊入口仍未指向 v3.1 正式版：' + legacyPath);
+                throw new Error('舊入口仍未指向 v3.2 正式版：' + legacyPath);
               }
             }
-            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v3.1', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v3.2', { waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=3.1', null, { timeout: 15000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const legacyTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (legacyTargetVersion !== 'v3.1') throw new Error('舊版入口轉址後仍未開啟 v3.1：' + legacyTargetVersion);
-            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v3.1 without launching old save logic.');
+            if (legacyTargetVersion !== 'v3.2') throw new Error('舊版入口轉址後仍未開啟 v3.2：' + legacyTargetVersion);
+            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v3.2 without launching old save logic.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
@@ -913,8 +931,8 @@ jobs:
               fi
             done
             if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE" &&
-               grep -Fq '<div class="version">v3.1</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=3.1"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
-              echo "Published v3.1 entry, latest.html and all legacy redirects verified."
+               grep -Fq '<div class="version">v3.2</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=3.1"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
+              echo "Published v3.2 entry, latest.html and all legacy redirects verified."
               exit 0
             fi
             sleep 10
