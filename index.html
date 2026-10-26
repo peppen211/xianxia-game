@@ -2064,7 +2064,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v5.9</small>
+  <small class="status-version" aria-label="遊戲版本">v6.0</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2272,8 +2272,8 @@ function openClassificationCatalog(){
  const petRows=petCatalog.map(function(item){return '<div class="rowitem"><div class="rowicon">靈</div><div class="rowbody"><b>'+item.name+'</b><small>靈寵類 · '+item.kind+' · '+item.desc+' · '+(item.sourceTag||'來源待核對')+'</small></div></div>';}).join('');
  /* v2.0 測試：延續既有「第一篇：裝備與寶物」，補入同一段萬寶樓交易可核對的物件；只收錄考據，不改玩法數值或存檔。 */
  const canonArchive =
-  '<div class="panel" style="margin-top:8px"><div class="secthead"><span>原著典藏 · 第一篇：裝備與寶物</span><small>1.1 兵器、防具與符寶</small></div>'+
-  '<p class="smallnote">此區直接整合在現有「分類圖鑑」。v2.0 測試新增萬寶樓交易相關條目；僅記錄小說／動畫可核對的資料，不把原作物件直接換算成攻擊數值、掉落率、製作需求或遊戲裝備。</p>'+
+  '<div class="panel" style="margin-top:8px"><div class="secthead"><span>原著典藏 · 第一篇：裝備與寶物</span><small>1.1 兵器、防具與符寶 · 1.2 核心寶物與機緣</small></div>'+
+  '<p class="smallnote">此區直接整合在現有「分類圖鑑」。本次擴充萬寶樓交易物件與核心寶物條目；原作機緣、遊戲自創收藏分開記錄，不把原作物件直接換算成攻擊數值、掉落率、製作需求或玩家可持有裝備。</p>'+
   '<details style="padding:8px 0"><summary style="cursor:pointer;font-weight:700;color:var(--gold,#d7b56d)">金蚨子母刃 · 第 1 項</summary>'+
   '<div class="smallnote" style="line-height:1.8;margin-top:8px">'+
   '<b>正式名稱：</b>金蚨子母刃<br>'+
@@ -2316,6 +2316,23 @@ function openClassificationCatalog(){
   '<b>動畫對應：</b>《凡人風起天南》第 11 集；動畫呈現萬寶樓掌櫃展示此物並完成交易。<br>'+
   '<b>小說與動畫差異：</b>交易及後續戰鬥的呈現節奏有所精簡／改編；本條只記錄兩者共同確認的物件與定位，不把改編演出當成原著細節。<br>'+
   '<b>遊戲處理：</b>保留「符寶」分類，不填入未核實的品階、威力、使用次數或可製作規則。'+
+  '</div></details>'+
+  '<details style="padding:8px 0"><summary style="cursor:pointer;font-weight:700;color:var(--gold,#d7b56d)">掌天瓶 · 第 5 項</summary>'+
+  '<div class="smallnote" style="line-height:1.8;margin-top:8px">'+
+  '<b>類型：</b>核心機緣／特殊寶物，不等同一般可穿戴裝備。<br>'+
+  '<b>外觀與運作：</b>小瓶可在特定條件下凝聚露水，形成具有特殊效用的綠色液體。<br>'+
+  '<b>核心用途：</b>綠液可促進靈藥、靈草生長，是韓立培育靈藥的重要機緣；本條不把故事中的特殊條件改寫成遊戲公式。<br>'+
+  '<b>持有者：</b>韓立；屬於韓立原作人生線中的核心機緣，不轉移給玩家。<br>'+
+  '<b>原著定位：</b>貫穿韓立早期修行與靈藥培育的關鍵寶物；精確章節編號留待逐章核對。<br>'+
+  '<b>遊戲處理：</b>僅作原著典藏，不直接加入玩家背包、掉落表或可複製玩法。'+
+  '</div></details>'+
+  '<details style="padding:8px 0"><summary style="cursor:pointer;font-weight:700;color:var(--gold,#d7b56d)">虛天鼎 · 第 6 項</summary>'+
+  '<div class="smallnote" style="line-height:1.8;margin-top:8px">'+
+  '<b>類型：</b>原作具名上古寶物；與遊戲自創古寶分開記錄。<br>'+
+  '<b>出場關聯：</b>與亂星海的虛天殿相關情節相連，是韓立該段高階修仙歷程中的重要寶物。<br>'+
+  '<b>故事關聯：</b>與虛天殿探索及乾藍冰焰相關事件有關；此條先記錄物件與篇章關係，不擅自補入未逐項核對的能力細節。<br>'+
+  '<b>持有者／取得：</b>原作中與韓立在虛天殿相關事件的機緣相連；具體取得流程與章節位置留待逐章考據。<br>'+
+  '<b>遊戲處理：</b>目前只作原著典藏，未自動映射到遊戲內古寶被動、碎片合成、掉落率或數值。'+
   '</div></details></div>'; 
  openModal('法寶與生靈分類',
   '<div class="panel"><div class="secthead"><span>裝備類</span><small>4 種</small></div><p class="smallnote">管理可穿戴、可使用、可強化或分解的物品。圖鑑中的「法寶／符寶」是器物類型紀錄，不會因此自動變成遊戲內的戰鬥法寶。</p><div class="scrolllist">'+equipRows+'</div></div>'+
