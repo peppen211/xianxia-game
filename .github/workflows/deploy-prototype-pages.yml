@@ -1166,7 +1166,7 @@ jobs:
               fi
             done
             if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE" &&
-               grep -Fq '<div class="version">v6.29</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.28"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
+               grep -Fq '<div class="version">v6.29</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.29"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
               echo "Published v6.29 entry, latest.html and all legacy redirects verified."
               exit 0
             fi
