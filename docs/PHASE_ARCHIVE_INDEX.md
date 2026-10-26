@@ -143,3 +143,13 @@
 - **測試證據：**上一個成功 Actions run `40284325020`，24 項單元測試通過；手機尺寸 Chromium 測試涵蓋材料掉落加成、20 件配方、強化／分解、古寶、法寶、靈寵、戰鬥、存檔重載、版本入口與舊入口轉址。
 - **存檔保護：**`nine_heavens_idle_v2` 未變更，未重置或清除玩家存檔。
 - **待完成：**最新 v6.0 Actions 結果、逐章核對掌天瓶與虛天鼎、持續擴充 12 大類原著資料、iPhone Safari 真機驗收。
+
+
+## Phase 14：第一篇原著典藏續作，青竹蜂雲劍（v6.18）
+- **狀態：**原始碼與部署回歸已提交，GitHub Actions 執行中，結果待確認。
+- **修改檔案：**`index.html`、`latest.html`、`.github/workflows/deploy-prototype-pages.yml`、`CHANGELOG.md`、`GAME_STATE.md`、`PROJECT_CONTINUATION.md`、`GAME_PROJECT_MASTER.md`、`docs/PROJECT_DECISION_LOG.md`、本索引。
+- **原著典藏：**新增青竹蜂雲劍第 7 項，置於既有「分類圖鑑」第一篇；沒有建立外置頁面。
+- **查核界線：**記錄韓立持有、飛劍與劍陣關聯；材料細節、煉製階段、飛劍數量、精確章節及動畫對應保留待核狀態。
+- **回歸測試：**典藏數量預期由六項更新為七項，新增青竹蜂雲劍名稱與關鍵欄位斷言；版本入口及舊入口轉址更新為 v6.18。
+- **存檔保護：**`nine_heavens_idle_v2` 未變更；未清除、重置、遷移或覆寫玩家進度。
+- **待確認：**Actions 建置／部署與手機尺寸 Chromium 回歸結果；iPhone Safari 真機驗收仍未完成。
