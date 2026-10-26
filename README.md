@@ -1,7 +1,7 @@
 # 不好意思，本座又突破了
 
-**目前遊戲版本：** v6.22  
-**正式遊玩入口：** https://peppen211.github.io/xianxia-game/?v=6.22  
+**目前遊戲版本：** v6.23  
+**正式遊玩入口：** https://peppen211.github.io/xianxia-game/?v=6.23  
 **最新版本頁：** https://peppen211.github.io/xianxia-game/latest.html
 
 根目錄的 `index.html` 是正式遊戲入口，`latest.html` 顯示目前遊戲版本並連到相同版本。遊戲畫面版號、最新版本頁、GitHub Actions 瀏覽器驗收與部署檢查必須保持一致。
