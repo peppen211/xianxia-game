@@ -2064,7 +2064,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v5.5</small>
+  <small class="status-version" aria-label="遊戲版本">v5.6</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -5486,6 +5486,120 @@ html body #gameApp.app>header.top.statusline>.status-name{
 #gameApp #uiModal .recipe-list{display:flex;flex-direction:column;gap:8px}
 @media(max-width:360px){#gameApp #forge .qi-recipe-grid{grid-template-columns:1fr}}
 </style>
+
+<style id="v5-6-group-battle-style">
+#gameApp .enemy-scene.is-group #enemyArt{display:none!important}
+#gameApp .enemy-group-list{position:absolute;left:8px;right:8px;top:34px;bottom:32px;z-index:3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;align-items:center;min-width:0}
+#gameApp .enemy-group-list[hidden]{display:none!important}
+#gameApp .enemy-group-card{min-width:0;min-height:68px;padding:5px 4px;border:1px solid #d5bd7955;border-radius:9px;background:#111b24df;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 3px 9px #0005}
+#gameApp .enemy-group-card.defeated{opacity:.38;filter:grayscale(.7)}
+#gameApp .enemy-group-portrait{width:27px;height:27px;display:grid;place-items:center;overflow:hidden}
+#gameApp .enemy-group-portrait svg{width:28px;height:28px}
+#gameApp .enemy-group-card b{display:block;max-width:100%;font-size:10px;line-height:1.2;color:#f0dfb6;overflow-wrap:anywhere;text-align:center}
+#gameApp .enemy-group-card small{display:block;font-size:8px;line-height:1.15;color:#b8c8c4;text-align:center;font-variant-numeric:tabular-nums}
+#gameApp .enemy-group-card .enemy-group-hp{width:100%;height:4px;border-radius:99px;overflow:hidden;background:#0b1017}
+#gameApp .enemy-group-card .enemy-group-hp span{display:block;height:100%;background:linear-gradient(90deg,#e67c74,#ffb39b)}
+#gameApp #groupBattleBtn:disabled{opacity:.72;color:#f0dca5}
+@media(max-width:360px){#gameApp .enemy-group-list{left:5px;right:5px;gap:3px}#gameApp .enemy-group-card{padding:4px 2px}#gameApp .enemy-group-card b{font-size:9px}}
+</style>
+<script id="v5-6-group-battle-system">
+(function installGroupBattle(){
+ 'use strict';
+ const actions=document.querySelector('#home .battle-actions');
+ const scene=document.querySelector('#home .enemy-scene');
+ if(!actions||!scene||typeof spawnEnemy!=='function'||typeof attack!=='function'||!Array.isArray(foes))return;
+ const list=document.createElement('div');
+ list.id='enemyGroupList';list.className='enemy-group-list';list.hidden=true;
+ scene.insertBefore(list,scene.querySelector('.enemy-bottom'));
+ const button=document.createElement('button');
+ button.type='button';button.id='groupBattleBtn';button.className='btn secondary';
+ button.textContent='群戰試煉 ×3';button.title='同時面對三隻妖獸，逐一擊敗並分別結算戰利品';
+ actions.appendChild(button);
+ let groupMembers=null,groupActive=false;
+ const baseSpawnEnemy=spawnEnemy;
+ spawnEnemy=function(){
+  if(groupActive&&Array.isArray(groupMembers)){
+   const next=groupMembers.find(member=>member.hp>0);
+   if(next){enemy=next;return;}
+   groupActive=false;groupMembers=null;
+  }
+  baseSpawnEnemy();
+ };
+ const baseRender=render;
+ function updateGroupDisplay(){
+  if(!groupActive||!Array.isArray(groupMembers)){
+   scene.classList.remove('is-group');list.hidden=true;list.innerHTML='';
+   const art=document.getElementById('enemyArt');if(art)art.style.display='';
+   button.disabled=false;button.textContent='群戰試煉 ×3';
+   return;
+  }
+  const alive=groupMembers.filter(member=>member.hp>0);
+  const totalHp=groupMembers.reduce((sum,member)=>sum+Math.max(0,member.hp),0);
+  const totalMax=groupMembers.reduce((sum,member)=>sum+Math.max(1,member.maxHp),0);
+  scene.classList.add('is-group');list.hidden=false;
+  const name=document.getElementById('enemyName'),level=document.getElementById('enemyLevel'),art=document.getElementById('enemyArt');
+  if(name)name.textContent='妖獸圍攻 · '+alive.length+' 隻';
+  if(level)level.textContent='群戰試煉';
+  if(art)art.style.display='none';
+  const hpText=document.getElementById('enemyHpText'),bar=document.getElementById('enemyBar');
+  if(hpText)hpText.textContent='群體氣血 '+totalHp+'/'+totalMax;
+  if(bar)bar.style.width=Math.max(0,totalHp/Math.max(1,totalMax)*100)+'%';
+  list.innerHTML=groupMembers.map(member=>{
+   const ratio=Math.max(0,Math.min(100,member.hp/Math.max(1,member.maxHp)*100));
+   return '<div class="enemy-group-card '+(member.hp<=0?'defeated':'')+'"><div class="enemy-group-portrait">'+enemySigil(member.art)+'</div><b>'+esc(member.name)+'</b><small>'+Math.max(0,member.hp)+' / '+member.maxHp+'</small><div class="enemy-group-hp"><span style="width:'+ratio+'%"></span></div></div>';
+  }).join('');
+  button.disabled=true;button.textContent='群戰進行中 · 剩餘 '+alive.length+' 隻';
+ }
+ render=function(){baseRender();updateGroupDisplay()};
+ function startGroupBattle(){
+  if(groupActive){toast('請先結束目前的群戰');return}
+  const baseIndex=Math.min(foes.length-1,Math.floor(s.kills/4));
+  const realmScale=1+s.major*.45+(s.layer-1)*.12;
+  groupMembers=[0,1,2].map(offset=>{
+   const f=foes[(baseIndex+offset)%foes.length];
+   const maxHp=Math.max(1,Math.floor(f.hp*realmScale*.76));
+   return {...f,type:'普通',maxHp,hp:maxHp,atk:Math.max(1,Math.floor(f.atk*realmScale*.68)),gold:Math.max(1,Math.floor(f.gold*1.1)),xp:Math.max(1,Math.floor(f.xp*1.1))};
+  });
+  groupActive=true;enemy=groupMembers[0];
+  note('三隻妖獸同時現身！群戰中每次出手會遭到其他存活妖獸夾擊。','bad');
+  render();toast('群戰開始：逐一擊敗三隻妖獸，獎勵分別結算');
+ }
+ button.addEventListener('click',startGroupBattle);
+ function retaliateFromOtherEnemies(target){
+  if(!groupActive||!Array.isArray(groupMembers)||!target||target.hp<=0)return;
+  const others=groupMembers.filter(member=>member.hp>0&&member!==target);
+  if(!others.length)return;
+  const perks=gearPerks(),magicStates=getActiveMagicStates();
+  for(const foe of others){
+   const rawTaken=Math.max(1,foe.atk-val('def')+Math.floor(Math.random()*3));
+   const magicReduction=getMagicDefenseReduction(rawTaken,magicStates);
+   const taken=Math.max(1,Math.floor(rawTaken*(1-(perks.damageCut||0))*(1-magicReduction)));
+   s.hp-=taken;note(foe.name+'趁隙夾擊，造成 '+taken+' 點傷害。','bad');
+   if(s.hp<=0){
+    const lost=Math.min(s.gold,Math.floor(s.gold*.06));s.gold-=lost;s.hp=Math.floor(val('maxHp')*.55);
+    note('群戰中受創倒地，恢復至 '+s.hp+' 氣血，損失 '+lost+' 靈石。','bad');break;
+   }
+  }
+  render();
+ }
+ const baseAttack=attack;
+ attack=function(skill=false){
+  const target=enemy,wasGroup=groupActive;
+  baseAttack(skill);
+  if(wasGroup&&groupActive&&target&&target.hp>0)retaliateFromOtherEnemies(target);
+ };
+ const baseSneakAttack=sneakAttack;
+ sneakAttack=function(){
+  const target=enemy,wasGroup=groupActive;
+  baseSneakAttack();
+  if(wasGroup&&groupActive&&target&&target.hp>0)retaliateFromOtherEnemies(target);
+ };
+ const flee=document.getElementById('fleeBtn');
+ if(flee)flee.addEventListener('click',()=>{if(groupActive){groupActive=false;groupMembers=null;updateGroupDisplay()}},true);
+ document.getElementById('attackBtn')?.addEventListener('click',()=>{},true);
+ window.xianxiaGroupBattle={isActive:()=>groupActive,remaining:()=>groupMembers?groupMembers.filter(member=>member.hp>0).length:0};
+})();
+</script>
 </body></html>
 
 <style id="v101-bag-slot-height-balance">
