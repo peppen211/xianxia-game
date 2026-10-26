@@ -210,6 +210,37 @@ jobs:
             if (mainTabColumns !== 4) throw new Error('儲物袋四大分類按鈕應在同一列呈現四欄，實際欄數：' + mainTabColumns);
             if (await equipTabs.count() !== 4) throw new Error('裝備分類應有全部、武器、防具、飾品四個子分類。');
 
+            // v2.2 regression: validate the 12 Qi Refining starter items and prevent duplicate drops.
+            const starterGearAudit = await page.evaluate(() => {
+              const expected = [
+                ['精鐵劍','weapon'],['青竹劍','weapon'],['烏木法杖','weapon'],
+                ['粗布道袍','armor'],['青紋法衣','armor'],['護身軟甲','armor'],
+                ['凝氣玉佩','charm'],['聚靈手環','ring'],['鐵木護腕','ring'],
+                ['低階攻擊符','charm'],['護身靈符','charm'],['聚氣靈珠','charm']
+              ];
+              const items = gears.filter(item => item.qiStarter);
+              const byName = new Map(items.map(item => [item.name,item]));
+              const missing = expected.filter(([name]) => !byName.has(name)).map(([name]) => name);
+              const wrongSlots = expected.filter(([name,slot]) => byName.has(name) && byName.get(name).slot !== slot).map(([name,slot]) => ({name,expected:slot,actual:byName.get(name).slot}));
+              const invalid = items.filter(item => !['凡品','靈品','珍品'].includes(item.rarity) ||
+                ![item.atk,item.def,item.hp,item.value].every(value => Number.isFinite(Number(value)) && Number(value) >= 0) ||
+                !String(item.desc || '').includes('【遊戲自創】')).map(item => item.name);
+              const dropPool = items.filter(item => !s.inventory.some(owned => owned.name === item.name));
+              const ownedStarterNames = s.inventory.filter(item => item.qiStarter).map(item => item.name);
+              return {
+                count:items.length, uniqueNames:byName.size, missing, wrongSlots, invalid,
+                dropPoolNames:dropPool.map(item => item.name),
+                ownedStarterNames,
+                poolExcludesOwned:dropPool.every(item => !s.inventory.some(owned => owned.name === item.name))
+              };
+            });
+            if (starterGearAudit.count !== 12 || starterGearAudit.uniqueNames !== 12 ||
+                starterGearAudit.missing.length || starterGearAudit.wrongSlots.length || starterGearAudit.invalid.length ||
+                !starterGearAudit.poolExcludesOwned) {
+              throw new Error('煉氣期 12 件裝備資料或避免重複掉落檢查失敗：' + JSON.stringify(starterGearAudit));
+            }
+            console.log('Qi Refining starter gear regression passed: all 12 items, slots, existing rarity/stat schema, original-content labels and duplicate-drop prevention.');
+
             // v2.2 canon archive regression: four source-grounded entries live in the existing catalog.
             await bag.locator('.bag-catalog-button').click();
             const catalogModal = page.locator('#uiModal');
