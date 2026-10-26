@@ -5947,8 +5947,8 @@ switchCultivateTab('practice');
 </style>
 
 
-<!-- v6.33: fix five-category inventory tab layout; non-destructive QA; no save-schema changes. -->
-<style id="v633-safe-qa-polish">
+<!-- v6.34: expanded non-destructive storage-bag QA checks; no save-schema changes. -->
+<style id="v634-safe-qa-polish">
 #gameApp #bag .scrolllist,#gameApp #bag .bag-list,#gameApp #bag .bag-items{min-width:0;max-width:100%}
 #gameApp #bag .rowitem,#gameApp #bag .bag-item-card{min-width:0;max-width:100%;overflow-wrap:anywhere}
 #gameApp #bag .rowbody,#gameApp #bag .bag-item-info{min-width:0;overflow-wrap:anywhere}
@@ -5960,7 +5960,7 @@ switchCultivateTab('practice');
 #xianxiaQaPanel .qa-warn{color:#e8c786}
 #xianxiaQaPanel button{margin-top:9px;padding:7px 10px;border-radius:8px;background:#3a4c5d;color:#fff}
 </style>
-<script id="v633-safe-qa-mode">
+<script id="v634-safe-qa-mode">
 (function(){
  'use strict';
  const params=new URLSearchParams(location.search);
@@ -5975,6 +5975,14 @@ switchCultivateTab('practice');
  test('裝備欄位',!!document.querySelector('#bag .bag-slots-panel, #bag .slotgrid'),'裝備格 DOM');
  test('修煉分頁',!!byId('cultivate'),'cultivate DOM');
  test('版本標記',!!document.querySelector('.status-version')&&/v6\.33/.test(document.querySelector('.status-version').textContent),'應顯示 v6.33');
+ test('五大分類齊全',document.querySelectorAll('#bag [data-bag-main-tab]').length===5,'裝備、古寶、靈寵、法寶、材料');
+ test('五個穿戴部位',document.querySelectorAll('#bag #slots .slot').length===5,'武器、防具、戒指、玉佩、靴子');
+ test('裝備清單存在',!!byId('inventory'),'可供篩選與選取');
+ test('品質篩選存在',!!byId('bagQualityFilter'),'品質選單');
+ test('種類篩選存在',!!byId('bagTypeFilter'),'器物種類選單');
+ test('排序選單存在',!!byId('bagSort'),'最新、品質、戰力、強化排序');
+ test('分解確認入口存在',typeof window.bagReviewDismantle==='function','單件分解會再次驗證保護狀態');
+ test('批次分解入口存在',typeof batchReview==='function','批次確認會重新篩除受保護裝備');
  test('儲物袋五大分類',document.querySelectorAll('#bag [data-bag-main-tab]').length===5,'裝備／古寶／靈寵／法寶／材料');
  test('存檔安全鍵',typeof localStorage!=='undefined','只檢查儲存 API，不寫入資料');
  let saveState='未讀取';
@@ -5985,7 +5993,7 @@ switchCultivateTab('practice');
  }catch(e){test('存檔可讀取',false,'瀏覽器拒絕讀取；未嘗試覆寫');}
  const panel=document.createElement('section');panel.id='xianxiaQaPanel';panel.setAttribute('role','status');panel.setAttribute('aria-live','polite');
  const passed=checks.filter(x=>x.pass).length;
- panel.innerHTML='<h2>v6.33 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
+ panel.innerHTML='<h2>v6.34 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
  document.body.appendChild(panel);byId('xianxiaQaClose').addEventListener('click',()=>panel.remove());
 })();
 </script>
