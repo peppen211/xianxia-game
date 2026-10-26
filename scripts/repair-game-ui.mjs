@@ -49,12 +49,15 @@ if (html.includes(oldEquip)) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
 
-const oldVersion = 'class="status-version" aria-label="遊戲版本">v6.27</small>';
-if (html.includes(oldVersion)) {
-  html = html.replace(oldVersion, 'class="status-version" aria-label="遊戲版本">v6.28</small>');
-} else if (!html.includes('class="status-version" aria-label="遊戲版本">v6.28</small>')) {
-  throw new Error("Cannot find the game version label.");
+const versionLabelPattern = /class="status-version" aria-label="遊戲版本">v6\.\d+<\/small>/g;
+const versionLabels = html.match(versionLabelPattern) || [];
+if (versionLabels.length !== 1) {
+  throw new Error(`Expected exactly one game version label, found ${versionLabels.length}.`);
 }
+html = html.replace(
+  /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
+  "$1v6.30$2"
+);
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.28 save-safety regression + inventory geometry audit applied.");
+console.log("v6.30 save-safety regression + inventory geometry audit applied.");
