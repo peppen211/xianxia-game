@@ -49,6 +49,25 @@ if (html.includes(oldEquip)) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
 
+const bagBalanceStyle = `<style id="v632-bag-layout-balance">
+/* v6.32: reserve a compact but readable equipment-slot row and give the item grid most of the mobile viewport. */
+#gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout{
+  grid-template-rows:minmax(88px,0.55fr) minmax(0,1fr)!important;
+}
+#gameApp #bag .bag-slots-panel{padding:4px 6px!important;overflow:visible!important}
+#gameApp #bag .bag-slots-panel .secthead{min-height:20px!important}
+#gameApp #bag .bag-slots-panel .slotgrid{margin-top:3px!important;gap:3px!important}
+#gameApp #bag .bag-slots-panel .slot{padding:3px 2px!important}
+#gameApp #bag .bag-slots-panel .slot span{font-size:14px!important}
+#gameApp #bag .bag-slots-panel .slot small{font-size:9px!important;line-height:1.15!important}
+#gameApp #bag .bag-slots-panel .slot b{font-size:9px!important;line-height:1.2!important}
+#gameApp #bag .bag-slots-panel .gear-unequip{margin-top:2px!important;padding:2px 3px!important;font-size:9px!important}
+</style>`;
+if (!html.includes('id="v632-bag-layout-balance"')) {
+  if (!html.includes("</body>")) throw new Error("Cannot find </body> for the mobile bag layout fix.");
+  html = html.replace("</body>", bagBalanceStyle + "\n</body>");
+}
+
 const versionLabelPattern = /class="status-version" aria-label="遊戲版本">v6\.\d+<\/small>/g;
 const versionLabels = html.match(versionLabelPattern) || [];
 if (versionLabels.length !== 1) {
@@ -56,8 +75,8 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.31$2"
+  "$1v6.32$2"
 );
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.31 save-safety regression + inventory geometry audit applied.");
+console.log("v6.32 mobile bag layout balance + save-safety regression applied.");
