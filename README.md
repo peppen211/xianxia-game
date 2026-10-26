@@ -1,7 +1,7 @@
 # 不好意思，本座又突破了
 
 **目前遊戲版本：** v6.31  
-**正式遊玩入口：** https://peppen211.github.io/xianxia-game/?v=6.30  
+**正式遊玩入口：** https://peppen211.github.io/xianxia-game/?v=6.31  
 **最新版本頁：** https://peppen211.github.io/xianxia-game/latest.html
 
 v6.31 修正手機「修煉內頁」的放置收益資訊卡版面，避免長文被擠成逐字直排；修為進度與收益詳情按鈕保持完整可讀，不改戰鬥數值、玩法或玩家存檔。
