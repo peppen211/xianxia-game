@@ -1,6 +1,6 @@
 # 不好意思，本座又突破了
 
-**目前遊戲版本：** v3.5  
+**目前遊戲版本：** v3.6  
 **正式遊玩入口：** https://peppen211.github.io/xianxia-game/?v=3.5  
 **最新版本頁：** https://peppen211.github.io/xianxia-game/latest.html
 
@@ -23,4 +23,4 @@
 
 ## 自動化測試與部署
 
-GitHub Actions 會執行 `npm test`、`npm run build`、手機尺寸瀏覽器流程、正式遊戲版號／最新版本頁核對、法寶／靈寵／商店／經濟及存檔回歸，並確認舊入口轉址至正式版。請以最新的 [GitHub Actions 執行紀錄](https://github.com/peppen211/xianxia-game/actions) 作為驗收依據。v3.5 校正 20 件煉氣裝備的實際取得方式、補上護身靈符掉落池，並修正舊存檔裝備強化材料對應。
+GitHub Actions 會執行 `npm test`、`npm run build`、手機尺寸瀏覽器流程、正式遊戲版號／最新版本頁核對、法寶／靈寵／商店／經濟及存檔回歸，並確認舊入口轉址至正式版。請以最新的 [GitHub Actions 執行紀錄](https://github.com/peppen211/xianxia-game/actions) 作為驗收依據。v3.6 依煉氣層數分階解鎖煉氣裝備掉落，普通敵人維持穩定裝備取得率，精英與首領提高掉落率並優先掉落敵群專屬裝備。
