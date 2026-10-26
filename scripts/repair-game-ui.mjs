@@ -142,40 +142,30 @@ html = html.replace("v6.45 非破壞性檢查", "v6.36 非破壞性檢查");
 
 
 
-const catalogLocationPatch = `<style id="v636-catalog-location">
-#gameApp #cultivate .cultivate-catalog-entry{display:flex;flex-direction:column;gap:7px;margin-bottom:2px}
-#gameApp #cultivate .cultivate-catalog-entry p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
-#gameApp #bag .bag-main-tabs [data-bag-main-tab="treasures"],
-#gameApp #bag .bag-main-tabs [data-bag-main-tab="pets"],
-#gameApp #bag .bag-main-tabs [data-bag-main-tab="magic"],
-#gameApp #bag .bag-catalog-button{display:none!important}
-</style>
-<script id="v636-catalog-location-script">
+const catalogLocationPatch = `<script id="v637-catalog-location-script">
 (function(){
- 'use strict';
- function moveCatalogEntry(){
+ function setup(){
   const bag=document.getElementById('bag'),cultivate=document.getElementById('cultivate');
   if(!bag||!cultivate)return;
-  const oldButton=bag.querySelector('.bag-catalog-button');if(oldButton)oldButton.remove();
-  const oldTabs=bag.querySelector('.bag-main-tabs');
-  if(oldTabs){['treasures','pets','magic'].forEach(function(key){const button=oldTabs.querySelector('[data-bag-main-tab="'+key+'"]');if(button)button.remove();});oldTabs.setAttribute('aria-label','儲物袋分類');}
-  let entry=cultivate.querySelector('.cultivate-catalog-entry');
-  if(!entry){
-   entry=document.createElement('div');entry.className='panel cultivate-catalog-entry';
-   entry.innerHTML='<div class="secthead"><span>典藏圖鑑</span><small>古寶・法寶・靈寵</small></div><p>原著典藏與生靈名錄集中於此，與儲物袋中的持有物、裝備操作分開管理。</p><button type="button" class="btn secondary" id="openCultivateCatalog">開啟分類圖鑑</button>';
-   const tabs=cultivate.querySelector('.cultivate-tabs');if(tabs)tabs.insertAdjacentElement('afterend',entry);else cultivate.insertAdjacentElement('afterbegin',entry);
-   entry.querySelector('#openCultivateCatalog').addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});
+  const catalogButton=bag.querySelector('.bag-catalog-button');if(catalogButton)catalogButton.remove();
+  const tabs=bag.querySelector('.bag-main-tabs');
+  if(tabs){
+   [['treasures','古寶類'],['magic','法寶類'],['pets','靈寵類']].forEach(function(item){
+    if(!tabs.querySelector('[data-bag-main-tab="'+item[0]+'"]')){const btn=document.createElement('button');btn.type='button';btn.className='bag-main-tab';btn.dataset.bagMainTab=item[0];btn.setAttribute('role','tab');btn.setAttribute('aria-selected','false');btn.textContent=item[1];tabs.appendChild(btn);}
+   });
+   ['equipment','treasures','magic','pets','materials'].forEach(function(key){const btn=tabs.querySelector('[data-bag-main-tab="'+key+'"]');if(btn)tabs.appendChild(btn);});
   }
+  const open=cultivate.querySelector('#openCultivateCatalog');
+  if(open&&!open.dataset.bound){open.dataset.bound='1';open.addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});}
  }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',moveCatalogEntry,{once:true});else moveCatalogEntry();
- const observer=new MutationObserver(moveCatalogEntry);observer.observe(document.documentElement,{childList:true,subtree:true});
- setTimeout(function(){observer.disconnect();moveCatalogEntry();},4000);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+ const obs=new MutationObserver(setup);obs.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){obs.disconnect();},4000);
 })();
 </script>`;
-if (!html.includes('id="v636-catalog-location-script"')) {
+if (!html.includes('id="v637-catalog-location-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog relocation.");
   html = html.replace("</body>", catalogLocationPatch + "\\n</body>");
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.35 catalog category tabs + preserved inventory layout and data applied.");
+console.log("v6.37 cultivation catalog-only page and bag categories applied.");
