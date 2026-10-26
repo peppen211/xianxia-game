@@ -207,6 +207,25 @@ jobs:
             const equipTabs = bag.locator('[data-bag-category]');
             if (await mainTabs.count() !== 4) throw new Error('儲物袋應有裝備類、古寶類、靈寵類、法寶類四個主分類。');
             if (await equipTabs.count() !== 4) throw new Error('裝備分類應有全部、武器、防具、飾品四個子分類。');
+
+            // v1.21 canon archive regression: the source entry must live inside the existing in-game catalog.
+            await bag.locator('.bag-catalog-button').click();
+            const catalogModal = page.locator('#uiModal');
+            await catalogModal.waitFor({ state: 'visible', timeout: 3000 });
+            const catalogInitialText = await page.locator('#modalBody').innerText();
+            if (!catalogInitialText.includes('原著典藏') || !catalogInitialText.includes('第一篇：裝備與寶物') || !catalogInitialText.includes('金蚨子母刃')) {
+              throw new Error('既有分類圖鑑沒有顯示第一篇原著典藏與金蚨子母刃條目。');
+            }
+            const loreSummary = page.locator('#modalBody details summary');
+            if (await loreSummary.count() !== 1) throw new Error('金蚨子母刃原作條目應提供單一展開詳情。');
+            await loreSummary.click();
+            const loreDetailsText = await page.locator('#modalBody').innerText();
+            for (const requiredText of ['母刃一把、子刃八把', '持有者／取得', '小說與動畫差異', '遊戲處理']) {
+              if (!loreDetailsText.includes(requiredText)) throw new Error('金蚨子母刃詳情缺少欄位：' + requiredText);
+            }
+            await page.locator('#uiModal .modal-close').click();
+            await catalogModal.waitFor({ state: 'hidden', timeout: 3000 });
+
             await page.evaluate(() => {
               const fixtures = [
                 {id:9901001,name:'測試已穿戴法器',slot:'weapon',rarity:'凡品',stars:1,enhanceLevel:0,atk:2,def:1,hp:1,value:15,icon:'劍',catalogType:'法器',catalogClass:'裝備類'},
