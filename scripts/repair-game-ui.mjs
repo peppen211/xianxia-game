@@ -51,19 +51,19 @@ if (html.includes(oldEquip)) {
 
 const bagBalanceStyle = `<style id="v643-bag-inventory-height-balance">
 /* v6.43: compact equipment slots and allocate more mobile viewport to the scrollable inventory. */
-#gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout{
-  grid-template-rows:minmax(0,0.62fr) minmax(0,1.38fr)!important;
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout{
+  grid-template-rows:minmax(78px,0.55fr) minmax(0,1.45fr)!important;
 }
-#gameApp #bag .bag-slots-panel{min-height:0!important;padding:2px 5px!important;overflow:visible!important}
-#gameApp #bag .bag-slots-panel .secthead{min-height:18px!important;margin-bottom:0!important;font-size:11px!important}
-#gameApp #bag .bag-slots-panel .slotgrid{margin-top:2px!important;gap:3px!important}
-#gameApp #bag .bag-slots-panel .slot{padding:2px 1px!important}
-#gameApp #bag .bag-slots-panel .slot span{font-size:12px!important}
-#gameApp #bag .bag-slots-panel .slot small{font-size:8px!important;line-height:1.1!important;margin-top:1px!important}
-#gameApp #bag .bag-slots-panel .slot b{font-size:8px!important;line-height:1.1!important;margin-top:1px!important}
-#gameApp #bag .bag-slots-panel .gear-unequip{margin-top:2px!important;padding:2px!important;font-size:8px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel{min-height:0!important;padding:2px 5px!important;overflow:visible!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .secthead{min-height:18px!important;margin-bottom:0!important;font-size:11px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slotgrid{margin-top:2px!important;gap:3px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot{padding:2px 1px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot span{font-size:12px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot small{font-size:8px!important;line-height:1.1!important;margin-top:1px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot b{font-size:8px!important;line-height:1.1!important;margin-top:1px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .gear-unequip{margin-top:2px!important;padding:2px!important;font-size:8px!important}
 </style>`;
-if (!html.includes('id="v632-bag-layout-balance"')) {
+if (!html.includes('id="v643-bag-inventory-height-balance"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for the mobile bag layout fix.");
   html = html.replace("</body>", bagBalanceStyle + "\n</body>");
 }
