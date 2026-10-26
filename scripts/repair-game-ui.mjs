@@ -75,7 +75,7 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.40$2"
+  "$1v6.41$2"
 );
 
 const catalogTabs = `<style id="v635-catalog-tabs">
@@ -138,12 +138,12 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.40 非破壞性檢查");
-html = html.replace("v6\.39", "v6\.40");
+html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.41 非破壞性檢查");
+html = html.replace("v6\.40", "v6\.41");
 
 
 
-const catalogLocationPatch = `<script id="v639-catalog-location-script">
+const catalogLocationPatch = `<script id="v641-catalog-location-script">
 (function(){
  'use strict';
  function setup(){
@@ -182,7 +182,7 @@ const catalogLocationPatch = `<script id="v639-catalog-location-script">
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
 </script>`;
-const locationPattern = /<script id="v(?:637|639)-catalog-location-script">[\s\S]*?<\/script>/;
+const locationPattern = /<script id="v(?:637|639|641)-catalog-location-script">[\s\S]*?<\/script>/;
 if (locationPattern.test(html)) {
   html = html.replace(locationPattern, catalogLocationPatch);
 } else {
@@ -191,4 +191,4 @@ if (locationPattern.test(html)) {
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.40 catalog and safe startup fixes applied.");
+console.log("v6.41 catalog-only rendering fixed.");
