@@ -49,9 +49,9 @@ if (html.includes(oldEquip)) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
 
-const oldVersion = 'class="status-version" aria-label="遊戲版本">v6.18</small>';
-if (html.includes(oldVersion)) {
-  html = html.replace(oldVersion, 'class="status-version" aria-label="遊戲版本">v6.21</small>');
+const versionLabelPattern = /(<small class="status-version" aria-label="遊戲版本">)v\d+\.\d+(<\/small>)/;
+if (versionLabelPattern.test(html)) {
+  html = html.replace(versionLabelPattern, '$1v6.21$2');
 } else if (!html.includes('class="status-version" aria-label="遊戲版本">v6.21</small>')) {
   throw new Error("Cannot find the game version label.");
 }
