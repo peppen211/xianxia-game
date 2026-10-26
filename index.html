@@ -2067,7 +2067,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.46</small>
+  <small class="status-version" aria-label="遊戲版本">v6.47</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -5831,8 +5831,8 @@ html body #gameApp.app>header.top.statusline>.status-name{
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
 </script>
-<style id="v645-bag-inventory-height-balance">
-/* v6.46: cap the five equipment slots row and give the scrollable inventory the remaining mobile height. */
+<style id="v647-bag-inventory-height-balance">
+/* v6.47: cap the five equipment slots row and give the scrollable inventory the remaining mobile height. */
 body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout{
   grid-template-rows:82px minmax(0,1fr)!important;
   min-height:0!important;
@@ -6164,7 +6164,7 @@ label{color:#d6dce4}
 </style>
 
 
-<!-- v6.46: add non-destructive QA checks for enhancement guards and corrupt-save protection. -->
+<!-- v6.47: add non-destructive QA checks for enhancement guards and corrupt-save protection. -->
 <style id="v634-safe-qa-polish">
 #gameApp #bag .scrolllist,#gameApp #bag .bag-list,#gameApp #bag .bag-items{min-width:0;max-width:100%}
 #gameApp #bag .rowitem,#gameApp #bag .bag-item-card{min-width:0;max-width:100%;overflow-wrap:anywhere}
@@ -6201,7 +6201,7 @@ label{color:#d6dce4}
  test('分類初始化避免全頁 DOM 觀察',!document.getElementById('v639-catalog-location-script')?.textContent.includes('new MutationObserver'),'分類入口只初始化一次，避免 DOM 變更連鎖');
  test('存檔鍵未變更',typeof KEY==='string'&&KEY==='nine_heavens_idle_v2','只讀檢查存檔鍵，禁止重置或覆寫');
 
-       test('版本標記',!!document.querySelector('.status-version')&&/v6\.45/.test(document.querySelector('.status-version').textContent),'應顯示 v6.46');
+       test('版本標記',!!document.querySelector('.status-version')&&/v6\.47/.test(document.querySelector('.status-version').textContent),'應顯示 v6.47');
  test('五大分類齊全',document.querySelectorAll('#bag [data-bag-main-tab]').length===5,'裝備、古寶、靈寵、法寶、材料');
  test('五個穿戴部位',document.querySelectorAll('#bag #slots .slot').length===5,'武器、防具、戒指、玉佩、靴子');
  test('裝備清單存在',!!byId('inventory'),'可供篩選與選取');
@@ -6231,7 +6231,7 @@ label{color:#d6dce4}
  }catch(e){test('存檔可讀取',false,'瀏覽器拒絕讀取；未嘗試覆寫');}
  const panel=document.createElement('section');panel.id='xianxiaQaPanel';panel.setAttribute('role','status');panel.setAttribute('aria-live','polite');
  const passed=checks.filter(x=>x.pass).length;
- panel.innerHTML='<h2>v6.46 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
+ panel.innerHTML='<h2>v6.47 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
  document.body.appendChild(panel);byId('xianxiaQaClose').addEventListener('click',()=>panel.remove());
 })();
 </script>
