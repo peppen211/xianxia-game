@@ -2046,7 +2046,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v4.0</small>
+  <small class="status-version" aria-label="遊戲版本">v4.1</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2240,7 +2240,7 @@ function ensureTreasureState(){
  s.ownedTreasures=normalized;
 }
 function openClassificationCatalog(){
- const equipRows=['法器','法寶','符寶','仿製靈寶'].map(function(name){return '<div class="rowitem"><div class="rowicon">器</div><div class="rowbody"><b>'+name+'</b><small>歸入「裝備類」，用於裝備／使用欄與煉製流程。</small></div></div>';}).join('');
+ const equipRows=['法器','法寶','符寶','仿製靈寶'].map(function(name){return '<div class="rowitem"><div class="rowicon">器</div><div class="rowbody"><b>'+name+'</b><small>此處記錄器物的原作／物品類型；只有能放入裝備欄或使用欄的物品才歸入裝備類。獨立法寶類則管理遊戲內可啟用、會在戰鬥觸發效果的法寶，兩者用途不同。</small></div></div>';}).join('');
  const treasureRows=treasureClassCatalog.map(function(item){return '<div class="rowitem"><div class="rowicon">寶</div><div class="rowbody"><b>'+item.name+'</b><small>'+item.desc+'</small></div></div>';}).join('');
  const enemyRows=foes.map(function(item){const kind=/兔|蛇|狼/.test(item.name)?'靈獸':'特殊生靈';return '<div class="rowitem"><div class="rowicon">敵</div><div class="rowbody"><b>'+item.name+'</b><small>敵怪類 · '+kind+' · '+item.desc+'</small></div></div>';}).join('');
  const petRows=petCatalog.map(function(item){return '<div class="rowitem"><div class="rowicon">靈</div><div class="rowbody"><b>'+item.name+'</b><small>靈寵類 · '+item.kind+' · '+item.desc+'</small></div></div>';}).join('');
@@ -2292,8 +2292,8 @@ function openClassificationCatalog(){
   '<b>遊戲處理：</b>保留「符寶」分類，不填入未核實的品階、威力、使用次數或可製作規則。'+
   '</div></details></div>'; 
  openModal('法寶與生靈分類',
-  '<div class="panel"><div class="secthead"><span>裝備類</span><small>4 種</small></div><p class="smallnote">一般可裝備或使用的物品；現有遊戲裝備會標註為裝備類。</p><div class="scrolllist">'+equipRows+'</div></div>'+
-  '<div class="panel" style="margin-top:8px"><div class="secthead"><span>古寶類</span><small>4 種</small></div><p class="smallnote">與一般穿戴裝備分開收藏，不混用同一個分類。</p><div class="scrolllist">'+treasureRows+'</div></div>'+
+  '<div class="panel"><div class="secthead"><span>裝備類</span><small>4 種</small></div><p class="smallnote">管理可穿戴、可使用、可強化或分解的物品。圖鑑中的「法寶／符寶」是器物類型紀錄，不會因此自動變成遊戲內的戰鬥法寶。</p><div class="scrolllist">'+equipRows+'</div></div>'+
+  '<div class="panel" style="margin-top:8px"><div class="secthead"><span>古寶類</span><small>4 種</small></div><p class="smallnote">獨立收藏原作古寶資料與遊戲內古寶玩法，不占一般穿戴裝備欄。</p><div class="scrolllist">'+treasureRows+'</div></div>'+
   '<div class="panel" style="margin-top:8px"><div class="secthead"><span>敵怪類</span><small>'+foes.length+' 種</small></div><p class="smallnote">目前試煉中的敵怪名錄；靈獸／特殊生靈依敵對用途歸類。</p><div class="scrolllist">'+enemyRows+'</div></div>'+
   '<div class="panel" style="margin-top:8px"><div class="secthead"><span>靈寵類</span><small>'+petCatalog.length+' 個候選條目</small></div><p class="smallnote">依靈獸、靈蟲與特殊生靈整理的名錄候選。此處先建立分類與圖鑑，不代表已實裝收服、培育或出戰功能。</p><div class="scrolllist">'+petRows+'</div></div>'+
   canonArchive);
