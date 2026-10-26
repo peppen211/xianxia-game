@@ -116,13 +116,17 @@ jobs:
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
 
-            // Mobile regression checks: methods open first and practice-only content stays isolated.
+            // Mobile regression checks: cultivation opens on practice first; methods remain available by switching tabs.
             const methodsTab = page.locator('#cultivate .cultivate-tab[data-cultivate-tab="methods"]');
             const practiceTab = page.locator('#cultivate .cultivate-tab[data-cultivate-tab="practice"]');
             const methodsView = page.locator('#cultivateMethodsView');
             const practiceView = page.locator('#cultivatePracticeView');
+            if (await practiceTab.getAttribute('aria-selected') !== 'true' || !(await practiceView.isVisible()) || await methodsView.isVisible()) {
+              throw new Error('The cultivation screen must open on the practice tab first.');
+            }
+            await methodsTab.click();
             if (await methodsTab.getAttribute('aria-selected') !== 'true' || !(await methodsView.isVisible()) || await practiceView.isVisible()) {
-              throw new Error('The cultivation screen must open on the methods tab, with practice-only content hidden.');
+              throw new Error('The methods tab must remain available after switching from cultivation.');
             }
             const methodCards = page.locator('#cultivate #methodList > .method-card');
             await methodCards.first().waitFor({ state: 'visible', timeout: 5000 });
