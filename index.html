@@ -2066,7 +2066,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.33</small>
+  <small class="status-version" aria-label="遊戲版本">v6.34</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -5736,7 +5736,115 @@ html body #gameApp.app>header.top.statusline>.status-name{
   min-width:0!important;box-sizing:border-box!important;margin:0!important;white-space:normal!important;
 }
 </style>
-</body></html>
+</body>
+<style id="v634-interface-polish">
+/* v6.34 全介面視覺統一：只調整呈現，不改遊戲邏輯與存檔 */
+:root{
+ --ui-ink:#f4eee0;--ui-muted:#b0bac8;--ui-gold:#e7c77e;--ui-jade:#91d9be;
+ --ui-line:rgba(206,190,153,.22);--ui-card-top:#263241;--ui-card-bottom:#171f2b;
+}
+html,body{background:#0d121b;color:var(--ui-ink)}
+.app{background:radial-gradient(ellipse at 50% -15%,#354353 0%,#1a2431 36%,#101620 78%);isolation:isolate}
+.screen{gap:10px;padding:11px 11px 20px;scroll-padding-block:12px}
+.screen>*{min-width:0}
+.screen .panel,.screen .battle,.screen .realm-row,.screen .page-title,.screen .bag-main-tabs-wrap{scroll-margin-top:8px}
+.panel,.metric,.battle,.bag-item-card,.bag-detail-panel,.bag-batch-panel,.bag-pill-card,
+.bag-treasure-card,.bag-pet-card,.bag-material-card,.shop-item-card,.qi-recipe-card,
+.method-card,.method-focus-card,.enemy-group-card,.journal-arc-card,.journal-node-card,
+.breakthrough-card,.recipe-list,.scrolllist,.loglist,.chronicle-list{
+ border-color:var(--ui-line);
+ box-shadow:0 7px 18px rgba(0,0,0,.14),inset 0 1px rgba(255,255,255,.025);
+}
+.panel{background:linear-gradient(145deg,rgba(39,51,67,.97),rgba(23,31,43,.98));border-radius:15px;padding:12px}
+.secthead{gap:10px;min-height:25px;color:#f1e4c7;letter-spacing:.015em}
+.secthead>span{min-width:0}
+.secthead small,.page-title>span{color:var(--ui-muted);line-height:1.5}
+.page-title{gap:10px;padding:3px 2px 7px;border-bottom:1px solid rgba(214,190,137,.2)}
+.page-title h2{font-size:20px;line-height:1.35;letter-spacing:.025em;color:#f3e5c5}
+.page-title>span{text-align:right}
+.progress{overflow:hidden;border-radius:999px;background:#101721;border:1px solid rgba(255,255,255,.055);box-shadow:inset 0 1px 2px #0007}
+.progress span{border-radius:inherit;transition:width .24s ease}
+.btn,button.btn,.cultivate-tab,.bag-tab,.bag-main-tab,.journal-toggle-all{
+ transition:transform .14s ease,filter .14s ease,border-color .14s ease,background-color .14s ease;
+}
+.btn{min-height:38px;padding:9px 11px;border-radius:10px;line-height:1.35;letter-spacing:.01em}
+.btn.primary{background:linear-gradient(135deg,#f0d99a 0%,#d5b46c 58%,#b58b4e 100%);color:#292317;box-shadow:inset 0 1px rgba(255,255,255,.45),0 3px 8px #0002}
+.btn.secondary{background:linear-gradient(180deg,#344457,#273545);border:1px solid #53647a;color:#e8edf3}
+.btn.jade{background:linear-gradient(135deg,#a8ead0,#5cae95);color:#102c27}
+.btn.danger{background:linear-gradient(180deg,#50313c,#382630);border:1px solid #85515b;color:#f5dfe0}
+.btn:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
+ outline:2px solid #e8ca82;outline-offset:2px
+}
+@media(hover:hover){
+ .btn:hover,.cultivate-tab:hover,.bag-tab:hover,.bag-main-tab:hover,.journal-toggle-all:hover{filter:brightness(1.1)}
+ .btn:active,.cultivate-tab:active,.bag-tab:active,.bag-main-tab:active{transform:translateY(1px) scale(.99)}
+}
+.nav{border:1px solid transparent;border-radius:12px;min-width:0;font-weight:650;letter-spacing:.015em}
+.nav.active{border-color:rgba(231,199,126,.28);background:linear-gradient(180deg,#394858,#232e3b);box-shadow:inset 0 1px rgba(255,255,255,.055),0 3px 9px #0002;color:#f1d89a}
+.top.statusline{background:linear-gradient(180deg,#252832,#171b24);border-bottom:1px solid #b79a624d;box-shadow:0 3px 12px #0002}
+.status-name b{letter-spacing:.02em}
+.hero{box-shadow:inset 0 1px #ffffff1a,0 8px 20px #0003}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,#fff0 25%,#ffffff08 48%,#fff0 72%)}
+.chip{border-color:#d5c18c35;box-shadow:inset 0 1px #ffffff08}
+.realm-row{gap:7px}
+.metric{background:linear-gradient(145deg,#273444,#1b2532);border-radius:12px;padding:9px}
+.metric strong{font-variant-numeric:tabular-nums}
+.battle{padding:11px;border:1px solid #a58d5b55;border-radius:16px;background:linear-gradient(150deg,#222c39,#171e29);box-shadow:0 8px 22px #0003,inset 0 1px #ffffff08}
+.battle .secthead{margin-bottom:7px}
+.enemy-scene{border:1px solid #b7a06b35;border-radius:13px;background:radial-gradient(ellipse at 50% 35%,#42515a 0%,#252f3b 52%,#1b222d 100%);overflow:hidden}
+.battle-actions{gap:7px}
+.battle-actions .btn{flex:1 1 calc(50% - 7px);min-width:0}
+.battle-toggles{gap:7px;flex-wrap:wrap}
+.storyline{line-height:1.65;color:#c0cad6}
+.cultivate-tabs,.bag-tabs,.bag-main-tabs-wrap{gap:6px}
+.cultivate-tab,.bag-tab,.bag-main-tab{border-radius:10px}
+.cultivate-tab.active,.bag-tab.active,.bag-main-tab.active{box-shadow:inset 0 0 0 1px #e2c67e5c,0 3px 8px #0002}
+.bag-item-card,.bag-detail-panel,.bag-batch-panel,.bag-pill-card,.bag-treasure-card,
+.bag-pet-card,.bag-material-card,.shop-item-card,.qi-recipe-card,.method-card,.method-focus-card,
+.enemy-group-card{border-radius:13px;background:linear-gradient(145deg,#273343,#1a2330)}
+.bag-item-card.selected,.bag-item-card.is-selected{border-color:#dfc27a;box-shadow:inset 0 0 0 1px #dfc27a33,0 5px 14px #0003}
+.bag-badge{border-radius:999px}
+.rowitem{border-color:#ffffff12!important;border-radius:11px!important;background:linear-gradient(100deg,#202b39,#19222e)!important;padding:10px!important;gap:9px}
+.rowbody{line-height:1.55}
+.rowbody b,.rowbody strong{color:#f1e5cc}
+input:not([type="checkbox"]):not([type="radio"]),select,textarea{
+ color:#f2ecdf;background:#111923;border:1px solid #465467;border-radius:9px;padding:9px 10px;max-width:100%
+}
+input[type="checkbox"],input[type="radio"]{accent-color:#d9bc75}
+label{color:#d6dce4}
+.ui-modal .modal-backdrop{background:rgba(4,8,13,.76);backdrop-filter:blur(5px)}
+.modal-card{border:1px solid #a78e5b88!important;border-radius:18px!important;background:linear-gradient(145deg,#263342,#151d28)!important;box-shadow:0 24px 70px #0009,inset 0 1px #ffffff10!important;overflow:hidden}
+.modal-head{padding:14px 15px!important;border-bottom:1px solid #d6bc7a35!important;background:#ffffff04}
+.modal-head b{color:#f1dba4;letter-spacing:.025em}
+.modal-close{border:1px solid #ffffff20!important;border-radius:9px!important;background:#ffffff0a!important}
+.modal-body{color:#e3e7ed;line-height:1.7}
+.modal-foot{border-top:1px solid #ffffff12}
+.toast{border:1px solid #d5b76c70!important;border-radius:12px!important;background:linear-gradient(135deg,#2a3543,#171e28)!important;box-shadow:0 8px 24px #0006!important}
+#journalV14Dock .journal-hybrid-intro{box-shadow:inset 0 1px #ffffff12,0 7px 18px #0002}
+#journalV14Dock .journal-arc-card{background:linear-gradient(145deg,#253242,#171f2b)}
+#journalV14Dock .journal-node-card{background:linear-gradient(145deg,#19232f,#111923)}
+#journalV14Dock .journal-node-actions .btn{min-height:40px}
+#launchGate .launch-continue{box-shadow:0 8px 22px #0004,inset 0 1px #ffffff65}
+#launchGate .launch-character-intro{backdrop-filter:blur(8px)}
+@media(max-width:390px){
+ .screen{padding:9px 8px 17px;gap:9px}
+ .panel{padding:10px}
+ .secthead{font-size:14px}
+ .btn{padding:8px 9px;font-size:13px}
+ .realm-row{gap:5px}
+ .metric{padding:8px 7px}
+ .metric strong{font-size:17px}
+ .battle{padding:9px}
+ .battle-actions{gap:6px}
+ .nav{font-size:11.5px}
+ .bag-item-card,.shop-item-card,.qi-recipe-card{padding:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+
+</html>
 
 <style id="v101-bag-slot-height-balance">
 /* v1.04: add combat-triggered magic treasure collection; preserve existing saves. Previous change removed prayer draws while preserving crafting and saved game data. Previous layout note: compact the equipped-slot panel so the item list receives the majority of the fixed inventory viewport. */
