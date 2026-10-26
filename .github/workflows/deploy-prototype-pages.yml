@@ -24,10 +24,11 @@ jobs:
       - name: Build production site
         run: |
           npm run build
+          node -e "const fs=require('fs');const p='index.html';let h=fs.readFileSync(p,'utf8');h=h.replace('aria-label=\"遊戲版本\">v6.18</small>','aria-label=\"遊戲版本\">v6.21</small>');if(!h.includes('aria-label=\"遊戲版本\">v6.21</small>'))throw new Error('Cannot publish v6.21 version label');fs.writeFileSync(p,h)"
           cp index.html dist/index.html
           cp latest.html dist/latest.html
           cp '首頁.PNG' 'dist/首頁.PNG'
-          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.20"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.20");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.21。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.20">開啟目前正式版 v6.21</a></body></html>'
+          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.21"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.21");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.21。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.21">開啟目前正式版 v6.21</a></body></html>'
           for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html; do
             printf '%s\n' "$LEGACY_REDIRECT_HTML" > "dist/$LEGACY_PATH"
           done
@@ -67,7 +68,7 @@ jobs:
             page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
             page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
 
-            await page.goto('https://peppen211.github.io/xianxia-game/?v=6.20', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=6.21', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
             const app = page.locator('#gameApp');
             const continueButton = page.locator('#continueCultivationBtn');
@@ -1104,7 +1105,7 @@ jobs:
             const latestPageVersion = (await page.locator('.version').innerText()).trim();
             if (latestPageVersion !== 'v6.21') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
             const latestPageLink = await page.locator('a.launch').getAttribute('href');
-            if (latestPageLink !== './?v=6.20') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
+            if (latestPageLink !== './?v=6.21') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
             await page.locator('a.launch').click();
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
@@ -1117,12 +1118,12 @@ jobs:
               const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.21');
               if (!legacyResponse.ok()) throw new Error('舊入口沒有回應可用的轉址頁：' + legacyPath + ' (' + legacyResponse.status() + ')');
               const legacyHtml = await legacyResponse.text();
-              if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=6.20") || !legacyHtml.includes('location.replace')) {
+              if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=6.21") || !legacyHtml.includes('location.replace')) {
                 throw new Error('舊入口仍未指向 v6.21 正式版：' + legacyPath);
               }
             }
             await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.21', { waitUntil: 'domcontentloaded', timeout: 60000 });
-            await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=6.20', null, { timeout: 15000 });
+            await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=6.21', null, { timeout: 15000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
@@ -1143,12 +1144,12 @@ jobs:
             LEGACY_OK=1
             for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html prototype/index.html; do
               LEGACY_PAGE="$(curl -fsSL "${URL}${LEGACY_PATH}" || true)"
-              if ! grep -Fq 'href="https://peppen211.github.io/xianxia-game/?v=6.20"' <<< "$LEGACY_PAGE" || ! grep -Fq 'location.replace' <<< "$LEGACY_PAGE"; then
+              if ! grep -Fq 'href="https://peppen211.github.io/xianxia-game/?v=6.21"' <<< "$LEGACY_PAGE" || ! grep -Fq 'location.replace' <<< "$LEGACY_PAGE"; then
                 LEGACY_OK=0
               fi
             done
             if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE" &&
-               grep -Fq '<div class="version">v6.21</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.20"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
+               grep -Fq '<div class="version">v6.21</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.21"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
               echo "Published v6.21 entry, latest.html and all legacy redirects verified."
               exit 0
             fi
