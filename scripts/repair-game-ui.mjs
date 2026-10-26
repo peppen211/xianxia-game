@@ -51,10 +51,10 @@ if (html.includes(oldEquip)) {
 
 const oldVersion = 'class="status-version" aria-label="遊戲版本">v6.18</small>';
 if (html.includes(oldVersion)) {
-  html = html.replace(oldVersion, 'class="status-version" aria-label="遊戲版本">v6.21</small>');
-} else if (!html.includes('class="status-version" aria-label="遊戲版本">v6.21</small>')) {
+  html = html.replace(oldVersion, 'class="status-version" aria-label="遊戲版本">v6.24</small>');
+} else if (!html.includes('class="status-version" aria-label="遊戲版本">v6.24</small>')) {
   throw new Error("Cannot find the game version label.");
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.21 save-safety regression + inventory geometry audit applied.");
+console.log("v6.24 save-safety regression + inventory geometry audit applied.");
