@@ -619,9 +619,14 @@ jobs:
             await bag.locator('.bag-catalog-button').click();
             const catalogModal = page.locator('#uiModal');
             await catalogModal.waitFor({ state: 'visible', timeout: 3000 });
+            const archiveCategoryTab = catalogModal.locator('.catalog-category-tabs button').nth(4);
+            await archiveCategoryTab.click();
+            if (await archiveCategoryTab.getAttribute('aria-selected') !== 'true') {
+              throw new Error('分類圖鑑無法切換到原著典藏分類。');
+            }
             const catalogInitialText = await page.locator('#modalBody').innerText();
-            if (!catalogInitialText.includes('原著典藏') || !catalogInitialText.includes('第一篇：裝備與寶物') || !catalogInitialText.includes('金蚨子母刃')) {
-              throw new Error('既有分類圖鑑沒有顯示第一篇原著典藏與首項條目。');
+            if (!catalogInitialText.includes('第一篇：裝備與寶物') || !catalogInitialText.includes('金蚨子母刃')) {
+              throw new Error('切換至原著典藏後，第一篇與首項條目應可見。');
             }
             const loreSummary = page.locator('#modalBody details summary');
             if (await loreSummary.count() !== 7) throw new Error('v6.25 原著典藏應有七個可展開條目。');
