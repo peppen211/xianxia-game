@@ -2067,7 +2067,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.43</small>
+  <small class="status-version" aria-label="遊戲版本">v6.44</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -5831,28 +5831,38 @@ html body #gameApp.app>header.top.statusline>.status-name{
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
 </script>
-<style id="v643-bag-inventory-height-balance">
-/* v6.43: reserve more vertical space for the scrollable inventory grid on mobile. */
+<style id="v644-bag-inventory-height-balance">
+/* v6.44: explicitly cap the equipment-slot row so the inventory receives the majority of the mobile viewport. */
 body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout{
-  grid-template-rows:minmax(78px,0.55fr) minmax(0,1.45fr)!important;
+  grid-template-rows:82px minmax(0,1fr)!important;
+  min-height:0!important;
 }
 body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel{
-  min-height:0!important;padding:2px 5px!important;overflow:visible!important;
+  min-height:0!important;height:82px!important;max-height:82px!important;
+  box-sizing:border-box!important;padding:2px 5px!important;overflow:hidden!important;
 }
 body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .secthead{
-  min-height:18px!important;margin-bottom:0!important;font-size:11px!important;
+  min-height:15px!important;height:15px!important;margin:0!important;font-size:10px!important;
 }
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slotgrid{margin-top:2px!important;gap:3px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot{padding:2px 1px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot span{font-size:12px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot small{font-size:8px!important;margin-top:1px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot b{font-size:8px!important;margin-top:1px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .gear-unequip{margin-top:2px!important;padding:2px!important;font-size:8px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-list-panel{min-height:0!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-list-panel #inventory.bag-item-list{min-height:0!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slotgrid{
+  margin-top:1px!important;gap:2px!important;
+}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot{
+  min-height:0!important;padding:1px!important;gap:0!important;
+}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot span{font-size:11px!important;line-height:1.05!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot small{font-size:7px!important;line-height:1!important;margin-top:0!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot b{font-size:7px!important;line-height:1!important;margin-top:0!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .gear-unequip{margin-top:1px!important;padding:1px!important;font-size:7px!important;min-height:15px!important;line-height:1!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-list-panel{
+  min-height:0!important;height:100%!important;overflow:hidden!important;
+}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-list-panel #inventory.bag-item-list{
+  min-height:0!important;height:auto!important;max-height:100%!important;overflow-y:auto!important;
+}
 @media(max-height:700px){
- #gameApp #bag .bag-gear-layout{grid-template-rows:minmax(0,0.58fr) minmax(0,1.42fr)!important}
- #gameApp #bag .bag-slots-panel{padding:2px 4px!important}
+ #gameApp #bag .bag-gear-layout{grid-template-rows:76px minmax(0,1fr)!important}
+ #gameApp #bag .bag-slots-panel{height:76px!important;max-height:76px!important;padding:1px 4px!important}
  #gameApp #bag .bag-slots-panel .slot{padding:1px!important}
 }
 </style>
@@ -6247,7 +6257,7 @@ switchCultivateTab('practice');
  }catch(e){test('存檔可讀取',false,'瀏覽器拒絕讀取；未嘗試覆寫');}
  const panel=document.createElement('section');panel.id='xianxiaQaPanel';panel.setAttribute('role','status');panel.setAttribute('aria-live','polite');
  const passed=checks.filter(x=>x.pass).length;
- panel.innerHTML='<h2>v6.43 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
+ panel.innerHTML='<h2>v6.44 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
  document.body.appendChild(panel);byId('xianxiaQaClose').addEventListener('click',()=>panel.remove());
 })();
 </script>
