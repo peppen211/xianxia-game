@@ -49,7 +49,7 @@ if (html.includes(oldEquip)) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
 
-const versionLabelPattern = /(<small class="status-version" aria-label="遊戲版本">)v\\d+\\.\\d+(<\\/small>)/;
+const versionLabelPattern = /(<small class="status-version" aria-label="遊戲版本">)v\d+\.\d+(<\/small>)/;
 if (versionLabelPattern.test(html)) {
   html = html.replace(versionLabelPattern, '$1v6.21$2');
 } else if (!html.includes('class="status-version" aria-label="遊戲版本">v6.21</small>')) {
