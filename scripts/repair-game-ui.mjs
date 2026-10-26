@@ -138,8 +138,8 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace(/v6\\.\\d+ 非破壞性檢查/g, "v6.39 非破壞性檢查");
-html = html.replace(/v6\\\\\\.38/g, "v6\\\\.39");
+html = html.replace("v6\.38", "v6\.39");
+html = html.replace("v6\.38", "v6\.39");
 
 
 
@@ -182,12 +182,12 @@ const catalogLocationPatch = `<script id="v639-catalog-location-script">
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
 </script>`;
-const locationPattern = /<script id="v(?:637|639)-catalog-location-script">[\\s\\S]*?<\\/script>/;
+const locationPattern = /<script id="v(?:637|639)-catalog-location-script">[\s\S]*?<\/script>/;
 if (locationPattern.test(html)) {
   html = html.replace(locationPattern, catalogLocationPatch);
 } else {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog location patch.");
-  html = html.replace("</body>", catalogLocationPatch + "\\n</body>");
+  html = html.replace("</body>", catalogLocationPatch + "\n</body>");
 }
 
 fs.writeFileSync(file, html, "utf8");
