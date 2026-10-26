@@ -208,7 +208,7 @@ jobs:
             if (await mainTabs.count() !== 5) throw new Error('儲物袋應有裝備類、古寶類、靈寵類、法寶類、材料類五個主分類。');
             const mainTabColumns = await mainTabs.first().evaluate(el => getComputedStyle(el.parentElement).gridTemplateColumns.trim().split(' ').filter(Boolean).length);
             if (mainTabColumns !== 5) throw new Error('儲物袋五大分類按鈕應在同一列呈現五欄，實際欄數：' + mainTabColumns);
-            if (await equipTabs.count() !== 8) throw new Error('裝備分類應有全部、武器、防具、飾品四個子分類。');
+            if (await equipTabs.count() !== 4) throw new Error('裝備分類應有全部、武器、防具、飾品四個子分類。');
 
             // v4.3 regression: material stack counts, inventory view and non-destructive save migration.
             await bag.locator('[data-bag-main-tab="materials"]').click();
@@ -534,7 +534,7 @@ jobs:
               throw new Error('既有分類圖鑑沒有顯示第一篇原著典藏與首項條目。');
             }
             const loreSummary = page.locator('#modalBody details summary');
-            if (await loreSummary.count() !== 8) throw new Error('v4.3 原著典藏應有四個可展開條目。');
+            if (await loreSummary.count() !== 4) throw new Error('v4.3 原著典藏應有四個可展開條目。');
             const loreChecks = [
               { index: 0, name: '金蚨子母刃', required: ['母刃一把、子刃八把', '持有者／取得', '小說與動畫差異', '遊戲處理'] },
               { index: 1, name: '玄鐵飛天盾', required: ['防禦型法器', '自動飛行防禦', '第 163 章', '遊戲處理'] },
