@@ -75,7 +75,7 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.36$2"
+  "$1v6.39$2"
 );
 
 const catalogTabs = `<style id="v635-catalog-tabs">
@@ -138,34 +138,57 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace("v6.45 非破壞性檢查", "v6.36 非破壞性檢查");
+html = html.replace(/v6\\.\\d+ 非破壞性檢查/g, "v6.39 非破壞性檢查");
+html = html.replace(/v6\\\\\\.38/g, "v6\\\\.39");
 
 
 
-const catalogLocationPatch = `<script id="v637-catalog-location-script">
+const catalogLocationPatch = `<script id="v639-catalog-location-script">
 (function(){
+ 'use strict';
  function setup(){
   const bag=document.getElementById('bag'),cultivate=document.getElementById('cultivate');
   if(!bag||!cultivate)return;
-  const catalogButton=bag.querySelector('.bag-catalog-button');if(catalogButton)catalogButton.remove();
   const tabs=bag.querySelector('.bag-main-tabs');
+  const desiredOrder=['equipment','treasures','magic','pets','materials'];
   if(tabs){
    [['treasures','古寶類'],['magic','法寶類'],['pets','靈寵類']].forEach(function(item){
-    if(!tabs.querySelector('[data-bag-main-tab="'+item[0]+'"]')){const btn=document.createElement('button');btn.type='button';btn.className='bag-main-tab';btn.dataset.bagMainTab=item[0];btn.setAttribute('role','tab');btn.setAttribute('aria-selected','false');btn.textContent=item[1];tabs.appendChild(btn);}
+    if(!tabs.querySelector('[data-bag-main-tab="'+item[0]+'"]')){
+     const btn=document.createElement('button');btn.type='button';btn.className='bag-main-tab';
+     btn.dataset.bagMainTab=item[0];btn.setAttribute('role','tab');btn.setAttribute('aria-selected','false');btn.textContent=item[1];
+     tabs.appendChild(btn);
+    }
    });
-   ['equipment','treasures','magic','pets','materials'].forEach(function(key){const btn=tabs.querySelector('[data-bag-main-tab="'+key+'"]');if(btn)tabs.appendChild(btn);});
+   const actualOrder=Array.from(tabs.querySelectorAll('[data-bag-main-tab]')).map(function(btn){return btn.dataset.bagMainTab;});
+   if(desiredOrder.some(function(key,index){return actualOrder[index]!==key;})){
+    desiredOrder.forEach(function(key){const btn=tabs.querySelector('[data-bag-main-tab="'+key+'"]');if(btn)tabs.appendChild(btn);});
+   }
+  }
+  const wrap=bag.querySelector('.bag-main-tabs-wrap');
+  let catalogButton=bag.querySelector('.bag-catalog-button');
+  if(!catalogButton&&wrap){
+   catalogButton=document.createElement('button');catalogButton.type='button';catalogButton.className='btn secondary bag-catalog-button';
+   catalogButton.textContent='分類圖鑑';
+   catalogButton.addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});
+   const tabsInWrap=wrap.querySelector('.bag-main-tabs');
+   if(tabsInWrap&&tabsInWrap.nextSibling)wrap.insertBefore(catalogButton,tabsInWrap.nextSibling);else wrap.appendChild(catalogButton);
   }
   const open=cultivate.querySelector('#openCultivateCatalog');
-  if(open&&!open.dataset.bound){open.dataset.bound='1';open.addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});}
+  if(open&&!open.dataset.bound){
+   open.dataset.bound='1';
+   open.addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});
+  }
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
- const obs=new MutationObserver(setup);obs.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){obs.disconnect();},4000);
 })();
 </script>`;
-if (!html.includes('id="v637-catalog-location-script"')) {
-  if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog relocation.");
+const locationPattern = /<script id="v(?:637|639)-catalog-location-script">[\\s\\S]*?<\\/script>/;
+if (locationPattern.test(html)) {
+  html = html.replace(locationPattern, catalogLocationPatch);
+} else {
+  if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog location patch.");
   html = html.replace("</body>", catalogLocationPatch + "\\n</body>");
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.37 cultivation catalog-only page and bag categories applied.");
+console.log("v6.39 catalog button and one-time initialization fixes applied.");
