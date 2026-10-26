@@ -6181,7 +6181,7 @@ switchCultivateTab('practice');
  test('儲物袋分頁',!!byId('bag'),'bag DOM');
  test('裝備欄位',!!byId('slots')&&byId('slots').querySelectorAll('.slot').length===5,'五個穿戴部位 DOM');
  test('修煉分頁',!!byId('cultivate'),'cultivate DOM');
- test('已移除的功法清單不再造成空元素 innerHTML 錯誤',!/document\\.getElementById\\(['\"]methodList['\"]\\)\\.innerHTML=/.test(Array.from(document.scripts).map(function(x){return x.textContent}).join('\\n')),'沒有功法清單時跳過舊清單渲染');
+ test('已移除的功法清單不再造成空元素 innerHTML 錯誤',!/document\.getElementById\(['"]methodList['"]\)\.innerHTML=/.test(Array.from(document.scripts).map(function(x){return x.textContent}).join('\n')),'沒有功法清單時跳過舊清單渲染');
  test('仙途精簡後舊突破按鈕不會中斷啟動',!Array.from(document.scripts).some(function(el){return /document\.getElementById\(['\"]breakBtn['\"]\)\.onclick\s*=/.test(el.textContent)}),'不再直接替不存在的 breakBtn 綁定事件');
  test('典藏圖鑑頁不會重新搬入舊修煉卡片',!document.getElementById('cultivate')?.querySelector(':scope > .hero, :scope > .realm-row, :scope > .idle-card'),'舊導航搬移腳本不可將戰鬥首頁卡片重新插回仙途');
  test('仙途僅保留典藏圖鑑',!!byId('cultivate')&&byId('cultivate').querySelectorAll(':scope > .panel').length===1&&!!byId('openCultivateCatalog'),'仙途內頁入口已收斂為典藏圖鑑');
