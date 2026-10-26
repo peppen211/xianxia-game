@@ -2046,7 +2046,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v2.4</small>
+  <small class="status-version" aria-label="遊戲版本">v2.5</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2342,7 +2342,36 @@ function rarityRank(g){return !g?0:({'凡品':1,'普通':1,'靈品':2,'優良':2
 function gearQuality(g){return ({'凡品':'普通','靈品':'優良','珍品':'稀有','仙品':'史詩','普通':'普通','優良':'優良','稀有':'稀有','史詩':'史詩'}[g&&g.rarity]||'普通')}
 function gearSlotLabel(slot){return ({weapon:'武器',armor:'防具',ring:'戒指',charm:'護符',boots:'靈靴'}[slot]||'裝備')}
 function gearEnhanceCost(it){return 20+rarityRank(it)*20+Math.max(0,Number(it.enhanceLevel)||0)*25}
-function enhanceGear(id){const it=s.inventory.find(x=>x.id===id);if(!it)return;it.enhanceLevel=Math.max(0,Math.floor(Number(it.enhanceLevel)||0));const cost=gearEnhanceCost(it);if(Number(s.gold||0)<cost){toast('靈石不足，強化需要 '+cost+' 靈石');return}s.gold-=cost;it.enhanceLevel++;it.atk=(Number(it.atk)||0)+(it.slot==='weapon'||it.slot==='ring'?2:it.slot==='charm'?1:0);it.def=(Number(it.def)||0)+(it.slot==='armor'||it.slot==='boots'?2:it.slot==='ring'||it.slot==='charm'?1:0);it.hp=(Number(it.hp)||0)+(it.slot==='charm'||it.slot==='boots'?8:it.slot==='armor'||it.slot==='ring'?5:0);note('靈石強化成功：'+it.name+' +'+it.enhanceLevel+'，消耗靈石 '+cost+'。','good');render()}
+function gearEnhanceMaterial(it){
+ const level=Math.max(0,Math.floor(Number(it&&it.enhanceLevel)||0)),next=level+1,amount=next<=3?1:next<=6?2:3;
+ let key='crystal';
+ if(it&&it.slot==='weapon')key=(/青竹|烏木|木杖|木劍/.test(it.name||''))?'wood':'iron';
+ else if(it&&it.slot==='armor')key=(/道袍|法衣|布/.test(it.name||''))?'cloth':'beastHide';
+ else if(it&&it.slot==='ring')key=(/鐵木/.test(it.name||''))?'wood':'crystal';
+ else if(it&&it.slot==='charm')key=(/符/.test(it.name||''))?'talismanPaper':'crystal';
+ return {key:key,amount:amount,name:craftMaterialName(key)};
+}
+function gearEnhanceMaterialText(it){const m=gearEnhanceMaterial(it);return m.name+' ×'+m.amount}
+function enhanceGear(id){
+ const it=s.inventory.find(x=>x.id===id);if(!it)return;
+ it.enhanceLevel=Math.max(0,Math.floor(Number(it.enhanceLevel)||0));
+ if(it.enhanceLevel>=10){toast('裝備最高強化等級為 +10');return}
+ const cost=gearEnhanceCost(it),material=gearEnhanceMaterial(it),have=craftMaterialCount(material.key);
+ if(Number(s.gold||0)<cost){toast('靈石不足，強化需要 '+cost+' 靈石');return}
+ if(have<material.amount){toast('強化材料不足：'+material.name+' 還需要 '+(material.amount-have));return}
+ s.gold-=cost;
+ if(material.key==='wood')s.wood=Math.max(0,Number(s.wood)||0)-material.amount;
+ else if(material.key==='crystal')s.crystal=Math.max(0,Number(s.crystal)||0)-material.amount;
+ else if(material.key==='qiHerb')s.herbs=Math.max(0,Number(s.herbs)||0)-material.amount;
+ else s.craftingMaterials[material.key]=Math.max(0,Number(s.craftingMaterials[material.key])||0)-material.amount;
+ it.enhanceLevel++;
+ it.atk=(Number(it.atk)||0)+(it.slot==='weapon'||it.slot==='ring'?2:it.slot==='charm'?1:0);
+ it.def=(Number(it.def)||0)+(it.slot==='armor'||it.slot==='boots'?2:it.slot==='ring'||it.slot==='charm'?1:0);
+ it.hp=(Number(it.hp)||0)+(it.slot==='charm'||it.slot==='boots'?8:it.slot==='armor'||it.slot==='ring'?5:0);
+ note('裝備強化成功：'+it.name+' +'+it.enhanceLevel+'，消耗靈石 '+cost+'、'+material.name+' ×'+material.amount+'。','good');
+ toast('強化成功：'+it.name+' +'+it.enhanceLevel);
+ render()
+}
 function dismantleGear(id){if(Object.values(s.equipped).includes(id)){toast('請先卸下裝備再分解');return}const i=s.inventory.findIndex(x=>x.id===id);if(i<0)return;const it=s.inventory[i];const reward=Math.max(5,Math.floor((Number(it.value)||10)*0.6)+rarityRank(it)*5+(Number(it.enhanceLevel)||0)*3);s.inventory.splice(i,1);s.gold=(Number(s.gold)||0)+reward;note('分解 '+it.name+'，獲得靈石 ×'+reward+'。','good');render()}
 const MAGIC_TREASURES=[
  {id:'jade-flame',name:'青焰玉印',icon:'印',rarity:'凡品',effect:'攻擊時有機率追加傷害',chance:.18,damage:.45,upgradeWood:2,upgradeCrystal:0},
@@ -2506,7 +2535,7 @@ function render(){if(!s)return;let realm=realms[s.major]||realms[0],need=xpNeed(
 document.getElementById('upgradeList').innerHTML=[['atk','','淬鍊攻勢','攻擊 +3',35+s.layer*15],['def','','護體鍛骨','防禦 +2',30+s.layer*13],['maxHp','','洗髓淬體','氣血上限 +20',40+s.layer*18]].map(a=>`<div class="rowitem"><div class="rowicon">${a[1]}</div><div class="rowbody"><b>${a[2]}</b><small>${a[3]} · 永久提升</small></div><button onclick="upgrade('${a[0]}')" ${s.gold<a[4]?'disabled':''}>強化 ${a[4]}</button></div>`).join('');
 document.getElementById('methodList').innerHTML=methods.map((m,i)=>'<div class="method-card '+(s.method===i?'chosen':'')+'"><div class="method-icon">'+m.icon+'</div><b>'+m.name+'</b><small>'+m.bonus+'</small><button class="btn '+(s.method===i?'jade':'secondary')+'" onclick="selectMethod('+i+')" '+(s.method===i?'disabled':'')+'>'+(s.ownedMethods.includes(i)?(s.method===i?'修煉中':'切換'):'解鎖 '+m.cost+'')+'</button></div>').join('');
 document.getElementById('slots').innerHTML=['weapon','armor','ring','charm','boots'].map(slot=>{let it=equippedGear(slot);return `<div class="slot"><span>${it?it.icon:({weapon:'劍',armor:'甲',ring:'戒',charm:'符',boots:'靴'}[slot])}</span><small>${gearSlotLabel(slot)}</small><b>${it?it.name:'空欄'}</b>${it?`<button class="gear-unequip" onclick="unequip('${slot}')">卸下</button>`:''}</div>`}).join('');
-document.getElementById('bagCount').textContent=`${s.inventory.length} 件裝備`;document.getElementById('inventory').innerHTML=s.inventory.length?s.inventory.slice().reverse().map(it=>{let on=Object.values(s.equipped).includes(it.id);it.enhanceLevel=Math.max(0,Math.floor(Number(it.enhanceLevel)||0));const cost=gearEnhanceCost(it);return `<div class="rowitem"><div class="rowicon">${it.icon||'器'}</div><div class="rowbody"><b>${it.name} <span class="rarity">· ${gearQuality(it)}${it.enhanceLevel?' +'+it.enhanceLevel:''}</span> ${on?'<span class="equipped-badge">生效中</span>':''}</b><small>部位：${gearSlotLabel(it.slot)}<br>攻擊 +${it.atk||0} · 防禦 +${it.def||0} · 氣血 +${it.hp||0}<br>${it.desc||'古樸的修行裝備。'}<br><span class="gear-trait">${gearTrait(it)}</span></small></div><button onclick="${on?'':'equip('+it.id+')'}" ${on?'disabled':''}>${on?'已裝備':'穿戴'}</button><button onclick="enhanceGear(${it.id})" ${s.gold<cost?'disabled':''} title="消耗靈石 ${cost}">強化 ${cost}</button><button onclick="dismantleGear(${it.id})" ${on?'disabled':''}>分解</button></div>`}).join(''):'<div class="smallnote">尚無裝備。前往戰鬥取得掉落，或透過煉器合成裝備。</div>';
+document.getElementById('bagCount').textContent=`${s.inventory.length} 件裝備`;document.getElementById('inventory').innerHTML=s.inventory.length?s.inventory.slice().reverse().map(it=>{let on=Object.values(s.equipped).includes(it.id);it.enhanceLevel=Math.max(0,Math.floor(Number(it.enhanceLevel)||0));const cost=gearEnhanceCost(it),mat=gearEnhanceMaterial(it);return `<div class="rowitem"><div class="rowicon">${it.icon||'器'}</div><div class="rowbody"><b>${it.name} <span class="rarity">· ${gearQuality(it)}${it.enhanceLevel?' +'+it.enhanceLevel:''}</span> ${on?'<span class="equipped-badge">生效中</span>':''}</b><small>部位：${gearSlotLabel(it.slot)}<br>攻擊 +${it.atk||0} · 防禦 +${it.def||0} · 氣血 +${it.hp||0}<br>${it.desc||'古樸的修行裝備。'}<br><span class="gear-trait">${gearTrait(it)}</span></small></div><button onclick="${on?'':'equip('+it.id+')'}" ${on?'disabled':''}>${on?'已裝備':'穿戴'}</button><button onclick="enhanceGear(${it.id})" ${s.gold<cost?'disabled':''} title="消耗靈石 ${cost}、${mat.name} ×${mat.amount}">強化 ${cost}<small style="display:block;font-size:9px">${mat.name} ×${mat.amount}</small></button><button onclick="dismantleGear(${it.id})" ${on?'disabled':''}>分解</button></div>`}).join(''):'<div class="smallnote">尚無裝備。前往戰鬥取得掉落，或透過煉器合成裝備。</div>';
 const pillCountNode=document.getElementById('pillCount');if(pillCountNode)pillCountNode.textContent=s.pills;const shopPillButton=document.getElementById('buyPill');if(shopPillButton)shopPillButton.onclick=buyPill;document.getElementById('woodCount').textContent=s.wood;document.getElementById('crystalCount').textContent=s.crystal;document.getElementById('woodMini').textContent=s.wood;document.getElementById('crystalMini').textContent=s.crystal;renderQiRecipeCards();let idleEl=document.getElementById('offlineSummary');if(idleEl){let report=s.offlineReport;idleEl.textContent=report?`上次${report.source||'自動修行'}：${formatDuration(report.seconds)}｜修為 +${report.xp}。修為自動入帳；靈石與材料透過戰鬥取得。`:`自動修行持續運轉，修為最多離線累積 24 小時；靈石與材料請透過戰鬥取得。`}renderChronicle();renderLogs();save()}
 function selectMethod(i){
  i=Number(i);const m=methods[i];if(!m){toast('找不到這個功法');return}
@@ -4305,17 +4334,17 @@ main>.screen#home.active{display:flex!important}
  }
  function detailHtml(it){
   if(!it)return '<div class="bag-empty-detail">選擇一件裝備，查看屬性與操作。</div>';
-  const on=isEquipped(it),protectedItem=isProtected(it),level=Math.max(0,Math.floor(Number(it.enhanceLevel)||0)),cost=typeof gearEnhanceCost==='function'?gearEnhanceCost(it):20;
+  const on=isEquipped(it),protectedItem=isProtected(it),level=Math.max(0,Math.floor(Number(it.enhanceLevel)||0)),cost=typeof gearEnhanceCost==='function'?gearEnhanceCost(it):20,enhanceMaterial=typeof gearEnhanceMaterial==='function'?gearEnhanceMaterial(it):{name:'強化材料',amount:1};
   const reward=Math.max(5,Math.floor((Number(it.value)||10)*0.6)+rank(it)*5+starCount(it)*3);
   const nextAtk=it.slot==='weapon'||it.slot==='ring'?2:it.slot==='charm'?1:0;
   const nextDef=it.slot==='armor'||it.slot==='boots'?2:it.slot==='ring'||it.slot==='charm'?1:0;
   const nextHp=it.slot==='charm'||it.slot==='boots'?8:it.slot==='armor'||it.slot==='ring'?5:0;
   return '<div class="bag-detail-head"><div class="bag-detail-icon">'+escapeHtml(it.icon||'器')+'</div><div><h3>'+escapeHtml(it.name)+'</h3><p>'+escapeHtml(qualityName(it))+'　'+('★'.repeat(starCount(it)))+'　+'+(Number(it.enhanceLevel)||0)+'</p><p>'+escapeHtml(gearSlotLabel(it.slot))+(on?' · 已穿戴':'')+(it.locked?' · 已鎖定':'')+'</p></div></div>'+
    '<div class="bag-stat-grid"><div class="bag-stat-cell"><small>攻擊</small><b>+'+(Number(it.atk)||0)+'</b></div><div class="bag-stat-cell"><small>防禦</small><b>+'+(Number(it.def)||0)+'</b></div><div class="bag-stat-cell"><small>氣血</small><b>+'+(Number(it.hp)||0)+'</b></div></div>'+
-   '<div class="bag-compare">'+escapeHtml(compareText(it))+'</div><div class="bag-compare" style="border-color:#bca06b;color:#d7c69f">估算戰力：'+estimate(it)+'　·　'+(level>=10?'強化已滿級':'下一級強化費用：'+cost+' 靈石')+'　·　分解預估：'+reward+' 靈石</div>'+
+   '<div class="bag-compare">'+escapeHtml(compareText(it))+'</div><div class="bag-compare" style="border-color:#bca06b;color:#d7c69f">估算戰力：'+estimate(it)+'　·　'+(level>=10?'強化已滿級':'下一級強化費用：'+cost+' 靈石 + '+enhanceMaterial.name+' ×'+enhanceMaterial.amount)+'　·　分解預估：'+reward+' 靈石</div>'+
    '<div class="bag-compare" style="border-color:#bca06b;color:#d7c69f">強化預覽：'+(level>=10?'已達最高強化等級 +10':'升至 +'+(level+1)+'：攻擊 +'+nextAtk+'、防禦 +'+nextDef+'、氣血 +'+nextHp)+'</div>'+
    '<div class="bag-action-grid"><button type="button" class="btn primary" onclick="window.bagEquipSelected('+it.id+')" '+(on?'disabled':'')+'>'+(on?'已穿戴':'穿戴')+'</button><button type="button" class="btn jade" onclick="window.bagEnhanceSelected('+it.id+')" '+((Number(it.enhanceLevel)||0)>=10?'disabled':'')+'>強化</button><button type="button" class="btn secondary" onclick="window.bagToggleLock('+it.id+')">'+(it.locked?'解除鎖定':'鎖定')+'</button><button type="button" class="btn danger" onclick="window.bagReviewDismantle('+it.id+')" '+(protectedItem?'disabled':'')+'>分解</button></div>'+
-   '<div class="smallnote" style="margin-top:7px">'+(protectedItem?'此裝備目前受到保護，分解操作已停用。':'分解會永久移除此裝備，確認前會再次顯示收益。')+'</div>';
+   '<div class="smallnote" style="margin-top:7px">'+(level>=10?'裝備已達最高強化等級。':('下一級強化需 '+cost+' 靈石及 '+enhanceMaterial.name+' ×'+enhanceMaterial.amount+'。'))+'<br>'+(protectedItem?'此裝備目前受到保護，分解操作已停用。':'分解會永久移除此裝備，確認前會再次顯示收益。')+'</div>';
  }
   
 function treasureEffectText(item,level){const pct=(item.perLevel*Math.max(0,level)*100).toFixed(1).replace(/\.0$/,'');return item.effectName+' +'+pct+'%';}
@@ -4361,7 +4390,7 @@ window.bagCraftTreasure=function(id){
  render();
  toast(level===0?'古寶合成成功，效果立即生效':'古寶升級成功，效果立即提升');
 };
-function renderMaterialCollection(){ensureCraftingMaterials();const count=function(item){if(item.key==='wood')return Math.max(0,Number(s.wood)||0);if(item.key==='crystal')return Math.max(0,Number(s.crystal)||0);if(item.key==='qiHerb')return Math.max(0,Number(s.herbs)||0);return Math.max(0,Number(s.craftingMaterials[item.key])||0)};const total=QI_CRAFTING_MATERIALS.reduce(function(n,item){return n+count(item)},0);return '<div class="bag-treasure-intro"><div class="secthead"><span>煉氣期基礎材料</span><small>共 '+total+' 份</small></div><p>材料會自動堆疊，戰鬥取得後直接入袋。靈木、低階靈晶與凝氣草沿用既有資源欄位，不會重複建立或重置數量。</p></div><div class="bag-treasure-total">已收集 <b>'+QI_CRAFTING_MATERIALS.filter(function(item){return count(item)>0}).length+'</b> / '+QI_CRAFTING_MATERIALS.length+' 種材料</div><div class="bag-material-grid">'+QI_CRAFTING_MATERIALS.map(function(item){return '<article class="bag-material-card"><div class="bag-material-icon">'+item.icon+'</div><div class="bag-material-info"><b>'+item.name+'</b><small>'+item.source+'</small></div><strong>× '+count(item).toLocaleString('zh-TW')+'</strong></article>'}).join('')+'</div><div class="bag-treasure-drop-note">普通怪提供基礎材料，精英怪提高精鐵、妖獸皮與妖獸骨機率，首領提供較多材料。這一階段先完成收集與顯示，製作配方會在後續煉器工坊階段接入。</div>';}
+function renderMaterialCollection(){ensureCraftingMaterials();const count=function(item){if(item.key==='wood')return Math.max(0,Number(s.wood)||0);if(item.key==='crystal')return Math.max(0,Number(s.crystal)||0);if(item.key==='qiHerb')return Math.max(0,Number(s.herbs)||0);return Math.max(0,Number(s.craftingMaterials[item.key])||0)};const total=QI_CRAFTING_MATERIALS.reduce(function(n,item){return n+count(item)},0);return '<div class="bag-treasure-intro"><div class="secthead"><span>煉氣期基礎材料</span><small>共 '+total+' 份</small></div><p>材料會自動堆疊，戰鬥取得後直接入袋。靈木、低階靈晶與凝氣草沿用既有資源欄位，不會重複建立或重置數量。</p></div><div class="bag-treasure-total">已收集 <b>'+QI_CRAFTING_MATERIALS.filter(function(item){return count(item)>0}).length+'</b> / '+QI_CRAFTING_MATERIALS.length+' 種材料</div><div class="bag-material-grid">'+QI_CRAFTING_MATERIALS.map(function(item){return '<article class="bag-material-card"><div class="bag-material-icon">'+item.icon+'</div><div class="bag-material-info"><b>'+item.name+'</b><small>'+item.source+'</small></div><strong>× '+count(item).toLocaleString('zh-TW')+'</strong></article>'}).join('')+'</div><div class="bag-treasure-drop-note">材料可用於煉氣期裝備製作與強化。強化每次消耗靈石及對應材料；+1 至 +3 需 1 份、+4 至 +6 需 2 份、+7 至 +10 需 3 份。</div>';}
 function renderBagUI(){
    ensureData();
    const gold=byId('bagGold');if(gold)gold.textContent=Number(s.gold||0).toLocaleString('zh-TW');
