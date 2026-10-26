@@ -131,3 +131,15 @@
 - **存檔保護：** `nine_heavens_idle_v2` 完全保留；未重置或改寫存檔。
 - **程式提交：** `a30a87e3e204d8803a58daaef5cfef70c312bff9`；`index.html` blob SHA：`c86aa0b1c87c1332e4553e2e21fc93bef7972bfa`。
 - **尚未完成：** iPhone Safari 真機驗收與使用者端實際手動操作。
+
+
+## Phase 13：儲物袋至部署的 1～12 步驟總核對與原著典藏擴充（v6.0）
+
+- **狀態：**程式與測試已提交；最新 GitHub Actions 尚待完成，未以提交紀錄代替部署成功。
+- **修改檔案：**`index.html`、`.github/workflows/deploy-prototype-pages.yml`、`latest.html`、`CHANGELOG.md`、`GAME_STATE.md`、`PROJECT_CONTINUATION.md`、`GAME_PROJECT_MASTER.md`、`docs/PROJECT_DECISION_LOG.md`、本索引。
+- **原著典藏：**在既有「分類圖鑑」新增掌天瓶、虛天鼎，既有四項條目保留，展開條目總數六項。新增條目只記錄原作脈絡，不自動成為玩家可裝備／掉落／合成物件；精確章節仍待逐章核對。
+- **回歸測試：**典藏數量與兩個新條目內容斷言更新；workflow 版本、最新版本頁與舊入口轉址統一至 v6.0。
+- **1～12 步驟現況：**五大儲物袋分類、裝備管理、材料與煉器、古寶、法寶、靈寵、戰鬥 UI、一對多群戰、存檔與部署的自動化測試已在 v5.9 通過；v6.0 需由最新 Actions 重跑。原作資料補齊仍持續進行，不能將六項典藏宣稱為原著 12 大類已全部完成。
+- **測試證據：**上一個成功 Actions run `40284325020`，24 項單元測試通過；手機尺寸 Chromium 測試涵蓋材料掉落加成、20 件配方、強化／分解、古寶、法寶、靈寵、戰鬥、存檔重載、版本入口與舊入口轉址。
+- **存檔保護：**`nine_heavens_idle_v2` 未變更，未重置或清除玩家存檔。
+- **待完成：**最新 v6.0 Actions 結果、逐章核對掌天瓶與虛天鼎、持續擴充 12 大類原著資料、iPhone Safari 真機驗收。
