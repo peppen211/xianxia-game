@@ -27,7 +27,7 @@ jobs:
           cp index.html dist/index.html
           cp latest.html dist/latest.html
           cp '首頁.PNG' 'dist/首頁.PNG'
-          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.47"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.47");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.50。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.47">開啟目前正式版 v6.50</a></body></html>'
+          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.47"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.47");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.51。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.47">開啟目前正式版 v6.51</a></body></html>'
           for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html; do
             printf '%s\n' "$LEGACY_REDIRECT_HTML" > "dist/$LEGACY_PATH"
           done
@@ -90,7 +90,7 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v6.50') throw new Error('遊戲右上角版本標示應為 v6.50，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v6.51') throw new Error('遊戲右上角版本標示應為 v6.51，實際為：' + publishedVersionLabel);
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
             await page.locator('#gameApp #openCultivateCatalog').waitFor({state:'visible', timeout:3000});
@@ -996,72 +996,16 @@ jobs:
 
 
            
-            // Regression checks for the fifth tab: no duplicate database action or unrelated save/reward cards.
-            await page.locator('#gameApp .bottom .nav[data-screen="journal"]').click();
-            const arcCards = page.locator('#journalHybridStages .journal-arc-card');
-            if (await arcCards.count() !== 8) throw new Error('仙途分頁應顯示八大主線階段。');
-            const journalText = await page.locator('#journalV14Dock').innerText();
-            if (journalText.includes('存檔安全') || journalText.includes('放置收益')) throw new Error('仙途分頁仍包含不屬於主線紀事的功能卡。');
-            if (await page.locator('#journalV14Dock #openNodeDatabase').count()) throw new Error('仙途分頁仍有重複的整份紀事資料庫按鈕。');
-            const firstArcButton = arcCards.nth(0).locator('.journal-arc-toggle');
-            const firstArcContent = arcCards.nth(0).locator('.journal-arc-content');
-            if ((await firstArcButton.getAttribute('aria-expanded')) === 'true') await firstArcButton.click();
-            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'false' || await firstArcContent.isVisible()) throw new Error('單一主線階段收合按鈕未生效。');
-            await firstArcButton.click();
-            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true' || !(await firstArcContent.isVisible())) throw new Error('單一主線階段展開按鈕未生效。');
-            // v0.96 renders node details expanded by default; verify the current node card and its unlock/map metadata instead of the removed legacy toggle.
-            const nodeCard = page.locator('#journalHybridStages .journal-node-card').first();
-            await nodeCard.waitFor({state:'visible', timeout:3000});
-            const nodeCardText = await nodeCard.innerText();
-            if (!nodeCardText.includes('故事地點：') || !nodeCardText.includes('解鎖條件：')) throw new Error('主線節點未顯示故事地點與解鎖條件。');
-            if (await page.locator('#toggleJournalStages').count()) throw new Error('進度總覽仍有全部展開／收起按鈕。');
-            const secondArcButton = arcCards.nth(1).locator('.journal-arc-toggle');
-            const secondArcContent = arcCards.nth(1).locator('.journal-arc-content');
-            if ((await secondArcButton.getAttribute('aria-expanded')) !== 'true') await secondArcButton.click();
-            if (!(await secondArcContent.isVisible())) throw new Error('第二階段無法展開。');
-            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true' || !(await firstArcContent.isVisible())) throw new Error('章節應獨立展開，開啟第二階段不可收起第一階段。');
-            await secondArcButton.click();
-            if ((await secondArcButton.getAttribute('aria-expanded')) !== 'false' || await secondArcContent.isVisible()) throw new Error('第二階段無法獨立收合。');
-            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true' || !(await firstArcContent.isVisible())) throw new Error('收合第二階段時，第一階段受到連動影響。');
-            await secondArcButton.click();
-            if (!(await firstArcContent.isVisible()) || !(await secondArcContent.isVisible())) throw new Error('再次展開第二階段後，兩個章節應可同時展開。');
-            console.log('Journal UI regression passed: eight stages, independent expand/collapse, no bulk toggle or unrelated cards.');
-            // Current v0.96+ story flow uses one central story-library entry and renders chapter nodes as expanded cards.
-            const storyLibraryButton = page.locator('#journalStoryLibraryButton');
-            if (!(await storyLibraryButton.isVisible())) throw new Error('中央「修仙劇情故事」入口不可見。');
-            const secondStageLockNote = arcCards.nth(1).locator('.journal-stage-lock-note');
-            if (!(await secondStageLockNote.textContent()).includes('黃楓谷')) throw new Error('第二階段未顯示境界／地圖解鎖條件。');
-
-            await storyLibraryButton.click();
-            const novelReader = page.locator('#modalBody .novel-reader');
-            await novelReader.waitFor({ state: 'visible', timeout: 3000 });
-            if (await novelReader.locator('p').count() < 8) throw new Error('主線節點全文不足八個段落。');
-            const readerText = await novelReader.innerText();
-            if (readerText.length < 650) throw new Error('主線節點全文篇幅不足。');
-            if (!readerText.includes('凡人起步・青牛鎮')) throw new Error('未開啟第一個可閱讀主線節點。');
-            if (await novelReader.locator('.novel-chapter-nav button').count() !== 2) throw new Error('主線全文上一節／下一節導覽缺失。');
-
-            const readerMode = await novelReader.evaluate(reader => {
-              const el = reader.closest('.ui-modal');
-              if (!el) throw new Error('小說閱讀器找不到所屬彈窗 .ui-modal。');
-              const r = el.getBoundingClientRect();
-              return { position: getComputedStyle(el).position, rect: { x:r.x, y:r.y, width:r.width, height:r.height } };
-            });
-            const viewport = page.viewportSize();
-            if (readerMode.position !== 'fixed' || readerMode.rect.width < viewport.width - 2 || readerMode.rect.height < viewport.height - 2) throw new Error('小說閱讀器沒有覆蓋整個手機畫面。');
-            const closeStoryFooter = page.locator('#uiModal.novel-reading-mode #modalFooter button');
-            const topStoryClose = page.locator('#uiModal.novel-reading-mode .modal-close');
-            if (!(await closeStoryFooter.isVisible()) || await topStoryClose.isVisible()) throw new Error('劇情閱讀模式應保留下方關閉按鈕並隱藏右上角重複按鈕。');
-            await closeStoryFooter.click();
-            await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
-            if (await page.locator('#journalHybridStages').isHidden()) throw new Error('關閉劇情後沒有返回仙途。');
-            await storyLibraryButton.click();
-            await novelReader.waitFor({ state: 'visible', timeout: 3000 });
-            if (await page.locator('#uiModal.novel-reading-mode .modal-close').isVisible()) throw new Error('重新開啟劇情後右上角重複關閉按鈕再次出現。');
-            await page.keyboard.press('Escape');
-            await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
-            console.log('Story progression regression passed: central story entry, gated stage metadata, full chapter reader, immersive layout, close and reopen flow.');
-
+            // v6.51 navigation regression: the removed journal tab must stay absent and XianShi must be the far-right tab.
+            const navOrder = await page.locator('#gameApp .bottom .nav').evaluateAll(nodes => nodes.map(node => node.dataset.screen));
+            const expectedNavOrder = ['cultivate','character','home','bag','shop'];
+            if (JSON.stringify(navOrder) !== JSON.stringify(expectedNavOrder)) {
+              throw new Error('底部導覽順序錯誤，預期修煉、道途、戰鬥、儲物袋、仙市：' + JSON.stringify(navOrder));
+            }
+            if (await page.locator('#gameApp .bottom .nav[data-screen="journal"]').count()) {
+              throw new Error('已移除的仙途導覽仍出現在底部選單。');
+            }
+            console.log('Navigation regression passed: five current tabs in expected order, XianShi far right, removed journal tab absent.');
 
             // v6.25: one-to-many battle, per-enemy rewards and safe restoration of the isolated test save.
             await page.locator('#gameApp .bottom .nav[data-screen="home"]').click();
@@ -1162,7 +1106,7 @@ jobs:
             console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
             await page.goto('https://peppen211.github.io/xianxia-game/latest.html', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const latestPageVersion = (await page.locator('.version').innerText()).trim();
-            if (latestPageVersion !== 'v6.50') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
+            if (latestPageVersion !== 'v6.51') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
             const latestPageLink = await page.locator('a.launch').getAttribute('href');
             if (latestPageLink !== './?v=6.47') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
             await page.locator('a.launch').click();
@@ -1170,25 +1114,25 @@ jobs:
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const latestLinkTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (latestLinkTargetVersion !== 'v6.50') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
-            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v6.50.');
+            if (latestLinkTargetVersion !== 'v6.51') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
+            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v6.51.');
             const legacyEntryPaths = ['classic.html','mortal-cultivation-rpg.html','mortal-cultivation-rpg-3.3.html','prototype/index.html'];
             for (const legacyPath of legacyEntryPaths) {
-              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.50');
+              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.51');
               if (!legacyResponse.ok()) throw new Error('舊入口沒有回應可用的轉址頁：' + legacyPath + ' (' + legacyResponse.status() + ')');
               const legacyHtml = await legacyResponse.text();
               if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=6.47") || !legacyHtml.includes('location.replace')) {
-                throw new Error('舊入口仍未指向 v6.50 正式版：' + legacyPath);
+                throw new Error('舊入口仍未指向 v6.51 正式版：' + legacyPath);
               }
             }
-            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.50', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.51', { waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=6.47', null, { timeout: 15000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const legacyTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (legacyTargetVersion !== 'v6.50') throw new Error('舊版入口轉址後仍未開啟 v6.50：' + legacyTargetVersion);
-            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v6.50 without launching old save logic.');
+            if (legacyTargetVersion !== 'v6.51') throw new Error('舊版入口轉址後仍未開啟 v6.51：' + legacyTargetVersion);
+            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v6.51 without launching old save logic.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
@@ -1208,8 +1152,8 @@ jobs:
               fi
             done
             if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE" &&
-               grep -Fq '<div class="version">v6.50</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.47"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
-              echo "Published v6.50 entry, latest.html and all legacy redirects verified."
+               grep -Fq '<div class="version">v6.51</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.47"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
+              echo "Published v6.51 entry, latest.html and all legacy redirects verified."
               exit 0
             fi
             sleep 10
