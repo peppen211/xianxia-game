@@ -4,13 +4,13 @@
 專案：`peppen211/xianxia-game`
 正式網址：https://peppen211.github.io/xianxia-game/
 
-## 目前實際狀態（v6.18 部署待驗證）
+## 目前實際狀態（v6.19 修復版待 Actions 驗證）
 
 - GitHub 預設分支：`main`
 - 遊戲根目錄：`index.html`，公開網站部署流程會把此檔複製至 Pages；React `src/` 不是目前公開入口的直接遊戲程式。
-- 遊戲畫面版本標籤：`v6.18`（已寫入原始碼，正式部署待 Actions 確認）。
+- 遊戲畫面版本標籤：建置時由 `scripts/repair-game-ui.mjs` 驗證並更新為 `v6.19`；正式部署需以本輪 Actions 結果為準。
 - 本輪 `index.html` 修改提交：`4b92742a293006361a0a45e63be0958726aee08f`；blob SHA：`72655d5ec5e47acccc7d7411871abdef4ad4837f`。
-- 部署 workflow、最新版本頁與 CHANGELOG 已更新至 v6.18；原著典藏回歸測試預期 7 項。
+- 最新版本頁與 CHANGELOG 已更新至 v6.19；本輪針對手機版靈寵卡片重疊與分類圖鑑重複佔位說明修復，未調整玩法數值或存檔結構。
 - 上一個正式驗證成功的部署是 v5.9，Actions run `40284325020` 的 build、deploy、手機尺寸 Chromium 測試與公開入口檢查均成功。
 - 上一個已知成功版本為 v6.0（Actions run `40286674703`）。v6.18 的 Actions run `40292511080` 已啟動，測試與部署尚待最終結果，不能提前宣稱成功。**
 
