@@ -50,7 +50,7 @@ if (html.includes(oldEquip)) {
 }
 
 const bagBalanceStyle = `<style id="v643-bag-inventory-height-balance">
-/* v6.43: compact equipment slots and allocate more mobile viewport to the scrollable inventory. */
+/* v6.44: compact equipment slots and allocate more mobile viewport to the scrollable inventory. */
 body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout{
   grid-template-rows:minmax(78px,0.55fr) minmax(0,1.45fr)!important;
 }
@@ -75,7 +75,7 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.43$2"
+  "$1v6.44$2"
 );
 
 const catalogTabs = `<style id="v635-catalog-tabs">
@@ -138,7 +138,7 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.43 非破壞性檢查");
+html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.44 非破壞性檢查");
 html = html.replace(String.raw`v6\.42`, String.raw`v6\.42`);
 
 
@@ -191,4 +191,4 @@ if (locationPattern.test(html)) {
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.43 catalog-only rendering fixed.");
+console.log("v6.44 catalog-only rendering fixed.");
