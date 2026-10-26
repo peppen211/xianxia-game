@@ -49,21 +49,34 @@ if (html.includes(oldEquip)) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
 
-const bagBalanceStyle = `<style id="v643-bag-inventory-height-balance">
-/* v6.44: compact equipment slots and allocate more mobile viewport to the scrollable inventory. */
+const bagBalanceStyle = `<style id="v645-bag-inventory-height-balance">
+/* v6.45: cap the five equipment slots row and give the scrollable inventory the remaining mobile height. */
 body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout{
-  grid-template-rows:minmax(78px,0.55fr) minmax(0,1.45fr)!important;
+  grid-template-rows:82px minmax(0,1fr)!important;
+  min-height:0!important;
 }
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel{min-height:0!important;padding:2px 5px!important;overflow:visible!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .secthead{min-height:18px!important;margin-bottom:0!important;font-size:11px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slotgrid{margin-top:2px!important;gap:3px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot{padding:2px 1px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot span{font-size:12px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot small{font-size:8px!important;line-height:1.1!important;margin-top:1px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot b{font-size:8px!important;line-height:1.1!important;margin-top:1px!important}
-body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .gear-unequip{margin-top:2px!important;padding:2px!important;font-size:8px!important}
-</style>`;
-if (!html.includes('id="v643-bag-inventory-height-balance"')) {
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel{
+  min-height:0!important;height:82px!important;max-height:82px!important;
+  box-sizing:border-box!important;padding:2px 5px!important;overflow:hidden!important;
+}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .secthead{
+  min-height:15px!important;height:15px!important;margin:0!important;font-size:10px!important;
+}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slotgrid{margin-top:1px!important;gap:2px!important;min-height:0!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot{min-height:0!important;padding:1px!important;gap:0!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot span{font-size:11px!important;line-height:1.05!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot small{font-size:7px!important;line-height:1!important;margin-top:0!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot b{font-size:7px!important;line-height:1!important;margin-top:0!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .gear-unequip{min-height:15px!important;height:auto!important;line-height:1!important;margin-top:1px!important;padding:1px!important;font-size:7px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-list-panel{min-height:0!important;height:100%!important;overflow:hidden!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-list-panel #inventory.bag-item-list{min-height:0!important;height:auto!important;max-height:100%!important;overflow-y:auto!important}
+@media(max-height:700px){
+ #gameApp #bag .bag-gear-layout{grid-template-rows:76px minmax(0,1fr)!important}
+ #gameApp #bag .bag-slots-panel{height:76px!important;max-height:76px!important;padding:1px 4px!important}
+ #gameApp #bag .bag-slots-panel .slot{padding:1px!important}
+}
+</style>`
+if (!html.includes('id="v645-bag-inventory-height-balance"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for the mobile bag layout fix.");
   html = html.replace("</body>", bagBalanceStyle + "\n</body>");
 }
@@ -75,7 +88,7 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.44$2"
+  "$1v6.45$2"
 );
 
 const catalogTabs = `<style id="v635-catalog-tabs">
@@ -138,12 +151,11 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.44 非破壞性檢查");
-html = html.replace(String.raw`v6\.42`, String.raw`v6\.42`);
+html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.45 非破壞性檢查");
 
 
 
-const catalogLocationPatch = `<script id="v643-catalog-location-script">
+const catalogLocationPatch = `<script id="v645-catalog-location-script">
 (function(){
  'use strict';
  function setup(){
@@ -182,7 +194,7 @@ const catalogLocationPatch = `<script id="v643-catalog-location-script">
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
 </script>`;
-const locationPattern = /<script id="v(?:637|639|641|642)-catalog-location-script">[\s\S]*?<\/script>/;
+const locationPattern = /<script id="v(?:637|639|641|642|643|644|645)-catalog-location-script">[\s\S]*?<\/script>/;
 if (locationPattern.test(html)) {
   html = html.replace(locationPattern, catalogLocationPatch);
 } else {
@@ -191,4 +203,4 @@ if (locationPattern.test(html)) {
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.44 catalog-only rendering fixed.");
+console.log("v6.45 catalog-only rendering fixed.");
