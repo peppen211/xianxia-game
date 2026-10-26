@@ -2046,7 +2046,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v1.21</small>
+  <small class="status-version" aria-label="遊戲版本">v2.0</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2201,10 +2201,10 @@ function openClassificationCatalog(){
  const treasureRows=treasureClassCatalog.map(function(item){return '<div class="rowitem"><div class="rowicon">寶</div><div class="rowbody"><b>'+item.name+'</b><small>'+item.desc+'</small></div></div>';}).join('');
  const enemyRows=foes.map(function(item){const kind=/兔|蛇|狼/.test(item.name)?'靈獸':'特殊生靈';return '<div class="rowitem"><div class="rowicon">敵</div><div class="rowbody"><b>'+item.name+'</b><small>敵怪類 · '+kind+' · '+item.desc+'</small></div></div>';}).join('');
  const petRows=petCatalog.map(function(item){return '<div class="rowitem"><div class="rowicon">靈</div><div class="rowbody"><b>'+item.name+'</b><small>靈寵類 · '+item.kind+' · '+item.desc+'</small></div></div>';}).join('');
- /* v1.21：將原著逐項考據直接放入既有分類圖鑑，保留既有遊戲分類與玩法，不建立獨立資料頁。 */
+ /* v2.0 測試：延續既有「第一篇：裝備與寶物」，補入同一段萬寶樓交易可核對的物件；只收錄考據，不改玩法數值或存檔。 */
  const canonArchive =
-  '<div class="panel" style="margin-top:8px"><div class="secthead"><span>原著典藏 · 第一篇：裝備與寶物</span><small>1.1 兵器與基礎裝備</small></div>'+
-  '<p class="smallnote">此區直接整合在現有「分類圖鑑」。只記錄原著／動畫可核對的資料；不擅自將原作物品改成遊戲數值，也不更動原有 12 大類架構與其他篇章。</p>'+
+  '<div class="panel" style="margin-top:8px"><div class="secthead"><span>原著典藏 · 第一篇：裝備與寶物</span><small>1.1 兵器、防具與符寶</small></div>'+
+  '<p class="smallnote">此區直接整合在現有「分類圖鑑」。v2.0 測試新增萬寶樓交易相關條目；僅記錄小說／動畫可核對的資料，不把原作物件直接換算成攻擊數值、掉落率、製作需求或遊戲裝備。</p>'+
   '<details style="padding:8px 0"><summary style="cursor:pointer;font-weight:700;color:var(--gold,#d7b56d)">金蚨子母刃 · 第 1 項</summary>'+
   '<div class="smallnote" style="line-height:1.8;margin-top:8px">'+
   '<b>正式名稱：</b>金蚨子母刃<br>'+
@@ -2216,8 +2216,38 @@ function openClassificationCatalog(){
   '<b>原著首次重點介紹：</b>第 163 章〈錦盒之寶〉。掌櫃介紹時，韓立拿起一把子刃查看；後續議價後才完成交易。<br>'+
   '<b>動畫對應：</b>《凡人風起天南》第 11 集，呈現韓立購得此刃，並在與陸師兄的戰鬥中使用。<br>'+
   '<b>小說與動畫差異：</b>動畫將萬寶樓交易過程精簡，並增加一把可兼作飛行法器的長刀；與陸師兄交手的方式也重新編排。原著該段主要使用精鋼環、葫蘆黑球、連發火球及灰色小劍符寶，並非動畫所呈現的同一套刀刃攻防。<br>'+
-  '<b>遊戲處理：</b>目前只收錄原作資料，不直接設定攻擊力、掉落率、製作材料需求或裝備效果；待原作資料整理與遊戲定位確認後再接入實際玩法。'+
-  '</div></details></div>';
+  '<b>遊戲處理：</b>目前只收錄原作資料，不直接設定攻擊力、掉落率、製作材料需求或裝備效果。'+
+  '</div></details>'+
+  '<details style="padding:8px 0"><summary style="cursor:pointer;font-weight:700;color:var(--gold,#d7b56d)">玄鐵飛天盾 · 第 2 項</summary>'+
+  '<div class="smallnote" style="line-height:1.8;margin-top:8px">'+
+  '<b>類型：</b>防禦型法器<br>'+
+  '<b>外觀與材料：</b>初見是巴掌大小的微型鐵盾；掌櫃稱以寒陰之地的玄鐵精煉而成。<br>'+
+  '<b>能力：</b>注入法力後可放大並離手懸浮，圍繞持有者自動飛行防禦，能靈活遮護身體要害。<br>'+
+  '<b>持有者／取得：</b>韓立在黃楓谷坊市萬寶樓購得，準備用於血色禁地試煉；其後與陸師兄交手時實際使用。<br>'+
+  '<b>原著對應：</b>第 163 章〈錦盒之寶〉，與金蚨子母刃在同一場交易中介紹。<br>'+
+  '<b>動畫對應：</b>《凡人風起天南》第 11 集；動畫以盾牌抵禦陸師兄的攻勢。<br>'+
+  '<b>遊戲處理：</b>只記錄其防禦定位與原作情節；不預設防禦力、耐久、裝備槽或掉落方式。'+
+  '</div></details>'+
+  '<details style="padding:8px 0"><summary style="cursor:pointer;font-weight:700;color:var(--gold,#d7b56d)">天雷子 · 第 3 項</summary>'+
+  '<div class="smallnote" style="line-height:1.8;margin-top:8px">'+
+  '<b>類型：</b>一次性攻擊用寶物（原作定位記錄；不代表遊戲已實裝）<br>'+
+  '<b>外觀：</b>丸子般大小的藍色圓珠。<br>'+
+  '<b>由來與能力：</b>萬寶樓掌櫃稱其為數百年前一名神秘修士截取天地雷電凝練而成，威力極大；「可重創甚至擊殺築基修士」是掌櫃對其威力的介紹，不換算為遊戲傷害數值。<br>'+
+  '<b>持有者／取得：</b>韓立在萬寶樓交易時購得，打算作為血色禁地的保命底牌之一。<br>'+
+  '<b>原著對應：</b>第 163 章〈錦盒之寶〉。<br>'+
+  '<b>動畫對應：</b>《凡人風起天南》第 11 集的萬寶樓交易段落有介紹；該段未完整演出其實戰效果。<br>'+
+  '<b>遊戲處理：</b>不設定數量、傷害、爆炸範圍或取得率，待相關篇章整理完成後再討論玩法定位。'+
+  '</div></details>'+
+  '<details style="padding:8px 0"><summary style="cursor:pointer;font-weight:700;color:var(--gold,#d7b56d)">金光磚符寶 · 第 4 項</summary>'+
+  '<div class="smallnote" style="line-height:1.8;margin-top:8px">'+
+  '<b>類型：</b>符寶；萬寶樓的鎮店之寶之一。<br>'+
+  '<b>原作定位：</b>與一般法器不同，原著以符寶身份介紹此物；店方強調其珍貴，韓立將其視為應對強敵的手段。<br>'+
+  '<b>持有者／取得：</b>韓立以千年靈草等物與萬寶樓交易取得。<br>'+
+  '<b>原著對應：</b>第 164 章〈符寶之秘〉。<br>'+
+  '<b>動畫對應：</b>《凡人風起天南》第 11 集；動畫呈現萬寶樓掌櫃展示此物並完成交易。<br>'+
+  '<b>小說與動畫差異：</b>交易及後續戰鬥的呈現節奏有所精簡／改編；本條只記錄兩者共同確認的物件與定位，不把改編演出當成原著細節。<br>'+
+  '<b>遊戲處理：</b>保留「符寶」分類，不填入未核實的品階、威力、使用次數或可製作規則。'+
+  '</div></details></div>'; 
  openModal('法寶與生靈分類',
   '<div class="panel"><div class="secthead"><span>裝備類</span><small>4 種</small></div><p class="smallnote">一般可裝備或使用的物品；現有遊戲裝備會標註為裝備類。</p><div class="scrolllist">'+equipRows+'</div></div>'+
   '<div class="panel" style="margin-top:8px"><div class="secthead"><span>古寶類</span><small>4 種</small></div><p class="smallnote">與一般穿戴裝備分開收藏，不混用同一個分類。</p><div class="scrolllist">'+treasureRows+'</div></div>'+
