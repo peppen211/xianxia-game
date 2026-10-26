@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v6.48: remove the visible XianTu navigation/page; preserve save, idle, and log controls in Character. -->
+<!-- v6.49: place the XianShi market tab at the far right; preserve all existing pages and save data. -->
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -2068,7 +2068,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.48</small>
+  <small class="status-version" aria-label="遊戲版本">v6.49</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -3082,9 +3082,10 @@ function startIdleProgression(){
 (function installV14(){
  const navSpec=[
   {id:'cultivate',label:'修煉',icon:'sword'},
-  {id:'character',label:'角色',icon:'path'},
+  {id:'character',label:'道途',icon:'path'},
   {id:'home',label:'戰鬥',icon:'battle'},
   {id:'bag',label:'儲物袋',icon:'bag'},
+  {id:'shop',label:'仙市',icon:'shop'},
  ];
  const navRoot=document.querySelector('.bottom');
  if(navRoot){
@@ -3494,7 +3495,7 @@ main>.screen#home.active{display:flex!important}
 </style>
 <script id="navigation-page-switch-v049">
 (function(){
- const ids=['cultivate','character','home','shop','bag'];
+ const ids=['cultivate','character','home','bag','shop'];
  const labels={cultivate:'修煉',character:'道途',home:'戰鬥',shop:'仙市',bag:'儲物袋'};
  function activate(id){
   if(!ids.includes(id))id='cultivate';
@@ -6202,7 +6203,7 @@ label{color:#d6dce4}
  test('分類初始化避免全頁 DOM 觀察',!document.getElementById('v639-catalog-location-script')?.textContent.includes('new MutationObserver'),'分類入口只初始化一次，避免 DOM 變更連鎖');
  test('存檔鍵未變更',typeof KEY==='string'&&KEY==='nine_heavens_idle_v2','只讀檢查存檔鍵，禁止重置或覆寫');
 
-       test('版本標記',!!document.querySelector('.status-version')&&/v6\.48/.test(document.querySelector('.status-version').textContent),'應顯示 v6.47');
+       test('版本標記',!!document.querySelector('.status-version')&&/v6\\.49/.test(document.querySelector('.status-version').textContent) ,'應顯示 v6.49');
  test('五大分類齊全',document.querySelectorAll('#bag [data-bag-main-tab]').length===5,'裝備、古寶、靈寵、法寶、材料');
  test('五個穿戴部位',document.querySelectorAll('#bag #slots .slot').length===5,'武器、防具、戒指、玉佩、靴子');
  test('裝備清單存在',!!byId('inventory'),'可供篩選與選取');
