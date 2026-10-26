@@ -119,3 +119,15 @@
 - **保留：** 原有裝備、古寶、敵怪、靈寵圖鑑項目與儲物袋四大主分類；存檔鍵 `nine_heavens_idle_v2` 不變，未執行重置或清除。
 - **版本／提交：** UI v1.21；`index.html` blob `dd50c3005d597cd26cf855a4b56ba2d93492e815`；程式修改提交 `bd4a9068361b46f61d892fc8e5cd76fd2c75c428`；獨立頁移除提交 `93249fa25b32930ebd83016ef8b283ec52d3afae`。
 - **靜態驗收：** 版本標籤、典藏區與首項、既有四分類及存檔鍵均讀回存在。
+
+
+## Phase 12：原著典藏內容擴充（v2.0 測試版）
+
+- **狀態：** 程式與回歸測試已提交；部署及測試結果待 GitHub Actions 回報。
+- **修改檔案：** `index.html`、`latest.html`、`.github/workflows/deploy-prototype-pages.yml`、`CHANGELOG.md`、`GAME_STATE.md`、`PROJECT_CONTINUATION.md`。
+- **內容：** 保留金蚨子母刃，新增玄鐵飛天盾、天雷子、金光磚符寶三個可展開考據條目；繼續使用現有分類圖鑑。
+- **資料範圍：** 依小說第 163–164 章與動畫《凡人風起天南》第 11 集的物件／交易情節整理；只呈現資料，不轉成玩法數值。
+- **回歸測試：** 驗證四個條目的數量、名稱、核心描述、章節線索和遊戲處理欄位；同步檢查版本 v2.0、快取參數及舊入口連結。
+- **存檔保護：** `nine_heavens_idle_v2` 完全保留；未重置或改寫存檔。
+- **程式提交：** `a30a87e3e204d8803a58daaef5cfef70c312bff9`；`index.html` blob SHA：`c86aa0b1c87c1332e4553e2e21fc93bef7972bfa`。
+- **尚未完成：** GitHub Actions 的 build/deploy 與瀏覽器回歸核驗、iPhone Safari 真機驗收。
