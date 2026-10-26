@@ -2047,7 +2047,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v4.8</small>
+  <small class="status-version" aria-label="遊戲版本">v4.9</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2229,7 +2229,8 @@ const ANCIENT_TREASURES = [
  {id:'gathering-lamp',name:'聚靈古燈',icon:'燈',description:'【遊戲自創】古燈收攝游離靈氣，使戰鬥後取得材料的機會略微增加。',effectKey:'bonusDrop',effectName:'材料掉落率',perLevel:0.02,effectPerLevelText:'材料掉落率 +2%／級',fragmentsRequired:3,upgradeBase:3,maxLevel:5,sourceTag:'遊戲自創'},
  {id:'xuanhuang-mirror',name:'玄黃鏡',icon:'玄',description:'原作古寶名錄中的器物名稱；本遊戲將其效果轉譯為材料獲取機會，不代表原作有此數值。',effectKey:'bonusDrop',effectName:'材料掉落率',perLevel:0.015,effectPerLevelText:'材料掉落率 +1.5%／級（遊戲化轉譯）',fragmentsRequired:4,upgradeBase:4,maxLevel:5,sourceTag:'原作古寶名稱'},
  {id:'five-elements-ring',name:'五行環',icon:'環',description:'原作古寶名錄中的器物名稱；本遊戲將其效果轉譯為戰鬥傷害加成，不代表原作有此數值。',effectKey:'bonusDamage',effectName:'戰鬥傷害',perLevel:0.01,effectPerLevelText:'戰鬥傷害 +1%／級（遊戲化轉譯）',fragmentsRequired:4,upgradeBase:4,maxLevel:5,sourceTag:'原作古寶名稱'},
- {id:'flower-basket-treasure',name:'花籃古寶',icon:'籃',description:'原作古寶名錄中的器物稱呼；本遊戲將其效果轉譯為修為收益加成，不代表原作有此數值。',effectKey:'bonusXp',effectName:'修為收益',perLevel:0.012,effectPerLevelText:'修為收益 +1.2%／級（遊戲化轉譯）',fragmentsRequired:4,upgradeBase:4,maxLevel:5,sourceTag:'原作古寶名稱'}
+ {id:'flower-basket-treasure',name:'花籃古寶',icon:'籃',description:'原作古寶名錄中的器物稱呼；本遊戲將其效果轉譯為修為收益加成，不代表原作有此數值。',effectKey:'bonusXp',effectName:'修為收益',perLevel:0.012,effectPerLevelText:'修為收益 +1.2%／級（遊戲化轉譯）',fragmentsRequired:4,upgradeBase:4,maxLevel:5,sourceTag:'原作古寶名稱'},
+ {id:'virtual-heaven-cauldron',name:'虛天鼎',icon:'鼎',description:'原作具名上古寶物，與虛天殿及韓立取得乾藍冰焰等情節相關；此處只採用原作名稱，古寶被動數值與碎片合成方式均為遊戲化設計。',effectKey:'bonusDamage',effectName:'戰鬥傷害',perLevel:0.012,effectPerLevelText:'戰鬥傷害 +1.2%／級（遊戲化轉譯）',fragmentsRequired:5,upgradeBase:5,maxLevel:5,sourceTag:'原作具名寶物／效果遊戲化'}
 ];
 function ensureTreasureState(){
  if(!s||typeof s!=='object')return;
