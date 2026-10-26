@@ -2160,7 +2160,29 @@ const equipmentTypeByName = {
  '玄龜護心鏡':'法寶','聚靈玉佩':'法器','九曜仙環':'法寶','赤紋戒':'法器',
  '星河戒':'法寶','踏雲靴':'法器','追風靈靴':'法寶'
 };
-gears.forEach(function(g){g.catalogClass='裝備類';g.catalogType=equipmentTypeByName[g.name]||'法器';});
+const qiStarterMetadata = {
+ '精鐵劍':{templateId:'qi_weapon_iron_sword_001',gearLevel:1,realmRequirement:'煉氣期',enhanceMaterialKey:'iron'},
+ '青竹劍':{templateId:'qi_weapon_bamboo_sword_001',gearLevel:1,realmRequirement:'煉氣期',enhanceMaterialKey:'wood'},
+ '烏木法杖':{templateId:'qi_weapon_blackwood_staff_001',gearLevel:2,realmRequirement:'煉氣期',enhanceMaterialKey:'wood'},
+ '粗布道袍':{templateId:'qi_armor_coarse_robe_001',gearLevel:1,realmRequirement:'煉氣期',enhanceMaterialKey:'cloth'},
+ '青紋法衣':{templateId:'qi_armor_green_pattern_robe_001',gearLevel:2,realmRequirement:'煉氣期',enhanceMaterialKey:'cloth'},
+ '護身軟甲':{templateId:'qi_armor_guard_soft_armor_001',gearLevel:3,realmRequirement:'煉氣期',enhanceMaterialKey:'beastHide'},
+ '凝氣玉佩':{templateId:'qi_charm_qi_pendant_001',gearLevel:1,realmRequirement:'煉氣期',enhanceMaterialKey:'crystal'},
+ '聚靈手環':{templateId:'qi_ring_spirit_bracelet_001',gearLevel:2,realmRequirement:'煉氣期',enhanceMaterialKey:'crystal'},
+ '鐵木護腕':{templateId:'qi_ring_ironwood_bracer_001',gearLevel:1,realmRequirement:'煉氣期',enhanceMaterialKey:'wood'},
+ '低階攻擊符':{templateId:'qi_charm_attack_talisman_001',gearLevel:1,realmRequirement:'煉氣期',enhanceMaterialKey:'talismanPaper'},
+ '護身靈符':{templateId:'qi_charm_guard_talisman_001',gearLevel:2,realmRequirement:'煉氣期',enhanceMaterialKey:'talismanPaper'},
+ '聚氣靈珠':{templateId:'qi_charm_qi_bead_001',gearLevel:3,realmRequirement:'煉氣期',enhanceMaterialKey:'crystal'}
+};
+gears.forEach(function(g){
+ g.catalogClass='裝備類';
+ g.catalogType=equipmentTypeByName[g.name]||'法器';
+ if(g.qiStarter){
+  const metadata=qiStarterMetadata[g.name];
+  if(metadata)Object.assign(g,metadata);
+  g.dataSource='遊戲原創';
+ }
+});
 const treasureClassCatalog = [
  {name:'本命法寶',desc:'與修士長期祭煉、關係密切的專屬法寶。'},
  {name:'古寶',desc:'具有古代傳承或來歷的寶物，獨立歸入古寶收藏。'},
@@ -2345,7 +2367,8 @@ function gearEnhanceCost(it){return 20+rarityRank(it)*20+Math.max(0,Number(it.en
 function gearEnhanceMaterial(it){
  const level=Math.max(0,Math.floor(Number(it&&it.enhanceLevel)||0)),next=level+1,amount=next<=3?1:next<=6?2:3;
  let key='crystal';
- if(it&&it.slot==='weapon')key=(/青竹|烏木|木杖|木劍/.test(it.name||''))?'wood':'iron';
+ if(it&&it.enhanceMaterialKey)key=it.enhanceMaterialKey;
+ else if(it&&it.slot==='weapon')key=(/青竹|烏木|木杖|木劍/.test(it.name||''))?'wood':'iron';
  else if(it&&it.slot==='armor')key=(/道袍|法衣|布/.test(it.name||''))?'cloth':'beastHide';
  else if(it&&it.slot==='ring')key=(/鐵木/.test(it.name||''))?'wood':'crystal';
  else if(it&&it.slot==='charm')key=(/符/.test(it.name||''))?'talismanPaper':'crystal';
