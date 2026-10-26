@@ -3985,8 +3985,8 @@ main>.screen#home.active{display:flex!important}
 #gameApp #cultivate .idle-runtime-note{font-size:11.3px;color:var(--muted);line-height:1.55}
 #gameApp #cultivate>.idle-card>.btn{grid-row:3!important;min-height:37px!important;width:100%!important;margin:0!important;padding:7px 6px!important;font-size:12.5px!important;white-space:normal!important;line-height:1.3!important}
 #gameApp #cultivate>.idle-card>#meditateBtn{font-weight:800!important}
-#gameApp #cultivate>.path-shortcuts{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:0!important;flex:0 0 auto!important}
-#gameApp #cultivate>.path-shortcuts .btn{min-width:0!important;min-height:36px!important;width:100%!important;font-size:12.5px!important;padding:6px!important}
+#gameApp #cultivatePracticeView>.path-shortcuts{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:0!important;flex:0 0 auto!important}
+#gameApp #cultivatePracticeView>.path-shortcuts .btn{min-width:0!important;min-height:36px!important;width:100%!important;font-size:12.5px!important;padding:6px!important}
 @media(max-width:380px){
   #gameApp #cultivate #breakMaterialSummary{gap:4px}
   #gameApp #cultivate .break-resource-cell{padding:6px 4px}
@@ -4102,16 +4102,18 @@ main>.screen#home.active{display:flex!important}
   var cultivate=byId('cultivate'),home=byId('home');
   if(!cultivate||!home)return;
 
+  var practiceView=byId('cultivatePracticeView');
+  var methodsView=byId('cultivateMethodsView');
   var methodList=byId('methodList');
   var breakButton=byId('breakBtn');
   var breakPanel=breakButton&&breakButton.closest('.panel');
-  var title=cultivate.querySelector(':scope > .page-title');
-  var hero=cultivate.querySelector(':scope > .hero')||home.querySelector(':scope > .hero');
-  var idleCard=cultivate.querySelector(':scope > .idle-card')||home.querySelector(':scope > .idle-card');
-  var quick=cultivate.querySelector(':scope > .path-shortcuts');
+  var title=practiceView&&practiceView.querySelector(':scope > .page-title');
+  var hero=(practiceView&&practiceView.querySelector(':scope > .hero'))||home.querySelector(':scope > .hero');
+  var idleCard=(practiceView&&practiceView.querySelector(':scope > .idle-card'))||home.querySelector(':scope > .idle-card');
+  var quick=(practiceView&&practiceView.querySelector(':scope > .path-shortcuts'))||cultivate.querySelector(':scope > .path-shortcuts');
   var methodHead=methodList&&methodList.previousElementSibling;
   if(!methodHead||!methodHead.classList.contains('secthead')){
-    methodHead=cultivate.querySelector(':scope > .method-heading')||cultivate.querySelector(':scope > .secthead');
+    methodHead=(methodsView&&methodsView.querySelector(':scope > .method-heading'))||(methodsView&&methodsView.querySelector(':scope > .secthead'))||cultivate.querySelector(':scope > .secthead');
   }
   if(!quick){
     quick=byId('cultivateQuickPaths');
@@ -4121,7 +4123,7 @@ main>.screen#home.active{display:flex!important}
     quick.id='cultivateQuickPaths';
     quick.className='path-shortcuts';
     quick.innerHTML='<button type="button" class="btn secondary" id="openIdleRewardsPath">放置收益詳情</button><button type="button" class="btn secondary" id="openCultivationLogPath">修煉日誌</button>';
-    cultivate.appendChild(quick);
+    (practiceView||cultivate).appendChild(quick);
   }
   var archiveHint=byId('methodArchiveHint');
   if(!archiveHint){
@@ -4129,24 +4131,28 @@ main>.screen#home.active{display:flex!important}
     archiveHint.id='methodArchiveHint';
     archiveHint.textContent='共用功法資料：卡片、效果與詳情由同一份資料驅動；後續可逐步納入小說與動畫的功法、神通、丹藥及法寶。';
   }
-  if(methodHead&&methodHead.parentElement===cultivate){
+  if(methodHead&&methodHead.parentElement===(methodsView||cultivate)){
     methodHead.classList.add('method-heading');
     var headingText=methodHead.querySelector('span');
     if(headingText)headingText.textContent='修行功法';
     var detailButton=methodHead.querySelector('button');
     if(detailButton){detailButton.textContent='查看目前功法';detailButton.onclick=function(){openMethodDetails(Number((typeof s==='object'&&s)?s.method:0)||0)}}
   }
-  if(methodList&&methodHead&&methodHead.parentElement===cultivate){
+  if(methodList&&methodHead&&methodHead.parentElement===(methodsView||cultivate)){
     methodList.id='methodList';
     methodList.before(archiveHint);
   }
-  if(hero&&hero.parentElement!==cultivate)cultivate.appendChild(hero);
-  if(idleCard&&idleCard.parentElement!==cultivate)cultivate.appendChild(idleCard);
-
-  /* Put the main cultivation tasks in a deliberate order without recreating game nodes. */
-  [title,hero,idleCard,breakPanel,methodHead,archiveHint,methodList,quick].forEach(function(node){
-    if(node&&node.parentElement===cultivate)cultivate.appendChild(node);
-  });
+  var practiceTarget=practiceView||cultivate;
+  var methodsTarget=methodsView||cultivate;
+  if(hero&&hero.parentElement!==practiceTarget){
+    if(title&&title.parentElement===practiceTarget)title.insertAdjacentElement('afterend',hero);
+    else practiceTarget.prepend(hero);
+  }
+  if(idleCard&&idleCard.parentElement!==practiceTarget)practiceTarget.appendChild(idleCard);
+  if(quick&&quick.parentElement!==practiceTarget)practiceTarget.appendChild(quick);
+  if(methodHead&&methodHead.parentElement!==methodsTarget)methodsTarget.appendChild(methodHead);
+  if(methodList&&methodList.parentElement!==methodsTarget)methodsTarget.appendChild(methodList);
+  if(archiveHint&&archiveHint.parentElement!==methodsTarget&&methodList)methodList.before(archiveHint);
 
   if(hero){
     hero.setAttribute('aria-label','目前境界與修行指引');
