@@ -304,18 +304,24 @@ jobs:
             }
             console.log('Equipment enhancement material regression passed: missing-material protection, exact spirit-stone and iron costs, and expected stat growth.');
 
-            // v2.6 regression: dismantling returns a matching crafting material in addition to spirit stones.
-            const dismantleMaterialAudit = await page.evaluate(() => {
+            // v2.6 regression: the real single-item dismantle confirmation returns material and keeps the spirit-stone reward.
+            const dismantleMaterialAudit = await page.evaluate(async () => {
               const snapshot = JSON.parse(JSON.stringify(s));
               try {
                 const template = gears.find(item => item.qiStarter && item.name === '精鐵劍');
-                s.inventory = [{...template,id:987654322,enhanceLevel:0,atk:3,def:0,hp:0}];
+                s.inventory = [{...template,id:987654322,enhanceLevel:0,atk:3,def:0,hp:0,locked:false}];
                 s.equipped = {weapon:null,armor:null,charm:null};
+                s.gearProtection = {qualityEnabled:false,starEnabled:false,enhanceEnabled:false};
                 s.gold = 0;
                 s.craftingMaterials = {iron:0,cloth:0,beastHide:0,beastBone:0,talismanPaper:0};
                 s.wood = 0; s.crystal = 0; s.herbs = 0;
                 const beforeGold = s.gold;
-                dismantleGear(987654322);
+                window.bagReviewDismantle(987654322);
+                await new Promise(resolve => setTimeout(resolve, 20));
+                const confirm = document.getElementById('bagConfirmSingleDismantle');
+                if (!confirm) throw new Error('找不到單件分解確認按鈕');
+                confirm.click();
+                await new Promise(resolve => setTimeout(resolve, 20));
                 return {
                   removedItem: !s.inventory.some(item => item.id === 987654322),
                   returnedMatchingMaterial: s.craftingMaterials.iron === 1,
@@ -329,8 +335,7 @@ jobs:
             if (!dismantleMaterialAudit.removedItem || !dismantleMaterialAudit.returnedMatchingMaterial || !dismantleMaterialAudit.grantedSpiritStones) {
               throw new Error('裝備分解材料回收回歸測試失敗：' + JSON.stringify(dismantleMaterialAudit));
             }
-            console.log('Equipment dismantle material regression passed: item removed, matching material refunded, and spirit-stone reward preserved.');
-
+            console.log('Equipment dismantle material regression passed: single-item confirmation removes gear, returns matching material, and preserves spirit-stone reward.');
 
 
 
