@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v6.51: place XianShi at the far right and synchronize release verification links. -->
+<!-- v6.52: place XianShi at the far right and synchronize release verification links. -->
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -2047,6 +2047,41 @@ html,body,#launchGate,#gameApp{
 @media(max-height:720px){.battle-party-status{min-height:49px;padding:5px 7px}.battle-player-avatar{width:28px;height:28px}.battle-party-status .player-hp-progress{height:5px;margin-top:2px}}
 </style>
 
+
+<style id="v652-interface-polish">
+/* v6.52: focused mobile readability and touch-target improvements. */
+#gameApp .screen{padding:12px 12px calc(18px + env(safe-area-inset-bottom))!important;gap:10px!important}
+#gameApp .screen .page-title{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:2px 1px 5px}
+#gameApp .screen .page-title h2{font-size:clamp(20px,5.2vw,25px);line-height:1.25;letter-spacing:.02em}
+#gameApp .screen .page-title>span{font-size:11px;line-height:1.4;color:#b6a783;text-align:right}
+#gameApp .panel{border-color:#a58a5a38;box-shadow:0 5px 18px #0002}
+#gameApp .panel b,#gameApp .panel strong{line-height:1.4}
+#gameApp .btn,#gameApp button:not(.modal-close):not(.nav){min-height:38px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#gameApp .btn:focus-visible,#gameApp button:focus-visible{outline:2px solid #f0d28c;outline-offset:2px}
+#gameApp .bottom{height:clamp(62px,8.8vh,72px)!important;min-height:62px!important;gap:5px!important;padding:5px max(6px,env(safe-area-inset-right)) calc(5px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))!important;background:linear-gradient(180deg,#211f26 0%,#121218 100%)!important;border-top:1px solid #b79b634d!important}
+#gameApp .bottom .nav{min-height:48px!important;border:1px solid transparent!important;border-radius:12px!important;gap:4px!important;padding:4px 2px!important;font-size:clamp(10px,2.7vw,12px)!important;font-weight:650;line-height:1.15!important;color:#b0b4c0!important;transition:background .16s ease,border-color .16s ease,color .16s ease}
+#gameApp .bottom .nav .ico{width:24px;height:22px;display:grid!important;place-items:center;font-size:19px!important;line-height:1!important}
+#gameApp .bottom .nav.active,#gameApp .bottom .nav[aria-current="page"]{color:#ffe4a1!important;background:linear-gradient(180deg,#c4a45b2b,#c4a45b0b)!important;border-color:#e6c47a70!important;box-shadow:inset 0 0 0 1px #e8c77a12,0 2px 8px #0002!important}
+#gameApp .bottom .nav:active{transform:scale(.97)}
+#gameApp .screen .secthead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#gameApp .screen small{line-height:1.5}
+@media(max-width:380px){
+ #gameApp .screen{padding:10px 9px calc(15px + env(safe-area-inset-bottom))!important;gap:8px!important}
+ #gameApp .bottom{gap:3px!important}
+ #gameApp .bottom .nav{font-size:10px!important;border-radius:10px!important}
+ #gameApp .bottom .nav .ico{font-size:18px!important}
+}
+@media(max-height:650px){
+ #gameApp .bottom{height:56px!important;min-height:56px!important}
+ #gameApp .bottom .nav{min-height:44px!important;gap:2px!important}
+ #gameApp .bottom .nav .ico{height:19px;font-size:16px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #gameApp .bottom .nav{transition:none!important}
+ #gameApp .bottom .nav:active{transform:none}
+}
+</style>
+
 </head><body class="launch-gate">
 <div id="launchGate" class="launch-gate-screen" role="dialog" aria-label="遊戲首頁">
   <div class="launch-title" aria-label="不好意思，本座又突破了"><span>不好意思</span><span>本座又突破了</span><i aria-hidden="true">修仙</i></div>
@@ -2068,7 +2103,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.51</small>
+  <small class="status-version" aria-label="遊戲版本">v6.52</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -6203,7 +6238,7 @@ label{color:#d6dce4}
  test('分類初始化避免全頁 DOM 觀察',!document.getElementById('v639-catalog-location-script')?.textContent.includes('new MutationObserver'),'分類入口只初始化一次，避免 DOM 變更連鎖');
  test('存檔鍵未變更',typeof KEY==='string'&&KEY==='nine_heavens_idle_v2','只讀檢查存檔鍵，禁止重置或覆寫');
 
-       test('版本標記',!!document.querySelector('.status-version')&&/v6\.50/.test(document.querySelector('.status-version').textContent) ,'應顯示 v6.49');
+       test('版本標記',!!document.querySelector('.status-version')&&/v6\.52/.test(document.querySelector('.status-version').textContent) ,'應顯示 v6.52');
  test('五大分類齊全',document.querySelectorAll('#bag [data-bag-main-tab]').length===5,'裝備、古寶、靈寵、法寶、材料');
  test('五個穿戴部位',document.querySelectorAll('#bag #slots .slot').length===5,'武器、防具、戒指、玉佩、靴子');
  test('裝備清單存在',!!byId('inventory'),'可供篩選與選取');
