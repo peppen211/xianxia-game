@@ -1083,8 +1083,6 @@ jobs:
             await corruptPage.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             const malformedSave = '{"major":"test-only","inventory":[broken';
             await corruptPage.evaluate(raw => localStorage.setItem('nine_heavens_idle_v2', raw), malformedSave);
-            await corruptPage.reload({ waitUntil: 'domcontentloaded' });
-            await corruptPage.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await corruptPage.locator('#continueCultivationBtn').click();
             await corruptPage.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const corruptSaveAudit = await corruptPage.evaluate(() => {
