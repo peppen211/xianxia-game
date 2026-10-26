@@ -56,8 +56,8 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.30$2"
+  "$1v6.31$2"
 );
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.30 save-safety regression + inventory geometry audit applied.");
+console.log("v6.31 save-safety regression + inventory geometry audit applied.");
