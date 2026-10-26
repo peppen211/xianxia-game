@@ -2064,7 +2064,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v5.7</small>
+  <small class="status-version" aria-label="遊戲版本">v5.8</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2230,7 +2230,7 @@ const petCatalog = [
  {id:'soul-howler',name:'啼魂獸',kind:'靈獸',rarity:'珍品',weight:6,icon:'魂',desc:'原作靈獸，擅長克制魂魄、鬼物；遊戲內被動效果為玩法轉譯。',effectKey:'crit',effectLabel:'暴擊率',perLevel:0.015,sourceTag:'原作名稱'},
  {id:'frost-centipede',name:'六翼霜蚣',kind:'靈蟲',rarity:'珍品',weight:10,icon:'霜',desc:'原作靈蟲，具有冰寒特性；遊戲內被動效果為玩法轉譯。',effectKey:'bonusDamage',effectLabel:'戰鬥傷害',perLevel:0.015,sourceTag:'原作名稱'},
  {id:'blood-jade-spider',name:'血玉蜘蛛',kind:'靈獸',rarity:'靈品',weight:18,icon:'血',desc:'原作妖獸，由蜘蛛卵孵化；遊戲內被動效果為玩法轉譯。',effectKey:'bonusDrop',effectLabel:'材料掉落率',perLevel:0.02,sourceTag:'原作名稱'},
- {id:'earth-armor-dragon',name:'土甲龍',kind:'靈獸',rarity:'凡品',weight:25,icon:'土',desc:'現有靈獸條目，原作出處與具體能力仍待逐條核對；遊戲效果暫保留。',effectKey:'damageCut',effectLabel:'受到傷害降低',perLevel:0.01,sourceTag:'原作依據待核對'},
+ {id:'earth-armor-dragon',name:'土甲龍',kind:'靈獸',rarity:'凡品',weight:25,icon:'土',desc:'原作七級妖獸，土黃色厚甲、形似穿山甲，擅長防禦並能尋找天材地寶；韓立將其收為靈獸。遊戲內減傷被動數值屬玩法轉譯。',effectKey:'damageCut',effectLabel:'受到傷害降低',perLevel:0.01,sourceTag:'原作名稱／效果遊戲化'},
  {id:'cloudwing-bird',name:'雲翅鳥',kind:'靈獸',rarity:'凡品',weight:27,icon:'雲',desc:'原作靈禽，可用於傳訊與偵查；遊戲內被動效果為玩法轉譯。',effectKey:'bonusXp',effectLabel:'修為收益',perLevel:0.015,sourceTag:'原作名稱'},
  {id:'silver-moon',name:'銀月',kind:'特殊生靈',rarity:'仙品',weight:2,icon:'月',desc:'原作特殊生靈，曾以器靈形態與韓立同行；遊戲內被動效果為玩法轉譯。',effectKey:'bonusXp',effectLabel:'修為收益',perLevel:0.025,sourceTag:'原作名稱'},
  {id:'double-pupil-mouse',name:'雙瞳鼠',kind:'靈獸',rarity:'凡品',weight:6,icon:'瞳',desc:'原作早期靈獸，雙瞳擅長看穿障礙與迷霧；遊戲內以材料尋獲加成呈現。',effectKey:'bonusDrop',effectLabel:'材料掉落率',perLevel:0.01,sourceTag:'原作名稱'},
