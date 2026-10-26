@@ -598,15 +598,15 @@ jobs:
               throw new Error('儲物袋物品來源、取得／掉落資料或材料用途說明不完整：' + JSON.stringify(inventoryMetadataAudit));
             }
             console.log('Inventory catalog regression passed: legacy equipment source/acquisition/drop metadata, visible detail panel, and recipe-linked material usage.');
-const legacyAcquisitionAudit = await page.evaluate(() => {
-  const names = ['桃木劍','青竹法杖','玄鐵劍','雲紋道袍','玄龜護心鏡','聚靈玉佩','九曜仙環','赤紋戒','星河戒','踏雲靴','追風靈靴'];
-  return names.filter(name => {
-    const item = gears.find(entry => entry.name === name);
-    return !item || !item.acquisition.includes('裝備抽取') || !item.dropSource.includes('未接入現行戰鬥掉落池');
-  });
-});
-if (legacyAcquisitionAudit.length) throw new Error('既有裝備的實際取得路徑標示不完整：' + JSON.stringify(legacyAcquisitionAudit));
-console.log('Inventory acquisition regression passed: eleven legacy gear entries distinguish real draw/forge routes from unimplemented combat drops.');
+            const legacyAcquisitionAudit = await page.evaluate(() => {
+              const names = ['桃木劍','青竹法杖','玄鐵劍','雲紋道袍','玄龜護心鏡','聚靈玉佩','九曜仙環','赤紋戒','星河戒','踏雲靴','追風靈靴'];
+              return names.filter(name => {
+                const item = gears.find(entry => entry.name === name);
+                return !item || !item.acquisition.includes('裝備抽取') || !item.dropSource.includes('未接入現行戰鬥掉落池');
+              });
+            });
+            if (legacyAcquisitionAudit.length) throw new Error('既有裝備的實際取得路徑標示不完整：' + JSON.stringify(legacyAcquisitionAudit));
+            console.log('Inventory acquisition regression passed: eleven legacy gear entries distinguish real draw/forge routes from unimplemented combat drops.');
 
 
             // v4.3 canon archive regression: four source-grounded entries live in the existing catalog.
