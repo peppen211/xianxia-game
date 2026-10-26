@@ -1,15 +1,15 @@
 # 遊戲狀態總表（工作基準）
 
-最後核對日期：2026-10-25（UTC）
+最後核對日期：2026-10-26（UTC）
 專案：`peppen211/xianxia-game`
 正式網址：https://peppen211.github.io/xianxia-game/
 
 ## 目前已核實的基準
 
 - GitHub 預設分支：`main`
-- 最新已核對的 `index.html` blob SHA：`3f6398e68548968f8982d9a7d5991c294721c9b7`
-- 最新已核對的程式提交：`b4017f13feba33851ccb8dbf8003f7edb4b1c862`
-- `index.html` 內的畫面版本標籤：`v1.05`
+- 最新已核對的 `index.html` blob SHA：`c86aa0b1c87c1332e4553e2e21fc93bef7972bfa`
+- 最新已核對的程式提交：`a30a87e3e204d8803a58daaef5cfef70c312bff9`
+- `index.html` 內的畫面版本標籤：`v2.0`（測試版）
 - 上述資料證明 GitHub `main` 目前的檔案內容與標籤；**不單獨證明 GitHub Pages 已完成部署，也不單獨證明使用者瀏覽器目前載入的內容**。
 - 線上部署版本：尚未在此紀錄中完成獨立驗證。
 
@@ -70,3 +70,13 @@
 - 靜態讀回核對：版本標籤、原著典藏區、金蚨子母刃條目、原有四個分類與存檔鍵均存在。
 - GitHub Pages workflow `40247661530` 的 build 與 deploy jobs 均成功；尚未完成手機 Safari 真機及遊戲內手動點擊驗收。
 - 不將目前收錄資料直接當成可裝備、可掉落或具備特定數值的遊戲物件；需逐項核對原著並確認玩法定位。
+
+
+## 2026-10-26 v2.0 測試版紀錄
+
+- 原始碼修改提交：`a30a87e3e204d8803a58daaef5cfef70c312bff9`；`index.html` blob SHA：`c86aa0b1c87c1332e4553e2e21fc93bef7972bfa`。
+- 畫面與測試網址版本標籤更新為 `v2.0`；`latest.html` 與 GitHub Pages 舊入口重新導向同步更新。
+- 原著典藏保留金蚨子母刃，新增玄鐵飛天盾、天雷子、金光磚符寶；四條目均置於既有分類圖鑑。
+- 保留四個儲物袋主分類及 `nine_heavens_idle_v2` 存檔鍵；沒有清除、重置、遷移或改寫玩家存檔。
+- 靜態讀回：新增條目、版本字串與存檔 key 已核對。GitHub Actions 部署及瀏覽器回歸結果待此次 workflow 完成後確認。
+- 尚未驗證：iPhone Safari 真機操作。
