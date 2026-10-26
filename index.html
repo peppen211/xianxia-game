@@ -2045,31 +2045,7 @@ html,body,#launchGate,#gameApp{
 @media(max-width:380px){.battle-party-status{grid-template-columns:29px minmax(0,1fr);gap:6px;padding:6px 7px}.battle-player-avatar{width:28px;height:28px}.battle-ready-tag{grid-column:2;justify-self:start;padding:2px 5px}#playerCombatStats{font-size:9px}}
 @media(max-height:720px){.battle-party-status{min-height:49px;padding:5px 7px}.battle-player-avatar{width:28px;height:28px}.battle-party-status .player-hp-progress{height:5px;margin-top:2px}}
 </style>
-<style id="v643-bag-inventory-height-balance">
-/* v6.43: reserve more vertical space for the scrollable inventory grid on mobile. */
-#gameApp #bag .bag-gear-layout{
-  grid-template-rows:minmax(0,0.62fr) minmax(0,1.38fr)!important;
-}
-#gameApp #bag .bag-slots-panel{
-  min-height:0!important;padding:2px 5px!important;overflow:visible!important;
-}
-#gameApp #bag .bag-slots-panel .secthead{
-  min-height:18px!important;margin-bottom:0!important;font-size:11px!important;
-}
-#gameApp #bag .bag-slots-panel .slotgrid{margin-top:2px!important;gap:3px!important}
-#gameApp #bag .bag-slots-panel .slot{padding:2px 1px!important}
-#gameApp #bag .bag-slots-panel .slot span{font-size:12px!important}
-#gameApp #bag .bag-slots-panel .slot small{font-size:8px!important;margin-top:1px!important}
-#gameApp #bag .bag-slots-panel .slot b{font-size:8px!important;margin-top:1px!important}
-#gameApp #bag .bag-slots-panel .gear-unequip{margin-top:2px!important;padding:2px!important;font-size:8px!important}
-#gameApp #bag .bag-list-panel{min-height:0!important}
-#gameApp #bag #inventory.bag-item-list{min-height:0!important}
-@media(max-height:700px){
- #gameApp #bag .bag-gear-layout{grid-template-rows:minmax(0,0.58fr) minmax(0,1.42fr)!important}
- #gameApp #bag .bag-slots-panel{padding:2px 4px!important}
- #gameApp #bag .bag-slots-panel .slot{padding:1px!important}
-}
-</style>
+
 </head><body class="launch-gate">
 <div id="launchGate" class="launch-gate-screen" role="dialog" aria-label="遊戲首頁">
   <div class="launch-title" aria-label="不好意思，本座又突破了"><span>不好意思</span><span>本座又突破了</span><i aria-hidden="true">修仙</i></div>
@@ -5855,6 +5831,31 @@ html body #gameApp.app>header.top.statusline>.status-name{
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
 </script>
+<style id="v643-bag-inventory-height-balance">
+/* v6.43: reserve more vertical space for the scrollable inventory grid on mobile. */
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout{
+  grid-template-rows:minmax(78px,0.55fr) minmax(0,1.45fr)!important;
+}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel{
+  min-height:0!important;padding:2px 5px!important;overflow:visible!important;
+}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .secthead{
+  min-height:18px!important;margin-bottom:0!important;font-size:11px!important;
+}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slotgrid{margin-top:2px!important;gap:3px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot{padding:2px 1px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot span{font-size:12px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot small{font-size:8px!important;margin-top:1px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .slot b{font-size:8px!important;margin-top:1px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-slots-panel .gear-unequip{margin-top:2px!important;padding:2px!important;font-size:8px!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-list-panel{min-height:0!important}
+body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.bag-list-panel #inventory.bag-item-list{min-height:0!important}
+@media(max-height:700px){
+ #gameApp #bag .bag-gear-layout{grid-template-rows:minmax(0,0.58fr) minmax(0,1.42fr)!important}
+ #gameApp #bag .bag-slots-panel{padding:2px 4px!important}
+ #gameApp #bag .bag-slots-panel .slot{padding:1px!important}
+}
+</style>
 </body>
 <style id="v634-interface-polish">
 /* v6.34 全介面視覺統一：只調整呈現，不改遊戲邏輯與存檔 */
