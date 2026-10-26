@@ -2066,7 +2066,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.31</small>
+  <small class="status-version" aria-label="遊戲版本">v6.32</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -5944,3 +5944,47 @@ switchCultivateTab('practice');
   #gameApp #home .action-grid .btn{transition:none!important}
 }
 </style>
+
+
+<!-- v6.32: non-destructive QA mode and responsive inventory readability; no save-schema changes. -->
+<style id="v632-safe-qa-polish">
+#gameApp #bag .scrolllist,#gameApp #bag .bag-list,#gameApp #bag .bag-items{min-width:0;max-width:100%}
+#gameApp #bag .rowitem,#gameApp #bag .bag-item-card{min-width:0;max-width:100%;overflow-wrap:anywhere}
+#gameApp #bag .rowbody,#gameApp #bag .bag-item-info{min-width:0;overflow-wrap:anywhere}
+#gameApp #bag button,#gameApp #bag .btn{min-height:36px;touch-action:manipulation}
+#xianxiaQaPanel{position:fixed;z-index:99999;left:10px;right:10px;top:68px;max-height:72dvh;overflow:auto;padding:12px;border:1px solid #c7ad75;border-radius:12px;background:#171820;color:#f3e9d2;box-shadow:0 12px 40px #000b;font:12px/1.55 system-ui,sans-serif}
+#xianxiaQaPanel h2{margin:0 0 8px;font-size:15px;color:#e8c786}
+#xianxiaQaPanel ul{margin:0;padding-left:18px}
+#xianxiaQaPanel .qa-pass{color:#a8c6b1}
+#xianxiaQaPanel .qa-warn{color:#e8c786}
+#xianxiaQaPanel button{margin-top:9px;padding:7px 10px;border-radius:8px;background:#3a4c5d;color:#fff}
+</style>
+<script id="v632-safe-qa-mode">
+(function(){
+ 'use strict';
+ const params=new URLSearchParams(location.search);
+ if(params.get('qa')!=='1')return;
+ const checks=[];
+ const test=(name,pass,detail)=>checks.push({name,pass:!!pass,detail:detail||''});
+ const byId=id=>document.getElementById(id);
+ test('主遊戲容器',!!byId('gameApp'),'gameApp DOM');
+ test('戰鬥按鈕',!!byId('attackBtn')&&!!byId('skillBtn'),'普通攻擊／技能');
+ test('戰鬥敵人區',!!byId('enemyName')&&!!byId('enemyBar'),'敵人名稱／氣血條');
+ test('儲物袋分頁',!!byId('bag'),'bag DOM');
+ test('裝備欄位',!!document.querySelector('#bag .bag-slots-panel, #bag .slotgrid'),'裝備格 DOM');
+ test('修煉分頁',!!byId('cultivate'),'cultivate DOM');
+ test('版本標記',!!document.querySelector('.status-version')&&/v6\.32/.test(document.querySelector('.status-version').textContent),'應顯示 v6.32');
+ test('存檔安全鍵',typeof localStorage!=='undefined','只檢查儲存 API，不寫入資料');
+ let saveState='未讀取';
+ try{
+   const raw=localStorage.getItem('nine_heavens_idle_v2');
+   saveState=raw===null?'尚無主存檔':('已有存檔 '+raw.length+' 字元');
+   if(raw!==null){try{const data=JSON.parse(raw);test('存檔 JSON 可解析',!!data&&typeof data==='object'&&!Array.isArray(data),'只讀檢查，未修改');}catch(e){test('存檔 JSON 可解析',false,'解析失敗；本測試不修復、不覆寫');}}
+ }catch(e){test('存檔可讀取',false,'瀏覽器拒絕讀取；未嘗試覆寫');}
+ const panel=document.createElement('section');panel.id='xianxiaQaPanel';panel.setAttribute('role','status');panel.setAttribute('aria-live','polite');
+ const passed=checks.filter(x=>x.pass).length;
+ panel.innerHTML='<h2>v6.32 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
+ document.body.appendChild(panel);byId('xianxiaQaClose').addEventListener('click',()=>panel.remove());
+})();
+</script>
+
