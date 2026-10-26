@@ -2630,7 +2630,7 @@ const legacyGearEligible=gears.filter(function(g){
  if(legacyGearTier==='首領')return s.layer>=3;
  return false;
 });
-const legacyGearChance=legacyGearTier==='首領'?.24:legacyGearTier==='精英'?.10:.025;
+const legacyGearChance=legacyGearTier==='首領' ? 0.24 : legacyGearTier==='精英' ? 0.10 : 0.025;
 if(legacyGearEligible.length&&Math.random()<legacyGearChance){
  const eligible=legacyGearEligible.filter(function(g){
   const rank=rarityRank(g);
