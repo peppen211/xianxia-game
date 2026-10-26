@@ -27,7 +27,7 @@ jobs:
           cp index.html dist/index.html
           cp latest.html dist/latest.html
           cp '首頁.PNG' 'dist/首頁.PNG'
-          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.20"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.20");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.20。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.20">開啟目前正式版 v6.20</a></body></html>'
+          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.20"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.20");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.21。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.20">開啟目前正式版 v6.21</a></body></html>'
           for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html; do
             printf '%s\n' "$LEGACY_REDIRECT_HTML" > "dist/$LEGACY_PATH"
           done
@@ -90,7 +90,7 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v6.20') throw new Error('遊戲右上角版本標示應為 v6.20，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v6.21') throw new Error('遊戲右上角版本標示應為 v6.21，實際為：' + publishedVersionLabel);
             await page.locator('#gameApp .bottom .nav[data-screen="home"]').click();
             await page.locator('#home.active').waitFor({state:'visible', timeout:3000});
             const battlePlayerStatus = page.locator('#battlePlayerStatus');
@@ -248,7 +248,7 @@ jobs:
             await bag.locator('[data-bag-main-tab="equipment"]').click();
             console.log('Qi Refining materials regression passed: ten material cards including eight base types and two rare materials, legacy resources reused without reset.');
 
-            // v6.20 regression: blood-jade spider's material-drop bonus must affect the five stackable crafting materials, not only legacy wood/crystal.
+            // v6.21 regression: blood-jade spider's material-drop bonus must affect the five stackable crafting materials, not only legacy wood/crystal.
             const craftingDropPerkAudit = await page.evaluate(() => {
               const snapshot = JSON.parse(JSON.stringify(s));
               const previousEnemy = enemy;
@@ -580,7 +580,7 @@ jobs:
               throw new Error('既有分類圖鑑沒有顯示第一篇原著典藏與首項條目。');
             }
             const loreSummary = page.locator('#modalBody details summary');
-            if (await loreSummary.count() !== 7) throw new Error('v6.20 原著典藏應有七個可展開條目。');
+            if (await loreSummary.count() !== 7) throw new Error('v6.21 原著典藏應有七個可展開條目。');
             const loreChecks = [
               { index: 0, name: '金蚨子母刃', required: ['母刃一把、子刃八把', '持有者／取得', '小說與動畫差異', '遊戲處理'] },
               { index: 1, name: '玄鐵飛天盾', required: ['防禦型法器', '自動飛行防禦', '第 163 章', '遊戲處理'] },
@@ -1007,7 +1007,7 @@ jobs:
             console.log('Story progression regression passed: central story entry, gated stage metadata, full chapter reader, immersive layout, close and reopen flow.');
 
 
-            // v6.20: one-to-many battle, per-enemy rewards and safe restoration of the isolated test save.
+            // v6.21: one-to-many battle, per-enemy rewards and safe restoration of the isolated test save.
             await page.locator('#gameApp .bottom .nav[data-screen="home"]').click();
             const preGroupState = await page.evaluate(() => JSON.stringify(s));
             const groupBefore = await page.evaluate(() => ({kills:Number(s.kills),gold:Number(s.gold)}));
@@ -1076,11 +1076,35 @@ jobs:
               throw new Error('重新載入後核心存檔欄位與重載前不一致。');
             }
             console.log('Save persistence regression passed: realm, resources, inventory, equipment, methods, treasure fragments, owned treasures and owned pets survive reload.');
+            // v6.21 save-safety regression: malformed test data must be backed up and never overwritten.
+            const corruptContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+            const corruptPage = await corruptContext.newPage();
+            await corruptPage.goto('https://peppen211.github.io/xianxia-game/?v=6.21', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await corruptPage.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
+            const malformedSave = '{"major":"test-only","inventory":[broken';
+            await corruptPage.evaluate(raw => localStorage.setItem('nine_heavens_idle_v2', raw), malformedSave);
+            await corruptPage.reload({ waitUntil: 'domcontentloaded' });
+            await corruptPage.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
+            await corruptPage.locator('#continueCultivationBtn').click();
+            await corruptPage.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
+            const corruptSaveAudit = await corruptPage.evaluate(() => {
+              const raw = localStorage.getItem('nine_heavens_idle_v2');
+              const backupKeys = [];
+              for (let i=0; i<localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('nine_heavens_idle_v2_backup_')) backupKeys.push(key);
+              }
+              return { raw, backupKeys: backupKeys.map(key => ({key, value:localStorage.getItem(key)})) };
+            });
+            if (corruptSaveAudit.raw !== malformedSave) throw new Error('異常存檔保護失敗：原始測試存檔遭到覆寫。');
+            if (!corruptSaveAudit.backupKeys.some(item => item.value === malformedSave)) throw new Error('異常存檔保護失敗：沒有建立內容一致的備份。');
+            await corruptContext.close();
+            console.log('Corrupt-save safety regression passed: isolated malformed save remains untouched, a byte-for-byte backup exists, and no player save was reset.');
             if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
             console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
             await page.goto('https://peppen211.github.io/xianxia-game/latest.html', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const latestPageVersion = (await page.locator('.version').innerText()).trim();
-            if (latestPageVersion !== 'v6.20') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
+            if (latestPageVersion !== 'v6.21') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
             const latestPageLink = await page.locator('a.launch').getAttribute('href');
             if (latestPageLink !== './?v=6.20') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
             await page.locator('a.launch').click();
@@ -1088,25 +1112,25 @@ jobs:
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const latestLinkTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (latestLinkTargetVersion !== 'v6.20') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
-            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v6.20.');
+            if (latestLinkTargetVersion !== 'v6.21') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
+            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v6.21.');
             const legacyEntryPaths = ['classic.html','mortal-cultivation-rpg.html','mortal-cultivation-rpg-3.3.html','prototype/index.html'];
             for (const legacyPath of legacyEntryPaths) {
-              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.20');
+              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.21');
               if (!legacyResponse.ok()) throw new Error('舊入口沒有回應可用的轉址頁：' + legacyPath + ' (' + legacyResponse.status() + ')');
               const legacyHtml = await legacyResponse.text();
               if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=6.20") || !legacyHtml.includes('location.replace')) {
-                throw new Error('舊入口仍未指向 v6.20 正式版：' + legacyPath);
+                throw new Error('舊入口仍未指向 v6.21 正式版：' + legacyPath);
               }
             }
-            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.20', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.21', { waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=6.20', null, { timeout: 15000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const legacyTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (legacyTargetVersion !== 'v6.20') throw new Error('舊版入口轉址後仍未開啟 v6.20：' + legacyTargetVersion);
-            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v6.20 without launching old save logic.');
+            if (legacyTargetVersion !== 'v6.21') throw new Error('舊版入口轉址後仍未開啟 v6.21：' + legacyTargetVersion);
+            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v6.21 without launching old save logic.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
@@ -1126,8 +1150,8 @@ jobs:
               fi
             done
             if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE" &&
-               grep -Fq '<div class="version">v6.20</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.20"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
-              echo "Published v6.20 entry, latest.html and all legacy redirects verified."
+               grep -Fq '<div class="version">v6.21</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.20"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
+              echo "Published v6.21 entry, latest.html and all legacy redirects verified."
               exit 0
             fi
             sleep 10

@@ -4,13 +4,13 @@
 專案：`peppen211/xianxia-game`
 正式網址：https://peppen211.github.io/xianxia-game/
 
-## 目前實際狀態（v6.20 手機儲物袋版面回歸檢查）
+## 目前實際狀態（v6.21 存檔安全回歸檢查）
 
 - GitHub 預設分支：`main`
 - 遊戲根目錄：`index.html`，公開網站部署流程會把此檔複製至 Pages；React `src/` 不是目前公開入口的直接遊戲程式。
-- 遊戲畫面版本標籤：建置時由 `scripts/repair-game-ui.mjs` 驗證並更新為 `v6.20`；正式部署需以本輪 Actions 結果為準。
+- 遊戲畫面版本標籤：建置時由 `scripts/repair-game-ui.mjs` 驗證並更新為 `v6.21`；正式部署需以本輪 Actions 結果為準。
 - 本輪 `index.html` 修改提交：`4b92742a293006361a0a45e63be0958726aee08f`；blob SHA：`72655d5ec5e47acccc7d7411871abdef4ad4837f`。
-- 最新版本頁與 CHANGELOG 已更新至 v6.20；本輪增加手機版 11 張靈寵卡片尺寸與互相重疊檢查，未調整玩法數值或存檔結構。
+- 最新版本頁與 CHANGELOG 已更新至 v6.21；本輪增加手機版 11 張靈寵卡片尺寸與互相重疊檢查，未調整玩法數值或存檔結構。
 - 上一個正式驗證成功的部署是 v5.9，Actions run `40284325020` 的 build、deploy、手機尺寸 Chromium 測試與公開入口檢查均成功。
 - 上一個已知成功版本為 v6.0（Actions run `40286674703`）。v6.18 的 Actions run `40292511080` 已啟動，測試與部署尚待最終結果，不能提前宣稱成功。**
 
@@ -118,9 +118,17 @@
 - Actions run `40292511080` 狀態待確認；iPhone Safari 真機測試未完成。
 
 
-## 2026-10-26 v6.20 儲物袋版面驗收補強
+## 2026-10-26 v6.21 儲物袋版面驗收補強
 
 - 在正式部署的手機尺寸 Chromium 回歸流程中，加入 11 張靈寵卡片的實際尺寸與兩兩重疊檢查；卡片數量正確不再被當作版面正常的唯一依據。
-- 同步畫面版本、最新版本頁與舊入口轉址至 v6.20。
+- 同步畫面版本、最新版本頁與舊入口轉址至 v6.21。
 - 存檔鍵 nine_heavens_idle_v2 不變；未執行清除、重置或遷移玩家存檔操作。
 - 部署結果以本次 GitHub Actions 的 build、deploy 與公開入口檢查為準；iPhone Safari 真機測試仍未完成。
+
+
+## 2026-10-26 v6.21 存檔安全回歸
+
+- 新增部署前隔離瀏覽器測試：放入格式錯誤的測試存檔，進入遊戲後確認原始值保持不變，並建立內容一致的備份。
+- 此測試使用獨立瀏覽器 context，不會接觸使用者的正常瀏覽器存檔。
+- 存檔鍵仍為 `nine_heavens_idle_v2`；不清除、不重置、不遷移玩家存檔。
+- 正式部署結果以本輪 GitHub Actions build、save safety、mobile browser 與 public entry checks 為準。
