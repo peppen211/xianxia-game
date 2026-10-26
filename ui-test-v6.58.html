@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12151b">
+<title>凡人修仙傳｜美術介面測試 v6.58</title>
+<style>
+:root{color-scheme:dark;--ink:#eee4ce;--muted:#a9a18e;--gold:#d9b976;--jade:#8fc9b1;--line:#746344;--panel:#201f22;--panel2:#29262a;--red:#d97869}
+*{box-sizing:border-box}body{margin:0;background:#0b0d11;color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Noto Sans TC",sans-serif;background-image:radial-gradient(ellipse at 50% 0%,#4a40314a,transparent 48%)}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid #8e7851;background:linear-gradient(#38312b,#211f20);border-radius:10px;padding:10px 12px}button:focus-visible{outline:2px solid #f3d89b;outline-offset:2px}
+.shell{width:min(100%,560px);min-height:100dvh;margin:auto;background:linear-gradient(180deg,#1b1b20,#101216);border-inline:1px solid #8d754b55;display:flex;flex-direction:column;box-shadow:0 0 60px #0008}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:#19191eeb;border-bottom:1px solid #a48a594d;backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}.seal{display:grid;place-items:center;width:38px;height:38px;flex-shrink:0;border-radius:50%;color:#2b2116;font-size:22px;background:radial-gradient(circle at 30% 25%,#f6e5b6,#bd9654 65%,#71512e);box-shadow:0 0 0 2px #d8bd7a33}.brand b{display:block;font-family:serif;font-size:16px;letter-spacing:1px;color:#f0d9a5}.brand small{color:var(--muted);font-size:10px}.resources{display:flex;gap:5px}.resource{padding:6px 7px;border:1px solid #79644366;border-radius:8px;background:#252329;color:#e6cc8b;font-size:11px;white-space:nowrap}
+main{padding:12px 11px 18px;display:grid;gap:10px}.version{font-size:10px;color:#8d8577;text-align:right;margin-top:-4px}
+.scene{min-height:205px;position:relative;overflow:hidden;border:1px solid #9c855b;border-radius:14px;background:linear-gradient(180deg,#222d3a 0%,#344148 45%,#2b3530 72%,#171d1c 100%);isolation:isolate}
+.scene:before{content:"";position:absolute;width:105px;height:105px;right:28px;top:19px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d4,#e0c886 58%,#9a8050);box-shadow:0 0 42px #e8cd8a3b;z-index:-1}
+.mountain{position:absolute;bottom:-1px;width:0;height:0;border-left:150px solid transparent;border-right:150px solid transparent;border-bottom:100px solid #1d2928;z-index:-1}.m1{left:-54px;border-bottom-color:#30413d}.m2{right:-92px;border-left-width:190px;border-right-width:190px;border-bottom-width:132px}
+.scene-copy{position:relative;padding:14px;max-width:70%;text-shadow:0 2px 8px #0009}.eyebrow{font-size:10px;letter-spacing:2px;color:#d8d6c3}.scene h1{font:700 25px/1.2 serif;margin:8px 0;color:#f3dfb4}.scene p{font-size:11px;color:#d3d4c7;margin:0;max-width:220px}.figure{position:absolute;right:19px;bottom:24px;font-size:73px;filter:drop-shadow(0 9px 7px #0009)}.orb{position:absolute;right:77px;bottom:65px;color:#b7f2db;text-shadow:0 0 24px #7cf0d8;font-size:20px}
+.scene-foot{position:absolute;left:10px;right:10px;bottom:9px;display:flex;gap:5px;flex-wrap:wrap}.tag{font-size:10px;padding:4px 7px;border-radius:6px;background:#111820cc;border:1px solid #ffffff1c;color:#e9dfc8}.tag b{color:var(--gold)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.stat{padding:9px 10px;background:linear-gradient(145deg,#29272b,#1c1e23);border:1px solid #ffffff13;border-radius:11px;min-width:0}.stat small{display:block;color:var(--muted);font-size:10px}.stat strong{display:block;margin:3px 0;font-size:19px;font-variant-numeric:tabular-nums}.stat .up{color:var(--jade);font-size:10px}
+.card{border:1px solid #806c4a70;border-radius:12px;padding:11px;background:linear-gradient(145deg,#29262a,#1c1e22)}.card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}.card-head b{font-family:serif;font-size:15px;color:#ebd5a4}.card-head span{font-size:10px;color:var(--muted)}
+.battle{display:grid;grid-template-columns:70px minmax(0,1fr);gap:10px;align-items:center}.enemy{height:72px;display:grid;place-items:center;border:1px solid #7b6254;border-radius:10px;background:radial-gradient(ellipse,#654b3c,#242328 70%);font-size:40px}.enemy-name{font-weight:800}.enemy-sub{font-size:10px;color:var(--muted);margin:2px 0 7px}.bar{height:7px;background:#101115;border:1px solid #ffffff16;border-radius:99px;overflow:hidden}.bar span{display:block;width:68%;height:100%;background:linear-gradient(90deg,#b9554c,#e99b7b);border-radius:99px}.hp-label{display:flex;justify-content:space-between;font-size:10px;color:#d8b9a8;margin-top:4px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.actions button:first-child{background:linear-gradient(135deg,#e7d19b,#b58b4e);color:#2c2117;font-weight:800}.actions button:last-child{border-color:#5c9a86;background:linear-gradient(135deg,#274d46,#1d302f);color:#b8ead6;font-weight:800}
+.gear-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}.gear{min-width:0;text-align:center;border:1px solid #75684f;border-radius:9px;padding:8px 3px;background:#1b1d21}.gear .glyph{font-size:23px;display:block}.gear small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.gear b{display:block;font-size:10px;color:#e4cb8f;margin-top:2px;overflow-wrap:anywhere}
+.nav{position:sticky;bottom:0;z-index:5;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:7px 7px calc(7px + env(safe-area-inset-bottom));background:#17171ced;border-top:1px solid #92784b66;backdrop-filter:blur(12px)}.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 2px;border-color:transparent;background:transparent;color:#aaa393;font-size:10px}.nav button span{font-size:19px;line-height:1}.nav button.active{color:#f0d391;border-color:#c8a86655;background:linear-gradient(#3c3428,#252328)}
+.note{font-size:10px;line-height:1.55;color:#968d7c;padding:0 2px}
+@media(min-width:480px){main{padding:15px}.scene{min-height:225px}.scene h1{font-size:28px}.figure{font-size:82px}.card{padding:13px}}
+@media(max-width:360px){header{padding:8px}.brand b{font-size:13px}.resource{font-size:10px;padding:5px}.scene-copy{max-width:73%;padding:12px}.scene h1{font-size:22px}.figure{font-size:62px;right:10px}.gear{padding-inline:1px}.gear .glyph{font-size:20px}.nav button{font-size:9px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><div class="brand"><div class="seal">道</div><div><b>凡人修仙傳・修行錄</b><small>人界篇　｜　美術介面測試</small></div></div><div class="resources"><div class="resource">◈ 12,860</div><div class="resource">✧ 328</div></div></header>
+<main>
+<div class="version">本次版本：v6.58 · UI 美術測試頁</div>
+<section class="scene" aria-label="修仙主視覺"><div class="mountain m1"></div><div class="mountain m2"></div><div class="scene-copy"><div class="eyebrow">MORTAL CULTIVATION</div><h1>月下問道</h1><p>靈氣流轉，劍意待發。<br>每一次突破，皆是逆天而行。</p></div><div class="figure">🧙🏻‍♂️</div><div class="orb">✦</div><div class="scene-foot"><span class="tag">境界 <b>築基中期</b></span><span class="tag">洞府 <b>靈氣充盈</b></span><span class="tag">修行 <b>自動進行</b></span></div></section>
+<section class="stats" aria-label="角色狀態"><div class="stat"><small>戰力</small><strong>12,480</strong><span class="up">↗ 今日 +320</span></div><div class="stat"><small>修為</small><strong>68.4%</strong><div class="bar"><span style="width:68%;background:linear-gradient(90deg,#8fc9b1,#d7c184)"></span></div></div><div class="stat"><small>氣血</small><strong>8,240</strong><span class="up">● 狀態穩定</span></div></section>
+<section class="card"><div class="card-head"><b>⚔ 試煉・黃楓谷外圍</b><span>第 12 層</span></div><div class="battle"><div class="enemy">🐺</div><div><div class="enemy-name">嗜血妖狼</div><div class="enemy-sub">精英妖獸 · 火抗較低</div><div class="bar"><span></span></div><div class="hp-label"><span>妖獸氣血</span><span>68%</span></div></div></div><div class="actions"><button type="button" id="attack">御劍斬擊</button><button type="button" id="skill">施展神通</button></div></section>
+<section class="card"><div class="card-head"><b>✧ 本命法寶・裝備一覽</b><span>5 個裝備位</span></div><div class="gear-grid"><div class="gear"><span class="glyph">⚔️</span><small>武器</small><b>青竹劍</b></div><div class="gear"><span class="glyph">🛡️</span><small>防具</small><b>玄鐵甲</b></div><div class="gear"><span class="glyph">💍</span><small>戒指</small><b>空缺</b></div><div class="gear"><span class="glyph">🪬</span><small>玉佩</small><b>養魂玉</b></div><div class="gear"><span class="glyph">👢</span><small>靴子</small><b>踏風靴</b></div></div></section>
+<p class="note">測試範圍：主視覺層次、戰鬥資訊辨識、裝備格可讀性、手機安全區與底部導覽。這是獨立美術預覽，不會讀取或寫入 nine_heavens_idle_v2 玩家存檔。</p>
+</main>
+<nav class="nav" aria-label="主要導覽"><button class="active" type="button"><span>☯</span>洞府</button><button type="button"><span>📜</span>仙途</button><button type="button"><span>🎒</span>儲物袋</button><button type="button"><span>🧪</span>煉器</button><button type="button"><span>👤</span>道途</button></nav>
+</div>
+<script>
+(function(){
+ const enemy=document.querySelector('.enemy-name'),sub=document.querySelector('.enemy-sub'),bar=document.querySelector('.battle .bar span'),hp=document.querySelector('.hp-label span:last-child');
+ let health=68;
+ document.getElementById('attack').addEventListener('click',function(){health=Math.max(0,health-13);bar.style.width=health+'%';hp.textContent=health+'%';sub.textContent=health===0?'試煉完成 · 妖獸已擊退':'受到御劍斬擊 · 火抗較低';if(health===0){enemy.textContent='試煉完成';this.disabled=true;document.getElementById('skill').textContent='挑戰完成';document.getElementById('skill').disabled=true;}});
+ document.getElementById('skill').addEventListener('click',function(){health=Math.max(0,health-24);bar.style.width=health+'%';hp.textContent=health+'%';sub.textContent=health===0?'神通奏效 · 試煉完成':'神通命中 · 妖獸氣血大幅下降';if(health===0){enemy.textContent='試煉完成';this.disabled=true;document.getElementById('attack').textContent='挑戰完成';document.getElementById('attack').disabled=true;}});
+ document.querySelectorAll('.nav button').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');});});
+})();
+</script>
+</body></html>
