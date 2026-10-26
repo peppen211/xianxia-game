@@ -75,8 +75,8 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.32$2"
+  "$1v6.33$2"
 );
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.32 mobile bag layout balance + save-safety regression applied.");
+console.log("v6.33 inventory acquisition metadata + mobile bag layout regression applied.");
