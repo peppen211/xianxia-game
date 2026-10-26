@@ -1,6 +1,6 @@
 # 不好意思，本座又突破了
 
-**目前遊戲版本：** v6.24  
+**目前遊戲版本：** v6.25  
 **正式遊玩入口：** https://peppen211.github.io/xianxia-game/?v=6.24  
 **最新版本頁：** https://peppen211.github.io/xianxia-game/latest.html
 
