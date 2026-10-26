@@ -2066,7 +2066,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.28</small>
+  <small class="status-version" aria-label="遊戲版本">v6.29</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2078,7 +2078,7 @@ html,body,#launchGate,#gameApp{
  <div class="panel chronicle-teaser"><div class="secthead"><span> 韓立的仙途</span><small id="storyStageShort">凡人起步</small></div><div id="storyTeaser" class="storyline">從凡人出身踏入修仙界，謹慎求生、積累機緣。</div><button class="btn secondary" id="openChronicle" style="width:100%;margin-top:7px">查看主線世界觀與階段紀事</button></div>
 </section>
 <section class="screen" id="cultivate">
- <div class="cultivate-tabs" role="tablist" aria-label="修煉分類"><button type="button" class="cultivate-tab" data-cultivate-tab="practice" role="tab" aria-selected="false" onclick="switchCultivateTab('practice')">修煉</button><button type="button" class="cultivate-tab active" data-cultivate-tab="methods" role="tab" aria-selected="true" onclick="switchCultivateTab('methods')">功法</button></div>
+ <div class="cultivate-tabs" role="tablist" aria-label="修煉分類"><button type="button" class="cultivate-tab active" data-cultivate-tab="practice" role="tab" aria-selected="true" onclick="switchCultivateTab('practice')">修煉</button><button type="button" class="cultivate-tab" data-cultivate-tab="methods" role="tab" aria-selected="false" onclick="switchCultivateTab('methods')">功法</button></div>
  <div class="cultivate-view" id="cultivatePracticeView" hidden>
   <div class="page-title"><h2><span class="title-sigil"></span> 修煉洞府</h2><span>境界與修為進度</span></div>
   <div class="realm-art"><span id="cultArt" class="cultivation-sword">劍</span><div class="realm-info" id="cultRealm">練氣一層 · 靈氣親和</div></div><div class="realm-desc" id="cultLevelDesc">初入修行，凝神感應天地靈氣，為經脈打下根基。</div>
@@ -3603,7 +3603,7 @@ main>.screen#home.active{display:flex!important}
   const page=document.getElementById(id);
   if(page)page.scrollTop=0;
   if(typeof window.render==='function')window.render();
-  if(id==='cultivate'&&typeof window.switchCultivateTab==='function')window.switchCultivateTab('methods');
+  if(id==='cultivate'&&typeof window.switchCultivateTab==='function')window.switchCultivateTab('practice');
  }
  moveExistingBlocks();
  window.switchScreen=activate;
@@ -5756,7 +5756,7 @@ function switchCultivateTab(tab){
  practiceView.hidden=methods;methodsView.hidden=!methods;
  document.querySelectorAll('#cultivate .cultivate-tab').forEach(btn=>{const active=btn.dataset.cultivateTab===tab;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',String(active));});
 }
-switchCultivateTab('methods');
+switchCultivateTab('practice');
 </script>
 
 
