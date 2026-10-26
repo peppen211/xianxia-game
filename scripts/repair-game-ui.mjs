@@ -75,8 +75,71 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.33$2"
+  "$1v6.35$2"
 );
 
+const catalogTabs = `<style id="v635-catalog-tabs">
+#uiModal .catalog-category-tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;flex:0 0 auto;background:#151b25;border-bottom:1px solid #ffffff18;scrollbar-width:thin;overscroll-behavior-x:contain}
+#uiModal .catalog-category-tabs button{flex:0 0 auto;min-height:36px;padding:7px 12px;border:1px solid #8e774f66;border-radius:10px;background:#24222a;color:#d9cfbd;font-size:12px;white-space:nowrap}
+#uiModal .catalog-category-tabs button[aria-selected="true"]{background:linear-gradient(135deg,#f0dba5,#b28a4d);border-color:#f0dba5;color:#2a2118;font-weight:800}
+#uiModal .catalog-category-tabs button:focus-visible{outline:2px solid #f0dba5;outline-offset:2px}
+#uiModal .modal-body.catalog-tabbed{padding-top:10px}
+#uiModal .modal-body.catalog-tabbed>.catalog-category-panel{display:none!important}
+#uiModal .modal-body.catalog-tabbed>.catalog-category-panel.active{display:block!important}
+#uiModal .modal-body.catalog-tabbed>.catalog-category-panel>.panel{margin-top:0!important}
+@media(max-width:380px){#uiModal .catalog-category-tabs{gap:4px;padding:7px}#uiModal .catalog-category-tabs button{padding:6px 10px;font-size:11px;min-height:34px}}
+</style>
+<script id="v635-catalog-tabs-script">
+(function(){
+ if(typeof window.openClassificationCatalog!=="function"||window.openClassificationCatalog.__v635Wrapped)return;
+ const original=window.openClassificationCatalog;
+ function selectCatalogCategory(body,tabs,index){
+  const buttons=Array.from(tabs.querySelectorAll("button"));
+  const panels=Array.from(body.querySelectorAll(":scope > .catalog-category-panel"));
+  buttons.forEach(function(button,i){const active=i===index;button.classList.toggle("active",active);button.setAttribute("aria-selected",active?"true":"false");button.tabIndex=active?0:-1});
+  panels.forEach(function(panel,i){const active=i===index;panel.classList.toggle("active",active);panel.hidden=!active});
+  body.scrollTop=0;
+ }
+ window.openClassificationCatalog=function(){
+  original.apply(this,arguments);
+  const modal=document.getElementById("uiModal");
+  const body=document.getElementById("modalBody");
+  if(!modal||!body||!modal.classList.contains("show"))return;
+  const title=document.getElementById("modalTitle");
+  if(!title||title.textContent.trim()!=="法寶與生靈分類")return;
+  if(body.querySelector(".catalog-category-tabs"))return;
+  const sourcePanels=Array.from(body.children).filter(function(node){return node.classList&&node.classList.contains("panel")});
+  if(sourcePanels.length<5)return;
+  const names=["裝備類","古寶類","敵怪類","靈寵類","原著典藏"];
+  sourcePanels.forEach(function(panel,index){panel.classList.add("catalog-category-panel");panel.hidden=true;panel.classList.remove("active");panel.dataset.catalogCategory=String(index)});
+  const tabs=document.createElement("div");
+  tabs.className="catalog-category-tabs";
+  tabs.setAttribute("role","tablist");
+  tabs.setAttribute("aria-label","圖鑑分類");
+  tabs.innerHTML=names.map(function(name,index){return '<button type="button" role="tab" id="catalog-tab-'+index+'" aria-controls="catalog-panel-'+index+'" aria-selected="'+(index===0?'true':'false')+'" tabindex="'+(index===0?'0':'-1')+'">'+name+'</button>'}).join("");
+  sourcePanels.forEach(function(panel,index){panel.id="catalog-panel-"+index;panel.setAttribute("role","tabpanel");panel.setAttribute("aria-labelledby","catalog-tab-"+index)});
+  body.classList.add("catalog-tabbed");
+  body.parentNode.insertBefore(tabs,body);
+  tabs.addEventListener("click",function(event){const button=event.target.closest("button[role=tab]");if(!button)return;selectCatalogCategory(body,tabs,Number(button.id.replace("catalog-tab-","")))});
+  tabs.addEventListener("keydown",function(event){
+   if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
+   const buttons=Array.from(tabs.querySelectorAll("button"));
+   const current=buttons.indexOf(document.activeElement);
+   let next=current;
+   if(event.key==="Home")next=0;else if(event.key==="End")next=buttons.length-1;else next=(current+(event.key==="ArrowRight"?1:-1)+buttons.length)%buttons.length;
+   event.preventDefault();buttons[next].focus();selectCatalogCategory(body,tabs,next);
+  });
+  selectCatalogCategory(body,tabs,0);
+ };
+ window.openClassificationCatalog.__v635Wrapped=true;
+})();
+</script>`;
+if (!html.includes('id="v635-catalog-tabs-script"')) {
+  if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
+  html = html.replace("</body>", catalogTabs + "\n</body>");
+}
+html = html.replace("v6.45 非破壞性檢查", "v6.35 非破壞性檢查");
+
+
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.33 inventory acquisition metadata + mobile bag layout regression applied.");
+console.log("v6.35 catalog category tabs + preserved inventory layout and data applied.");
