@@ -27,7 +27,7 @@ jobs:
           cp index.html dist/index.html
           cp latest.html dist/latest.html
           cp '首頁.PNG' 'dist/首頁.PNG'
-          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.33"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.33");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.33。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.33">開啟目前正式版 v6.33</a></body></html>'
+          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.33"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.33");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.40。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.33">開啟目前正式版 v6.40</a></body></html>'
           for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html; do
             printf '%s\n' "$LEGACY_REDIRECT_HTML" > "dist/$LEGACY_PATH"
           done
@@ -90,18 +90,41 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v6.33') throw new Error('遊戲右上角版本標示應為 v6.33，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v6.40') throw new Error('遊戲右上角版本標示應為 v6.40，實際為：' + publishedVersionLabel);
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
-            await page.locator('#gameApp #cultivatePracticeView').waitFor({state:'visible', timeout:3000});
-            const idleLayoutAudit = await page.locator('#gameApp #cultivatePracticeView > .idle-card .idle-text p').evaluate(el => {
-              const textRect = el.getBoundingClientRect();
-              const cardRect = el.closest('.idle-card').getBoundingClientRect();
-              return { textWidth: Math.round(textRect.width), cardWidth: Math.round(cardRect.width), text: el.textContent.trim() };
-            });
-            if (idleLayoutAudit.cardWidth < 300 || idleLayoutAudit.textWidth < 180) {
-              throw new Error('修煉頁放置收益說明欄寬異常，文字可能被擠成直排：' + JSON.stringify(idleLayoutAudit));
+            await page.locator('#gameApp #openCultivateCatalog').waitFor({state:'visible', timeout:3000});
+            const catalogEntryAudit = await page.locator('#cultivate').evaluate(el => ({
+              panelCount: Array.from(el.children).filter(child => child.classList.contains('panel')).length,
+              catalogButton: !!el.querySelector('#openCultivateCatalog'),
+              oldInnerPages: el.querySelectorAll('#cultivatePracticeView, #cultivateMethodsView, [data-cultivate-tab]').length
+            }));
+            if (!catalogEntryAudit.catalogButton || catalogEntryAudit.panelCount !== 1 || catalogEntryAudit.oldInnerPages !== 0) {
+              throw new Error('仙途應只保留典藏圖鑑入口：' + JSON.stringify(catalogEntryAudit));
             }
+            await page.locator('#openCultivateCatalog').click();
+            await page.locator('#uiModal').waitFor({state:'visible', timeout:5000});
+            const archiveTitle = (await page.locator('#modalTitle').innerText()).trim();
+            if (archiveTitle !== '法寶與生靈分類') throw new Error('仙途典藏圖鑑無法開啟正確的分類圖鑑：' + archiveTitle);
+            await page.locator('#uiModal .modal-close').click();
+            await page.locator('#uiModal').waitFor({state:'hidden', timeout:3000});
+
+            await page.locator('#gameApp .bottom .nav[data-screen="bag"]').click();
+            await page.locator('#bag.active').waitFor({state:'visible', timeout:3000});
+            await page.locator('#bag .bag-catalog-button').waitFor({state:'visible', timeout:3000});
+            const bagCategoryKeys = await page.locator('#bag [data-bag-main-tab]').evaluateAll(nodes => nodes.map(node => node.getAttribute('data-bag-main-tab')));
+            if (!['equipment','treasures','magic','pets','materials'].every(key => bagCategoryKeys.includes(key))) {
+              throw new Error('儲物袋五大分類缺失：' + JSON.stringify(bagCategoryKeys));
+            }
+            await page.locator('#bag .bag-catalog-button').click();
+            await page.locator('#uiModal').waitFor({state:'visible', timeout:5000});
+            const catalogTabs = page.locator('#uiModal .catalog-category-tabs button');
+            await catalogTabs.nth(1).click();
+            if (await catalogTabs.nth(1).getAttribute('aria-selected') !== 'true') {
+              throw new Error('分類圖鑑按鈕無法切換至古寶類。');
+            }
+            await page.locator('#uiModal .modal-close').click();
+            await page.locator('#uiModal').waitFor({state:'hidden', timeout:3000});
 
             await page.locator('#gameApp .bottom .nav[data-screen="home"]').click();
             await page.locator('#home.active').waitFor({state:'visible', timeout:3000});
@@ -127,44 +150,27 @@ jobs:
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
 
-            // Mobile regression checks: cultivation opens on practice first; methods remain available by switching tabs.
-            const methodsTab = page.locator('#cultivate .cultivate-tab[data-cultivate-tab="methods"]');
-            const practiceTab = page.locator('#cultivate .cultivate-tab[data-cultivate-tab="practice"]');
-            const methodsView = page.locator('#cultivateMethodsView');
-            const practiceView = page.locator('#cultivatePracticeView');
-            if (await practiceTab.getAttribute('aria-selected') !== 'true' || !(await practiceView.isVisible()) || await methodsView.isVisible()) {
-              throw new Error('The cultivation screen must open on the practice tab first.');
+            // The cultivation screen intentionally keeps only the archive entry; legacy practice/method sub-pages are removed.
+            await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
+            await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
+            const catalogOnlyAudit = await page.locator('#cultivate').evaluate(el => ({
+              panelCount: Array.from(el.children).filter(child => child.classList.contains('panel')).length,
+              catalogButton: !!el.querySelector('#openCultivateCatalog'),
+              oldInnerPages: el.querySelectorAll('#cultivatePracticeView, #cultivateMethodsView, [data-cultivate-tab]').length
+            }));
+            if (!catalogOnlyAudit.catalogButton || catalogOnlyAudit.panelCount !== 1 || catalogOnlyAudit.oldInnerPages !== 0) {
+              throw new Error('仙途內頁驗收失敗：' + JSON.stringify(catalogOnlyAudit));
             }
-            await methodsTab.click();
-            if (await methodsTab.getAttribute('aria-selected') !== 'true' || !(await methodsView.isVisible()) || await practiceView.isVisible()) {
-              throw new Error('The methods tab must remain available after switching from cultivation.');
+
+            await page.evaluate(() => openBreakthroughModal());
+            const breakthroughModalForCatalogOnly = page.locator('#uiModal');
+            await breakthroughModalForCatalogOnly.waitFor({state:'visible', timeout:5000});
+            const breakthroughTextForCatalogOnly = await page.locator('#modalBody').innerText();
+            if (!breakthroughTextForCatalogOnly.includes('靈石') || !breakthroughTextForCatalogOnly.includes('靈草')) {
+              throw new Error('精簡仙途後，突破彈窗仍須保留靈石與靈草需求。');
             }
-            const methodCards = page.locator('#cultivate #methodList > .method-card');
-            await methodCards.first().waitFor({ state: 'visible', timeout: 5000 });
-            if (await methodCards.count() !== 3) throw new Error('Expected three cultivation method cards to be visible.');
-            if (await page.locator('#breakMaterialSummary').isVisible()) throw new Error('Breakthrough materials must be hidden on the methods tab.');
-            if (await page.locator('#idleProgressPanel').isVisible()) throw new Error('Idle cultivation progress must be hidden on the methods tab.');
-            if (await page.locator('#cultivatePracticeView > .hero .cultivator').isVisible()) throw new Error('Legacy cultivation illustration should be hidden in the compact guide.');
-
-            await methodCards.first().locator('.method-details-button').click();
-            const modal = page.locator('#uiModal');
-            await modal.waitFor({ state: 'visible', timeout: 5000 });
-            if (!(await page.locator('#modalBody').innerText()).includes('實際效果')) throw new Error('Method detail content did not open.');
             await page.locator('#uiModal .modal-close').click();
-            await modal.waitFor({ state: 'hidden', timeout: 3000 });
-
-            await practiceTab.click();
-            await practiceView.waitFor({ state: 'visible', timeout: 3000 });
-            if (await methodsView.isVisible()) throw new Error('The methods view should hide when the practice tab is selected.');
-            if (!(await page.locator('#breakMaterialSummary').isVisible())) throw new Error('Breakthrough material requirements are missing from the practice tab.');
-            if (!(await page.locator('#idleProgressPanel').isVisible())) throw new Error('Idle cultivation progress panel is missing from the practice tab.');
-
-            await page.locator('#breakBtn').click();
-            await modal.waitFor({ state: 'visible', timeout: 5000 });
-            const breakthroughText = await page.locator('#modalBody').innerText();
-            if (!breakthroughText.includes('靈石') || !breakthroughText.includes('靈草')) throw new Error('Breakthrough dialog must show required materials.');
-            await page.locator('#uiModal .modal-close').click();
-            await modal.waitFor({ state: 'hidden', timeout: 3000 });
+            await breakthroughModalForCatalogOnly.waitFor({state:'hidden', timeout:3000});
 
             // Regression tests for the shop use only this isolated browser save.
             await page.locator('#gameApp .bottom .nav[data-screen="shop"]').click();
@@ -1144,7 +1150,7 @@ jobs:
             console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
             await page.goto('https://peppen211.github.io/xianxia-game/latest.html', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const latestPageVersion = (await page.locator('.version').innerText()).trim();
-            if (latestPageVersion !== 'v6.33') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
+            if (latestPageVersion !== 'v6.40') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
             const latestPageLink = await page.locator('a.launch').getAttribute('href');
             if (latestPageLink !== './?v=6.33') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
             await page.locator('a.launch').click();
@@ -1152,25 +1158,25 @@ jobs:
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const latestLinkTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (latestLinkTargetVersion !== 'v6.33') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
-            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v6.33.');
+            if (latestLinkTargetVersion !== 'v6.40') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
+            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v6.40.');
             const legacyEntryPaths = ['classic.html','mortal-cultivation-rpg.html','mortal-cultivation-rpg-3.3.html','prototype/index.html'];
             for (const legacyPath of legacyEntryPaths) {
-              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.33');
+              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.40');
               if (!legacyResponse.ok()) throw new Error('舊入口沒有回應可用的轉址頁：' + legacyPath + ' (' + legacyResponse.status() + ')');
               const legacyHtml = await legacyResponse.text();
               if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=6.33") || !legacyHtml.includes('location.replace')) {
-                throw new Error('舊入口仍未指向 v6.33 正式版：' + legacyPath);
+                throw new Error('舊入口仍未指向 v6.40 正式版：' + legacyPath);
               }
             }
-            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.33', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.40', { waitUntil: 'domcontentloaded', timeout: 60000 });
             await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=6.33', null, { timeout: 15000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const legacyTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (legacyTargetVersion !== 'v6.33') throw new Error('舊版入口轉址後仍未開啟 v6.33：' + legacyTargetVersion);
-            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v6.33 without launching old save logic.');
+            if (legacyTargetVersion !== 'v6.40') throw new Error('舊版入口轉址後仍未開啟 v6.40：' + legacyTargetVersion);
+            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v6.40 without launching old save logic.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
@@ -1190,8 +1196,8 @@ jobs:
               fi
             done
             if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE" &&
-               grep -Fq '<div class="version">v6.33</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.33"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
-              echo "Published v6.33 entry, latest.html and all legacy redirects verified."
+               grep -Fq '<div class="version">v6.40</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.33"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
+              echo "Published v6.40 entry, latest.html and all legacy redirects verified."
               exit 0
             fi
             sleep 10
