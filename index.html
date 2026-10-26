@@ -2799,7 +2799,7 @@ function openChronicleModal(){const list=document.getElementById('hanliChronicle
 function openOfflineModal(){const report=s.offlineReport;const msg=report?'上次'+(report.source||'放置收益')+'：'+formatDuration(report.seconds)+'｜修為 +'+report.xp+'、靈石 +'+report.gold+'。':'目前尚無新的離線結算紀錄。';openModal('離線放置收益','<div class="panel"><b>離線收益上限：24 小時</b><p>'+esc(msg)+'</p><p>修為會自動累積，圓滿後等待手動突破；靈石與材料請透過戰鬥取得。</p><button class="btn primary" onclick="claimIdle();closeModal()">領取收益</button></div><div class="panel"><b>最近事件</b><div class="loglist">'+document.getElementById('logs').innerHTML+'</div></div>')}
 function switchScreen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));render()}
 /* Bottom-nav click handling is attached once by UX patch v1.2. */
-const openChronicleButtonRemovedPage=document.getElementById('openChronicle');if(openChronicleButtonRemovedPage)openChronicleButtonRemovedPage.onclick=()=>openChronicleModal();document.getElementById('globalBreakBtn').onclick=()=>{if(s.xp<xpNeed()){toast('修為尚未圓滿，繼續吐納或試煉吧');return}checkLevel();render()};
+if(document.getElementById('openChronicle'))document.getElementById('openChronicle').onclick=()=>openChronicleModal();document.getElementById('globalBreakBtn').onclick=()=>{if(s.xp<xpNeed()){toast('修為尚未圓滿，繼續吐納或試煉吧');return}checkLevel();render()};
 function renderChronicle(){
  const idx=s.major===0?(s.kills>=4?1:0):s.major===1?2:s.major===2?(s.kills>=12?4:3):s.major===3?5:(s.kills>=12?7:6);
  const stage=hanliStages[idx];
@@ -3011,7 +3011,7 @@ document.getElementById('battleSpeedBtn').addEventListener('click',()=>{
 });
 document.getElementById('fleeBtn').addEventListener('click',()=>{escapeBattle();updateBattleFeedback('已嘗試撤離戰鬥')});
 document.getElementById('sneakBtn').addEventListener('click',()=>{const before=enemy?.hp||0; sneakAttack();const dealt=Math.max(0,before-(enemy?.hp||0));if(dealt)showDamageFloat(dealt,dealt>val('atk')*1.5);if(enemy&&enemy.hp<=0)showDropFloat(' 偷襲擊殺 · 戰利品已入袋');updateBattleFeedback('偷襲傷害 '+dealt)});
-const openChronicleButtonRemovedPage=document.getElementById('openChronicle');if(openChronicleButtonRemovedPage)openChronicleButtonRemovedPage.onclick=()=>openChronicleModal();
+if(document.getElementById('openChronicle'))document.getElementById('openChronicle').onclick=()=>openChronicleModal();
 document.getElementById('resetBtn').addEventListener('click',()=>{autoBattleEnabled=false;if(autoBattleTimer)clearInterval(autoBattleTimer);autoBattleTimer=null});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 
