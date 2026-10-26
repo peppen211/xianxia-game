@@ -78,5 +78,5 @@
 - 畫面與測試網址版本標籤更新為 `v2.0`；`latest.html` 與 GitHub Pages 舊入口重新導向同步更新。
 - 原著典藏保留金蚨子母刃，新增玄鐵飛天盾、天雷子、金光磚符寶；四條目均置於既有分類圖鑑。
 - 保留四個儲物袋主分類及 `nine_heavens_idle_v2` 存檔鍵；沒有清除、重置、遷移或改寫玩家存檔。
-- 靜態讀回：新增條目、版本字串與存檔 key 已核對。GitHub Actions 部署及瀏覽器回歸結果待此次 workflow 完成後確認。
+- 靜態讀回：新增條目、版本字串與存檔 key 已核對。GitHub Actions run `40248366559` 的 build、deploy、手機尺寸 Chromium 回歸及正式入口檢查均成功。iPhone Safari 真機驗收尚未完成。
 - 尚未驗證：iPhone Safari 真機操作。
