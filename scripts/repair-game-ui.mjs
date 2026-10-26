@@ -75,7 +75,7 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.41$2"
+  "$1v6.42$2"
 );
 
 const catalogTabs = `<style id="v635-catalog-tabs">
@@ -107,7 +107,7 @@ const catalogTabs = `<style id="v635-catalog-tabs">
   if(!modal||!body||!modal.classList.contains("show"))return;
   const title=document.getElementById("modalTitle");
   if(!title||title.textContent.trim()!=="法寶與生靈分類")return;
-  if(body.querySelector(".catalog-category-tabs"))return;
+  const oldCatalogTabs=modal.querySelector(".catalog-category-tabs");if(oldCatalogTabs)oldCatalogTabs.remove();
   const sourcePanels=Array.from(body.children).filter(function(node){return node.classList&&node.classList.contains("panel")});
   if(sourcePanels.length<5)return;
   const names=["裝備類","古寶類","敵怪類","靈寵類","原著典藏"];
@@ -138,12 +138,12 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.41 非破壞性檢查");
-html = html.replace("v6\.40", "v6\.41");
+html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.42 非破壞性檢查");
+html = html.replace(String.raw`v6\.42`, String.raw`v6\.42`);
 
 
 
-const catalogLocationPatch = `<script id="v641-catalog-location-script">
+const catalogLocationPatch = `<script id="v642-catalog-location-script">
 (function(){
  'use strict';
  function setup(){
@@ -182,7 +182,7 @@ const catalogLocationPatch = `<script id="v641-catalog-location-script">
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
 })();
 </script>`;
-const locationPattern = /<script id="v(?:637|639|641)-catalog-location-script">[\s\S]*?<\/script>/;
+const locationPattern = /<script id="v(?:637|639|641|642)-catalog-location-script">[\s\S]*?<\/script>/;
 if (locationPattern.test(html)) {
   html = html.replace(locationPattern, catalogLocationPatch);
 } else {
@@ -191,4 +191,4 @@ if (locationPattern.test(html)) {
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.41 catalog-only rendering fixed.");
+console.log("v6.42 catalog-only rendering fixed.");
