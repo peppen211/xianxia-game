@@ -138,7 +138,7 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace("v6\.38", "v6\.39");
+html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.39 非破壞性檢查");
 html = html.replace("v6\.38", "v6\.39");
 
 
