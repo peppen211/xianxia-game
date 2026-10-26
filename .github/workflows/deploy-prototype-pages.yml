@@ -981,33 +981,33 @@ jobs:
             console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
             await page.goto('https://peppen211.github.io/xianxia-game/latest.html', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const latestPageVersion = (await page.locator('.version').innerText()).trim();
-            if (latestPageVersion !== 'v4.3') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
+            if (latestPageVersion !== 'v4.4') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
             const latestPageLink = await page.locator('a.launch').getAttribute('href');
-            if (latestPageLink !== './?v=4.3') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
+            if (latestPageLink !== './?v=4.4') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
             await page.locator('a.launch').click();
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const latestLinkTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (latestLinkTargetVersion !== 'v4.3') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
-            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v4.3.');
+            if (latestLinkTargetVersion !== 'v4.4') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
+            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v4.4.');
             const legacyEntryPaths = ['classic.html','mortal-cultivation-rpg.html','mortal-cultivation-rpg-3.3.html','prototype/index.html'];
             for (const legacyPath of legacyEntryPaths) {
-              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v4.3');
+              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v4.4');
               if (!legacyResponse.ok()) throw new Error('舊入口沒有回應可用的轉址頁：' + legacyPath + ' (' + legacyResponse.status() + ')');
               const legacyHtml = await legacyResponse.text();
               if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=4.4") || !legacyHtml.includes('location.replace')) {
-                throw new Error('舊入口仍未指向 v4.3 正式版：' + legacyPath);
+                throw new Error('舊入口仍未指向 v4.4 正式版：' + legacyPath);
               }
             }
-            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v4.3', { waitUntil: 'domcontentloaded', timeout: 60000 });
-            await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=4.3', null, { timeout: 15000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v4.4', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=4.4', null, { timeout: 15000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const legacyTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (legacyTargetVersion !== 'v4.3') throw new Error('舊版入口轉址後仍未開啟 v4.3：' + legacyTargetVersion);
-            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v4.3 without launching old save logic.');
+            if (legacyTargetVersion !== 'v4.4') throw new Error('舊版入口轉址後仍未開啟 v4.4：' + legacyTargetVersion);
+            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v4.4 without launching old save logic.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
@@ -1027,8 +1027,8 @@ jobs:
               fi
             done
             if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE" &&
-               grep -Fq '<div class="version">v4.3</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=4.3"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
-              echo "Published v4.3 entry, latest.html and all legacy redirects verified."
+               grep -Fq '<div class="version">v4.4</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=4.4"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
+              echo "Published v4.4 entry, latest.html and all legacy redirects verified."
               exit 0
             fi
             sleep 10
