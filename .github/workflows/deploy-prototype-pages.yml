@@ -24,7 +24,7 @@ jobs:
       - name: Build production site
         run: |
           npm run build
-          node -e "const fs=require('fs');const p='index.html';let h=fs.readFileSync(p,'utf8');h=h.replace('aria-label=\"遊戲版本\">v6.18</small>','aria-label=\"遊戲版本\">v6.21</small>');if(!h.includes('aria-label=\"遊戲版本\">v6.21</small>'))throw new Error('Cannot publish v6.21 version label');fs.writeFileSync(p,h)"
+          node -e "const fs=require('fs');const p='index.html';let h=fs.readFileSync(p,'utf8');h=h.replace('class=\\\"status-version\\\" aria-label=\\\"遊戲版本\\\">v6.18</small>','class=\\\"status-version\\\" aria-label=\\\"遊戲版本\\\">v6.21</small>');if(!h.includes('class=\\\"status-version\\\" aria-label=\\\"遊戲版本\\\">v6.21</small>'))throw new Error('Cannot publish v6.21 version label');fs.writeFileSync(p,h)"
           cp index.html dist/index.html
           cp latest.html dist/latest.html
           cp '首頁.PNG' 'dist/首頁.PNG'
