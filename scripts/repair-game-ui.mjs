@@ -49,7 +49,7 @@ if (html.includes(oldEquip)) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
 
-const oldVersion = 'aria-label="遊戲版本">v6.19</small>';
+const oldVersion = 'aria-label="遊戲版本">v6.18</small>';
 if (html.includes(oldVersion)) {
   html = html.replace(oldVersion, 'aria-label="遊戲版本">v6.20</small>');
 } else if (!html.includes('aria-label="遊戲版本">v6.20</small>')) {
