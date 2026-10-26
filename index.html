@@ -5880,6 +5880,13 @@ switchCultivateTab('methods');
 #gameApp .screen{
   scroll-padding-block:10px;
 }
+/* Keep spirit-pet cards tall enough for readable descriptions and reliable tapping. */
+#gameApp #bag .bag-pet-card{
+  min-height:80px!important;
+  height:auto!important;
+  aspect-ratio:auto!important;
+  align-self:stretch!important;
+}
 @media(max-width:359px){
   .app>header.top.statusline{
     grid-template-columns:minmax(0,1fr) minmax(25px,.34fr) minmax(0,.88fr) minmax(39px,.66fr) minmax(50px,.7fr)!important;
