@@ -49,10 +49,10 @@ if (html.includes(oldEquip)) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
 
-const oldVersion = 'aria-label="遊戲版本">v6.18</small>';
+const oldVersion = 'class="status-version" aria-label="遊戲版本">v6.18</small>';
 if (html.includes(oldVersion)) {
-  html = html.replace(oldVersion, 'aria-label="遊戲版本">v6.21</small>');
-} else if (!html.includes('aria-label="遊戲版本">v6.21</small>')) {
+  html = html.replace(oldVersion, 'class="status-version" aria-label="遊戲版本">v6.21</small>');
+} else if (!html.includes('class="status-version" aria-label="遊戲版本">v6.21</small>')) {
   throw new Error("Cannot find the game version label.");
 }
 
