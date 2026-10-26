@@ -1,0 +1,1179 @@
+name: Test and Deploy Full RPG to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: full-rpg-deployment
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Run gameplay tests
+        run: npm test
+      - name: Build production site
+        run: |
+          npm run build
+          cp index.html dist/index.html
+          cp latest.html dist/latest.html
+          cp '首頁.PNG' 'dist/首頁.PNG'
+          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.30"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.30");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.30。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.30">開啟目前正式版 v6.30</a></body></html>'
+          for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html; do
+            printf '%s\n' "$LEGACY_REDIRECT_HTML" > "dist/$LEGACY_PATH"
+          done
+          mkdir -p dist/prototype
+          printf '%s\n' "$LEGACY_REDIRECT_HTML" > dist/prototype/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser smoke-test tools
+        run: |
+          npm install --no-save playwright
+          npx playwright install chromium
+      - name: Verify launch gate and entry flow in a mobile browser
+        run: |
+          cat > /tmp/game-smoke.cjs <<'EOF'
+          const { chromium } = require(process.cwd() + '/node_modules/playwright');
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+            const errors = [];
+            page.on('pageerror', error => { errors.push(error.message); console.log('BROWSER PAGE ERROR: ' + error.stack); });
+            page.on('console', message => { if (message.type() === 'error') { errors.push(message.text()); console.log('BROWSER CONSOLE ERROR: ' + message.text()); } });
+            page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
+            page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
+
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=6.30', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            const gate = page.locator('#launchGate');
+            const app = page.locator('#gameApp');
+            const continueButton = page.locator('#continueCultivationBtn');
+
+            await gate.waitFor({ state: 'visible', timeout: 15000 });
+            await continueButton.waitFor({ state: 'visible', timeout: 5000 });
+            const launchLabel = (await continueButton.locator('.continue-label').innerText().catch(() => continueButton.innerText())).trim();
+            if (!['繼續修煉', '開始修行'].includes(launchLabel)) {
+              throw new Error('Launch gate button label is missing or incorrect: ' + launchLabel);
+            }
+            if (await app.isVisible()) throw new Error('Main game is visible before the player enters.');
+            if (!(await page.locator('body').evaluate(el => el.classList.contains('launch-gate')))) {
+              throw new Error('Fresh page did not start in launch-gate state.');
+            }
+
+            await continueButton.click();
+            await app.waitFor({ state: 'visible', timeout: 5000 });
+            await gate.waitFor({ state: 'hidden', timeout: 5000 });
+            if (await page.locator('body').evaluate(el => el.classList.contains('launch-gate'))) {
+              throw new Error('Launch-gate state remained after clicking continue.');
+            }
+            const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
+            if (publishedVersionLabel !== 'v6.30') throw new Error('遊戲右上角版本標示應為 v6.30，實際為：' + publishedVersionLabel);
+            await page.locator('#gameApp .bottom .nav[data-screen="home"]').click();
+            await page.locator('#home.active').waitFor({state:'visible', timeout:3000});
+            const battlePlayerStatus = page.locator('#battlePlayerStatus');
+            if (!(await battlePlayerStatus.isVisible())) throw new Error('切換至試煉首頁後，戰鬥介面缺少可見的修士氣血狀態列。');
+            const combatStatusAudit = await page.evaluate(() => ({
+              hpText:document.querySelector('#playerHpText')?.textContent.trim(),
+              hpWidth:parseFloat(document.querySelector('#playerHpBar')?.style.width || '0'),
+              hpNow:document.querySelector('#battlePlayerStatus .player-hp-progress')?.getAttribute('aria-valuenow'),
+              stats:document.querySelector('#playerCombatStats')?.textContent || '',
+              ready:document.querySelector('#battleReadyTag')?.textContent || '',
+              enemyStats:document.querySelector('#battleEnemyStats')?.textContent.trim() || ''
+            }));
+            if (!combatStatusAudit.hpText || !combatStatusAudit.stats.includes('攻擊') || !combatStatusAudit.stats.includes('防禦') ||
+                !combatStatusAudit.ready || !combatStatusAudit.enemyStats.includes('基礎獎勵') || !combatStatusAudit.enemyStats.includes('攻擊') || combatStatusAudit.hpWidth <= 0 || combatStatusAudit.hpNow === null) {
+              throw new Error('戰鬥介面角色氣血／戰力資訊不完整：' + JSON.stringify(combatStatusAudit));
+            }
+            console.log('Battle UI regression passed: player HP bar, accessible HP progress, combat stats, readiness warning, and enemy attack/defense/reward details are visible.');
+            const characterHeadingDisplay = await page.locator('#character > .page-title').evaluate(el => getComputedStyle(el).display);
+            if (characterHeadingDisplay !== 'none') throw new Error('角色分頁的「修士面板」標題列應已移除。');
+            const topLevelCultivationHeadingCount = await page.locator('#cultivate > .page-title').count();
+            if (topLevelCultivationHeadingCount !== 0) throw new Error('Cultivation headings must stay inside their own sub-tabs.');
+            await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
+            await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
+
+            // Mobile regression checks: cultivation opens on practice first; methods remain available by switching tabs.
+            const methodsTab = page.locator('#cultivate .cultivate-tab[data-cultivate-tab="methods"]');
+            const practiceTab = page.locator('#cultivate .cultivate-tab[data-cultivate-tab="practice"]');
+            const methodsView = page.locator('#cultivateMethodsView');
+            const practiceView = page.locator('#cultivatePracticeView');
+            if (await practiceTab.getAttribute('aria-selected') !== 'true' || !(await practiceView.isVisible()) || await methodsView.isVisible()) {
+              throw new Error('The cultivation screen must open on the practice tab first.');
+            }
+            await methodsTab.click();
+            if (await methodsTab.getAttribute('aria-selected') !== 'true' || !(await methodsView.isVisible()) || await practiceView.isVisible()) {
+              throw new Error('The methods tab must remain available after switching from cultivation.');
+            }
+            const methodCards = page.locator('#cultivate #methodList > .method-card');
+            await methodCards.first().waitFor({ state: 'visible', timeout: 5000 });
+            if (await methodCards.count() !== 3) throw new Error('Expected three cultivation method cards to be visible.');
+            if (await page.locator('#breakMaterialSummary').isVisible()) throw new Error('Breakthrough materials must be hidden on the methods tab.');
+            if (await page.locator('#idleProgressPanel').isVisible()) throw new Error('Idle cultivation progress must be hidden on the methods tab.');
+            if (await page.locator('#cultivatePracticeView > .hero .cultivator').isVisible()) throw new Error('Legacy cultivation illustration should be hidden in the compact guide.');
+
+            await methodCards.first().locator('.method-details-button').click();
+            const modal = page.locator('#uiModal');
+            await modal.waitFor({ state: 'visible', timeout: 5000 });
+            if (!(await page.locator('#modalBody').innerText()).includes('實際效果')) throw new Error('Method detail content did not open.');
+            await page.locator('#uiModal .modal-close').click();
+            await modal.waitFor({ state: 'hidden', timeout: 3000 });
+
+            await practiceTab.click();
+            await practiceView.waitFor({ state: 'visible', timeout: 3000 });
+            if (await methodsView.isVisible()) throw new Error('The methods view should hide when the practice tab is selected.');
+            if (!(await page.locator('#breakMaterialSummary').isVisible())) throw new Error('Breakthrough material requirements are missing from the practice tab.');
+            if (!(await page.locator('#idleProgressPanel').isVisible())) throw new Error('Idle cultivation progress panel is missing from the practice tab.');
+
+            await page.locator('#breakBtn').click();
+            await modal.waitFor({ state: 'visible', timeout: 5000 });
+            const breakthroughText = await page.locator('#modalBody').innerText();
+            if (!breakthroughText.includes('靈石') || !breakthroughText.includes('靈草')) throw new Error('Breakthrough dialog must show required materials.');
+            await page.locator('#uiModal .modal-close').click();
+            await modal.waitFor({ state: 'hidden', timeout: 3000 });
+
+            // Regression tests for the shop use only this isolated browser save.
+            await page.locator('#gameApp .bottom .nav[data-screen="shop"]').click();
+            if (!(await page.locator('#shop').isVisible())) throw new Error('無法開啟仙市頁面。');
+            await page.evaluate(() => {
+              window.__shopSaveSnapshot = JSON.parse(JSON.stringify(s));
+              s.gold = 500;
+              s.pills = 0;
+              s.wood = 0;
+              s.crystal = 0;
+              save();
+              render();
+            });
+            try {
+              await page.locator('#buyPill').click();
+              await page.locator('#buyPill5').click();
+              await page.locator('#buyWood5').click();
+              await page.locator('#buyCrystal1').click();
+              const purchased = await page.evaluate(() => ({
+                gold:Number(s.gold),pills:Number(s.pills),wood:Number(s.wood),crystal:Number(s.crystal),
+                shownGold:document.querySelector('#shopGold')?.textContent.trim(),
+                shownPills:document.querySelector('#shopPillCount')?.textContent.trim(),
+                shownWood:document.querySelector('#shopWoodCount')?.textContent.trim(),
+                shownCrystal:document.querySelector('#shopCrystalCount')?.textContent.trim()
+              }));
+              if (purchased.gold !== 215 || purchased.pills !== 6 || purchased.wood !== 5 || purchased.crystal !== 1 ||
+                  purchased.shownGold !== '215' || purchased.shownPills !== '6' || purchased.shownWood !== '5' || purchased.shownCrystal !== '1') {
+                throw new Error('仙市購買扣款或庫存入帳不正確：' + JSON.stringify(purchased));
+              }
+              await page.evaluate(() => { s.gold = 0; save(); render(); });
+              if (!(await page.locator('#buyCrystal5').isDisabled()) || !(await page.locator('#buyPill').isDisabled())) {
+                throw new Error('靈石不足時，仙市購買按鈕應自動禁用。');
+              }
+              const beforeInsufficient = await page.evaluate(() => ({gold:Number(s.gold),pills:Number(s.pills),wood:Number(s.wood),crystal:Number(s.crystal)}));
+              await page.evaluate(() => { buyPill(); window.buyShopBundle('crystal',5,30,'靈晶'); });
+              const afterInsufficient = await page.evaluate(() => ({gold:Number(s.gold),pills:Number(s.pills),wood:Number(s.wood),crystal:Number(s.crystal)}));
+              if (JSON.stringify(afterInsufficient) !== JSON.stringify(beforeInsufficient)) {
+                throw new Error('靈石不足時的交易不應改動任何資源：' + JSON.stringify({before:beforeInsufficient,after:afterInsufficient}));
+              }
+              console.log('Shop purchase regression passed: single and bundle purchases, exact costs, live inventory totals, disabled unaffordable buttons and no-funds transaction safety.');
+            } finally {
+              await page.evaluate(() => {
+                const snapshot = window.__shopSaveSnapshot;
+                if (snapshot) {
+                  Object.keys(s).forEach(key => delete s[key]);
+                  Object.assign(s,snapshot);
+                  delete window.__shopSaveSnapshot;
+                  save();
+                  render();
+                }
+              });
+            }
+
+            // Economy audit: validate the existing income/cost relationships without changing player resources or balance values.
+            const economyAudit = await page.evaluate(() => {
+              return {
+                initialGold: GAME_CONFIG.initial.gold,
+                initialHerbs: GAME_CONFIG.initial.herbs,
+                breakthrough: GAME_CONFIG.breakthrough,
+                firstFiveEnemyGold: foes.map(foe => foe.gold),
+                firstFiveGoldTotal: foes.reduce((sum, foe) => sum + foe.gold, 0),
+                firstUpgradeCosts: {attack:35+15,defense:30+13,maxHp:40+18},
+                methodUnlockCosts: GAME_CONFIG.methods.map(method => method.cost),
+                tierCosts: {xp2:methodTierCost(0,2).gold,xp5:methodTierCost(0,5).gold,xp10:methodTierCost(0,10).gold,defense10:methodTierCost(2,10).gold},
+                shopUnitPrices:{pill:30,wood:15,crystal:30},
+                shopBundles:{pill5:150,wood5:75,crystal5:150},
+                craftRecipes:{staff:{wood:3,crystal:2},robe:{wood:2,crystal:3},charm:{wood:1,crystal:4}}
+              };
+            });
+            if (economyAudit.initialGold !== 100 || economyAudit.initialHerbs !== 3 ||
+                economyAudit.breakthrough.goldCost !== 50 || economyAudit.breakthrough.herbCost !== 1 ||
+                JSON.stringify(economyAudit.firstFiveEnemyGold) !== JSON.stringify([12,18,25,36,52]) ||
+                economyAudit.firstFiveGoldTotal !== 143 ||
+                JSON.stringify(economyAudit.firstUpgradeCosts) !== JSON.stringify({attack:50,defense:43,maxHp:58}) ||
+                JSON.stringify(economyAudit.methodUnlockCosts) !== JSON.stringify([0,80,120]) ||
+                economyAudit.tierCosts.xp2 !== 45 || economyAudit.tierCosts.xp5 !== 105 ||
+                economyAudit.tierCosts.xp10 !== 205 || economyAudit.tierCosts.defense10 !== 225 ||
+                JSON.stringify(economyAudit.shopUnitPrices) !== JSON.stringify({pill:30,wood:15,crystal:30}) ||
+                JSON.stringify(economyAudit.shopBundles) !== JSON.stringify({pill5:150,wood5:75,crystal5:150})) {
+              throw new Error('經濟關鍵數值與預期不一致：' + JSON.stringify(economyAudit));
+            }
+            console.log('Economy balance audit passed: starting funds, first five enemy rewards, breakthrough and upgrade sinks, method progression costs, shop prices, bundles and crafting recipes are consistent.');
+
+            // Regression checks for v0.97 equipment inventory. Fixtures exist only in this isolated browser profile.
+            await page.locator('#gameApp .bottom .nav[data-screen="bag"]').click();
+            const bag = page.locator('#bag');
+            const mainTabs = bag.locator('[data-bag-main-tab]');
+            const equipTabs = bag.locator('[data-bag-category]');
+            if (await mainTabs.count() !== 5) throw new Error('儲物袋應有裝備類、古寶類、靈寵類、法寶類、材料類五個主分類。');
+            const mainTabColumns = await mainTabs.first().evaluate(el => getComputedStyle(el.parentElement).gridTemplateColumns.trim().split(' ').filter(Boolean).length);
+            if (mainTabColumns !== 5) throw new Error('儲物袋五大分類按鈕應在同一列呈現五欄，實際欄數：' + mainTabColumns);
+            if (await equipTabs.count() !== 4) throw new Error('裝備分類應有全部、武器、防具、飾品四個子分類。');
+
+            // v4.3 regression: material stack counts, inventory view and non-destructive save migration.
+            await bag.locator('[data-bag-main-tab="materials"]').click();
+            const materialCards = bag.locator('.bag-material-card');
+            if (await materialCards.count() !== 10) throw new Error('材料袋應顯示 10 種材料，其中含 8 種基礎材料與金雷竹、庚精。');
+            const materialNames = await materialCards.locator('.bag-material-info b').allTextContents();
+            const expectedMaterials = ['靈木','精鐵','靈布','妖獸皮','妖獸骨','低階靈晶','凝氣草','符紙','金雷竹','庚精'];
+            if (JSON.stringify(materialNames) !== JSON.stringify(expectedMaterials)) throw new Error('材料袋名稱或順序不正確：' + JSON.stringify(materialNames));
+            const materialCounts = await page.evaluate(() => ({
+              legacy:{wood:Number(s.wood),crystal:Number(s.crystal),herbs:Number(s.herbs)},
+              newMaterials:Object.keys(s.craftingMaterials || {}).sort(),
+              allNonNegative:QI_CRAFTING_MATERIALS.every(item => {
+                const n=item.key==='wood'?s.wood:item.key==='crystal'?s.crystal:item.key==='qiHerb'?s.herbs:s.craftingMaterials[item.key];
+                return Number.isFinite(Number(n)) && Number(n)>=0;
+              })
+            }));
+            if (!materialCounts.allNonNegative || JSON.stringify(materialCounts.newMaterials) !== JSON.stringify(['beastBone','beastHide','cloth','gengEssence','goldThunderBamboo','iron','talismanPaper'])) throw new Error('材料數量或存檔欄位不正確：' + JSON.stringify(materialCounts));
+            await bag.locator('[data-bag-main-tab="equipment"]').click();
+            console.log('Qi Refining materials regression passed: ten material cards including eight base types and two rare materials, legacy resources reused without reset.');
+
+            // v6.25 regression: blood-jade spider's material-drop bonus must affect the five stackable crafting materials, not only legacy wood/crystal.
+            const craftingDropPerkAudit = await page.evaluate(() => {
+              const snapshot = JSON.parse(JSON.stringify(s));
+              const previousEnemy = enemy;
+              const originalRandom = Math.random;
+              try {
+                s.ownedPets = [{id:'blood-jade-spider',level:5}];
+                s.ownedTreasures = [];
+                s.magicTreasures = [];
+                s.activeMagicTreasure = null;
+                s.activeMagicTreasure2 = null;
+                s.craftingMaterials = {iron:0,cloth:0,beastHide:0,beastBone:0,talismanPaper:0};
+                s.wood = 0; s.crystal = 0; s.herbs = 0; s.pills = 0;
+                enemy = {name:'材料掉落加成測試妖獸',type:'普通',gold:0,xp:0,def:0};
+                Math.random = () => 0.2;
+                win();
+                return {
+                  bonusDrop:gearPerks().bonusDrop,
+                  iron:s.craftingMaterials.iron,
+                  hide:s.craftingMaterials.beastHide,
+                  legacyWood:s.wood,
+                  legacyCrystal:s.crystal
+                };
+              } finally {
+                Math.random = originalRandom;
+                Object.keys(s).forEach(key => delete s[key]);
+                Object.assign(s, snapshot);
+                enemy = previousEnemy;
+                save();
+                render();
+              }
+            });
+            if (craftingDropPerkAudit.bonusDrop < 0.099 ||
+                craftingDropPerkAudit.iron !== 1 ||
+                craftingDropPerkAudit.hide !== 1) {
+              throw new Error('靈寵材料掉落加成未作用於堆疊煉器材料：' + JSON.stringify(craftingDropPerkAudit));
+            }
+            console.log('Crafting material drop-perk regression passed: pet material-drop bonuses affect iron, cloth, beast hide, beast bone and talisman paper chances.');
+
+            // v4.3 regression: all twelve Qi Refining recipes render, insufficient materials never consume resources, and successful crafting deducts the exact recipe and adds gear.
+            const forgeRecipeAudit = await page.evaluate(() => {
+              const snapshot = JSON.parse(JSON.stringify(s));
+              try {
+                renderQiRecipeCards();
+                const rendered = document.querySelectorAll('#qiStarterRecipes .qi-recipe-card').length;
+                const starterTemplates = QI_GEAR_RECIPES.map(recipe => gears.find(item => item.qiStarter && item.name === recipe.name));
+                const templateIds = starterTemplates.map(item => item && item.templateId);
+                const firstBatchNames = ['青竹劍','粗布護衣','獸皮護腕','獸骨短刀','凝氣玉佩','藤編護腿','磨石短劍','獸牙項鍊','靈木法杖','聚氣符囊'];
+                const firstBatchCount = gears.filter(item => item.qiStarter && item.starterBatch === 1).length;
+                const firstBatchComplete = firstBatchNames.every(name => {
+                  const item = starterTemplates.find(candidate => candidate && candidate.name === name);
+                  return !!item && item.starterBatch === 1 && QI_GEAR_RECIPES.some(recipe => recipe.name === name);
+                });
+                const expectedFirstBatchMaterials = {
+                  '青竹劍':'wood',
+                  '粗布護衣':'cloth',
+                  '獸皮護腕':'beastHide',
+                  '獸骨短刀':'beastBone',
+                  '凝氣玉佩':'crystal',
+                  '藤編護腿':'wood',
+                  '磨石短劍':'iron',
+                  '獸牙項鍊':'beastBone',
+                  '靈木法杖':'wood',
+                  '聚氣符囊':'talismanPaper'
+                };
+                const firstBatchMaterialMap = firstBatchNames.every(name => {
+                  const item = starterTemplates.find(candidate => candidate && candidate.name === name);
+                  return !!item && item.enhanceMaterialKey === expectedFirstBatchMaterials[name];
+                });
+                const metadataComplete = starterTemplates.length === 20 && starterTemplates.every(item =>
+                  item && item.templateId && Number(item.gearLevel) >= 1 && item.realmRequirement === '煉氣期' &&
+                  item.enhanceMaterialKey && item.dataSource === '遊戲原創' && item.acquisition && item.dropSource
+                );
+                const templateIdsUnique = new Set(templateIds).size === 20 && templateIds.every(Boolean);
+                s.craftingMaterials = {iron:0,cloth:0,beastHide:0,beastBone:0,talismanPaper:0};
+                s.wood = 0; s.crystal = 0; s.herbs = 0;
+                // Normalize the material map before taking the no-cost baseline.
+                // craftQiGear also normalizes legacy saves; that compatibility step must not be mistaken for a resource deduction.
+                ensureCraftingMaterials();
+                const beforeInsufficient = JSON.stringify({inventory:s.inventory,materials:s.craftingMaterials,wood:s.wood,crystal:s.crystal,herbs:s.herbs});
+                const denied = craftQiGear('護身軟甲');
+                const afterInsufficient = JSON.stringify({inventory:s.inventory,materials:s.craftingMaterials,wood:s.wood,crystal:s.crystal,herbs:s.herbs});
+                s.craftingMaterials.iron = 2;
+                s.craftingMaterials.beastBone = 1;
+                const beforeCount = s.inventory.filter(item => item.name === '精鐵劍').length;
+                const beforeIron = s.craftingMaterials.iron;
+                const beforeBone = s.craftingMaterials.beastBone;
+                const crafted = craftQiGear('精鐵劍');
+                const afterCount = s.inventory.filter(item => item.name === '精鐵劍').length;
+                return {
+                  rendered,
+                  metadataComplete,
+                  templateIdsUnique,
+                  firstBatchCount,
+                  firstBatchComplete,
+                  firstBatchMaterialMap,
+                  insufficientDenied: denied === false,
+                  insufficientNoCost: beforeInsufficient === afterInsufficient,
+                  crafted,
+                  addedExactlyOne: afterCount === beforeCount + 1,
+                  ironConsumedExactly: beforeIron - s.craftingMaterials.iron === 2,
+                  boneConsumedExactly: beforeBone - s.craftingMaterials.beastBone === 1
+                };
+              } finally {
+                s = Object.assign(base(), snapshot);
+                render();
+              }
+            });
+            if (forgeRecipeAudit.rendered !== 20 || !forgeRecipeAudit.metadataComplete || !forgeRecipeAudit.templateIdsUnique ||
+                forgeRecipeAudit.firstBatchCount !== 10 || !forgeRecipeAudit.firstBatchComplete ||
+                !forgeRecipeAudit.firstBatchMaterialMap ||
+                !forgeRecipeAudit.insufficientDenied || !forgeRecipeAudit.insufficientNoCost ||
+                !forgeRecipeAudit.crafted || !forgeRecipeAudit.addedExactlyOne || !forgeRecipeAudit.ironConsumedExactly || !forgeRecipeAudit.boneConsumedExactly) {
+              throw new Error('煉器配方製作回歸測試失敗：' + JSON.stringify(forgeRecipeAudit));
+            }
+            console.log('Qi Refining forge regression passed: twenty recipes, insufficient-material protection, exact resource costs and crafted gear entering inventory.');
+
+            // v4.3 regression: enhancement requires both spirit stones and the matching material, and consumes them only on success.
+            const enhancementMaterialAudit = await page.evaluate(() => {
+              const snapshot = JSON.parse(JSON.stringify(s));
+              try {
+                const template = gears.find(item => item.qiStarter && item.name === '精鐵劍');
+                s.inventory = [{...template,id:987654321,enhanceLevel:0,atk:3,def:0,hp:0}];
+                s.gold = 1000;
+                s.craftingMaterials = {iron:0,cloth:0,beastHide:0,beastBone:0,talismanPaper:0};
+                s.wood = 0; s.crystal = 0; s.herbs = 0;
+                const item = s.inventory[0];
+                const goldBeforeDenied = s.gold;
+                const denied = enhanceGear(item.id);
+                const deniedSafe = item.enhanceLevel === 0 && s.gold === goldBeforeDenied && s.craftingMaterials.iron === 0;
+                s.craftingMaterials.iron = 1;
+                const goldBefore = s.gold, atkBefore = item.atk, cost = gearEnhanceCost(item);
+                const material = gearEnhanceMaterial(item);
+                enhanceGear(item.id);
+                return {
+                  deniedWithoutMaterial: deniedSafe,
+                  materialMapped: material.key === 'iron' && material.amount === 1,
+                  levelRaised: item.enhanceLevel === 1,
+                  goldConsumedExactly: goldBefore - s.gold === cost,
+                  materialConsumedExactly: s.craftingMaterials.iron === 0,
+                  statsRaised: item.atk === atkBefore + 2
+                };
+              } finally {
+                s = Object.assign(base(), snapshot);
+                render();
+              }
+            });
+            if (!enhancementMaterialAudit.deniedWithoutMaterial || !enhancementMaterialAudit.materialMapped ||
+                !enhancementMaterialAudit.levelRaised || !enhancementMaterialAudit.goldConsumedExactly ||
+                !enhancementMaterialAudit.materialConsumedExactly || !enhancementMaterialAudit.statsRaised) {
+              throw new Error('裝備強化材料回歸測試失敗：' + JSON.stringify(enhancementMaterialAudit));
+            }
+            console.log('Equipment enhancement material regression passed: missing-material protection, exact spirit-stone and iron costs, and expected stat growth.');
+
+            // v4.3 regression: the real single-item dismantle confirmation returns material and keeps the spirit-stone reward.
+            const dismantleMaterialAudit = await page.evaluate(async () => {
+              const snapshot = JSON.parse(JSON.stringify(s));
+              try {
+                const template = gears.find(item => item.qiStarter && item.name === '精鐵劍');
+                s.inventory = [{...template,id:987654322,enhanceLevel:0,atk:3,def:0,hp:0,locked:false}];
+                s.equipped = {weapon:null,armor:null,charm:null};
+                s.gearProtection = {qualityEnabled:false,starEnabled:false,enhanceEnabled:false};
+                s.gold = 0;
+                s.craftingMaterials = {iron:0,cloth:0,beastHide:0,beastBone:0,talismanPaper:0};
+                s.wood = 0; s.crystal = 0; s.herbs = 0;
+                const beforeGold = s.gold;
+                window.bagReviewDismantle(987654322);
+                await new Promise(resolve => setTimeout(resolve, 20));
+                const confirm = document.getElementById('bagConfirmSingleDismantle');
+                if (!confirm) throw new Error('找不到單件分解確認按鈕');
+                confirm.click();
+                await new Promise(resolve => setTimeout(resolve, 20));
+                return {
+                  removedItem: !s.inventory.some(item => item.id === 987654322),
+                  returnedMatchingMaterial: s.craftingMaterials.iron === 1,
+                  grantedSpiritStones: s.gold > beforeGold
+                };
+              } finally {
+                s = Object.assign(base(), snapshot);
+                render();
+              }
+            });
+            if (!dismantleMaterialAudit.removedItem || !dismantleMaterialAudit.returnedMatchingMaterial || !dismantleMaterialAudit.grantedSpiritStones) {
+              throw new Error('裝備分解材料回收回歸測試失敗：' + JSON.stringify(dismantleMaterialAudit));
+            }
+            console.log('Equipment dismantle material regression passed: single-item confirmation removes gear, returns matching material, and preserves spirit-stone reward.');
+
+
+
+            // v4.3 regression: equipment health bonuses also determine recovery HP after defeat in normal combat and ambush.
+            const gearDeathRecoveryAudit = await page.evaluate(() => {
+              const snapshot = JSON.parse(JSON.stringify(s));
+              const previousEnemy = enemy;
+              const originalRandom = Math.random;
+              const runRecoveryCase = mode => {
+                Object.keys(s).forEach(key => delete s[key]);
+                Object.assign(s, JSON.parse(JSON.stringify(snapshot)));
+                const armor = gears.find(item => item.name === '玄龜護心鏡');
+                if (!armor || Number(armor.hp) <= 0) throw new Error('測試用加氣血防具不存在。');
+                s.inventory = [{...armor,id:987654323,enhanceLevel:0}];
+                s.equipped = {weapon:null,armor:987654323,ring:null,charm:null,boots:null};
+                s.ownedPets = [];
+                s.ownedTreasures = [];
+                s.magicTreasures = [];
+                s.activeMagicTreasure = null;
+                s.activeMagicTreasure2 = null;
+                s.maxHp = 100;
+                s.hp = 1;
+                s.atk = 20;
+                s.def = 0;
+                s.gold = 1000;
+                s.method = 0;
+                s.skill = true;
+                s.skillWait = 0;
+                s.logs = [];
+                enemy = {name:'裝備氣血復原測試木樁',type:'普通',hp:100000,maxHp:100000,atk:1000,def:0,gold:0,xp:0};
+                const effectiveMaxHp = val('maxHp');
+                const expectedRecoveryHp = Math.floor(effectiveMaxHp * 0.55);
+                Math.random = () => 0.9;
+                if (mode === 'attack') attack(false);
+                else sneakAttack();
+                return {
+                  effectiveMaxHp,
+                  expectedRecoveryHp,
+                  actualRecoveryHp:Number(s.hp),
+                  recoveryMatchesEquipmentBonus:Number(s.hp) === expectedRecoveryHp
+                };
+              };
+              try {
+                return {normalAttack:runRecoveryCase('attack'),ambush:runRecoveryCase('sneak')};
+              } finally {
+                Math.random = originalRandom;
+                s = Object.assign(base(), snapshot);
+                enemy = previousEnemy;
+                save();
+                render();
+              }
+            });
+            if (gearDeathRecoveryAudit.normalAttack.effectiveMaxHp <= 100 ||
+                !gearDeathRecoveryAudit.normalAttack.recoveryMatchesEquipmentBonus ||
+                gearDeathRecoveryAudit.ambush.effectiveMaxHp <= 100 ||
+                !gearDeathRecoveryAudit.ambush.recoveryMatchesEquipmentBonus) {
+              throw new Error('裝備加氣血後的倒地復原未依有效氣血上限計算：' + JSON.stringify(gearDeathRecoveryAudit));
+            }
+            console.log('Equipment health recovery regression passed: normal combat and ambush both restore 55% of effective max HP including equipped gear bonuses.');
+
+            // v4.3 regression: validate the 20 Qi Refining starter items and prevent duplicate drops.
+            const starterGearAudit = await page.evaluate(() => {
+              const expected = [
+                ['精鐵劍','weapon'],['青竹劍','weapon'],['烏木法杖','weapon'],
+                ['粗布道袍','armor'],['青紋法衣','armor'],['護身軟甲','armor'],
+                ['凝氣玉佩','charm'],['聚靈手環','ring'],['鐵木護腕','ring'],
+                ['低階攻擊符','charm'],['護身靈符','charm'],['聚氣靈珠','charm'],
+                ['粗布護衣','armor'],['獸皮護腕','ring'],['獸骨短刀','weapon'],
+                ['藤編護腿','boots'],['磨石短劍','weapon'],['獸牙項鍊','charm'],
+                ['靈木法杖','weapon'],['聚氣符囊','charm']
+              ];
+              const items = gears.filter(item => item.qiStarter);
+              const byName = new Map(items.map(item => [item.name,item]));
+              const missing = expected.filter(([name]) => !byName.has(name)).map(([name]) => name);
+              const wrongSlots = expected.filter(([name,slot]) => byName.has(name) && byName.get(name).slot !== slot).map(([name,slot]) => ({name,expected:slot,actual:byName.get(name).slot}));
+              const invalid = items.filter(item => !['凡品','靈品','珍品'].includes(item.rarity) ||
+                ![item.atk,item.def,item.hp,item.value].every(value => Number.isFinite(Number(value)) && Number(value) >= 0) ||
+                !String(item.desc || '').includes('【遊戲自創】')).map(item => item.name);
+              const dropPool = items.filter(item => !s.inventory.some(owned => owned.name === item.name));
+              const ownedStarterNames = s.inventory.filter(item => item.qiStarter).map(item => item.name);
+              const firstBatchExpected = ['青竹劍','粗布護衣','獸皮護腕','獸骨短刀','凝氣玉佩','藤編護腿','磨石短劍','獸牙項鍊','靈木法杖','聚氣符囊'];
+              const firstBatch = items.filter(item => item.starterBatch === 1);
+              const firstBatchNames = firstBatch.map(item => item.name);
+              const firstBatchMissing = firstBatchExpected.filter(name => !firstBatchNames.includes(name));
+              const firstBatchInvalid = firstBatch.filter(item =>
+                !item.templateId ||
+                !Number.isFinite(Number(item.gearLevel)) ||
+                item.realmRequirement !== '煉氣期' ||
+                !['iron','wood','cloth','beastHide','beastBone','talismanPaper','crystal'].includes(item.enhanceMaterialKey) ||
+                !String(item.acquisition || '').trim() ||
+                !String(item.dropSource || '').trim()
+              ).map(item => item.name);
+              const templateIds = firstBatch.map(item => item.templateId);
+              return {
+                count:items.length, uniqueNames:byName.size, missing, wrongSlots, invalid,
+                dropPoolNames:dropPool.map(item => item.name),
+                ownedStarterNames,
+                firstBatchCount:firstBatch.length,
+                firstBatchMissing,
+                firstBatchInvalid,
+                uniqueTemplateIds:new Set(templateIds).size === templateIds.length,
+                poolExcludesOwned:dropPool.every(item => !s.inventory.some(owned => owned.name === item.name))
+              };
+            });
+            if (starterGearAudit.count !== 20 || starterGearAudit.uniqueNames !== 20 ||
+                starterGearAudit.missing.length || starterGearAudit.wrongSlots.length || starterGearAudit.invalid.length ||
+                starterGearAudit.firstBatchCount !== 10 || starterGearAudit.firstBatchMissing.length ||
+                starterGearAudit.firstBatchInvalid.length || !starterGearAudit.uniqueTemplateIds ||
+                !starterGearAudit.poolExcludesOwned) {
+              throw new Error('煉氣期 20 件裝備或第一批 10 件完整資料檢查失敗：' + JSON.stringify(starterGearAudit));
+            }
+            console.log('Qi Refining starter gear regression passed: all 20 items, first-batch 10 stable IDs/realm/material/acquisition/drop metadata, valid slots and stats, original-content labels, and duplicate-drop prevention.');
+            const inventoryMetadataAudit = await page.evaluate(() => {
+              const legacyNames = ['桃木劍','青竹法杖','玄鐵劍','雲紋道袍','玄龜護心鏡','聚靈玉佩','九曜仙環','赤紋戒','星河戒','踏雲靴','追風靈靴'];
+              const missing = legacyNames.filter(name => {
+                const item = gears.find(entry => entry.name === name);
+                return !item || !item.icon || !item.catalogType || !item.sourceTag || !item.dataSource || !item.acquisition || !item.dropSource;
+              });
+              const originalInventory = s.inventory;
+              const legacy = gears.find(entry => entry.name === '桃木劍');
+              s.inventory = [{...legacy,id:987654329,enhanceLevel:0,locked:false}];
+              render();
+              window.bagSelectItem(987654329);
+              const detail = document.getElementById('modalBody')?.innerText || '';
+              document.querySelector('#uiModal .modal-close')?.click();
+              s.inventory = originalInventory;
+              save();
+              render();
+              const materialUses = craftMaterialUsageText('iron');
+              return {missing,detailHasSource:detail.includes('資料與取得') && detail.includes('取得方式') && detail.includes('掉落來源'),materialUsesHasRecipe:materialUses.includes('精鐵劍')};
+            });
+            if (inventoryMetadataAudit.missing.length || !inventoryMetadataAudit.detailHasSource || !inventoryMetadataAudit.materialUsesHasRecipe) {
+              throw new Error('儲物袋物品來源、取得／掉落資料或材料用途說明不完整：' + JSON.stringify(inventoryMetadataAudit));
+            }
+            console.log('Inventory catalog regression passed: legacy equipment source/acquisition/drop metadata, visible detail panel, and recipe-linked material usage.');
+
+
+            // v4.3 canon archive regression: four source-grounded entries live in the existing catalog.
+            await bag.locator('.bag-catalog-button').click();
+            const catalogModal = page.locator('#uiModal');
+            await catalogModal.waitFor({ state: 'visible', timeout: 3000 });
+            const catalogInitialText = await page.locator('#modalBody').innerText();
+            if (!catalogInitialText.includes('原著典藏') || !catalogInitialText.includes('第一篇：裝備與寶物') || !catalogInitialText.includes('金蚨子母刃')) {
+              throw new Error('既有分類圖鑑沒有顯示第一篇原著典藏與首項條目。');
+            }
+            const loreSummary = page.locator('#modalBody details summary');
+            if (await loreSummary.count() !== 7) throw new Error('v6.25 原著典藏應有七個可展開條目。');
+            const loreChecks = [
+              { index: 0, name: '金蚨子母刃', required: ['母刃一把、子刃八把', '持有者／取得', '小說與動畫差異', '遊戲處理'] },
+              { index: 1, name: '玄鐵飛天盾', required: ['防禦型法器', '自動飛行防禦', '第 163 章', '遊戲處理'] },
+              { index: 2, name: '天雷子', required: ['一次性攻擊用寶物', '天地雷電', '第 163 章', '遊戲處理'] },
+              { index: 3, name: '金光磚符寶', required: ['符寶', '第 164 章', '遊戲處理'] },
+              { index: 4, name: '掌天瓶', required: ['核心機緣／特殊寶物', '綠色液體', '韓立', '不直接加入玩家背包'] },
+              { index: 5, name: '虛天鼎', required: ['原作具名上古寶物', '虛天殿', '乾藍冰焰', '未自動映射到遊戲內古寶被動', '不代表原作設定'] }
+              ,{ index: 6, name: '青竹蜂雲劍', required: ['標誌性飛劍寶物', '金雷竹', '韓立', '待逐項核對', '不增加玩家裝備'] }
+            ];
+            for (const check of loreChecks) {
+              const summary = loreSummary.nth(check.index);
+              if (!(await summary.innerText()).includes(check.name)) throw new Error('原著典藏條目名稱錯誤：' + check.name);
+              await summary.click();
+              const detailText = await page.locator('#modalBody').innerText();
+              for (const requiredText of check.required) {
+                if (!detailText.includes(requiredText)) throw new Error(check.name + ' 詳情缺少欄位或內容：' + requiredText);
+              }
+              await summary.click();
+            }
+            await page.locator('#uiModal .modal-close').click();
+            await catalogModal.waitFor({ state: 'hidden', timeout: 3000 });
+
+            await page.evaluate(() => {
+              const fixtures = [
+                {id:9901001,name:'測試已穿戴法器',slot:'weapon',rarity:'凡品',stars:1,enhanceLevel:0,atk:2,def:1,hp:1,value:15,icon:'劍',catalogType:'法器',catalogClass:'裝備類'},
+                {id:9901002,name:'測試靈品法器',slot:'weapon',rarity:'靈品',stars:2,enhanceLevel:0,atk:8,def:2,hp:4,value:50,icon:'劍',catalogType:'法器',catalogClass:'裝備類'},
+                {id:9901003,name:'測試批次分解防具',slot:'armor',rarity:'凡品',stars:1,enhanceLevel:0,atk:0,def:3,hp:8,value:15,icon:'甲',catalogType:'法器',catalogClass:'裝備類'},
+                {id:9901004,name:'測試法寶',slot:'ring',rarity:'珍品',stars:2,enhanceLevel:0,atk:4,def:1,hp:3,value:80,icon:'環',catalogType:'法寶',catalogClass:'裝備類'}
+              ];
+              s.inventory = s.inventory.filter(item => !fixtures.some(testItem => testItem.id === item.id));
+              s.inventory.push(...fixtures);
+              s.equipped.weapon = 9901001;
+              s.gearProtection = {qualityEnabled:true,minQuality:3,starEnabled:true,minStars:4};
+              render();
+            });
+            const scrollModel = await bag.evaluate(el => ({ screenOverflowY: getComputedStyle(el).overflowY, itemOverflowY: getComputedStyle(el.querySelector('#inventory')).overflowY }));
+            if (scrollModel.screenOverflowY !== 'hidden' || scrollModel.itemOverflowY !== 'auto') throw new Error('儲物袋應固定外框，只有物品格清單可捲動：' + JSON.stringify(scrollModel));
+            const bagGeometry = await bag.evaluate(el => { const rect=n=>{if(!n)return {id:'',cls:'',x:0,y:0,w:0,h:0,display:'missing',overflowY:'hidden',flex:'none',gridRows:'',gridCols:''};const r=n.getBoundingClientRect();const c=getComputedStyle(n);return {id:n.id||'',cls:typeof n.className==='string'?n.className:'',x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height),display:c.display,overflowY:c.overflowY,flex:c.flex,gridRows:c.gridTemplateRows,gridCols:c.gridTemplateColumns};};return {screen:rect(el),equipment:rect(el.querySelector('#bagEquipmentView')),gear:rect(el.querySelector('.bag-gear-layout')),slots:rect(el.querySelector('.bag-slots-panel')),listPanel:rect(el.querySelector('.bag-list-panel')),inventory:rect(el.querySelector('#inventory')),tile:rect(el.querySelector('.bag-item-tile[aria-label="比較：測試靈品法器"]')),footer:rect(el.querySelector('.bag-footer-actions')),pill:rect(el.querySelector('.bag-pill-bar'))};});
+            if (bagGeometry.equipment.h < 250 || bagGeometry.listPanel.h < 100 || bagGeometry.inventory.h < 80) {
+              throw new Error('儲物袋版面尺寸不正確：' + JSON.stringify(bagGeometry));
+            }
+            if (bagGeometry.listPanel.h < bagGeometry.slots.h * 1.5) {
+              throw new Error('全部裝備清單未充分延伸：' + JSON.stringify(bagGeometry));
+            }
+            if (bagGeometry.listPanel.y + bagGeometry.listPanel.h > bagGeometry.footer.y + 2) {
+              throw new Error('全部裝備區塊侵入底部操作列：' + JSON.stringify(bagGeometry));
+            }
+            if (bagGeometry.footer.y + bagGeometry.footer.h > bagGeometry.screen.y + bagGeometry.screen.h + 2) {
+              throw new Error('底部操作列超出儲物袋外框：' + JSON.stringify(bagGeometry));
+            }
+            const gridColumns = await bag.locator('#inventory').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
+            if (gridColumns !== 4) throw new Error('裝備清單不是四欄物品格。');
+            await bag.getByRole('button', {name:/比較：測試靈品法器/}).click({timeout:5000});
+            const equipmentModal = page.locator('#uiModal');
+            await equipmentModal.waitFor({state:'visible',timeout:3000});
+            const comparisonText = await page.locator('#modalBody').innerText();
+            if (!comparisonText.includes('測試已穿戴法器') || !comparisonText.includes('測試靈品法器') || !comparisonText.includes('差值')) {
+              throw new Error('裝備比較未顯示目前裝備、候選裝備及屬性差值。');
+            }
+            const comparisonActions = page.locator('#modalBody .bag-compare-actions button');
+            if (await comparisonActions.count() !== 5) {
+              throw new Error('裝備比較彈窗應保留確認穿戴、強化、鎖定、分解與返回背包五項操作。實際按鈕數：' + await comparisonActions.count());
+            }
+            for (const actionId of ['bagEquipConfirm', 'bagEnhanceConfirm', 'bagLockConfirm', 'bagDismantleConfirm', 'bagEquipBack']) {
+              if (await page.locator('#modalBody #' + actionId).count() !== 1) {
+                throw new Error('裝備比較彈窗缺少必要操作：' + actionId);
+              }
+            }
+            await page.locator('#bagEquipConfirm').click();
+            await equipmentModal.waitFor({state:'hidden',timeout:3000});
+            if (!(await page.evaluate(() => s.equipped.weapon === 9901002))) throw new Error('比較彈窗確認穿戴沒有更新目前武器。');
+            if (await page.locator('#bagSlotsToggle').count() !== 0) throw new Error('目前穿戴區不應再顯示收起控制。');
+            if (await page.locator('#slots').evaluate(el => el.hidden)) throw new Error('目前穿戴欄應維持顯示。');
+            await page.locator('#bagTypeFilter').selectOption('法寶');
+            const filteredByType = await page.locator('#inventory').innerText();
+            if (!filteredByType.includes('測試法寶') || filteredByType.includes('測試批次分解防具')) throw new Error('器物種類篩選未正確篩出法寶。');
+            await page.locator('#bagTypeFilter').selectOption('all');
+            await bag.locator('[data-bag-main-tab="treasures"]').click();
+            if (await page.locator('#bagInactiveCategory .bag-treasure-card').count() !== 8) throw new Error('古寶頁應顯示八件可收藏古寶。');
+            await bag.locator('[data-bag-main-tab="pets"]').click();
+            const petIntroText = await page.locator('#bagInactiveCategory').innerText();
+            if (!petIntroText.includes('靈寵收藏') || !petIntroText.includes('召靈一次') || await page.locator('#bagInactiveCategory .bag-pet-card').count() !== 11) throw new Error('靈寵收藏頁、召靈操作或十一種靈寵圖鑑未顯示。');
+            await bag.locator('[data-bag-main-tab="equipment"]').click();
+            await page.locator('#bagBatchToggle').click();
+            const equippedCheckboxState = await page.evaluate(() => {
+              const checkbox = Array.from(document.querySelectorAll('#inventory .bag-select-check'))
+                .find(el => el.getAttribute('aria-label') === '選取 測試靈品法器');
+              return { exists: !!checkbox, disabled: !!checkbox && checkbox.disabled };
+            });
+            if (equippedCheckboxState.exists && !equippedCheckboxState.disabled) {
+              throw new Error('已穿戴裝備仍可被批次分解選取。');
+            }
+            const armorCheckbox = page.locator('#inventory .bag-select-check[aria-label="選取 測試批次分解防具"]');
+            await armorCheckbox.waitFor({state:'visible',timeout:3000});
+            await armorCheckbox.check();
+            await page.locator('#bagBatchReview').click();
+            await equipmentModal.waitFor({state:'visible',timeout:3000});
+            if (!(await page.locator('#modalBody').innerText()).includes('測試批次分解防具')) throw new Error('批次分解確認清單未列出所選裝備。');
+            const batchRefundExpected = await page.evaluate(() => {
+              const item = s.inventory.find(item => item.id === 9901003);
+              const refund = gearDismantleMaterialRefund(item);
+              const before = refund.key === 'wood' ? Number(s.wood || 0)
+                : refund.key === 'crystal' ? Number(s.crystal || 0)
+                : refund.key === 'qiHerb' ? Number(s.herbs || 0)
+                : Number((s.craftingMaterials || {})[refund.key] || 0);
+              return { key: refund.key, amount: refund.amount, before };
+            });
+            await page.locator('#bagConfirmBatch').click();
+            await equipmentModal.waitFor({state:'hidden',timeout:3000});
+            const batchRefundActual = await page.evaluate((expected) => {
+              const after = expected.key === 'wood' ? Number(s.wood || 0)
+                : expected.key === 'crystal' ? Number(s.crystal || 0)
+                : expected.key === 'qiHerb' ? Number(s.herbs || 0)
+                : Number((s.craftingMaterials || {})[expected.key] || 0);
+              return { after, itemRemains: s.inventory.some(item => item.id === 9901003) };
+            }, batchRefundExpected);
+            if (batchRefundActual.itemRemains) throw new Error('確認批次分解後，所選測試防具仍在背包。');
+            if (batchRefundActual.after !== batchRefundExpected.before + batchRefundExpected.amount) {
+              throw new Error('批次分解材料返還數量不正確：' + JSON.stringify({expected:batchRefundExpected,actual:batchRefundActual}));
+            }
+            console.log('Equipment inventory v0.97 regression passed: four-column grid, compare/equip modal, slot collapse, type filter, equipped-gear protection, batch dismantle, and exact material refund.');
+
+            // Ancient treasure regression: fragments drop only from battle, crafting spends fragments, and owned effects activate without equipment slots.
+            await bag.locator('[data-bag-main-tab="treasures"]').click();
+            const treasureCards = bag.locator('#bagInactiveCategory .bag-treasure-card');
+            if (await treasureCards.count() !== 8) throw new Error('古寶類應顯示八件可收藏古寶。');
+            const fragmentsBefore = await page.evaluate(() => Number(s.treasureFragments['guiding-jade'] || 0));
+            await page.evaluate(() => {
+              const oldRandom = Math.random;
+              try {
+                Math.random = () => 0;
+                for (let i = 0; i < 2; i++) {
+                  enemy = { type: '首領', name: '測試古寶首領', gold: 10, xp: 2, def: 0 };
+                  win();
+                }
+                render();
+              } finally { Math.random = oldRandom; }
+            });
+            const fragmentsAfterDrop = await page.evaluate(() => Number(s.treasureFragments['guiding-jade'] || 0));
+            if (fragmentsAfterDrop < fragmentsBefore + 3) throw new Error('首領戰鬥沒有可靠地增加古寶碎片。');
+            const bonusXpBeforeTreasure = await page.evaluate(() => gearPerks().bonusXp);
+            const fragmentsBeforeCraft = fragmentsAfterDrop;
+            await bag.locator('[data-treasure-action="guiding-jade"]').click({timeout:5000});
+            const treasureStateAfterCraft = await page.evaluate(() => ({
+              owned: (s.ownedTreasures || []).find(item => item.id === 'guiding-jade'),
+              fragments: Number(s.treasureFragments['guiding-jade'] || 0),
+              bonusXp: gearPerks().bonusXp
+            }));
+            if (!treasureStateAfterCraft.owned || treasureStateAfterCraft.owned.level !== 1) throw new Error('古寶碎片合成未新增持有紀錄。');
+            if (treasureStateAfterCraft.fragments !== fragmentsBeforeCraft - 3) throw new Error('合成古寶未正確扣除所需碎片。');
+            if (treasureStateAfterCraft.bonusXp < bonusXpBeforeTreasure + 0.014) throw new Error('持有引靈古玉後，修為被動效果沒有生效。');
+            console.log('Ancient treasure regression passed: boss fragment drops, synthesis cost, owned collection state, passive XP bonus, and automatic save.');
+             // Magic treasure categories and encounter rarity use the same live enemy type.
+             await bag.locator('[data-bag-main-tab="magic"]').click();
+             const magicCards = bag.locator('#bagInactiveCategory .bag-treasure-card');
+             if (await magicCards.count() !== 6) throw new Error('法寶類應顯示六件可收藏法寶。');
+             const encounterAudit = await page.evaluate(() => {
+               const snapshot = JSON.parse(JSON.stringify(s));
+               const previousEnemy = enemy;
+               const originalRandom = Math.random;
+               const result = {};
+               const cases = [
+                 {key:'ordinary', expected:'普通', spawn:'random', roll:0.9},
+                 {key:'elite', expected:'精英', spawn:'random', roll:0.1},
+                 {key:'boss', expected:'首領', spawn:'boss', roll:0.9}
+               ];
+               try {
+                 for (const item of cases) {
+                   Object.keys(s).forEach(key => delete s[key]);
+                   Object.assign(s, JSON.parse(JSON.stringify(snapshot)));
+                   s.mapIndex = 0;
+                   s.mapBossWins = 0;
+                   s.magicTreasures = [];
+                   s.activeMagicTreasure = null;
+                   Math.random = () => item.roll;
+                   if (item.spawn === 'boss') window.xianxiaMapStrength.challengeBoss();
+                   else spawnEnemy();
+                   const type = enemy.type;
+                   const label = document.getElementById('enemyLevel').textContent.trim();
+                   const maxHp = enemy.maxHp;
+                   Math.random = () => 0.1;
+                   win();
+                   result[item.key] = {expected:item.expected, type, label, maxHp, magicDrops:(s.magicTreasures || []).length};
+                 }
+                 return result;
+               } finally {
+                 Math.random = originalRandom;
+                 Object.keys(s).forEach(key => delete s[key]);
+                 Object.assign(s, snapshot);
+                 enemy = previousEnemy;
+                 save();
+                 render();
+               }
+             });
+             if (encounterAudit.ordinary.type !== '普通' || !encounterAudit.ordinary.label.includes('普通') || encounterAudit.ordinary.magicDrops !== 0) {
+               throw new Error('普通妖獸的類型標示或基礎法寶掉落率不正確：' + JSON.stringify(encounterAudit.ordinary));
+             }
+             if (encounterAudit.elite.type !== '精英' || !encounterAudit.elite.label.includes('精英') || encounterAudit.elite.maxHp <= encounterAudit.ordinary.maxHp || encounterAudit.elite.magicDrops < 1) {
+               throw new Error('精英妖獸類型、強度或提高後的法寶掉落率不正確：' + JSON.stringify(encounterAudit.elite));
+             }
+             if (encounterAudit.boss.type !== '首領' || !encounterAudit.boss.label.includes('首領') || encounterAudit.boss.maxHp <= encounterAudit.elite.maxHp || encounterAudit.boss.magicDrops < 1) {
+               throw new Error('首領妖獸類型、強度或提高後的法寶掉落率不正確：' + JSON.stringify(encounterAudit.boss));
+             }
+             const magicCombatAudit = await page.evaluate(() => {
+               const snapshot = JSON.parse(JSON.stringify(s));
+               const previousEnemy = enemy;
+               const originalRandom = Math.random;
+               const runCombat = (id, move) => {
+                 Object.keys(s).forEach(key => delete s[key]);
+                 Object.assign(s, JSON.parse(JSON.stringify(snapshot)));
+                 s.magicTreasures = [{id, level:1}];
+                 s.activeMagicTreasure = id;
+                 s.atk = 20;
+                 s.def = 0;
+                 s.hp = 500;
+                 s.maxHp = 500;
+                 s.logs = [];
+                 enemy = {name:'法寶測試木樁', type:'普通', hp:100000, maxHp:100000, atk:50, def:0, gold:0, xp:0};
+                 Math.random = () => 0;
+                 if (move === 'attack') attack();
+                 else sneakAttack();
+                 return {log:s.logs.map(entry => entry.msg).join(' '), dealt:100000-enemy.hp};
+               };
+               try {
+                 return {
+                   normalAttack:runCombat('jade-flame','attack'),
+                   jadeSneak:runCombat('jade-flame','sneak'),
+                   bellSneak:runCombat('spirit-bell','sneak'),
+                   thunderSneak:runCombat('thunder-orb','sneak')
+                 };
+               } finally {
+                 Math.random = originalRandom;
+                 Object.keys(s).forEach(key => delete s[key]);
+                 Object.assign(s, snapshot);
+                 enemy = previousEnemy;
+                 save();
+                 render();
+               }
+             });
+             if (!magicCombatAudit.normalAttack.log.includes('青焰玉印觸發')) throw new Error('一般攻擊未觸發青焰玉印：' + JSON.stringify(magicCombatAudit.normalAttack));
+             if (!magicCombatAudit.jadeSneak.log.includes('青焰玉印觸發') || magicCombatAudit.jadeSneak.dealt <= 0) throw new Error('偷襲未觸發青焰玉印追加傷害：' + JSON.stringify(magicCombatAudit.jadeSneak));
+             if (!magicCombatAudit.thunderSneak.log.includes('引雷珠觸發') || magicCombatAudit.thunderSneak.dealt <= 0) throw new Error('偷襲未觸發引雷珠重擊：' + JSON.stringify(magicCombatAudit.thunderSneak));
+             if (!magicCombatAudit.bellSneak.log.includes('鎮靈鈴觸發') || !magicCombatAudit.bellSneak.log.includes('減少')) throw new Error('偷襲反擊未觸發鎮靈鈴減傷：' + JSON.stringify(magicCombatAudit.bellSneak));
+             console.log('Magic combat regression passed: existing normal attack proc plus jade-flame, thunder-orb and spirit-bell effects during sneak combat.');
+             const secondMagicSlotAudit = await page.evaluate(() => {
+               const snapshot = JSON.parse(JSON.stringify(s));
+               const previousEnemy = enemy;
+               const originalRandom = Math.random;
+               const result = {};
+               try {
+                 s.major = 0;
+                 s.magicTreasures = [{id:'jade-flame',level:1},{id:'thunder-orb',level:1}];
+                 s.activeMagicTreasure = 'jade-flame';
+                 s.activeMagicTreasure2 = null;
+                 render();
+                 result.locked = {
+                   text: document.getElementById('bagInactiveCategory').innerText,
+                   secondButtons: document.querySelectorAll('#bagInactiveCategory [data-magic-slot="2"]').length
+                 };
+                 s.major = 3;
+                 render();
+                 const secondButton = document.querySelector('#bagInactiveCategory [data-magic-equip="thunder-orb"][data-magic-slot="2"]');
+                 result.secondButtonVisible = !!secondButton;
+                 if (secondButton) secondButton.click();
+                 result.equipped = {
+                   first: s.activeMagicTreasure,
+                   second: s.activeMagicTreasure2,
+                   stateCount: getActiveMagicStates().length
+                 };
+                 s.atk = 100;
+                 s.def = 0;
+                 s.hp = 500;
+                 s.maxHp = 500;
+                 s.logs = [];
+                 enemy = {name:'雙法寶測試木樁',type:'普通',hp:100000,maxHp:100000,atk:10,def:0,gold:0,xp:0};
+                 Math.random = () => 0;
+                 sneakAttack();
+                 result.sneakCombat = {
+                   log: s.logs.map(entry => entry.msg).join(' '),
+                   dealt: 100000 - enemy.hp
+                 };
+                 return result;
+               } finally {
+                 Math.random = originalRandom;
+                 Object.keys(s).forEach(key => delete s[key]);
+                 Object.assign(s, snapshot);
+                 enemy = previousEnemy;
+                 save();
+                 render();
+               }
+             });
+             if (!secondMagicSlotAudit.locked.text.includes('元嬰期解鎖') || secondMagicSlotAudit.locked.secondButtons !== 0) {
+               throw new Error('未達元嬰期時第二法寶欄應維持鎖定：' + JSON.stringify(secondMagicSlotAudit.locked));
+             }
+             if (!secondMagicSlotAudit.secondButtonVisible || secondMagicSlotAudit.equipped.first !== 'jade-flame' || secondMagicSlotAudit.equipped.second !== 'thunder-orb' || secondMagicSlotAudit.equipped.stateCount !== 2) {
+               throw new Error('元嬰期解鎖第二法寶欄或雙欄裝備狀態不正確：' + JSON.stringify(secondMagicSlotAudit));
+             }
+             if (!secondMagicSlotAudit.sneakCombat.log.includes('青焰玉印觸發') || !secondMagicSlotAudit.sneakCombat.log.includes('引雷珠觸發') || secondMagicSlotAudit.sneakCombat.dealt <= 0) {
+               throw new Error('兩件已啟用法寶沒有同時在偷襲中觸發：' + JSON.stringify(secondMagicSlotAudit.sneakCombat));
+             }
+             console.log('Second magic slot regression passed: locked before Nascent Soul, unlocks at Nascent Soul, holds two distinct treasures, and both effects trigger during sneak combat.');
+
+             await bag.locator('[data-bag-main-tab="pets"]').click();
+             const petCards = bag.locator('#bagInactiveCategory .bag-pet-card');
+             if (await petCards.count() !== 11) throw new Error('靈寵收藏應顯示 11 個原作關聯圖鑑條目。');
+             const petCardGeometry = await page.evaluate(() => {
+               const container = document.querySelector('#bagInactiveCategory');
+               const cards = Array.from(container.querySelectorAll('.bag-pet-card'));
+               const rects = cards.map((card, index) => {
+                 const r = card.getBoundingClientRect();
+                 return {index, x:r.x, y:r.y, right:r.right, bottom:r.bottom, width:r.width, height:r.height};
+               });
+               const overlaps = [];
+               for (let i=0;i<rects.length;i++) for (let j=i+1;j<rects.length;j++) {
+                 const a=rects[i], b=rects[j];
+                 if (Math.min(a.right,b.right)-Math.max(a.x,b.x)>1 && Math.min(a.bottom,b.bottom)-Math.max(a.y,b.y)>1) overlaps.push([a.index,b.index]);
+               }
+               const c=container.getBoundingClientRect();
+               return {container:{top:c.top,bottom:c.bottom,height:c.height},cards:rects,overlaps,scrollHeight:container.scrollHeight,clientHeight:container.clientHeight};
+             });
+             if (petCardGeometry.cards.some(card => card.width < 100 || card.height < 80) || petCardGeometry.overlaps.length) {
+               throw new Error('手機儲物袋靈寵卡片尺寸不足或彼此重疊：' + JSON.stringify(petCardGeometry));
+             }
+             console.log('Mobile inventory geometry regression passed: all 11 pet cards have usable dimensions and no card rectangles overlap.');
+             const petBefore = await page.evaluate(() => {
+               s.ownedPets = [];
+               s.gold = 1000;
+               save();
+               render();
+               return {gold:Number(s.gold),bonusGold:gearPerks().bonusGold,owned:s.ownedPets.length};
+             });
+             await page.evaluate(() => { window.__petTestRandomBackup = Math.random; Math.random = () => 0; });
+             await bag.locator('#petDrawButton').click();
+             const petAfterFirst = await page.evaluate(() => {
+               const pet = s.ownedPets.find(item => item.id === 'gold-eater');
+               const result = {gold:Number(s.gold),owned:s.ownedPets.length,level:pet&&pet.level,bonusGold:gearPerks().bonusGold};
+               Math.random = window.__petTestRandomBackup;
+               delete window.__petTestRandomBackup;
+               return result;
+             });
+             if (petAfterFirst.gold !== petBefore.gold - 50 || petAfterFirst.owned !== 1 || petAfterFirst.level !== 1 || petAfterFirst.bonusGold <= petBefore.bonusGold) {
+               throw new Error('首次召靈沒有正確扣除 50 靈石、收藏靈寵並生效被動：' + JSON.stringify(petAfterFirst));
+             }
+             await page.evaluate(() => { window.__petTestRandomBackup = Math.random; Math.random = () => 0; window.drawSpiritPet(); Math.random = window.__petTestRandomBackup; delete window.__petTestRandomBackup; });
+             const petAfterDuplicate = await page.evaluate(() => {
+               const pet = s.ownedPets.find(item => item.id === 'gold-eater');
+               return {gold:Number(s.gold),owned:s.ownedPets.length,level:pet&&pet.level,bonusGold:gearPerks().bonusGold,cardText:document.querySelector('#bagInactiveCategory [data-pet-id="gold-eater"]')?.innerText||''};
+             });
+             if (petAfterDuplicate.gold !== petBefore.gold - 100 || petAfterDuplicate.owned !== 1 || petAfterDuplicate.level !== 2 || petAfterDuplicate.bonusGold <= petAfterFirst.bonusGold || !petAfterDuplicate.cardText.includes('等級 2')) {
+               throw new Error('重複召靈沒有升級靈寵、再次扣款並提升被動效果：' + JSON.stringify(petAfterDuplicate));
+             }
+             console.log('Spirit-pet regression passed: eleven catalog entries, 50-stone summon, duplicate level-up, passive modifier and live card updates.');
+
+             console.log('Magic treasure regression passed: five bag categories, six magic treasures, type-consistent regular/elite/boss labels, escalating encounter stats, and type-specific drops.');
+             await bag.locator('[data-bag-main-tab="equipment"]').click();
+
+
+
+           
+            // Regression checks for the fifth tab: no duplicate database action or unrelated save/reward cards.
+            await page.locator('#gameApp .bottom .nav[data-screen="journal"]').click();
+            const arcCards = page.locator('#journalHybridStages .journal-arc-card');
+            if (await arcCards.count() !== 8) throw new Error('仙途分頁應顯示八大主線階段。');
+            const journalText = await page.locator('#journalV14Dock').innerText();
+            if (journalText.includes('存檔安全') || journalText.includes('放置收益')) throw new Error('仙途分頁仍包含不屬於主線紀事的功能卡。');
+            if (await page.locator('#journalV14Dock #openNodeDatabase').count()) throw new Error('仙途分頁仍有重複的整份紀事資料庫按鈕。');
+            const firstArcButton = arcCards.nth(0).locator('.journal-arc-toggle');
+            const firstArcContent = arcCards.nth(0).locator('.journal-arc-content');
+            if ((await firstArcButton.getAttribute('aria-expanded')) === 'true') await firstArcButton.click();
+            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'false' || await firstArcContent.isVisible()) throw new Error('單一主線階段收合按鈕未生效。');
+            await firstArcButton.click();
+            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true' || !(await firstArcContent.isVisible())) throw new Error('單一主線階段展開按鈕未生效。');
+            // v0.96 renders node details expanded by default; verify the current node card and its unlock/map metadata instead of the removed legacy toggle.
+            const nodeCard = page.locator('#journalHybridStages .journal-node-card').first();
+            await nodeCard.waitFor({state:'visible', timeout:3000});
+            const nodeCardText = await nodeCard.innerText();
+            if (!nodeCardText.includes('故事地點：') || !nodeCardText.includes('解鎖條件：')) throw new Error('主線節點未顯示故事地點與解鎖條件。');
+            if (await page.locator('#toggleJournalStages').count()) throw new Error('進度總覽仍有全部展開／收起按鈕。');
+            const secondArcButton = arcCards.nth(1).locator('.journal-arc-toggle');
+            const secondArcContent = arcCards.nth(1).locator('.journal-arc-content');
+            if ((await secondArcButton.getAttribute('aria-expanded')) !== 'true') await secondArcButton.click();
+            if (!(await secondArcContent.isVisible())) throw new Error('第二階段無法展開。');
+            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true' || !(await firstArcContent.isVisible())) throw new Error('章節應獨立展開，開啟第二階段不可收起第一階段。');
+            await secondArcButton.click();
+            if ((await secondArcButton.getAttribute('aria-expanded')) !== 'false' || await secondArcContent.isVisible()) throw new Error('第二階段無法獨立收合。');
+            if ((await firstArcButton.getAttribute('aria-expanded')) !== 'true' || !(await firstArcContent.isVisible())) throw new Error('收合第二階段時，第一階段受到連動影響。');
+            await secondArcButton.click();
+            if (!(await firstArcContent.isVisible()) || !(await secondArcContent.isVisible())) throw new Error('再次展開第二階段後，兩個章節應可同時展開。');
+            console.log('Journal UI regression passed: eight stages, independent expand/collapse, no bulk toggle or unrelated cards.');
+            // Current v0.96+ story flow uses one central story-library entry and renders chapter nodes as expanded cards.
+            const storyLibraryButton = page.locator('#journalStoryLibraryButton');
+            if (!(await storyLibraryButton.isVisible())) throw new Error('中央「修仙劇情故事」入口不可見。');
+            const secondStageLockNote = arcCards.nth(1).locator('.journal-stage-lock-note');
+            if (!(await secondStageLockNote.textContent()).includes('黃楓谷')) throw new Error('第二階段未顯示境界／地圖解鎖條件。');
+
+            await storyLibraryButton.click();
+            const novelReader = page.locator('#modalBody .novel-reader');
+            await novelReader.waitFor({ state: 'visible', timeout: 3000 });
+            if (await novelReader.locator('p').count() < 8) throw new Error('主線節點全文不足八個段落。');
+            const readerText = await novelReader.innerText();
+            if (readerText.length < 650) throw new Error('主線節點全文篇幅不足。');
+            if (!readerText.includes('凡人起步・青牛鎮')) throw new Error('未開啟第一個可閱讀主線節點。');
+            if (await novelReader.locator('.novel-chapter-nav button').count() !== 2) throw new Error('主線全文上一節／下一節導覽缺失。');
+
+            const readerMode = await novelReader.evaluate(reader => {
+              const el = reader.closest('.ui-modal');
+              if (!el) throw new Error('小說閱讀器找不到所屬彈窗 .ui-modal。');
+              const r = el.getBoundingClientRect();
+              return { position: getComputedStyle(el).position, rect: { x:r.x, y:r.y, width:r.width, height:r.height } };
+            });
+            const viewport = page.viewportSize();
+            if (readerMode.position !== 'fixed' || readerMode.rect.width < viewport.width - 2 || readerMode.rect.height < viewport.height - 2) throw new Error('小說閱讀器沒有覆蓋整個手機畫面。');
+            const closeStoryFooter = page.locator('#uiModal.novel-reading-mode #modalFooter button');
+            const topStoryClose = page.locator('#uiModal.novel-reading-mode .modal-close');
+            if (!(await closeStoryFooter.isVisible()) || await topStoryClose.isVisible()) throw new Error('劇情閱讀模式應保留下方關閉按鈕並隱藏右上角重複按鈕。');
+            await closeStoryFooter.click();
+            await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
+            if (await page.locator('#journalHybridStages').isHidden()) throw new Error('關閉劇情後沒有返回仙途。');
+            await storyLibraryButton.click();
+            await novelReader.waitFor({ state: 'visible', timeout: 3000 });
+            if (await page.locator('#uiModal.novel-reading-mode .modal-close').isVisible()) throw new Error('重新開啟劇情後右上角重複關閉按鈕再次出現。');
+            await page.keyboard.press('Escape');
+            await page.locator('#uiModal').waitFor({ state: 'hidden', timeout: 3000 });
+            console.log('Story progression regression passed: central story entry, gated stage metadata, full chapter reader, immersive layout, close and reopen flow.');
+
+
+            // v6.25: one-to-many battle, per-enemy rewards and safe restoration of the isolated test save.
+            await page.locator('#gameApp .bottom .nav[data-screen="home"]').click();
+            const preGroupState = await page.evaluate(() => JSON.stringify(s));
+            const groupBefore = await page.evaluate(() => ({kills:Number(s.kills),gold:Number(s.gold)}));
+            await page.locator('#groupBattleBtn').click();
+            await page.locator('#enemyGroupList:not([hidden])').waitFor({state:'visible',timeout:3000});
+            if (await page.locator('#enemyGroupList .enemy-group-card').count() !== 3) throw new Error('群戰應同時顯示三隻妖獸。');
+            const groupHpLabel = await page.locator('#enemyHpText').innerText();
+            if (!groupHpLabel.includes('群體氣血')) throw new Error('群戰未顯示整體敵方氣血。');
+            await page.evaluate(() => { window.__groupTestRandomBackup = Math.random; Math.random = () => 0; s.atk = 1000000; render(); });
+            try {
+              for (let i=0;i<3;i++) await page.locator('#attackBtn').click();
+              const groupAfter = await page.evaluate(() => ({
+                kills:Number(s.kills),gold:Number(s.gold),
+                cards:document.querySelectorAll('#enemyGroupList .enemy-group-card').length,
+                listHidden:document.querySelector('#enemyGroupList')?.hidden,
+                buttonDisabled:document.querySelector('#groupBattleBtn')?.disabled,
+                groupActive:window.xianxiaGroupBattle?.isActive()
+              }));
+              if (groupAfter.kills !== groupBefore.kills + 3 || groupAfter.gold <= groupBefore.gold ||
+                  !groupAfter.listHidden || groupAfter.buttonDisabled || groupAfter.groupActive) {
+                throw new Error('群戰擊殺數、獎勵或結束狀態不正確：' + JSON.stringify({before:groupBefore,after:groupAfter}));
+              }
+              console.log('One-to-many combat regression passed: three simultaneous enemies, combined HP display, three reward settlements, and clean return to normal combat.');
+            } finally {
+              await page.evaluate((snapshot) => {
+                if(window.__groupTestRandomBackup){Math.random=window.__groupTestRandomBackup;delete window.__groupTestRandomBackup;}
+                s=JSON.parse(snapshot);save();render();
+              },preGroupState);
+            }
+
+            const preReloadSave = await page.evaluate(() => {
+              const saved = JSON.parse(localStorage.getItem('nine_heavens_idle_v2') || '{}');
+              const stableFields = [
+                'major', 'layer', 'gold', 'herbs', 'kills', 'inventory', 'equipped', 'craftingMaterials',
+                'ownedMethods', 'methodLevels', 'treasureFragments', 'ownedTreasures', 'ownedPets'
+              ];
+              return Object.fromEntries(stableFields.map(key => [key, saved[key] ?? null]));
+            });
+            await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
+            await page.locator('#continueCultivationBtn').waitFor({ state: 'visible', timeout: 5000 });
+            if (await page.locator('#gameApp').isVisible()) {
+              throw new Error('Reload did not return to the launch home screen.');
+            }
+            const persistedSave = await page.evaluate(() => {
+              const raw = localStorage.getItem('nine_heavens_idle_v2');
+              if (!raw) throw new Error('重新載入後找不到既有存檔 nine_heavens_idle_v2。');
+              const saved = JSON.parse(raw);
+              const stableFields = [
+                'major', 'layer', 'gold', 'herbs', 'kills', 'inventory', 'equipped', 'craftingMaterials',
+                'ownedMethods', 'methodLevels', 'treasureFragments', 'ownedTreasures', 'ownedPets'
+              ];
+              const stable = Object.fromEntries(stableFields.map(key => [key, saved[key] ?? null]));
+              return {
+                keyExists: true,
+                stable,
+                hasFragmentMap: !!saved.treasureFragments && typeof saved.treasureFragments === 'object',
+                 hasPet: Array.isArray(saved.ownedPets) && saved.ownedPets.some(item => item.id === 'gold-eater' && item.level === 2),
+                owned: Array.isArray(saved.ownedTreasures) && saved.ownedTreasures.some(item => item.id === 'guiding-jade' && item.level === 1),
+                hasSaveTimestamp: Number.isFinite(Number(saved.last)) && Number(saved.last) > 0
+              };
+            });
+            if (!persistedSave.keyExists || !persistedSave.hasFragmentMap || !persistedSave.owned || !persistedSave.hasPet) throw new Error('重新載入後古寶碎片／收藏或靈寵存檔沒有保留。');
+            if (!persistedSave.hasSaveTimestamp) throw new Error('存檔時間戳遺失或無效。');
+            if (JSON.stringify(persistedSave.stable) !== JSON.stringify(preReloadSave)) {
+              throw new Error('重新載入後核心存檔欄位與重載前不一致。');
+            }
+            console.log('Save persistence regression passed: realm, resources, inventory, equipment, methods, treasure fragments, owned treasures and owned pets survive reload.');
+            // v6.25 save-safety regression: malformed test data must be backed up and never overwritten.
+            const corruptContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+            const corruptPage = await corruptContext.newPage();
+            const malformedSave = '{"major":"test-only","inventory":[broken';
+            await corruptPage.addInitScript(raw => {
+              if (location.hostname === 'peppen211.github.io' && location.pathname === '/xianxia-game/') {
+                localStorage.setItem('nine_heavens_idle_v2', raw);
+              }
+            }, malformedSave);
+            await corruptPage.goto('https://peppen211.github.io/xianxia-game/?v=6.30', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await corruptPage.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
+            await corruptPage.locator('#continueCultivationBtn').click();
+            await corruptPage.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
+            const corruptSaveAudit = await corruptPage.evaluate(() => {
+              const raw = localStorage.getItem('nine_heavens_idle_v2');
+              const backupKeys = [];
+              for (let i=0; i<localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('nine_heavens_idle_v2_backup_')) backupKeys.push(key);
+              }
+              return { raw, backupKeys: backupKeys.map(key => ({key, value:localStorage.getItem(key)})) };
+            });
+            if (corruptSaveAudit.raw !== malformedSave) throw new Error('異常存檔保護失敗：原始測試存檔遭到覆寫。');
+            if (!corruptSaveAudit.backupKeys.some(item => item.value === malformedSave)) throw new Error('異常存檔保護失敗：沒有建立內容一致的備份。');
+            await corruptContext.close();
+            console.log('Corrupt-save safety regression passed: isolated malformed save remains untouched, a byte-for-byte backup exists, and no player save was reset.');
+            if (errors.length) throw new Error('Browser console errors: ' + errors.join(' | '));
+            console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
+            await page.goto('https://peppen211.github.io/xianxia-game/latest.html', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            const latestPageVersion = (await page.locator('.version').innerText()).trim();
+            if (latestPageVersion !== 'v6.30') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
+            const latestPageLink = await page.locator('a.launch').getAttribute('href');
+            if (latestPageLink !== './?v=6.30') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
+            await page.locator('a.launch').click();
+            await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
+            await page.locator('#continueCultivationBtn').click();
+            await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
+            const latestLinkTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
+            if (latestLinkTargetVersion !== 'v6.30') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
+            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v6.30.');
+            const legacyEntryPaths = ['classic.html','mortal-cultivation-rpg.html','mortal-cultivation-rpg-3.3.html','prototype/index.html'];
+            for (const legacyPath of legacyEntryPaths) {
+              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.30');
+              if (!legacyResponse.ok()) throw new Error('舊入口沒有回應可用的轉址頁：' + legacyPath + ' (' + legacyResponse.status() + ')');
+              const legacyHtml = await legacyResponse.text();
+              if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=6.30") || !legacyHtml.includes('location.replace')) {
+                throw new Error('舊入口仍未指向 v6.30 正式版：' + legacyPath);
+              }
+            }
+            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.30', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=6.30', null, { timeout: 15000 });
+            await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
+            await page.locator('#continueCultivationBtn').click();
+            await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
+            const legacyTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
+            if (legacyTargetVersion !== 'v6.30') throw new Error('舊版入口轉址後仍未開啟 v6.30：' + legacyTargetVersion);
+            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v6.30 without launching old save logic.');
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          EOF
+          node /tmp/game-smoke.cjs
+      - name: Verify published game entry
+        run: |
+          set -eu
+          URL="https://peppen211.github.io/xianxia-game/"
+          for attempt in 1 2 3 4 5 6; do
+            PAGE="$(curl -fsSL "$URL" || true)"
+            LATEST_PAGE="$(curl -fsSL "${URL}latest.html" || true)"
+            LEGACY_OK=1
+            for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html prototype/index.html; do
+              LEGACY_PAGE="$(curl -fsSL "${URL}${LEGACY_PATH}" || true)"
+              if ! grep -Fq 'href="https://peppen211.github.io/xianxia-game/?v=6.30"' <<< "$LEGACY_PAGE" || ! grep -Fq 'location.replace' <<< "$LEGACY_PAGE"; then
+                LEGACY_OK=0
+              fi
+            done
+            if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE" &&
+               grep -Fq '<div class="version">v6.30</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.30"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
+              echo "Published v6.30 entry, latest.html and all legacy redirects verified."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Published page or latest.html points to a stale game version. Check GitHub Pages source and asset paths." >&2
+          exit 1
