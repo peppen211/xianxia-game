@@ -2066,7 +2066,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.30</small>
+  <small class="status-version" aria-label="遊戲版本">v6.31</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -5695,6 +5695,41 @@ html body #gameApp.app>header.top.statusline>.status-name{
  window.xianxiaGroupBattle={isActive:()=>groupActive,remaining:()=>groupMembers?groupMembers.filter(member=>member.hp>0).length:0};
 })();
 </script>
+
+<style id="v0631-cultivation-idle-card-layout">
+/* v6.31: runtime moves the idle card into cultivatePracticeView; the old direct-child selector no longer matches. */
+#gameApp #cultivatePracticeView>.idle-card{
+  display:grid!important;grid-template-columns:35px minmax(0,1fr)!important;
+  grid-template-rows:auto auto auto!important;grid-auto-flow:row!important;
+  align-items:center!important;gap:8px!important;width:100%!important;max-width:100%!important;
+  min-width:0!important;box-sizing:border-box!important;flex:0 0 auto!important;min-height:0!important;
+}
+#gameApp #cultivatePracticeView>.idle-card>.idle-icon{
+  grid-column:1!important;grid-row:1!important;width:34px!important;height:34px!important;
+  min-width:34px!important;justify-self:start!important;
+}
+#gameApp #cultivatePracticeView>.idle-card>.idle-text{
+  grid-column:2!important;grid-row:1!important;display:block!important;width:100%!important;
+  max-width:none!important;min-width:0!important;flex:none!important;
+  overflow-wrap:normal!important;word-break:normal!important;
+}
+#gameApp #cultivatePracticeView>.idle-card>.idle-text>b{
+  display:block!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important;
+}
+#gameApp #cultivatePracticeView>.idle-card>.idle-text>p{
+  display:block!important;width:auto!important;max-width:none!important;min-width:0!important;
+  margin:3px 0 0!important;font-size:12.5px!important;line-height:1.55!important;
+  white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere!important;color:#c3ccda!important;
+}
+#gameApp #cultivatePracticeView>.idle-card>#idleProgressPanel{
+  grid-column:1/-1!important;grid-row:2!important;display:grid!important;width:100%!important;
+  max-width:100%!important;min-width:0!important;box-sizing:border-box!important;justify-self:stretch!important;
+}
+#gameApp #cultivatePracticeView>.idle-card>.btn{
+  grid-column:1/-1!important;grid-row:3!important;width:100%!important;max-width:100%!important;
+  min-width:0!important;box-sizing:border-box!important;margin:0!important;white-space:normal!important;
+}
+</style>
 </body></html>
 
 <style id="v101-bag-slot-height-balance">
