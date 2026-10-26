@@ -2066,7 +2066,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.34</small>
+  <small class="status-version" aria-label="遊戲版本">v6.35</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -5736,6 +5736,62 @@ html body #gameApp.app>header.top.statusline>.status-name{
   min-width:0!important;box-sizing:border-box!important;margin:0!important;white-space:normal!important;
 }
 </style>
+<style id="v635-catalog-tabs">
+#uiModal .catalog-category-tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;flex:0 0 auto;background:#151b25;border-bottom:1px solid #ffffff18;scrollbar-width:thin;overscroll-behavior-x:contain}
+#uiModal .catalog-category-tabs button{flex:0 0 auto;min-height:36px;padding:7px 12px;border:1px solid #8e774f66;border-radius:10px;background:#24222a;color:#d9cfbd;font-size:12px;white-space:nowrap}
+#uiModal .catalog-category-tabs button[aria-selected="true"]{background:linear-gradient(135deg,#f0dba5,#b28a4d);border-color:#f0dba5;color:#2a2118;font-weight:800}
+#uiModal .catalog-category-tabs button:focus-visible{outline:2px solid #f0dba5;outline-offset:2px}
+#uiModal .modal-body.catalog-tabbed{padding-top:10px}
+#uiModal .modal-body.catalog-tabbed>.catalog-category-panel{display:none!important}
+#uiModal .modal-body.catalog-tabbed>.catalog-category-panel.active{display:block!important}
+#uiModal .modal-body.catalog-tabbed>.catalog-category-panel>.panel{margin-top:0!important}
+@media(max-width:380px){#uiModal .catalog-category-tabs{gap:4px;padding:7px}#uiModal .catalog-category-tabs button{padding:6px 10px;font-size:11px;min-height:34px}}
+</style>
+<script id="v635-catalog-tabs-script">
+(function(){
+ if(typeof window.openClassificationCatalog!=="function"||window.openClassificationCatalog.__v635Wrapped)return;
+ const original=window.openClassificationCatalog;
+ function selectCatalogCategory(body,tabs,index){
+  const buttons=Array.from(tabs.querySelectorAll("button"));
+  const panels=Array.from(body.querySelectorAll(":scope > .catalog-category-panel"));
+  buttons.forEach(function(button,i){const active=i===index;button.classList.toggle("active",active);button.setAttribute("aria-selected",active?"true":"false");button.tabIndex=active?0:-1});
+  panels.forEach(function(panel,i){const active=i===index;panel.classList.toggle("active",active);panel.hidden=!active});
+  body.scrollTop=0;
+ }
+ window.openClassificationCatalog=function(){
+  original.apply(this,arguments);
+  const modal=document.getElementById("uiModal");
+  const body=document.getElementById("modalBody");
+  if(!modal||!body||!modal.classList.contains("show"))return;
+  const title=document.getElementById("modalTitle");
+  if(!title||title.textContent.trim()!=="法寶與生靈分類")return;
+  if(body.querySelector(".catalog-category-tabs"))return;
+  const sourcePanels=Array.from(body.children).filter(function(node){return node.classList&&node.classList.contains("panel")});
+  if(sourcePanels.length<5)return;
+  const names=["裝備類","古寶類","敵怪類","靈寵類","原著典藏"];
+  sourcePanels.forEach(function(panel,index){panel.classList.add("catalog-category-panel");panel.hidden=true;panel.classList.remove("active");panel.dataset.catalogCategory=String(index)});
+  const tabs=document.createElement("div");
+  tabs.className="catalog-category-tabs";
+  tabs.setAttribute("role","tablist");
+  tabs.setAttribute("aria-label","圖鑑分類");
+  tabs.innerHTML=names.map(function(name,index){return '<button type="button" role="tab" id="catalog-tab-'+index+'" aria-controls="catalog-panel-'+index+'" aria-selected="'+(index===0?'true':'false')+'" tabindex="'+(index===0?'0':'-1')+'">'+name+'</button>'}).join("");
+  sourcePanels.forEach(function(panel,index){panel.id="catalog-panel-"+index;panel.setAttribute("role","tabpanel");panel.setAttribute("aria-labelledby","catalog-tab-"+index)});
+  body.classList.add("catalog-tabbed");
+  body.parentNode.insertBefore(tabs,body);
+  tabs.addEventListener("click",function(event){const button=event.target.closest("button[role=tab]");if(!button)return;selectCatalogCategory(body,tabs,Number(button.id.replace("catalog-tab-","")))});
+  tabs.addEventListener("keydown",function(event){
+   if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
+   const buttons=Array.from(tabs.querySelectorAll("button"));
+   const current=buttons.indexOf(document.activeElement);
+   let next=current;
+   if(event.key==="Home")next=0;else if(event.key==="End")next=buttons.length-1;else next=(current+(event.key==="ArrowRight"?1:-1)+buttons.length)%buttons.length;
+   event.preventDefault();buttons[next].focus();selectCatalogCategory(body,tabs,next);
+  });
+  selectCatalogCategory(body,tabs,0);
+ };
+ window.openClassificationCatalog.__v635Wrapped=true;
+})();
+</script>
 </body>
 <style id="v634-interface-polish">
 /* v6.34 全介面視覺統一：只調整呈現，不改遊戲邏輯與存檔 */
@@ -6117,7 +6173,7 @@ switchCultivateTab('practice');
  }catch(e){test('存檔可讀取',false,'瀏覽器拒絕讀取；未嘗試覆寫');}
  const panel=document.createElement('section');panel.id='xianxiaQaPanel';panel.setAttribute('role','status');panel.setAttribute('aria-live','polite');
  const passed=checks.filter(x=>x.pass).length;
- panel.innerHTML='<h2>v6.45 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
+ panel.innerHTML='<h2>v6.35 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
  document.body.appendChild(panel);byId('xianxiaQaClose').addEventListener('click',()=>panel.remove());
 })();
 </script>
