@@ -49,19 +49,19 @@ if (html.includes(oldEquip)) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
 
-const bagBalanceStyle = `<style id="v632-bag-layout-balance">
-/* v6.32: reserve a compact but readable equipment-slot row and give the item grid most of the mobile viewport. */
+const bagBalanceStyle = `<style id="v643-bag-inventory-height-balance">
+/* v6.43: compact equipment slots and allocate more mobile viewport to the scrollable inventory. */
 #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout{
-  grid-template-rows:minmax(88px,0.55fr) minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,0.62fr) minmax(0,1.38fr)!important;
 }
-#gameApp #bag .bag-slots-panel{padding:4px 6px!important;overflow:visible!important}
-#gameApp #bag .bag-slots-panel .secthead{min-height:20px!important}
-#gameApp #bag .bag-slots-panel .slotgrid{margin-top:3px!important;gap:3px!important}
-#gameApp #bag .bag-slots-panel .slot{padding:3px 2px!important}
-#gameApp #bag .bag-slots-panel .slot span{font-size:14px!important}
-#gameApp #bag .bag-slots-panel .slot small{font-size:9px!important;line-height:1.15!important}
-#gameApp #bag .bag-slots-panel .slot b{font-size:9px!important;line-height:1.2!important}
-#gameApp #bag .bag-slots-panel .gear-unequip{margin-top:2px!important;padding:2px 3px!important;font-size:9px!important}
+#gameApp #bag .bag-slots-panel{min-height:0!important;padding:2px 5px!important;overflow:visible!important}
+#gameApp #bag .bag-slots-panel .secthead{min-height:18px!important;margin-bottom:0!important;font-size:11px!important}
+#gameApp #bag .bag-slots-panel .slotgrid{margin-top:2px!important;gap:3px!important}
+#gameApp #bag .bag-slots-panel .slot{padding:2px 1px!important}
+#gameApp #bag .bag-slots-panel .slot span{font-size:12px!important}
+#gameApp #bag .bag-slots-panel .slot small{font-size:8px!important;line-height:1.1!important;margin-top:1px!important}
+#gameApp #bag .bag-slots-panel .slot b{font-size:8px!important;line-height:1.1!important;margin-top:1px!important}
+#gameApp #bag .bag-slots-panel .gear-unequip{margin-top:2px!important;padding:2px!important;font-size:8px!important}
 </style>`;
 if (!html.includes('id="v632-bag-layout-balance"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for the mobile bag layout fix.");
@@ -75,7 +75,7 @@ if (versionLabels.length !== 1) {
 }
 html = html.replace(
   /(class="status-version" aria-label="遊戲版本">)v6\.\d+(<\/small>)/,
-  "$1v6.42$2"
+  "$1v6.43$2"
 );
 
 const catalogTabs = `<style id="v635-catalog-tabs">
@@ -138,12 +138,12 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.42 非破壞性檢查");
+html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.43 非破壞性檢查");
 html = html.replace(String.raw`v6\.42`, String.raw`v6\.42`);
 
 
 
-const catalogLocationPatch = `<script id="v642-catalog-location-script">
+const catalogLocationPatch = `<script id="v643-catalog-location-script">
 (function(){
  'use strict';
  function setup(){
@@ -191,4 +191,4 @@ if (locationPattern.test(html)) {
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.42 catalog-only rendering fixed.");
+console.log("v6.43 catalog-only rendering fixed.");
