@@ -1,6 +1,6 @@
 # 不好意思，本座又突破了
 
-**目前遊戲版本：** v3.8  
+**目前遊戲版本：** v3.9  
 **正式遊玩入口：** https://peppen211.github.io/xianxia-game/?v=3.8  
 **最新版本頁：** https://peppen211.github.io/xianxia-game/latest.html
 
@@ -23,4 +23,4 @@
 
 ## 自動化測試與部署
 
-GitHub Actions 會執行 `npm test`、`npm run build`、手機尺寸瀏覽器流程、正式遊戲版號／最新版本頁核對、法寶／靈寵／商店／經濟及存檔回歸，並確認舊入口轉址至正式版。請以最新的 [GitHub Actions 執行紀錄](https://github.com/peppen211/xianxia-game/actions) 作為驗收依據。v3.8 修正偷襲失敗後的反擊傷害計算，納入防具與靈靴的裝備減傷效果，讓偷襲反擊與一般戰鬥套用一致的減傷規則。
+GitHub Actions 會執行 `npm test`、`npm run build`、手機尺寸瀏覽器流程、正式遊戲版號／最新版本頁核對、法寶／靈寵／商店／經濟及存檔回歸，並確認舊入口轉址至正式版。請以最新的 [GitHub Actions 執行紀錄](https://github.com/peppen211/xianxia-game/actions) 作為驗收依據。v3.9 修正偷襲失敗後的反擊傷害計算，納入防具與靈靴的裝備減傷效果，讓偷襲反擊與一般戰鬥套用一致的減傷規則。
