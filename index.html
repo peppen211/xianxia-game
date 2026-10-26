@@ -2066,7 +2066,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.27</small>
+  <small class="status-version" aria-label="遊戲版本">v6.28</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -5758,3 +5758,147 @@ function switchCultivateTab(tab){
 }
 switchCultivateTab('methods');
 </script>
+
+
+<style id="v628-interface-polish">
+/* v6.28: clearer compact status row, more reliable touch feedback, and accessible focus states. CSS-only: gameplay and save data are unchanged. */
+.app>header.top.statusline{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.05fr) minmax(28px,.38fr) minmax(0,1.1fr) minmax(42px,.68fr) minmax(56px,.85fr)!important;
+  align-items:center!important;
+  gap:6px!important;
+  padding:0 8px!important;
+  height:54px!important;
+  min-height:54px!important;
+}
+.app>header.top.statusline>.status-name{
+  min-width:0!important;
+  gap:4px!important;
+  overflow:hidden!important;
+}
+.app>header.top.statusline .top-avatar{
+  width:24px!important;
+  height:24px!important;
+  flex:0 0 24px!important;
+  border-radius:50%!important;
+  object-fit:cover!important;
+}
+.app>header.top.statusline>.status-name b{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:clamp(11px,3.3vw,15px)!important;
+}
+.app>header.top.statusline>.status-age{
+  min-width:0!important;
+  justify-content:center!important;
+  gap:2px!important;
+  white-space:nowrap!important;
+  font-size:clamp(10px,2.8vw,12.5px)!important;
+}
+.app>header.top.statusline>.status-xp{
+  min-width:0!important;
+  width:100%!important;
+  gap:3px!important;
+}
+.app>header.top.statusline>.status-xp>b{
+  font-size:clamp(9px,2.8vw,11.3px)!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+}
+.app>header.top.statusline>.status-xp .progress{
+  min-width:0!important;
+  width:100%!important;
+}
+.app>header.top.statusline>.status-power{
+  min-width:0!important;
+  justify-content:center!important;
+  gap:3px!important;
+  white-space:nowrap!important;
+  font-size:clamp(10px,2.9vw,12.5px)!important;
+}
+.app>header.top.statusline>.status-resources{
+  min-width:0!important;
+  width:100%!important;
+  justify-content:flex-end!important;
+  overflow:hidden!important;
+}
+.app>header.top.statusline>.status-resources>.resource-chip{
+  min-width:0!important;
+  width:100%!important;
+  justify-content:center!important;
+  padding:3px 2px!important;
+  border-radius:7px!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#gameApp .bottom .nav{
+  position:relative!important;
+  min-width:0!important;
+  min-height:48px!important;
+  padding:5px 2px!important;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .16s ease,color .16s ease,filter .16s ease;
+}
+#gameApp .bottom .nav.active:after{
+  content:"";
+  position:absolute;
+  top:3px;
+  left:50%;
+  width:20px;
+  height:2px;
+  border-radius:2px;
+  background:var(--gold);
+  transform:translateX(-50%);
+}
+#gameApp #cultivate .cultivate-tab{
+  min-height:42px!important;
+  -webkit-tap-highlight-color:transparent;
+}
+#gameApp #home .battle-actions .btn,
+#gameApp #home .action-grid .btn{
+  min-height:42px;
+  line-height:1.25;
+  -webkit-tap-highlight-color:transparent;
+  transition:filter .14s ease,transform .14s ease;
+}
+#gameApp .btn:active:not(:disabled),
+#gameApp .bottom .nav:active,
+#gameApp #cultivate .cultivate-tab:active{
+  filter:brightness(1.1);
+}
+#gameApp .btn:active:not(:disabled){
+  transform:translateY(1px);
+}
+#gameApp button:focus-visible,
+#gameApp input:focus-visible,
+#gameApp select:focus-visible,
+#gameApp textarea:focus-visible{
+  outline:2px solid #f0d58b!important;
+  outline-offset:2px!important;
+}
+#gameApp .screen{
+  scroll-padding-block:10px;
+}
+@media(max-width:359px){
+  .app>header.top.statusline{
+    grid-template-columns:minmax(0,1fr) minmax(25px,.34fr) minmax(0,.88fr) minmax(39px,.66fr) minmax(50px,.7fr)!important;
+    gap:3px!important;
+    padding:0 5px!important;
+  }
+  .app>header.top.statusline .top-avatar{
+    width:21px!important;
+    height:21px!important;
+    flex-basis:21px!important;
+  }
+  .app>header.top.statusline>.status-name{gap:3px!important}
+  .app>header.top.statusline>.status-name b{font-size:11px!important}
+  .app>header.top.statusline>.status-power{font-size:9.5px!important;gap:2px!important}
+  .app>header.top.statusline>.status-version{right:2px!important;font-size:8px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameApp .bottom .nav,
+  #gameApp #home .battle-actions .btn,
+  #gameApp #home .action-grid .btn{transition:none!important}
+}
+</style>
