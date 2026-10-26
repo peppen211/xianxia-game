@@ -2480,11 +2480,13 @@ function dismantleMaterialRefundText(refund){return refund.name+' ×'+refund.amo
 function enhanceGear(id){
  const it=s.inventory.find(x=>String(x.id)===String(id));if(!it)return;
  if(!['weapon','armor','ring','charm','boots'].includes(it.slot)){toast('這件物品不能進行裝備強化');return}
- it.enhanceLevel=Math.max(0,Math.floor(Number(it.enhanceLevel)||0));
- if(it.enhanceLevel>=10){toast('裝備最高強化等級為 +10');return}
- const cost=gearEnhanceCost(it),material=gearEnhanceMaterial(it),have=craftMaterialCount(material.key);
+ const currentLevel=Math.max(0,Math.floor(Number(it.enhanceLevel)||0));
+ if(currentLevel>=10){toast('裝備最高強化等級為 +10');return}
+ const checkedItem=Object.assign({},it,{enhanceLevel:currentLevel});
+ const cost=gearEnhanceCost(checkedItem),material=gearEnhanceMaterial(checkedItem),have=craftMaterialCount(material.key);
  if(Number(s.gold||0)<cost){toast('靈石不足，強化需要 '+cost+' 靈石');return}
  if(have<material.amount){toast('強化材料不足：'+material.name+' 還需要 '+(material.amount-have));return}
+ it.enhanceLevel=currentLevel;
  s.gold-=cost;
  if(material.key==='wood')s.wood=Math.max(0,Number(s.wood)||0)-material.amount;
  else if(material.key==='crystal')s.crystal=Math.max(0,Number(s.crystal)||0)-material.amount;
