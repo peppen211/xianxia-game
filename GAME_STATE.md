@@ -80,3 +80,12 @@
 - 保留四個儲物袋主分類及 `nine_heavens_idle_v2` 存檔鍵；沒有清除、重置、遷移或改寫玩家存檔。
 - 靜態讀回：新增條目、版本字串與存檔 key 已核對。GitHub Actions run `40248366559` 的 build、deploy、手機尺寸 Chromium 回歸及正式入口檢查均成功。iPhone Safari 真機驗收尚未完成。
 - 尚未驗證：iPhone Safari 真機操作。
+
+
+## 2026-10-26 v2.1 介面修正
+
+- 修改範圍僅限儲物袋四大主分類按鈕排列、版本入口與對應回歸測試。
+- 將 `.bag-main-tabs` 欄位數由 3 改為 4，並加入自動化檢查，確認四個分類按鈕使用四欄 CSS 網格。
+- 畫面版本標籤、`latest.html` 與 GitHub Pages 入口快取參數更新為 `v2.1`。
+- 存檔鍵仍為 `nine_heavens_idle_v2`；未呼叫重置流程、未刪除或改寫存檔資料。
+- 部署與回歸測試結果以本次提交的 GitHub Actions 執行結果為準；iPhone Safari 真機操作仍需另外驗收。
