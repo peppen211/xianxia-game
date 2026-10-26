@@ -2066,7 +2066,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.39</small>
+  <small class="status-version" aria-label="遊戲版本">v6.40</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2475,7 +2475,7 @@ function grantGearDismantleMaterials(it){
 }
 function dismantleMaterialRefundText(refund){return refund.name+' ×'+refund.amount}
 function enhanceGear(id){
- const it=s.inventory.find(x=>x.id===id);if(!it)return;
+ const it=s.inventory.find(x=>String(x.id)===String(id));if(!it)return;
  if(!['weapon','armor','ring','charm','boots'].includes(it.slot)){toast('這件物品不能進行裝備強化');return}
  it.enhanceLevel=Math.max(0,Math.floor(Number(it.enhanceLevel)||0));
  if(it.enhanceLevel>=10){toast('裝備最高強化等級為 +10');return}
@@ -2495,7 +2495,7 @@ function enhanceGear(id){
  toast('強化成功：'+it.name+' +'+it.enhanceLevel);
  render()
 }
-function dismantleGear(id){if(Object.values(s.equipped).includes(id)){toast('請先卸下裝備再分解');return}const i=s.inventory.findIndex(x=>x.id===id);if(i<0)return;const it=s.inventory[i];if(it.locked===true){toast('已鎖定裝備不能分解，請先解除鎖定');return}const reward=gearDismantleReward(it);const materialRefund=grantGearDismantleMaterials(it);s.inventory.splice(i,1);s.gold=(Number(s.gold)||0)+reward;note('分解 '+it.name+'，獲得靈石 ×'+reward+'、'+dismantleMaterialRefundText(materialRefund)+'。','good');render()}
+function dismantleGear(id){if(Object.values(s.equipped||{}).some(function(equippedId){return String(equippedId)===String(id)})){toast('請先卸下裝備再分解');return}const i=s.inventory.findIndex(x=>String(x.id)===String(id));if(i<0)return;const it=s.inventory[i];if(it.locked===true){toast('已鎖定裝備不能分解，請先解除鎖定');return}const reward=gearDismantleReward(it);const materialRefund=grantGearDismantleMaterials(it);s.inventory.splice(i,1);s.gold=(Number(s.gold)||0)+reward;note('分解 '+it.name+'，獲得靈石 ×'+reward+'、'+dismantleMaterialRefundText(materialRefund)+'。','good');render()}
 const MAGIC_TREASURES=[
  {id:'jade-flame',name:'青焰玉印',icon:'印',rarity:'凡品',effect:'攻擊時有機率追加傷害',chance:.18,damage:.45,upgradeWood:2,upgradeCrystal:0,sourceTag:'遊戲自創',sourceType:'遊戲原創法寶',sourceNote:'非原作具名器物；效果屬遊戲設計。'},
  {id:'spirit-bell',name:'鎮靈鈴',icon:'鈴',rarity:'靈品',effect:'受到攻擊時有機率減傷',chance:.16,damage:.35,upgradeWood:2,upgradeCrystal:1,sourceTag:'遊戲自創',sourceType:'遊戲原創法寶',sourceNote:'非原作具名器物；效果屬遊戲設計。'},
@@ -2666,7 +2666,7 @@ if(legacyGearEligible.length&&Math.random()<legacyGearChance){
 const isBoss=enemy&&enemy.type==='首領',isElite=enemy&&enemy.type==='精英';ensureMagicState();const magicChance=isBoss?0.28:isElite?0.12:0.025;if(Math.random()<magicChance){const missing=MAGIC_TREASURES.filter(function(t){return !s.magicTreasures.some(function(e){return e.id===t.id})});if(missing.length){const drop=missing[Math.floor(Math.random()*missing.length)];s.magicTreasures.push({id:drop.id,level:1});drops.push('法寶：'+drop.name+' ×1');}else{const duplicate=MAGIC_TREASURES[Math.floor(Math.random()*MAGIC_TREASURES.length)];s.wood+=2;drops.push('重複法寶轉化為靈木 ×2');}}const treasureChance=isBoss?0.50:isElite?0.22:0.08;if(Math.random()<treasureChance){const treasure=ANCIENT_TREASURES[Math.floor(Math.random()*ANCIENT_TREASURES.length)];const fragmentCount=isBoss&&Math.random()<0.5?2:1;s.treasureFragments[treasure.id]=(Number(s.treasureFragments[treasure.id])||0)+fragmentCount;drops.push('古寶碎片：'+treasure.name+' ×'+fragmentCount)}s.hp=Math.min(val('maxHp'),s.hp+Math.floor(val('maxHp')*.08));s.xp+=xp;checkLevel();note(` 擊敗${enemy.name}！戰利品：${drops.join('、')}。`,'good');let story=document.getElementById('battleStory');if(story)story.textContent=`斬妖成功！本次獲得：${drops.join('、')}。`;spawnEnemy()}
 function meditate(){toast('自動修行持續運轉，無需手動吐納；修為圓滿後再手動突破。')}
 function upgrade(k){let cost={atk:35+s.layer*15,def:30+s.layer*13,maxHp:40+s.layer*18}[k];if(s.gold<cost){toast('靈石不足，先去試煉吧');return}s.gold-=cost;s[k]+=k==='atk'?3:k==='def'?2:20;if(k==='maxHp')s.hp+=20;note(` 強化成功，${{atk:'攻擊 +3',def:'防禦 +2',maxHp:'氣血上限 +20'}[k]}。`,'good');render()}
-function equip(id){let it=s.inventory.find(x=>String(x.id)===String(id));if(!it)return;if(!['weapon','armor','ring','charm','boots'].includes(it.slot)){toast('這件物品不能穿戴');return}s.equipped[it.slot]=id;s.hp=Math.min(Number(s.hp)||0,val('maxHp'));note('你裝備了'+it.name+'，氣息更為穩固。','good');render()}
+function equip(id){let it=s.inventory.find(x=>String(x.id)===String(id));if(!it)return;if(!['weapon','armor','ring','charm','boots'].includes(it.slot)){toast('這件物品不能穿戴');return}s.equipped[it.slot]=it.id;s.hp=Math.min(Number(s.hp)||0,val('maxHp'));note('你裝備了'+it.name+'，氣息更為穩固。','good');render()}
 function unequip(slot){if(!s.equipped[slot])return;const it=equippedGear(slot);s.equipped[slot]=null;s.hp=Math.min(Number(s.hp)||0,val('maxHp'));note('已卸下'+(it?it.name:gearSlotLabel(slot))+'。');render()}
 function sell(id){if(Object.values(s.equipped).some(function(equippedId){return String(equippedId)===String(id)})){toast('請先換下裝備再出售');return}let i=s.inventory.findIndex(x=>String(x.id)===String(id));if(i<0)return;let it=s.inventory[i];if(it.locked===true){toast('已鎖定裝備不能出售，請先解除鎖定');return}it=s.inventory.splice(i,1)[0];s.gold+=it.value;note('出售'+it.name+'，獲得 '+it.value+' 靈石。','good');render()}
 function draw(n){let cost=n===10?270:30;if(s.gold<cost){toast('靈石不足，去試煉累積靈石吧');return}s.gold-=cost;let results=[];for(let i=0;i<n;i++){s.draws++;s.pity++;let force=s.pity>=10;let roll=Math.random();let g;if(force||roll<.07)g=gears.filter(x=>x.rarity==='仙品'||x.rarity==='珍品')[Math.floor(Math.random()*gears.filter(x=>x.rarity==='仙品'||x.rarity==='珍品').length)];else if(roll<.3)g=gears.filter(x=>x.rarity==='靈品')[Math.floor(Math.random()*gears.filter(x=>x.rarity==='靈品').length)];else if(roll<.62)g=gears.filter(x=>x.rarity==='凡品')[0];if(g&&(g.rarity==='珍品'||g.rarity==='仙品'))s.pity=0;if(g){let duplicate=s.inventory.some(it=>it.name===g.name);if(duplicate){s.dupes++;s.wood+=2;s.crystal+=1;results.push(` ${g.name} 重複，轉為靈木×2、靈晶×1`)}else{let it={...g,id:Date.now()+i+Math.floor(Math.random()*99999)};s.inventory.push(it);results.push(`${g.icon}${g.name}（${g.rarity}）`)} }else{if(Math.random()<.5){s.wood+=2;results.push(' 靈木×2')}else{s.crystal++;results.push(' 靈晶×1')}}}document.getElementById('drawResult').textContent=results.join('、');note(`煉器材料獲取：${results.join('；')}`,'good');render()}
@@ -4466,7 +4466,7 @@ main>.screen#home.active{display:flex!important}
  const qualityName=function(it){return ({'凡品':'凡品','普通':'凡品','靈品':'靈品','優良':'靈品','珍品':'珍品','稀有':'珍品','仙品':'仙品','史詩':'仙品'}[it&&it.rarity]||'凡品')};
  const rank=function(it){return typeof rarityRank==='function'?rarityRank(it):1};
  const starCount=function(it){return Math.max(1,Math.min(5,Math.floor(Number(it&&(it.stars||it.star))||({1:1,2:2,3:3,4:4}[rank(it)]||1))))};
- const isEquipped=function(it){return !!it&&Object.values(s.equipped||{}).includes(it.id)};
+ const isEquipped=function(it){return !!it&&Object.values(s.equipped||{}).some(function(id){return String(id)===String(it.id)})};
  const ensureData=function(){
   if(!Array.isArray(s.gearHistory))s.gearHistory=[];
   if(!s.gearProtection||typeof s.gearProtection!=='object')s.gearProtection={qualityEnabled:true,minQuality:3,starEnabled:true,minStars:4,enhanceEnabled:true,minEnhanceLevel:3};
@@ -4645,7 +4645,7 @@ function renderBagUI(){
     '<button type="button" class="btn secondary" id="bagEquipBack" style="grid-column:1/-1" onclick="closeModal()">返回背包</button></div>';
    openModal('裝備比較',html);
   };
- window.bagBatchSelect=function(id,checked){if(checked){const it=s.inventory.find(function(x){return x.id===id});if(it&&!isProtected(it))selectedBatch.add(id)}else selectedBatch.delete(id);renderBagUI()};
+ window.bagBatchSelect=function(id,checked){const it=s.inventory.find(function(x){return String(x.id)===String(id)});if(checked){if(it&&!isProtected(it))selectedBatch.add(it.id)}else{Array.from(selectedBatch).forEach(function(selected){if(String(selected)===String(id))selectedBatch.delete(selected)})}renderBagUI()};
   window.bagEquipSelected=function(id){const it=s.inventory.find(function(x){return String(x.id)===String(id)});if(!it)return;equip(it.id);if(isEquipped(it))closeModal();renderBagUI()};
  window.bagEnhanceSelected=function(id){const it=s.inventory.find(function(x){return String(x.id)===String(id)});if(!it)return;if((Number(it.enhanceLevel)||0)>=10){toast('裝備最高強化等級為 +10');return}enhanceGear(it.id);selectedId=it.id;renderBagUI();window.bagSelectItem(it.id)};
  window.bagToggleLock=function(id){const it=s.inventory.find(function(x){return String(x.id)===String(id)});if(!it)return;it.locked=!it.locked;record(it.locked?'鎖定':'解除鎖定',it,it.locked?'手動鎖定裝備':'解除手動鎖定');toast(it.locked?'已鎖定裝備':'已解除鎖定');renderBagUI();save();window.bagSelectItem(it.id)};
@@ -5947,7 +5947,7 @@ switchCultivateTab('practice');
 </style>
 
 
-<!-- v6.39: add non-destructive QA checks for enhancement guards and corrupt-save protection. -->
+<!-- v6.40: add non-destructive QA checks for enhancement guards and corrupt-save protection. -->
 <style id="v634-safe-qa-polish">
 #gameApp #bag .scrolllist,#gameApp #bag .bag-list,#gameApp #bag .bag-items{min-width:0;max-width:100%}
 #gameApp #bag .rowitem,#gameApp #bag .bag-item-card{min-width:0;max-width:100%;overflow-wrap:anywhere}
@@ -5960,7 +5960,7 @@ switchCultivateTab('practice');
 #xianxiaQaPanel .qa-warn{color:#e8c786}
 #xianxiaQaPanel button{margin-top:9px;padding:7px 10px;border-radius:8px;background:#3a4c5d;color:#fff}
 </style>
-<script id="v639-safe-qa-mode">
+<script id="v640-safe-qa-mode">
 (function(){
  'use strict';
  const params=new URLSearchParams(location.search);
@@ -5974,7 +5974,7 @@ switchCultivateTab('practice');
  test('儲物袋分頁',!!byId('bag'),'bag DOM');
  test('裝備欄位',!!byId('slots')&&byId('slots').querySelectorAll('.slot').length===5,'五個穿戴部位 DOM');
  test('修煉分頁',!!byId('cultivate'),'cultivate DOM');
-       test('版本標記',!!document.querySelector('.status-version')&&/v6\.37/.test(document.querySelector('.status-version').textContent),'應顯示 v6.39');
+       test('版本標記',!!document.querySelector('.status-version')&&/v6\.40/.test(document.querySelector('.status-version').textContent),'應顯示 v6.40');
  test('五大分類齊全',document.querySelectorAll('#bag [data-bag-main-tab]').length===5,'裝備、古寶、靈寵、法寶、材料');
  test('五個穿戴部位',document.querySelectorAll('#bag #slots .slot').length===5,'武器、防具、戒指、玉佩、靴子');
  test('裝備清單存在',!!byId('inventory'),'可供篩選與選取');
@@ -5982,8 +5982,8 @@ switchCultivateTab('practice');
  test('種類篩選存在',!!byId('bagTypeFilter'),'器物種類選單');
  test('排序選單存在',!!byId('bagSort'),'最新、品質、戰力、強化排序');
  test('分解確認入口存在',typeof window.bagReviewDismantle==='function','單件分解會再次驗證保護狀態');
- test('批次分解入口存在',!!byId('bagBatchReview')&&!!byId('bagBatchPanel')&&typeof window.bagBatchSelect==='function','確認入口、批次面板與選取處理器存在');
-  test('裝備 ID 型別相容',/String\(x\.id\)===String\(id\)/.test(equippedGear.toString())&&/String\(x\.id\)===String\(id\)/.test(gearStat.toString()),'存檔裝備 ID 為字串或數字時都能正確計算穿戴屬性');
+ test('批次分解入口存在',!!byId('bagBatchReview')&&!!byId('bagBatchPanel')&&typeof window.bagBatchSelect==='function'&&/String\(x\.id\)===String\(id\)/.test(window.bagBatchSelect.toString()),'確認入口、批次面板與字串／數字 ID 選取相容');
+  test('裝備 ID 型別相容',/String\(x\.id\)===String\(id\)/.test(equippedGear.toString())&&/String\(x\.id\)===String\(id\)/.test(gearStat.toString())&&/String\(id\)===String\(it\.id\)/.test(isEquipped.toString())&&/String\(x\.id\)===String\(id\)/.test(enhanceGear.toString())&&/String\(x\.id\)===String\(id\)/.test(dismantleGear.toString()),'穿戴屬性、保護、強化、分解均相容字串或數字 ID');
   test('強化資源與上限防護',typeof enhanceGear==='function'&&/enhanceLevel>=10/.test(enhanceGear.toString())&&/have<material.amount/.test(enhanceGear.toString())&&/s.gold-=cost/.test(enhanceGear.toString()),'檢查 +10 上限、材料不足與扣款流程');
   test('異常存檔保護',typeof load==='function'&&/storageBlocked=true/.test(load.toString())&&/KEY+'_backup_/.test(load.toString())&&/if\(storageBlocked\)toast/.test(load.toString()),'異常存檔會備份原始字串並停用自動寫入');
  test('儲物袋五大分類',document.querySelectorAll('#bag [data-bag-main-tab]').length===5,'裝備／古寶／靈寵／法寶／材料');
@@ -5996,7 +5996,7 @@ switchCultivateTab('practice');
  }catch(e){test('存檔可讀取',false,'瀏覽器拒絕讀取；未嘗試覆寫');}
  const panel=document.createElement('section');panel.id='xianxiaQaPanel';panel.setAttribute('role','status');panel.setAttribute('aria-live','polite');
  const passed=checks.filter(x=>x.pass).length;
- panel.innerHTML='<h2>v6.39 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
+ panel.innerHTML='<h2>v6.40 非破壞性檢查 · '+passed+'/'+checks.length+' 通過</h2><div>存檔狀態：'+saveState+'<br>注意：此模式只讀取存檔，不會儲存、重置或改寫玩家資料。</div><ul>'+checks.map(x=>'<li class="'+(x.pass?'qa-pass':'qa-warn')+'">'+(x.pass?'✓ ':'⚠ ')+x.name+(x.detail?'：'+x.detail:'')+'</li>').join('')+'</ul><button type="button" id="xianxiaQaClose">關閉檢查面板</button>';
  document.body.appendChild(panel);byId('xianxiaQaClose').addEventListener('click',()=>panel.remove());
 })();
 </script>
