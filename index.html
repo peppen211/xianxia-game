@@ -6172,7 +6172,7 @@ switchCultivateTab('practice');
  test('儲物袋分類切換事件',typeof mainCategory!=='undefined'&&typeof renderBagUI==='function','主分類狀態與渲染函式可用');
  test('存檔鍵未變更',typeof KEY==='string'&&KEY==='nine_heavens_idle_v2','只讀檢查存檔鍵，禁止重置或覆寫');
 
-       test('版本標記',!!document.querySelector('.status-version')&&/v6\.45/.test(document.querySelector('.status-version').textContent),'應顯示 v6.38');
+       test('版本標記',!!document.querySelector('.status-version')&&/v6\.38/.test(document.querySelector('.status-version').textContent),'應顯示 v6.38');
  test('五大分類齊全',document.querySelectorAll('#bag [data-bag-main-tab]').length===5,'裝備、古寶、靈寵、法寶、材料');
  test('五個穿戴部位',document.querySelectorAll('#bag #slots .slot').length===5,'武器、防具、戒指、玉佩、靴子');
  test('裝備清單存在',!!byId('inventory'),'可供篩選與選取');
