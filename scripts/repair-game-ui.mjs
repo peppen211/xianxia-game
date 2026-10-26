@@ -49,12 +49,12 @@ if (html.includes(oldEquip)) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
 
-const oldVersion = 'aria-label="遊戲版本">v6.18</small>';
+const oldVersion = 'aria-label="遊戲版本">v6.19</small>';
 if (html.includes(oldVersion)) {
-  html = html.replace(oldVersion, 'aria-label="遊戲版本">v6.19</small>');
-} else if (!html.includes('aria-label="遊戲版本">v6.19</small>')) {
+  html = html.replace(oldVersion, 'aria-label="遊戲版本">v6.20</small>');
+} else if (!html.includes('aria-label="遊戲版本">v6.20</small>')) {
   throw new Error("Cannot find the game version label.");
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.19 repair applied: mobile pet-card grid + distinct catalog descriptions + version label.");
+console.log("v6.20 audit applied: mobile inventory geometry checks + version label.");
