@@ -461,16 +461,43 @@ jobs:
             if (!petIntroText.includes('靈寵收藏') || !petIntroText.includes('召靈一次') || await page.locator('#bagInactiveCategory .bag-pet-card').count() !== 7) throw new Error('靈寵收藏頁、召靈操作或七種靈寵圖鑑未顯示。');
             await bag.locator('[data-bag-main-tab="equipment"]').click();
             await page.locator('#bagBatchToggle').click();
+            const equippedCheckboxState = await page.evaluate(() => {
+              const checkbox = Array.from(document.querySelectorAll('#inventory .bag-select-check'))
+                .find(el => el.getAttribute('aria-label') === '選取 測試靈品法器');
+              return { exists: !!checkbox, disabled: !!checkbox && checkbox.disabled };
+            });
+            if (equippedCheckboxState.exists && !equippedCheckboxState.disabled) {
+              throw new Error('已穿戴裝備仍可被批次分解選取。');
+            }
             const armorCheckbox = page.locator('#inventory .bag-select-check[aria-label="選取 測試批次分解防具"]');
             await armorCheckbox.waitFor({state:'visible',timeout:3000});
             await armorCheckbox.check();
             await page.locator('#bagBatchReview').click();
             await equipmentModal.waitFor({state:'visible',timeout:3000});
             if (!(await page.locator('#modalBody').innerText()).includes('測試批次分解防具')) throw new Error('批次分解確認清單未列出所選裝備。');
+            const batchRefundExpected = await page.evaluate(() => {
+              const item = s.inventory.find(item => item.id === 9901003);
+              const refund = gearDismantleMaterialRefund(item);
+              const before = refund.key === 'wood' ? Number(s.wood || 0)
+                : refund.key === 'crystal' ? Number(s.crystal || 0)
+                : refund.key === 'qiHerb' ? Number(s.herbs || 0)
+                : Number((s.craftingMaterials || {})[refund.key] || 0);
+              return { key: refund.key, amount: refund.amount, before };
+            });
             await page.locator('#bagConfirmBatch').click();
             await equipmentModal.waitFor({state:'hidden',timeout:3000});
-            if (await page.evaluate(() => s.inventory.some(item => item.id === 9901003))) throw new Error('確認批次分解後，所選測試防具仍在背包。');
-            console.log('Equipment inventory v0.97 regression passed: four-column grid, compare/equip modal, slot collapse, type filter, placeholders, and batch dismantle.');
+            const batchRefundActual = await page.evaluate((expected) => {
+              const after = expected.key === 'wood' ? Number(s.wood || 0)
+                : expected.key === 'crystal' ? Number(s.crystal || 0)
+                : expected.key === 'qiHerb' ? Number(s.herbs || 0)
+                : Number((s.craftingMaterials || {})[expected.key] || 0);
+              return { after, itemRemains: s.inventory.some(item => item.id === 9901003) };
+            }, batchRefundExpected);
+            if (batchRefundActual.itemRemains) throw new Error('確認批次分解後，所選測試防具仍在背包。');
+            if (batchRefundActual.after !== batchRefundExpected.before + batchRefundExpected.amount) {
+              throw new Error('批次分解材料返還數量不正確：' + JSON.stringify({expected:batchRefundExpected,actual:batchRefundActual}));
+            }
+            console.log('Equipment inventory v0.97 regression passed: four-column grid, compare/equip modal, slot collapse, type filter, equipped-gear protection, batch dismantle, and exact material refund.');
 
             // Ancient treasure regression: fragments drop only from battle, crafting spends fragments, and owned effects activate without equipment slots.
             await bag.locator('[data-bag-main-tab="treasures"]').click();
