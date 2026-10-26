@@ -616,7 +616,7 @@ jobs:
             if (await page.locator('#bagInactiveCategory .bag-treasure-card').count() !== 8) throw new Error('古寶頁應顯示八件可收藏古寶。');
             await bag.locator('[data-bag-main-tab="pets"]').click();
             const petIntroText = await page.locator('#bagInactiveCategory').innerText();
-            if (!petIntroText.includes('靈寵收藏') || !petIntroText.includes('召靈一次') || await page.locator('#bagInactiveCategory .bag-pet-card').count() !== 7) throw new Error('靈寵收藏頁、召靈操作或七種靈寵圖鑑未顯示。');
+            if (!petIntroText.includes('靈寵收藏') || !petIntroText.includes('召靈一次') || await page.locator('#bagInactiveCategory .bag-pet-card').count() !== 11) throw new Error('靈寵收藏頁、召靈操作或十一種靈寵圖鑑未顯示。');
             await bag.locator('[data-bag-main-tab="equipment"]').click();
             await page.locator('#bagBatchToggle').click();
             const equippedCheckboxState = await page.evaluate(() => {
