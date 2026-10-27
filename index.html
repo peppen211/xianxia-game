@@ -2103,7 +2103,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.69</small>
+  <small class="status-version" aria-label="遊戲版本">v6.70</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2128,7 +2128,7 @@ html,body,#launchGate,#gameApp{
   <button type="button" class="bag-main-tab" data-bag-main-tab="magic" role="tab" aria-selected="false">法寶類</button>
   <button type="button" class="bag-main-tab" data-bag-main-tab="materials" role="tab" aria-selected="false">材料類</button>
  </div>
- <button type="button" class="btn secondary bag-catalog-button" onclick="openClassificationCatalog()">分類圖鑑</button>
+ <button type="button" class="btn secondary bag-catalog-button" >分類圖鑑</button>
 </div>
  <div class="bag-equipment-view" id="bagEquipmentView">
   <div class="bag-tabs" role="tablist" aria-label="裝備部位分類">
@@ -5890,6 +5890,42 @@ body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.
 }
 </style>
 <style id="v648-remove-xiantu-ui">#gameApp main>#journal,#gameApp main>#journal.active{display:none!important;visibility:hidden!important;pointer-events:none!important}#gameApp .bottom .nav{grid-template-columns:repeat(5,minmax(0,1fr))}</style>
+<script id="v670-catalog-runtime-fallback">
+(function(){
+ 'use strict';
+ function setup(){
+  const bag=document.getElementById('bag'),button=bag&&bag.querySelector('.bag-catalog-button');
+  if(!button)return;
+  if(typeof window.openClassificationCatalog!=='function'){
+   window.openClassificationCatalog=function(){
+    const modal=document.getElementById('uiModal'),title=document.getElementById('modalTitle'),body=document.getElementById('modalBody');
+    if(!modal||!title||!body)return;
+    const categories=[
+     {key:'equipment',label:'裝備類',html:'<div class="rowitem"><div class="rowicon">器</div><div class="rowbody"><b>法器、法寶、符寶、仿製靈寶</b><small>器物類型典藏</small></div></div>'},
+     {key:'treasures',label:'古寶類',html:'<div class="rowitem"><div class="rowicon">寶</div><div class="rowbody"><b>兩儀環、千重峰、紫鉞兜、花籃古寶</b><small>古寶名錄與特殊功能</small></div></div>'},
+     {key:'magic',label:'法寶類',html:'<div class="rowitem"><div class="rowicon">劍</div><div class="rowbody"><b>青竹蜂雲劍、虛天鼎、八靈尺、玄天斬靈劍</b><small>法寶與高階至寶名錄</small></div></div>'},
+     {key:'pets',label:'靈寵類',html:'<div class="rowitem"><div class="rowicon">靈</div><div class="rowbody"><b>噬金蟲、啼魂獸、蟹道人、血玉蜘蛛</b><small>靈寵、靈蟲與傀儡典藏</small></div></div>'},
+     {key:'materials',label:'材料類',html:'<div class="rowitem"><div class="rowicon">材</div><div class="rowbody"><b>萬年靈乳、養魂木、寒髓、萬年玄玉</b><small>丹藥、材料與消耗品名錄</small></div></div>'}
+    ];
+    const tabs=categories.map(function(c,i){return '<button type="button" role="tab" aria-selected="'+(i===0?'true':'false')+'" data-v670-catalog-tab="'+c.key+'">'+c.label+'</button>';}).join('');
+    const panels=categories.map(function(c,i){return '<div class="catalog-category-panel'+(i===0?' active':'')+'" data-v670-catalog-panel="'+c.key+'"'+(i===0?'':' hidden')+'><div class="scrolllist">'+c.html+'</div></div>';}).join('');
+    title.textContent='法寶與生靈分類';body.innerHTML='<div class="catalog-category-tabs" role="tablist" aria-label="分類圖鑑">'+tabs+'</div>'+panels;
+    modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+    body.querySelectorAll('[data-v670-catalog-tab]').forEach(function(btn){btn.addEventListener('click',function(){
+     const key=btn.dataset.v670CatalogTab;
+     body.querySelectorAll('[data-v670-catalog-tab]').forEach(function(other){const active=other===btn;other.setAttribute('aria-selected',active?'true':'false');other.classList.toggle('active',active);});
+     body.querySelectorAll('[data-v670-catalog-panel]').forEach(function(panel){const active=panel.dataset.v670CatalogPanel===key;panel.hidden=!active;panel.classList.toggle('active',active);});
+    });});
+    const close=function(){modal.classList.remove('show','novel-reading-mode');modal.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');};
+    const closeButton=modal.querySelector('.modal-close'),backdrop=modal.querySelector('.modal-backdrop');
+    if(closeButton)closeButton.onclick=close;if(backdrop)backdrop.onclick=close;
+   };
+  }
+  if(!button.dataset.v670Bound){button.dataset.v670Bound='1';button.removeAttribute('onclick');button.addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});}
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+})();
+</script>
 </body>
 <style id="v634-interface-polish">
 /* v6.34 全介面視覺統一：只調整呈現，不改遊戲邏輯與存檔 */
