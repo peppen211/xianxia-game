@@ -84,7 +84,7 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.70 非破壞性檢查");
+html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.71 非破壞性檢查");
 
 
 
@@ -170,4 +170,4 @@ if (locationPattern.test(html)) {
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.70 catalog-only rendering fixed.");
+console.log("v6.71 catalog-only rendering fixed.");
