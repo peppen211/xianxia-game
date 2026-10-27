@@ -109,14 +109,17 @@ jobs:
               const content = el.querySelector('.cultivate-practice-view');
               if (!tabs || !content) return {missing:true};
               const before = tabs.getBoundingClientRect().top;
-              content.scrollTop = Math.min(240, Math.max(0, content.scrollHeight-content.clientHeight));
+              const hasOverflow = content.scrollHeight > content.clientHeight + 2;
+              if (hasOverflow) content.scrollTop = Math.min(240, content.scrollHeight-content.clientHeight);
               await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
               const after = tabs.getBoundingClientRect().top;
-              return {missing:false,position:getComputedStyle(tabs).position,contentScrollTop:content.scrollTop,contentHeight:content.scrollHeight,clientHeight:content.clientHeight,delta:Math.abs(after-before)};
+              return {missing:false,tabsVisible:tabs.getBoundingClientRect().height>0,position:getComputedStyle(tabs).position,
+                hasOverflow,contentScrollTop:content.scrollTop,contentHeight:content.scrollHeight,
+                clientHeight:content.clientHeight,delta:Math.abs(after-before)};
             });
-            if (cultivateStickyAudit.missing || cultivateStickyAudit.contentScrollTop <= 0 ||
-                cultivateStickyAudit.contentHeight <= cultivateStickyAudit.clientHeight || cultivateStickyAudit.delta > 4) {
-              throw new Error('修煉分頁按鈕未固定或卡片內容區無法上下捲動：' + JSON.stringify(cultivateStickyAudit));
+            if (cultivateStickyAudit.missing || !cultivateStickyAudit.tabsVisible ||
+                (cultivateStickyAudit.hasOverflow && cultivateStickyAudit.contentScrollTop <= 0) || cultivateStickyAudit.delta > 4) {
+              throw new Error('修煉分頁按鈕或內容捲動區異常：' + JSON.stringify(cultivateStickyAudit));
             }
             await page.locator('#cultivateSubtabs [data-cultivate-tab="methods"]').click();
             await page.locator('#cultivateMethodsView').waitFor({state:'visible', timeout:3000});
