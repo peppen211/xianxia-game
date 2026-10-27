@@ -2103,7 +2103,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.84</small>
+  <small class="status-version" aria-label="遊戲版本">v6.85</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -4218,6 +4218,87 @@ main>.screen#home.active{display:flex!important}
   observer.observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+<style id="v685-global-typography-calibration">
+/* v6.85 全遊戲字體校準：統一繁中系統字體、層級、行距與小螢幕縮放。 */
+:root{
+ --font-ui:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+ --font-display:"Kaiti TC","STKaiti","BiauKai","Noto Serif TC","Songti TC",serif;
+ --type-xs:clamp(11px,2.8vw,12px);
+ --type-sm:clamp(12px,3.15vw,13px);
+ --type-body:clamp(14px,3.65vw,16px);
+ --type-control:clamp(14px,3.7vw,16px);
+ --type-subtitle:clamp(16px,4.2vw,18px);
+ --type-heading:clamp(19px,5vw,23px);
+ --type-display:clamp(23px,6vw,30px);
+ --line-tight:1.25;
+ --line-body:1.55;
+ --line-long:1.68;
+}
+html{font-size:16px!important;-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+body,#gameApp,#gameApp button,#gameApp input,#gameApp select,#gameApp textarea,#gameApp .btn,#gameApp .nav{
+ font-family:var(--font-ui)!important;
+ font-kerning:normal;text-rendering:optimizeLegibility;
+}
+body,#gameApp{font-size:var(--type-body)!important;line-height:var(--line-body)!important}
+#gameApp p,#gameApp li,#gameApp .desc,#gameApp .description,#gameApp .muted,#gameApp .smallnote,
+#gameApp .help,#gameApp .hint,#gameApp .realm-desc,#gameApp .idle-text p,#gameApp .panel p,
+#gameApp .modal-body p,#gameApp .modal-body li{
+ font-size:var(--type-body)!important;line-height:var(--line-long)!important;
+ overflow-wrap:anywhere;word-break:normal;
+}
+#gameApp h1,#gameApp h2,#gameApp h3,#gameApp h4,
+#gameApp .page-title h2,#gameApp .secthead,#gameApp .section-title{
+ font-family:var(--font-display)!important;font-weight:800!important;
+ line-height:var(--line-tight)!important;letter-spacing:.025em!important;
+ overflow-wrap:anywhere;
+}
+#gameApp h1{font-size:var(--type-display)!important}
+#gameApp h2,#gameApp .page-title h2{font-size:var(--type-heading)!important}
+#gameApp h3,#gameApp h4,#gameApp .secthead,#gameApp .section-title{font-size:var(--type-subtitle)!important}
+#gameApp button,#gameApp .btn,#gameApp input,#gameApp select,#gameApp textarea{
+ font-size:var(--type-control)!important;line-height:1.35!important;
+}
+#gameApp button,#gameApp .btn{min-height:40px;white-space:normal!important;overflow-wrap:anywhere}
+#gameApp .nav{font-size:var(--type-sm)!important;line-height:1.25!important}
+#gameApp .small,#gameApp .tiny,#gameApp .eyebrow,#gameApp .realm,
+#gameApp .smallnote,#gameApp .muted-label,#gameApp .stat-label{
+ font-size:var(--type-sm)!important;line-height:1.45!important;
+}
+#gameApp .stat-value,#gameApp .value,#gameApp .number,#gameApp .hud-value{
+ font-variant-numeric:tabular-nums;line-height:1.2!important;
+}
+#gameApp .topbar,#gameApp .statusbar,#gameApp .player-hud{font-size:var(--type-body)!important}
+#gameApp .modal-title,#gameApp .modal-head h2{font-size:var(--type-heading)!important;line-height:1.3!important}
+#gameApp .modal-body{font-size:var(--type-body)!important;line-height:var(--line-long)!important}
+#gameApp .panel,#gameApp .card,#gameApp .item-card,#gameApp .method-card{
+ min-width:0;overflow-wrap:anywhere;
+}
+#gameApp .panel b,#gameApp .card b,#gameApp .item-card b,#gameApp .method-card b{
+ line-height:1.4;
+}
+#gameApp #cultivate .cultivate-subtabs button,
+#gameApp #bag .bag-main-tabs-wrap button,#gameApp #bag .bag-tabs button{
+ font-size:var(--type-sm)!important;line-height:1.3!important;
+}
+#gameApp #cultivate .cultivate-subview,
+#gameApp #bag .bag-equipment-view,
+#gameApp #uiModal .modal-body{
+ overflow-wrap:anywhere;word-break:normal;
+}
+#gameApp #cultivate .cultivate-subview .panel,
+#gameApp #cultivate .cultivate-subview .card,
+#gameApp #bag .panel,#gameApp #bag .card{
+ height:auto;min-height:0;max-height:none;
+}
+@media(max-width:390px){
+ :root{--type-body:14px;--type-control:14px;--type-sm:12px;--type-subtitle:16px;--type-heading:20px;--type-display:24px}
+ #gameApp .panel,#gameApp .card,#gameApp .item-card,#gameApp .method-card{padding-left:10px;padding-right:10px}
+ #gameApp .nav{letter-spacing:0!important}
+}
+@media(min-width:600px){
+ :root{--type-body:16px;--type-control:15px;--type-sm:13px;--type-subtitle:18px;--type-heading:23px;--type-display:30px}
+}
+</style>
 <script id="v681-restore-cultivation-method-tabs">
 /* v6.81: restore the original 修煉 / 功法 inner tabs before the existing renderer initializes. */
 (function(){
