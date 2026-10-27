@@ -3556,7 +3556,7 @@ main>.screen#home.active{display:flex!important}
   });
   const page=document.getElementById(id);
   if(page)page.scrollTop=0;
-  if(typeof window.render==='function')window.render();
+  if(typeof render==='function')render();
  }
  window.switchScreen=activate;
  const nav=document.querySelector('.bottom');
@@ -4170,9 +4170,9 @@ main>.screen#home.active{display:flex!important}
       if(typeof window.openModal!=='function'){alert('測試面板暫時無法開啟，請重新載入頁面。');return;}
       const hasBackup=localStorage.getItem(BACKUP_KEY)!==null;
       const body='<div class="panel"><p>測試前會備份目前存檔。測試資料會寫入遊戲存檔，測完請按「還原正式存檔」。</p>'+
-        '<label style="display:block;margin:10px 0">靈石數量<input id="v683TestGold" type="number" min="0" value="'+(window.s?.gold??281)+'" style="width:100%;margin-top:5px"></label>'+
-        '<label style="display:block;margin:10px 0">靈草數量<input id="v683TestHerbs" type="number" min="0" value="'+(window.s?.herbs??6)+'" style="width:100%;margin-top:5px"></label>'+
-        '<label style="display:block;margin:10px 0">生命值<input id="v683TestHp" type="number" min="1" value="'+(window.s?.hp??450)+'" style="width:100%;margin-top:5px"></label>'+
+        '<label style="display:block;margin:10px 0">靈石數量<input id="v683TestGold" type="number" min="0" value="'+(typeof s!=='undefined'?s.gold:281)+'" style="width:100%;margin-top:5px"></label>'+
+        '<label style="display:block;margin:10px 0">靈草數量<input id="v683TestHerbs" type="number" min="0" value="'+(typeof s!=='undefined'?s.herbs:6)+'" style="width:100%;margin-top:5px"></label>'+
+        '<label style="display:block;margin:10px 0">生命值<input id="v683TestHp" type="number" min="1" value="'+(typeof s!=='undefined'?s.hp:450)+'" style="width:100%;margin-top:5px"></label>'+
         '<label style="display:block;margin:10px 0">測試日誌長度<input id="v683TestLogs" type="number" min="0" max="70" value="20" style="width:100%;margin-top:5px"></label>'+
         '<p class="v683-test-help">測試會生成較長日誌與大數值，用來檢查手機文字換行、卡片高度和按鈕遮擋。</p>'+
         '<button class="btn primary" id="v683ApplyTest" type="button">備份並套用測試資料</button>'+
@@ -4181,7 +4181,7 @@ main>.screen#home.active{display:flex!important}
       window.openModal('介面與存檔測試',body);
       const apply=document.getElementById('v683ApplyTest');
       if(apply)apply.onclick=function(){
-        if(!window.s||typeof window.save!=='function'||typeof window.render!=='function'){alert('遊戲存檔介面尚未就緒。');return;}
+        if(typeof s==='undefined'||typeof save!=='function'||typeof render!=='function'){alert('遊戲存檔介面尚未就緒。');return;}
         try{
           if(localStorage.getItem(BACKUP_KEY)===null){
             const raw=localStorage.getItem(KEY);
@@ -4189,13 +4189,13 @@ main>.screen#home.active{display:flex!important}
             localStorage.setItem(BACKUP_KEY,raw);
           }
           const num=(id,min,max)=>Math.max(min,Math.min(max,Number(document.getElementById(id).value)||0));
-          window.s.gold=num('v683TestGold',0,999999999);
-          window.s.herbs=num('v683TestHerbs',0,999999999);
-          window.s.hp=num('v683TestHp',1,999999999);
-          window.s.maxHp=Math.max(window.s.maxHp,window.s.hp);
+          s.gold=num('v683TestGold',0,999999999);
+          s.herbs=num('v683TestHerbs',0,999999999);
+          s.hp=num('v683TestHp',1,999999999);
+          s.maxHp=Math.max(s.maxHp,s.hp);
           const count=num('v683TestLogs',0,70);
-          window.s.logs=Array.from({length:count},(_,i)=>({time:'測試 '+String(i+1).padStart(2,'0'),msg:'介面測試長文字：境界突破材料不足，請檢查文字換行、卡片高度與底部按鈕是否遮擋。測試編號 '+(i+1),type:'ui-test'}));
-          window.save();window.render();
+          s.logs=Array.from({length:count},(_,i)=>({time:'測試 '+String(i+1).padStart(2,'0'),msg:'介面測試長文字：境界突破材料不足，請檢查文字換行、卡片高度與底部按鈕是否遮擋。測試編號 '+(i+1),type:'ui-test'}));
+          save();render();
           window.closeModal();
           alert('測試資料已套用並備份正式存檔。測試完成後，請再次點「介面測試」並選「還原正式存檔」。');
         }catch(e){alert('測試資料未能完整套用：'+e.message);}
@@ -4206,7 +4206,7 @@ main>.screen#home.active{display:flex!important}
           const raw=localStorage.getItem(BACKUP_KEY);
           if(!raw){alert('沒有找到測試前備份。');return;}
           localStorage.setItem(KEY,raw);localStorage.removeItem(BACKUP_KEY);
-          if(typeof window.load==='function')window.load();
+          if(typeof load==='function')load();
           if(typeof window.render==='function')window.render();
           window.closeModal();alert('正式存檔已還原。');
         }catch(e){alert('還原失敗，備份仍保留，請勿重新開始遊戲。');}
