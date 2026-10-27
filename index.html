@@ -6745,4 +6745,23 @@ html:has(#gameApp #cultivate.active), body:has(#gameApp #cultivate.active){heigh
   #gameApp #cultivate.active>.cultivate-subtabs{padding:5px 0 7px!important}
   #gameApp #bag .bag-equipment-view:not([hidden])>.bag-tabs{top:52px!important}
 }
+/* A page-level tab rail stays outside the scrolling card stack. Each cultivation subpage owns its own scroll area. */
+#gameApp #cultivate.active{
+  overflow:hidden!important;overflow-y:hidden!important;overscroll-behavior:none!important;
+  touch-action:auto!important;
+}
+#gameApp #cultivate.active>.cultivate-subtabs{
+  position:relative!important;top:auto!important;flex:0 0 auto!important;
+}
+#gameApp #cultivate.active>.cultivate-subview{
+  flex:1 1 0%!important;min-height:0!important;height:auto!important;max-height:none!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch!important;overscroll-behavior-y:contain!important;
+  touch-action:pan-y!important;
+  padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))!important;
+}
+#gameApp #cultivate.active>.cultivate-practice-view{display:flex!important}
+#gameApp #cultivate.active>.cultivate-methods-view{display:none!important}
+#gameApp #cultivate.active[data-cultivate-tab="methods"]>.cultivate-practice-view{display:none!important}
+#gameApp #cultivate.active[data-cultivate-tab="methods"]>.cultivate-methods-view{display:flex!important}
 </style>
