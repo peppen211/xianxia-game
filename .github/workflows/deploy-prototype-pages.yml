@@ -93,21 +93,14 @@ jobs:
             if (publishedVersionLabel !== 'v6.64') throw new Error('遊戲右上角版本標示應為 v6.64，實際為：' + publishedVersionLabel);
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
-            await page.locator('#gameApp #openCultivateCatalog').waitFor({state:'visible', timeout:3000});
             const catalogEntryAudit = await page.locator('#cultivate').evaluate(el => ({
-              panelCount: Array.from(el.children).filter(child => child.classList.contains('panel')).length,
-              catalogButton: !!el.querySelector('#openCultivateCatalog'),
+              duplicateCatalogButton: !!el.querySelector('#openCultivateCatalog'),
+              duplicateCatalogPanel: !!el.querySelector('.panel:has(#openCultivateCatalog)'),
               oldInnerPages: el.querySelectorAll('#cultivatePracticeView, #cultivateMethodsView, [data-cultivate-tab]').length
             }));
-            if (!catalogEntryAudit.catalogButton || catalogEntryAudit.panelCount !== 1 || catalogEntryAudit.oldInnerPages !== 0) {
-              throw new Error('仙途應只保留典藏圖鑑入口：' + JSON.stringify(catalogEntryAudit));
+            if (catalogEntryAudit.duplicateCatalogButton || catalogEntryAudit.duplicateCatalogPanel || catalogEntryAudit.oldInnerPages !== 0) {
+              throw new Error('仙途頁不應重複顯示典藏圖鑑，且舊修煉子頁應已移除：' + JSON.stringify(catalogEntryAudit));
             }
-            await page.locator('#openCultivateCatalog').click();
-            await page.locator('#uiModal').waitFor({state:'visible', timeout:5000});
-            const archiveTitle = (await page.locator('#modalTitle').innerText()).trim();
-            if (archiveTitle !== '法寶與生靈分類') throw new Error('仙途典藏圖鑑無法開啟正確的分類圖鑑：' + archiveTitle);
-            await page.locator('#uiModal .modal-close').click();
-            await page.locator('#uiModal').waitFor({state:'hidden', timeout:3000});
 
             await page.locator('#gameApp .bottom .nav[data-screen="bag"]').click();
             await page.locator('#bag.active').waitFor({state:'visible', timeout:3000});
@@ -150,16 +143,16 @@ jobs:
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
 
-            // The cultivation screen intentionally keeps only the archive entry; legacy practice/method sub-pages are removed.
+            // The cultivation screen intentionally has no duplicate archive entry; the catalog is opened from the inventory bag.
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
             const catalogOnlyAudit = await page.locator('#cultivate').evaluate(el => ({
-              panelCount: Array.from(el.children).filter(child => child.classList.contains('panel')).length,
-              catalogButton: !!el.querySelector('#openCultivateCatalog'),
+              duplicateCatalogButton: !!el.querySelector('#openCultivateCatalog'),
+              duplicateCatalogPanel: !!el.querySelector('.panel:has(#openCultivateCatalog)'),
               oldInnerPages: el.querySelectorAll('#cultivatePracticeView, #cultivateMethodsView, [data-cultivate-tab]').length
             }));
-            if (!catalogOnlyAudit.catalogButton || catalogOnlyAudit.panelCount !== 1 || catalogOnlyAudit.oldInnerPages !== 0) {
-              throw new Error('仙途內頁驗收失敗：' + JSON.stringify(catalogOnlyAudit));
+            if (catalogOnlyAudit.duplicateCatalogButton || catalogOnlyAudit.duplicateCatalogPanel || catalogOnlyAudit.oldInnerPages !== 0) {
+              throw new Error('仙途典藏入口重複或舊修煉子頁未移除：' + JSON.stringify(catalogOnlyAudit));
             }
 
             await page.evaluate(() => openBreakthroughModal());

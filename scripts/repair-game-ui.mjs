@@ -118,14 +118,7 @@ const catalogLocationPatch = `<script id="v647-catalog-location-script">
    const tabsInWrap=wrap.querySelector('.bag-main-tabs');
    if(tabsInWrap&&tabsInWrap.nextSibling)wrap.insertBefore(catalogButton,tabsInWrap.nextSibling);else wrap.appendChild(catalogButton);
   }
-  let open=cultivate.querySelector('#openCultivateCatalog');
-  if(!open){
-   const panel=document.createElement('div');
-   panel.className='panel';
-   panel.innerHTML='<div class="secthead"><span>典藏圖鑑</span><small>法寶與生靈</small></div><p class="muted">查看修仙世界中的法寶、古寶、靈寵與特殊生靈。</p><button type="button" class="btn secondary" id="openCultivateCatalog">開啟分類圖鑑</button>';
-   cultivate.appendChild(panel);
-   open=panel.querySelector('#openCultivateCatalog');
-  }
+  const open=cultivate.querySelector('#openCultivateCatalog');
   if(open&&!open.dataset.bound){
    open.dataset.bound='1';
    open.addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});
