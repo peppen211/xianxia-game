@@ -2103,7 +2103,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.71</small>
+  <small class="status-version" aria-label="遊戲版本">v6.72</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2990,6 +2990,7 @@ function breakthroughModalHtml(){
  return '<div class="breakthrough-modal-aura panel"><div class="breakthrough-seal"></div><div class="breakthrough-kicker">天劫將至 · 先定心神</div><h2 style="text-align:center;color:var(--gold);margin:7px 0">境界突破</h2><p class="break-modal-copy">'+(capped?'目前已達本版最高開放境界，後續境界尚未開放。':ready?'修為已達圓滿，靈脈正等待最後一擊。':'修為尚未圓滿，請先繼續吐納或挑戰妖獸。')+'</p><div class="break-metric-grid"><div class="break-metric"><small>成功率</small><b>'+chance+'%</b></div><div class="break-metric"><small>修為需求</small><b>'+Math.min(s.xp,need)+'/'+need+'</b></div><div class="break-metric"><small>失敗風險</small><b>損失氣血</b></div></div><div class="panel"><div class="secthead"><span>渡劫資源</span><small>不足時不可開始</small></div><p class="break-modal-copy"> 靈石：'+s.gold+'/'+cost.goldCost+'<br> 靈草：'+s.herbs+'/'+cost.herbCost+'<br>成功獎勵：境界提升、攻擊與防禦成長、氣血恢復。</p></div><div class="break-risk"> 天劫風險：失敗將消耗本次渡劫材料，並損失部分氣血；不會刪除或重置存檔。生存功法可提高成功率。</div><div class="action-grid" style="margin-top:10px"><button class="btn secondary" onclick="closeModal()">再做準備</button><button class="btn primary" onclick="attemptBreakthrough()" '+(!ready||!enoughGold||!enoughHerbs?'disabled':'')+'>引動天劫</button></div></div>';
 }
 function openBreakthroughModal(){openModal('渡劫突破',breakthroughModalHtml())}
+window.openBreakthroughModal = openBreakthroughModal;
 function attemptBreakthrough(){
  const need=xpNeed(),cost=GAME_CONFIG.breakthrough;
  if(s.major>=realms.length-1&&s.layer>=9){toast('已達目前版本最高開放境界，後續境界尚未開放');openBreakthroughModal();return}
