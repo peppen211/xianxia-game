@@ -2103,7 +2103,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.76</small>
+  <small class="status-version" aria-label="遊戲版本">v6.77</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2215,6 +2215,17 @@ const equipmentTypeByName = {
  '玄龜護心鏡':'法寶','聚靈玉佩':'法器','九曜仙環':'法寶','赤紋戒':'法器',
  '星河戒':'法寶','踏雲靴':'法器','追風靈靴':'法寶'
 };
+
+// Complete metadata for legacy inventory equipment that is still selectable in the bag.
+gears.forEach(function(item){
+ if(!equipmentTypeByName[item.name])return;
+ item.icon=item.icon||'器';
+ item.catalogType=equipmentTypeByName[item.name];
+ item.sourceTag=item.sourceTag||'遊戲原創裝備';
+ item.dataSource='遊戲原創';
+ item.acquisition='裝備抽取（現行功能）；舊版煉器來源尚未接入';
+ item.dropSource='未接入現行戰鬥掉落池；可透過裝備抽取取得';
+});
 const qiStarterMetadata = {
  '精鐵劍':{templateId:'qi_weapon_iron_sword_001',gearLevel:1,realmRequirement:'煉氣期',enhanceMaterialKey:'iron'},
  '青竹劍':{templateId:'qi_weapon_bamboo_sword_001',gearLevel:1,realmRequirement:'煉氣期',enhanceMaterialKey:'wood'},
