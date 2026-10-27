@@ -43,8 +43,12 @@ const newEquip = `const equipRows=[
   {name:'仿製靈寶',desc:'仿照高階靈寶特性煉製的器物類別；實際威能、來源與限制需按個別原作條目核對。'}
 ].map(function(item){return '<div class="rowitem"><div class="rowicon">器</div><div class="rowbody"><b>'+item.name+'</b><small>'+item.desc+'</small></div></div>';}).join('');`;
 
+const currentEquip = `const equipRows=['法器','法寶','符寶','仿製靈寶'].map(function(name){return '<div class="rowitem"><div class="rowicon">器</div><div class="rowbody"><b>'+name+'</b></div></div>';}).join('');`;
+
 if (html.includes(oldEquip)) {
   html = html.replace(oldEquip, newEquip);
+} else if (html.includes(currentEquip)) {
+  html = html.replace(currentEquip, newEquip);
 } else if (!html.includes("仿照高階靈寶特性煉製的器物類別")) {
   throw new Error("Catalog repair target was not found; refusing to silently skip the data fix.");
 }
@@ -132,4 +136,4 @@ if (locationPattern.test(html)) {
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.47 catalog-only rendering fixed.");
+console.log("v6.64 catalog-only rendering fixed.");
