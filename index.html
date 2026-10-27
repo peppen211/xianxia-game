@@ -4252,9 +4252,11 @@ main>.screen#home.active{display:flex!important}
 #gameApp .screen button,#gameApp .screen .btn{max-width:100%;white-space:normal}
 #gameApp .screen input,#gameApp .screen select,#gameApp .screen textarea{max-width:100%;min-width:0}
 </style>
-<style id="v689-breakthrough-button-position-fix">
-/* Keep the global action out of the status header; the cultivation screen owns the breakthrough entry point. */
+<style id="v690-breakthrough-button-correct-placement">
+/* The global button is moved into the battle action area below; never display it in the status header. */
 #globalBreakBtn{display:none!important}
+#home .battle-actions #globalBreakBtn{display:inline-flex!important;grid-column:1/-1;min-height:42px;margin-bottom:2px}
+#home .battle-actions #globalBreakBtn[hidden]{display:none!important}
 </style>
 <style id="v685-global-typography-calibration">
 /* v6.85 全遊戲字體校準：統一繁中系統字體、層級、行距與小螢幕縮放。 */
@@ -6201,6 +6203,27 @@ body #gameApp.app>main>.screen#bag.active>.bag-equipment-view .bag-gear-layout>.
   if(!button.dataset.v670Bound){button.dataset.v670Bound='1';button.removeAttribute('onclick');button.addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});}
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+})();
+</script>
+<script id="v690-breakthrough-button-relocation">
+(function(){
+  function placeBreakthroughButton(){
+    var btn=document.getElementById('globalBreakBtn');
+    var actions=document.querySelector('#home .battle-actions');
+    if(!btn||!actions)return;
+    if(btn.parentElement!==actions){
+      actions.insertBefore(btn,actions.firstChild);
+      btn.classList.add('btn','primary','core-break');
+      btn.type='button';
+      btn.textContent='境界突破';
+      btn.setAttribute('aria-label','開啟境界突破介面');
+    }
+    var status=btn.closest('.statusline');
+    if(status)status.setAttribute('data-break-button-moved','true');
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',placeBreakthroughButton,{once:true});
+  else placeBreakthroughButton();
+  setTimeout(placeBreakthroughButton,250);
 })();
 </script>
 </body>
