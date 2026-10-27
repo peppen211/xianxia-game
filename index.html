@@ -2994,7 +2994,7 @@ checkLevel=function(){
  }
  const hint=document.getElementById('breakHint');
  if(hint)hint.textContent=s.major>=realms.length-1&&s.layer>=9?'已達目前版本最高境界':s.xp>=need?'靈脈圓滿 · 可嘗試渡劫':'累積修為以突破';
- const topBtn=document.getElementById('globalBreakBtn');if(topBtn)topBtn.style.display=s.xp>=need&&!(s.major>=realms.length-1&&s.layer>=9)?'inline-flex':'none';
+ const topBtn=document.getElementById('globalBreakBtn');if(topBtn){const breakReady=s.xp>=need&&!(s.major>=realms.length-1&&s.layer>=9);topBtn.hidden=!breakReady;topBtn.style.display=breakReady?'inline-flex':'none';}
 };
 function breakthroughModalHtml(){
  const capped=s.major>=realms.length-1&&s.layer>=9;const need=xpNeed(),ready=s.xp>=need&&!capped,cost=GAME_CONFIG.breakthrough;
