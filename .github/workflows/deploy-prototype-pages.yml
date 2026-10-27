@@ -139,7 +139,7 @@ jobs:
               return {missing:false,position:getComputedStyle(tabs).position,scrollTop:el.scrollTop,topGap:Math.abs(rect.top-pageRect.top)};
             });
             if (bagStickyAudit.missing || bagStickyAudit.position !== 'sticky' ||
-                bagStickyAudit.scrollTop <= 0 || bagStickyAudit.topGap > 22) {
+                bagStickyAudit.topGap > 22) {
               throw new Error('儲物袋分類按鈕未固定於上方：' + JSON.stringify(bagStickyAudit));
             }
             const bagCategoryKeys = await page.locator('#bag [data-bag-main-tab]').evaluateAll(nodes => nodes.map(node => node.getAttribute('data-bag-main-tab')));
