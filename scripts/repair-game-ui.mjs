@@ -84,7 +84,7 @@ if (!html.includes('id="v635-catalog-tabs-script"')) {
   if (!html.includes("</body>")) throw new Error("Cannot find </body> for catalog category tabs.");
   html = html.replace("</body>", catalogTabs + "\n</body>");
 }
-html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.67 非破壞性檢查");
+html = html.replace(/v6\.\d+ 非破壞性檢查/g, "v6.68 非破壞性檢查");
 
 
 
@@ -109,14 +109,48 @@ const catalogLocationPatch = `<script id="v647-catalog-location-script">
     desiredOrder.forEach(function(key){const btn=tabs.querySelector('[data-bag-main-tab="'+key+'"]');if(btn)tabs.appendChild(btn);});
    }
   }
+  if(typeof window.openClassificationCatalog!=='function'){
+   window.openClassificationCatalog=function(){
+    const modal=document.getElementById('uiModal'),title=document.getElementById('modalTitle'),body=document.getElementById('modalBody');
+    if(!modal||!title||!body)return;
+    const tabs=[['equipment','裝備類'],['treasures','古寶類'],['magic','法寶類'],['pets','靈寵類'],['materials','材料類']];
+    const panels={
+     equipment:'<div class="rowitem"><div class="rowicon">器</div><div class="rowbody"><b>法器、法寶、符寶、仿製靈寶</b><small>可穿戴器物與器物類型典藏</small></div></div>',
+     treasures:'<div class="rowitem"><div class="rowicon">寶</div><div class="rowbody"><b>兩儀環、千重峰、紫鉞兜、花籃古寶</b><small>古寶名錄與特殊功能</small></div></div>',
+     magic:'<div class="rowitem"><div class="rowicon">劍</div><div class="rowbody"><b>青竹蜂雲劍、虛天鼎、八靈尺、玄天斬靈劍</b><small>法寶與高階至寶名錄</small></div></div>',
+     pets:'<div class="rowitem"><div class="rowicon">靈</div><div class="rowbody"><b>噬金蟲、啼魂獸、蟹道人、血玉蜘蛛</b><small>靈寵、靈蟲與傀儡典藏</small></div></div>',
+     materials:'<div class="rowitem"><div class="rowicon">材</div><div class="rowbody"><b>萬年靈乳、養魂木、寒髓、萬年玄玉</b><small>丹藥、材料與消耗品名錄</small></div></div>'
+    };
+    const tabHtml=tabs.map(function(item,i){return '<button type="button" role="tab" aria-selected="'+(i===0?'true':'false')+'" data-catalog-fallback="'+item[0]+'">'+item[1]+'</button>';}).join('');
+    const panelHtml=tabs.map(function(item,i){return '<div class="catalog-category-panel'+(i===0?' active':'')+'" data-catalog-fallback-panel="'+item[0]+'"'+(i===0?'':' hidden')+'><div class="scrolllist">'+panels[item[0]]+'</div></div>';}).join('');
+    const content='<div class="catalog-category-tabs" role="tablist" aria-label="分類圖鑑">'+tabHtml+'</div>'+panelHtml;
+    title.textContent='法寶與生靈分類';
+    body.innerHTML=content;
+    modal.classList.add('show');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+    body.querySelectorAll('[data-catalog-fallback]').forEach(function(button){
+     button.addEventListener('click',function(){
+      const key=button.dataset.catalogFallback;
+      body.querySelectorAll('[data-catalog-fallback]').forEach(function(other){const active=other===button;other.setAttribute('aria-selected',active?'true':'false');other.classList.toggle('active',active);});
+      body.querySelectorAll('[data-catalog-fallback-panel]').forEach(function(panel){const active=panel.dataset.catalogFallbackPanel===key;panel.hidden=!active;panel.classList.toggle('active',active);});
+     });
+    });
+    const close=function(){modal.classList.remove('show','novel-reading-mode');modal.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');};
+    const closeButton=modal.querySelector('.modal-close'),backdrop=modal.querySelector('.modal-backdrop');
+    if(closeButton)closeButton.onclick=close;if(backdrop)backdrop.onclick=close;
+   };
+  }
   const wrap=bag.querySelector('.bag-main-tabs-wrap');
   let catalogButton=bag.querySelector('.bag-catalog-button');
   if(!catalogButton&&wrap){
    catalogButton=document.createElement('button');catalogButton.type='button';catalogButton.className='btn secondary bag-catalog-button';
    catalogButton.textContent='分類圖鑑';
-   catalogButton.addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});
    const tabsInWrap=wrap.querySelector('.bag-main-tabs');
    if(tabsInWrap&&tabsInWrap.nextSibling)wrap.insertBefore(catalogButton,tabsInWrap.nextSibling);else wrap.appendChild(catalogButton);
+  }
+  if(catalogButton&&!catalogButton.dataset.catalogFallbackBound){
+   catalogButton.dataset.catalogFallbackBound='1';
+   catalogButton.removeAttribute('onclick');
+   catalogButton.addEventListener('click',function(){if(typeof window.openClassificationCatalog==='function')window.openClassificationCatalog();});
   }
   const open=cultivate.querySelector('#openCultivateCatalog');
   if(open&&!open.dataset.bound){
@@ -136,4 +170,4 @@ if (locationPattern.test(html)) {
 }
 
 fs.writeFileSync(file, html, "utf8");
-console.log("v6.67 catalog-only rendering fixed.");
+console.log("v6.68 catalog-only rendering fixed.");
