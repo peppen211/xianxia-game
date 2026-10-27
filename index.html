@@ -6453,16 +6453,17 @@ label{color:#d6dce4}
 (function(){
   function restore(){
     const cultivate=document.getElementById('cultivate');
+    const practiceView=document.getElementById('cultivatePracticeView')||cultivate;
     const home=document.getElementById('home');
     const character=document.getElementById('character');
     if(!cultivate||!home||!character||cultivate.dataset.v655Restored)return;
     cultivate.dataset.v655Restored='1';
 
-    /* Restore the actual cultivation experience from the existing live game blocks. */
+    /* Restore the actual cultivation experience inside the original 修煉 subtab. */
     const title=document.createElement('div');
     title.className='page-title';
-    title.innerHTML='<h2>修煉</h2><span>靈氣運轉・境界突破</span>';
-    cultivate.insertBefore(title,cultivate.firstChild);
+    title.innerHTML='<h2>修煉洞府</h2><span>境界與修為進度</span>';
+    practiceView.insertBefore(title,practiceView.firstChild);
 
     ['.hero','.realm-row','.idle-card'].forEach(function(selector){
       const node=home.querySelector(':scope > '+selector);
@@ -6480,7 +6481,7 @@ label{color:#d6dce4}
       return node.classList&&node.classList.contains('smallnote')&&/本機儲存/.test(node.textContent);
     });
     [offlinePanel,journalHeading,logs,actions,note].forEach(function(node){
-      if(node)cultivate.appendChild(node);
+      if(node)practiceView.appendChild(node);
     });
 
     const nav=document.querySelector('#gameApp .bottom');
