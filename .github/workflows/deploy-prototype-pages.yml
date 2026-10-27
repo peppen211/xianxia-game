@@ -178,16 +178,18 @@ jobs:
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
 
-            // The cultivation screen intentionally has no duplicate archive entry; the catalog is opened from the inventory bag.
+            // Cultivation keeps its original two inner tabs; archive entry remains exclusive to the inventory bag.
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
             const catalogOnlyAudit = await page.locator('#cultivate').evaluate(el => ({
               duplicateCatalogButton: !!el.querySelector('#openCultivateCatalog'),
               duplicateCatalogPanel: !!el.querySelector('.panel:has(#openCultivateCatalog)'),
-              oldInnerPages: el.querySelectorAll('#cultivatePracticeView, #cultivateMethodsView, [data-cultivate-tab]').length
+              innerTabs: Array.from(el.querySelectorAll('#cultivateSubtabs [data-cultivate-tab]')).map(btn => btn.dataset.cultivateTab),
+              methodsList: !!el.querySelector('#cultivateMethodsView #methodList')
             }));
-            if (catalogOnlyAudit.duplicateCatalogButton || catalogOnlyAudit.duplicateCatalogPanel || catalogOnlyAudit.oldInnerPages !== 0) {
-              throw new Error('仙途典藏入口重複或舊修煉子頁未移除：' + JSON.stringify(catalogOnlyAudit));
+            if (catalogOnlyAudit.duplicateCatalogButton || catalogOnlyAudit.duplicateCatalogPanel ||
+                JSON.stringify(catalogOnlyAudit.innerTabs) !== JSON.stringify(['practice','methods']) || !catalogOnlyAudit.methodsList) {
+              throw new Error('修煉／功法分頁遺失或仙途重複出現圖鑑入口：' + JSON.stringify(catalogOnlyAudit));
             }
 
             await page.evaluate(() => window.openBreakthroughModal());
