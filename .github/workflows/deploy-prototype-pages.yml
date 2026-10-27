@@ -27,7 +27,7 @@ jobs:
           cp index.html dist/index.html
           cp latest.html dist/latest.html
           cp '首頁.PNG' 'dist/首頁.PNG'
-          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.77"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.77");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.80。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.77">開啟目前正式版 v6.80</a></body></html>'
+          LEGACY_REDIRECT_HTML='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url=https://peppen211.github.io/xianxia-game/?v=6.84"><title>遊戲版本已更新｜不好意思，本座又突破了</title><script>window.location.replace("https://peppen211.github.io/xianxia-game/?v=6.84");</script></head><body><p>這個舊入口已併入目前正式版，正在前往 v6.84。</p><a href="https://peppen211.github.io/xianxia-game/?v=6.84">開啟目前正式版 v6.84</a></body></html>'
           for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html; do
             printf '%s\n' "$LEGACY_REDIRECT_HTML" > "dist/$LEGACY_PATH"
           done
@@ -67,7 +67,7 @@ jobs:
             page.on('response', response => { if (response.status() >= 400) console.log('BROWSER HTTP ERROR: ' + response.status() + ' ' + response.url()); });
             page.on('requestfailed', request => console.log('BROWSER REQUEST FAILED: ' + request.url() + ' :: ' + (request.failure()?.errorText || 'unknown')));
 
-            await page.goto('https://peppen211.github.io/xianxia-game/?v=6.77', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/?v=6.84', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const gate = page.locator('#launchGate');
             const app = page.locator('#gameApp');
             const continueButton = page.locator('#continueCultivationBtn');
@@ -90,21 +90,54 @@ jobs:
               throw new Error('Launch-gate state remained after clicking continue.');
             }
             const publishedVersionLabel = await page.locator('#gameApp .status-version').evaluate(el => el.textContent.trim());
-            if (publishedVersionLabel !== 'v6.80') throw new Error('遊戲右上角版本標示應為 v6.80，實際為：' + publishedVersionLabel);
+            if (publishedVersionLabel !== 'v6.84') throw new Error('遊戲右上角版本標示應為 v6.84，實際為：' + publishedVersionLabel);
             await page.locator('#gameApp .bottom .nav[data-screen="cultivate"]').click();
             await page.locator('#cultivate.active').waitFor({state:'visible', timeout:3000});
             const catalogEntryAudit = await page.locator('#cultivate').evaluate(el => ({
               duplicateCatalogButton: !!el.querySelector('#openCultivateCatalog'),
               duplicateCatalogPanel: !!el.querySelector('.panel:has(#openCultivateCatalog)'),
-              oldInnerPages: el.querySelectorAll('#cultivatePracticeView, #cultivateMethodsView, [data-cultivate-tab]').length
+              innerTabs: Array.from(el.querySelectorAll('#cultivateSubtabs [data-cultivate-tab]')).map(btn => btn.dataset.cultivateTab),
+              methodsList: !!el.querySelector('#cultivateMethodsView #methodList')
             }));
-            if (catalogEntryAudit.duplicateCatalogButton || catalogEntryAudit.duplicateCatalogPanel || catalogEntryAudit.oldInnerPages !== 0) {
-              throw new Error('仙途頁不應重複顯示典藏圖鑑，且舊修煉子頁應已移除：' + JSON.stringify(catalogEntryAudit));
+            if (catalogEntryAudit.duplicateCatalogButton || catalogEntryAudit.duplicateCatalogPanel ||
+                JSON.stringify(catalogEntryAudit.innerTabs) !== JSON.stringify(['practice','methods']) || !catalogEntryAudit.methodsList) {
+              throw new Error('修煉／功法雙分頁或儲物袋專屬圖鑑入口異常：' + JSON.stringify(catalogEntryAudit));
+            }
+            await page.locator('#cultivateSubtabs [data-cultivate-tab="practice"]').click();
+            const cultivateStickyAudit = await page.locator('#cultivate').evaluate(async el => {
+              const tabs = el.querySelector('#cultivateSubtabs');
+              if (!tabs) return {missing:true};
+              const before = tabs.getBoundingClientRect().top;
+              el.scrollTop = Math.min(240, el.scrollHeight);
+              await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const after = tabs.getBoundingClientRect().top;
+              return {missing:false,position:getComputedStyle(tabs).position,scrollTop:el.scrollTop,delta:Math.abs(after-before)};
+            });
+            if (cultivateStickyAudit.missing || cultivateStickyAudit.position !== 'sticky' ||
+                cultivateStickyAudit.scrollTop <= 0 || cultivateStickyAudit.delta > 4) {
+              throw new Error('修煉子分頁按鈕未固定或內容無法上下捲動：' + JSON.stringify(cultivateStickyAudit));
+            }
+            await page.locator('#cultivateSubtabs [data-cultivate-tab="methods"]').click();
+            await page.locator('#cultivateMethodsView').waitFor({state:'visible', timeout:3000});
+            if (await page.locator('#methodList>.method-card').count() < 3) {
+              throw new Error('功法分頁沒有正常顯示三套既有功法。');
             }
 
             await page.locator('#gameApp .bottom .nav[data-screen="bag"]').click();
             await page.locator('#bag.active').waitFor({state:'visible', timeout:3000});
             await page.locator('#bag .bag-catalog-button').waitFor({state:'visible', timeout:3000});
+            const bagStickyAudit = await page.locator('#bag').evaluate(async el => {
+              const tabs = el.querySelector('.bag-main-tabs-wrap');
+              if (!tabs) return {missing:true};
+              el.scrollTop = Math.min(tabs.offsetTop + 140, el.scrollHeight);
+              await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+              const rect = tabs.getBoundingClientRect(), pageRect = el.getBoundingClientRect();
+              return {missing:false,position:getComputedStyle(tabs).position,scrollTop:el.scrollTop,topGap:Math.abs(rect.top-pageRect.top)};
+            });
+            if (bagStickyAudit.missing || bagStickyAudit.position !== 'sticky' ||
+                bagStickyAudit.scrollTop <= 0 || bagStickyAudit.topGap > 22) {
+              throw new Error('儲物袋分類按鈕未固定於上方：' + JSON.stringify(bagStickyAudit));
+            }
             const bagCategoryKeys = await page.locator('#bag [data-bag-main-tab]').evaluateAll(nodes => nodes.map(node => node.getAttribute('data-bag-main-tab')));
             if (!['equipment','treasures','magic','pets','materials'].every(key => bagCategoryKeys.includes(key))) {
               throw new Error('儲物袋五大分類缺失：' + JSON.stringify(bagCategoryKeys));
@@ -1080,7 +1113,7 @@ jobs:
                 localStorage.setItem('nine_heavens_idle_v2', raw);
               }
             }, malformedSave);
-            await corruptPage.goto('https://peppen211.github.io/xianxia-game/?v=6.77', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await corruptPage.goto('https://peppen211.github.io/xianxia-game/?v=6.84', { waitUntil: 'domcontentloaded', timeout: 60000 });
             await corruptPage.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await corruptPage.locator('#continueCultivationBtn').click();
             await corruptPage.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
@@ -1101,7 +1134,7 @@ jobs:
             console.log('Mobile launch flow passed: visible continue button, enter game, and reload returns to home.');
             await page.goto('https://peppen211.github.io/xianxia-game/latest.html', { waitUntil: 'domcontentloaded', timeout: 60000 });
             const latestPageVersion = (await page.locator('.version').innerText()).trim();
-            if (latestPageVersion !== 'v6.80') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
+            if (latestPageVersion !== 'v6.84') throw new Error('最新版本頁仍顯示舊版號：' + latestPageVersion);
             const latestPageLink = await page.locator('a.launch').getAttribute('href');
             if (latestPageLink !== './?v=6.77') throw new Error('最新版本頁沒有連到目前版本：' + latestPageLink);
             await page.locator('a.launch').click();
@@ -1109,25 +1142,25 @@ jobs:
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const latestLinkTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (latestLinkTargetVersion !== 'v6.80') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
-            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v6.80.');
+            if (latestLinkTargetVersion !== 'v6.84') throw new Error('最新版本入口開啟的遊戲版號不一致：' + latestLinkTargetVersion);
+            console.log('Latest-version page regression passed: displayed version, cache-busting URL, and linked live game all match v6.84.');
             const legacyEntryPaths = ['classic.html','mortal-cultivation-rpg.html','mortal-cultivation-rpg-3.3.html','prototype/index.html'];
             for (const legacyPath of legacyEntryPaths) {
-              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.80');
+              const legacyResponse = await page.context().request.get('https://peppen211.github.io/xianxia-game/' + legacyPath + '?verify=v6.84');
               if (!legacyResponse.ok()) throw new Error('舊入口沒有回應可用的轉址頁：' + legacyPath + ' (' + legacyResponse.status() + ')');
               const legacyHtml = await legacyResponse.text();
-              if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=6.77") || !legacyHtml.includes('location.replace')) {
+              if (!legacyHtml.includes("https://peppen211.github.io/xianxia-game/?v=6.84") || !legacyHtml.includes('location.replace')) {
                 throw new Error('舊入口仍未指向 v6.80 正式版：' + legacyPath);
               }
             }
-            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.80', { waitUntil: 'domcontentloaded', timeout: 60000 });
-            await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=6.77', null, { timeout: 15000 });
+            await page.goto('https://peppen211.github.io/xianxia-game/classic.html?verify=v6.84', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.waitForFunction(() => location.pathname === '/xianxia-game/' && location.search === '?v=6.84', null, { timeout: 15000 });
             await page.locator('#launchGate').waitFor({ state: 'visible', timeout: 15000 });
             await page.locator('#continueCultivationBtn').click();
             await page.locator('#gameApp').waitFor({ state: 'visible', timeout: 5000 });
             const legacyTargetVersion = (await page.locator('#gameApp .status-version').innerText()).trim();
-            if (legacyTargetVersion !== 'v6.80') throw new Error('舊版入口轉址後仍未開啟 v6.80：' + legacyTargetVersion);
-            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v6.80 without launching old save logic.');
+            if (legacyTargetVersion !== 'v6.84') throw new Error('舊版入口轉址後仍未開啟 v6.84：' + legacyTargetVersion);
+            console.log('Legacy entry regression passed: classic, both old mortal-cultivation pages, and prototype/index.html redirect to v6.84 without launching old save logic.');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           EOF
@@ -1142,13 +1175,13 @@ jobs:
             LEGACY_OK=1
             for LEGACY_PATH in classic.html mortal-cultivation-rpg.html mortal-cultivation-rpg-3.3.html prototype/index.html; do
               LEGACY_PAGE="$(curl -fsSL "${URL}${LEGACY_PATH}" || true)"
-              if ! grep -Fq 'href="https://peppen211.github.io/xianxia-game/?v=6.77"' <<< "$LEGACY_PAGE" || ! grep -Fq 'location.replace' <<< "$LEGACY_PAGE"; then
+              if ! grep -Fq 'href="https://peppen211.github.io/xianxia-game/?v=6.84"' <<< "$LEGACY_PAGE" || ! grep -Fq 'location.replace' <<< "$LEGACY_PAGE"; then
                 LEGACY_OK=0
               fi
             done
             if grep -Fq 'id="launchGate"' <<< "$PAGE" && grep -Fq 'id="continueCultivationBtn"' <<< "$PAGE" && grep -Fq 'id="gameApp"' <<< "$PAGE" && ! grep -Fq '/src/main.tsx' <<< "$PAGE" &&
-               grep -Fq '<div class="version">v6.80</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.77"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
-              echo "Published v6.80 entry, latest.html and all legacy redirects verified."
+               grep -Fq '<div class="version">v6.84</div>' <<< "$LATEST_PAGE" && grep -Fq 'href="./?v=6.77"' <<< "$LATEST_PAGE" && [ "$LEGACY_OK" -eq 1 ]; then
+              echo "Published v6.84 entry, latest.html and all legacy redirects verified."
               exit 0
             fi
             sleep 10
