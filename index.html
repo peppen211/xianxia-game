@@ -2103,7 +2103,7 @@ html,body,#launchGate,#gameApp{
   <div class="status-xp" aria-label="修為進度"><b id="globalXpText" aria-live="polite">0/100</b><div class="progress" role="progressbar" aria-label="修為進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="globalXpBar" style="width:0%"></span></div></div>
   <div class="status-power" aria-label="角色戰力"><span class="status-label">戰力</span><b id="globalPower">18</b></div>
   <div class="currencies status-resources" aria-label="靈石"><button type="button" class="currency resource-chip" data-resource="gold" title="靈石用途與取得" aria-label="靈石"><span class="status-label">靈石</span><b id="goldTop">100</b></button></div>
-  <small class="status-version" aria-label="遊戲版本">v6.60</small>
+  <small class="status-version" aria-label="遊戲版本">v6.61</small>
   <button class="btn primary core-break" id="globalBreakBtn" style="display:none">突破</button>
 </header><div id="legacyResourceState" hidden aria-hidden="true"><b id="globalRealm"></b><b id="herbsTop">3</b><b id="woodTop">2</b><b id="crystalTop">1</b><b id="spiritTop">0</b></div><div class="toast" id="toast"></div>
 <div class="ui-modal" id="uiModal" aria-hidden="true"><div class="modal-backdrop" onclick="closeModal()"></div><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><header class="modal-head"><b id="modalTitle">詳細資訊</b><button type="button" class="modal-close" onclick="closeModal()" aria-label="關閉彈窗">×</button></header><div class="modal-body" id="modalBody"></div><footer class="modal-foot" id="modalFooter" hidden><button type="button" class="btn primary" onclick="closeModal()">關閉閱讀，返回仙途</button></footer></section></div><main>
@@ -2574,7 +2574,7 @@ function renderPetCollection(){
   const entry=owned.find(function(p){return p.id===item.id}),level=entry?entry.level:0;
   const perLevel=(item.perLevel*100).toFixed(1).replace(/\.0$/,'');
   const effectText=level>0?'目前效果：'+petEffectText(item,level):'持有後生效：'+item.effectLabel+' +'+perLevel+'%／級';
-  return '<article class="bag-treasure-card bag-pet-card '+(level?'is-owned':'')+'" data-pet-id="'+item.id+'"><div class="bag-treasure-card-head"><span class="bag-treasure-icon">'+esc(item.icon)+'</span><div class="bag-treasure-name"><b>'+esc(item.name)+'</b><small>'+esc(item.rarity)+' · '+(level?'已持有 · 等級 '+level:'尚未召得')+'</small></div></div><p class="bag-treasure-description">'+esc(item.desc)+'</p><div class="bag-treasure-effect">'+esc(effectText)+'</div><small class="bag-pet-odds">召靈機率：'+(item.weight/totalWeight*100).toFixed(1).replace(/\.0$/,'')+'%</small>'+(item.sourceTag?'<small class="bag-source-tag">'+esc(item.sourceTag)+' · 被動數值為遊戲化轉譯</small>':'')+'</article>';
+  return '<article class="bag-treasure-card bag-pet-card '+(level?'is-owned':'')+'" data-pet-id="'+item.id+'"><div class="bag-treasure-card-head"><span class="bag-treasure-icon">'+esc(item.icon)+'</span><div class="bag-treasure-name"><b>'+esc(item.name)+'</b><small>'+esc(item.rarity)+' · '+(level?'已持有 · 等級 '+level:'尚未召得')+'</small></div></div><div class="bag-treasure-effect">'+esc(effectText)+'</div></article>';
  }).join('');
  return '<div class="bag-treasure-intro"><div class="secthead"><span>靈寵收藏</span><small>'+owned.length+' / '+petCatalog.length+' 種已持有</small></div><p>消耗 50 靈石召靈一次。重複獲得會自動培育升級，最高 5 級；所有已持有靈寵的被動效果會累加，不需另外上陣。</p></div><div class="bag-pet-drawbar"><button type="button" id="petDrawButton" class="btn primary bag-pet-draw" data-pet-draw>召靈一次 · 50 靈石</button></div><div class="bag-treasure-total">已持有 '+owned.length+' 種靈寵 · 被動效果即時生效</div><div class="bag-treasure-grid">'+cards+'</div><div class="bag-treasure-drop-note">召靈機率會顯示在每隻靈寵卡片上。已滿 5 級的重複靈寵會返還 12 靈石。靈寵不占裝備欄，也不會改動古寶碎片或法寶收藏。</div>';
 }
@@ -4582,7 +4582,7 @@ function renderTreasureCollection(){
   const effectText=level>0?'目前效果：'+treasureEffectText(item,level):'獲得後自動生效：'+item.effectPerLevelText;
   return '<article class="bag-treasure-card '+(level>0?'is-owned':'')+'" data-treasure-id="'+item.id+'">'+
    '<div class="bag-treasure-card-head"><span class="bag-treasure-icon">'+escapeHtml(item.icon)+'</span><div class="bag-treasure-name"><b>'+escapeHtml(item.name)+'</b><small>'+(level>0?'已持有 · 等級 '+level:'尚未合成')+'</small></div></div>'+
-   '<p class="bag-treasure-description">'+escapeHtml(item.description)+'</p>'+
+   
    (item.sourceTag?'<small class="bag-source-tag">'+escapeHtml(item.sourceTag)+' · 效果數值為遊戲化轉譯</small>':'')+
    '<div class="bag-treasure-effect">'+escapeHtml(effectText)+'</div>'+
    '<div class="bag-treasure-progress"><span style="width:'+progress+'%"></span></div>'+
